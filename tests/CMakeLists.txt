@@ -1,5 +1,5 @@
-add_executable(ButterTests)
+add_executable(ButterTests test_mesh.cpp)
 
-target_link_libraries(ButterTests PRIVATE Butter gtest gtest_main)
+target_link_libraries(ButterTests PRIVATE core gtest gtest_main)
 
 add_test(NAME ButterTests COMMAND ButterTests)

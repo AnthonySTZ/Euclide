@@ -11,3 +11,10 @@ add_subdirectory(src/core)
 add_executable(Butter app/main.cpp)
 
 target_link_libraries(Butter PRIVATE core)
+
+# --- Optional tests
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt")
+    enable_testing()
+    add_subdirectory(third_party/googletest)
+    add_subdirectory(tests)
+endif()
