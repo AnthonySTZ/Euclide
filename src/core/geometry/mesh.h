@@ -1,7 +1,14 @@
 #pragma once
 
-#include <Vector.h>
+#include "points.h"
 
-class Test {
-    py::vec3 myVec;
+namespace butter {
+
+class Mesh {
+    
+private:
+    Points m_points;
+    
 };
+
+}

@@ -1,4 +1,4 @@
-add_executable(ButterTests test_mesh.cpp)
+add_executable(ButterTests test_points.cpp)
 
 target_link_libraries(ButterTests PRIVATE core gtest gtest_main)
 
