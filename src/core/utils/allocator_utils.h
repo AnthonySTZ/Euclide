@@ -1,5 +1,5 @@
-#include <memory>
-#include <vector>
+#include <cstdlib>
+#include <new> // bad_alloc
 
 template <typename T, std::size_t Alignment>
 struct AlignedAllocator {
