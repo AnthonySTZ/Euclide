@@ -1,6 +1,5 @@
 #include <memory>
 #include <vector>
-#include <xmmintrin.h>
 
 template <typename T, std::size_t Alignment>
 struct AlignedAllocator {
@@ -13,14 +12,22 @@ struct AlignedAllocator {
 
     T* allocate(std::size_t n) {
         void* ptr = nullptr;
-        if (posix_memalign(&ptr, Alignment, n * sizeof(T)) != 0) {
+#ifdef _WIN32
+        ptr = _aligned_malloc(n * sizeof(T), Alignment);
+        if (!ptr) throw std::bad_alloc();
+#else
+        if (posix_memalign(&ptr, Alignment, n * sizeof(T)) != 0)
             throw std::bad_alloc();
-        }
+#endif
         return static_cast<T*>(ptr);
     }
 
     void deallocate(T* p, std::size_t) noexcept {
+#ifdef _WIN32
+        _aligned_free(p);
+#else
         free(p);
+#endif
     }
 
     template <typename U>
