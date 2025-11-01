@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "utils/alignedAllocator.h"
+#include "utils/allocator_utils.h"
 
 namespace butter {
 

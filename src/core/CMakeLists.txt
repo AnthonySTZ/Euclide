@@ -1,5 +1,5 @@
 add_library(core STATIC
-    utils/alignedAllocator.cpp
+    utils/allocator_utils.cpp
     geometry/mesh.cpp
     geometry/points.cpp
 )
