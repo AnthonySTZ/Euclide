@@ -32,4 +32,11 @@ TEST(Node, CookTwoConnectedNodes) {
     EXPECT_FLOAT_EQ(result->points.posZ[1], 2.0f);
 }
 
+TEST(Node, CookOutOfBoundsOutput) {
+    auto node = std::make_shared<CreatePointNode>();
+
+    auto result = node->cook(1);
+    EXPECT_EQ(result, nullptr);
+}
+
 }

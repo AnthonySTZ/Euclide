@@ -41,6 +41,7 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
  */
 std::shared_ptr<Mesh> Node::cook(const size_t t_index)
 {
+    if(t_index >= m_outputConnections.size()) return nullptr;
     if (!m_isDirty[t_index]) return m_cachedMesh[t_index];
 
     std::vector<std::shared_ptr<Mesh>> inputMeshes;
