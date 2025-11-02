@@ -2,6 +2,7 @@
 #include "mock_node.h"
 
 #include <memory>
+#include <iostream>
 
 namespace butter {
 
@@ -78,6 +79,27 @@ TEST(Node, MultipleOutput) {
     EXPECT_FLOAT_EQ(second_result->points.posX[1], -8.0f);
     EXPECT_FLOAT_EQ(second_result->points.posY[1], 10.0f);
     EXPECT_FLOAT_EQ(second_result->points.posZ[1], 20.0f);
+}
+
+TEST(NodeConnectionTest, DeleteInputConnection) {
+    auto sourceNode = std::make_shared<TestNode>();
+    auto targetNode = std::make_shared<TestNode>();
+
+    // Set up input connection
+    targetNode->setInput(0, sourceNode, 0);
+    
+    // Verify connection exists
+    ASSERT_EQ(targetNode->getInputConnection(0)->sourceNode.lock(), sourceNode);
+    ASSERT_EQ(sourceNode->getOutputConnections(0).size(), 1);
+    
+    // Delete input connection
+    targetNode->deleteInputConnection(0);
+
+    // Check target input is null
+    EXPECT_EQ(targetNode->getInputConnection(0), nullptr);
+
+    // Check source output no longer has this connection
+    EXPECT_EQ(sourceNode->getOutputConnections(0).size(), 0);
 }
 
 }

@@ -14,8 +14,11 @@ public:
     Node(const size_t t_nInputs, const size_t t_nOutputs);
 
     std::shared_ptr<Mesh> cook(const size_t t_index);
-    void setInput(const size_t t_sourceIndex, const std::weak_ptr<Node>& t_sourceNode, const size_t t_destIndex = 0);
+    void setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
+    void deleteInputConnection(const size_t t_index);
     void setDirty();
+    std::shared_ptr<NodeConnection> getInputConnection(const size_t t_index);
+    std::vector<std::shared_ptr<NodeConnection>> getOutputConnections(const size_t t_index);
 
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
