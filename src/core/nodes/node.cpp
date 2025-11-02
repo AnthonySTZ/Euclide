@@ -51,7 +51,7 @@ std::shared_ptr<Mesh> Node::cook(const size_t t_index)
             continue;
         }
         if (auto sourceNode = conn->sourceNode.lock()) {
-            inputMeshes.push_back(sourceNode->cook(t_index));
+            inputMeshes.push_back(sourceNode->cook(conn->sourceIndex));
         }
     }
 
