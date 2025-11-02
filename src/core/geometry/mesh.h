@@ -1,6 +1,7 @@
 #pragma once
 
 #include "points.h"
+#include "vertex.h"
 
 namespace butter {
 
@@ -10,6 +11,7 @@ class Mesh {
     
 private:
     Points m_points;
+    std::vector<Vertex> m_vertices;
     
 };
 

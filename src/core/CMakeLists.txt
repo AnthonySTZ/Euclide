@@ -2,6 +2,7 @@ add_library(core STATIC
     utils/allocator_utils.cpp
     geometry/mesh.cpp
     geometry/points.cpp
+    geometry/vertex.cpp
 )
 
 target_include_directories(core
