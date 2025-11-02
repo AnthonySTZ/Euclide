@@ -3,6 +3,7 @@ add_library(core STATIC
     geometry/mesh.cpp
     geometry/points.cpp
     geometry/vertex.cpp
+    geometry/primitive.cpp
 )
 
 target_include_directories(core

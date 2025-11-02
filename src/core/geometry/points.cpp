@@ -9,7 +9,7 @@ namespace butter {
  * 
  * This function allocates memory for new points.
  */
-void Points::reserve(const size_t t_amount) noexcept
+void Points::reserve(const size_t t_amount)
 {
     posX.reserve(t_amount);
     posY.reserve(t_amount);
