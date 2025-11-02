@@ -6,15 +6,10 @@
 
 namespace butter {
 
-class Mesh {
-    Mesh() = default;
-    ~Mesh() = default;
-    
-private:
-    Points m_points;
-    std::vector<Vertex> m_vertices;
-    std::vector<Primitive> m_primitives;
-    
+struct Mesh {
+    Points points;
+    std::vector<Vertex> vertices;
+    std::vector<Primitive> primitives;
 };
 
 }
