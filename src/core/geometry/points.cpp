@@ -19,6 +19,14 @@ size_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexc
     posY.push_back(t_y);
     posZ.push_back(t_z);
 
+    normalX.push_back(0.0f);
+    normalY.push_back(1.0f);
+    normalZ.push_back(0.0f);
+
+    colorR.push_back(1.0f);
+    colorG.push_back(1.0f);
+    colorB.push_back(1.0f);
+
     return posX.size() - 1;
 }
 

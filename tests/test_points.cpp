@@ -15,6 +15,14 @@ TEST(Points, AddPoint){
     EXPECT_EQ(p.posX[0], 5.0);
     EXPECT_EQ(p.posY[0], 1.0);
     EXPECT_EQ(p.posZ[0], -3.0);
+
+    EXPECT_EQ(p.normalX.size(), 1);
+    EXPECT_EQ(p.normalY.size(), 1);
+    EXPECT_EQ(p.normalZ.size(), 1);
+
+    EXPECT_EQ(p.colorR.size(), 1);
+    EXPECT_EQ(p.colorG.size(), 1);
+    EXPECT_EQ(p.colorB.size(), 1);
 }
 
 TEST(Points, AddPointGetIndex){

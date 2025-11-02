@@ -11,6 +11,8 @@ struct Points {
     ~Points() = default;
 
     std::vector<float, AlignedAllocator<float, 32>> posX, posY, posZ; // use SoA instead of AoS
+    std::vector<float, AlignedAllocator<float, 32>> normalX, normalY, normalZ;
+    std::vector<float, AlignedAllocator<float, 32>> colorR, colorG, colorB;
 
     size_t size() const noexcept { return posX.size(); }
     size_t addPoint(const float t_x, const float t_y, const float t_z) noexcept;
