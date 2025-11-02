@@ -15,6 +15,7 @@ public:
 
     std::shared_ptr<Mesh> cook(const size_t t_index);
     void setInput(const size_t t_sourceIndex, const std::weak_ptr<Node>& t_sourceNode, const size_t t_destIndex = 0);
+    void setDirty();
 
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;

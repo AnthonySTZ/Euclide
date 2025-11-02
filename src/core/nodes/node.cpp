@@ -29,6 +29,28 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
     conn->destIndex = t_index;
     
     m_inputConnections[t_index] = conn;
+    if(auto sourceNode = t_sourceNode.lock()){
+        sourceNode->m_outputConnections[t_sourceIndex].push_back(conn);
+    }
+
+    setDirty();
+}
+
+/**
+ * @brief Set current node as dirty and propagate to its outputs nodes 
+ * 
+ */
+void Node::setDirty()
+{
+    std::fill(m_isDirty.begin(), m_isDirty.end(), true);
+    for (auto& outputConnections: m_outputConnections) {
+        for (auto& conn: outputConnections) {
+            if (conn == nullptr) continue;
+            if(auto destNode = conn->destNode.lock()) {
+                destNode->setDirty();
+            }
+        }
+    }
 }
 
 /**
