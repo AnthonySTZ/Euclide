@@ -8,15 +8,15 @@ namespace butter {
 
 struct NodeConnection{
 
-    size_t topIndex;
-    size_t bottomIndex;
-    std::weak_ptr<Node> topNode;
-    std::weak_ptr<Node> bottomNode;
+    size_t sourceIndex;
+    size_t destIndex;
+    std::weak_ptr<Node> sourceNode;
+    std::weak_ptr<Node> destNode;
 
-    NodeConnection(size_t t_topIndex, size_t t_bottomIndex,
-        std::shared_ptr<Node> t_topNode,
-        std::shared_ptr<Node> t_bottomNode)
-        : topIndex(t_topIndex), bottomIndex(t_bottomIndex), topNode(t_topNode), bottomNode(t_bottomNode) {}
+    NodeConnection(size_t t_sourceIndex, size_t t_destIndex,
+        std::shared_ptr<Node> t_sourceNode,
+        std::shared_ptr<Node> t_destNode)
+        : sourceIndex(t_sourceIndex), destIndex(t_destIndex), sourceNode(t_sourceNode), destNode(t_destNode) {}
 
 };
 
