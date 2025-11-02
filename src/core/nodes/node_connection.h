@@ -6,6 +6,8 @@
 
 namespace butter {
 
+class Node;
+
 struct NodeConnection{
 
     size_t sourceIndex;

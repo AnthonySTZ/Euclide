@@ -1,0 +1,35 @@
+#pragma once
+
+#include "nodes/node.h"
+
+namespace butter {
+    
+class CreatePointNode: public Node {
+
+public:
+    CreatePointNode() : Node(0, 1) {};
+
+private:
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
+        auto output = std::make_shared<Mesh>();
+        output->points.addPoint(1.0, 2.0, 3.0); // predictable creation
+        return output;
+    }
+};
+
+class TestNode: public Node {
+    
+public:
+    TestNode() : Node(1, 1) {};
+
+private:
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
+        if (t_inputs.empty() || t_inputs[0] == nullptr) return nullptr;
+
+        auto output = std::make_shared<Mesh>(*t_inputs[0]);
+        output->points.addPoint(1.0, 0.0, 2.0); // predictable modification
+        return output;
+    }
+};
+
+}
