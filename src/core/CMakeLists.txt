@@ -4,6 +4,7 @@ add_library(core STATIC
     geometry/points.cpp
     geometry/vertex.cpp
     geometry/primitive.cpp
+    nodes/node.cpp
 )
 
 target_include_directories(core

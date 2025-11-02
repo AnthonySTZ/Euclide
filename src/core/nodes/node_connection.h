@@ -10,6 +10,9 @@ class Node;
 
 struct NodeConnection{
 
+    NodeConnection() = default;
+    ~NodeConnection() = default;
+
     size_t sourceIndex;
     size_t destIndex;
     std::weak_ptr<Node> sourceNode;
