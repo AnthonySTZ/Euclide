@@ -33,5 +33,35 @@ TEST(Points, AddPointGetIndex){
     EXPECT_EQ(first_index, 0);
     EXPECT_EQ(second_index, 1);
 }
+
+TEST(PointsTest, ReserveIncreasesCapacity) {
+    butter::Points points;
+
+    // Initially, capacity should be 0
+    EXPECT_EQ(points.posX.capacity(), 0);
+
+    // Reserve space for 100 points
+    points.reserve(100);
+
+    // Capacity should be >= 100
+    EXPECT_GE(points.posX.capacity(), 100);
+    EXPECT_GE(points.posY.capacity(), 100);
+    EXPECT_GE(points.posZ.capacity(), 100);
+
+    // Size should remain 0
+    EXPECT_EQ(points.size(), 0);
+}
+
+TEST(PointsTest, ReserveDoesNotShrinkCapacity) {
+    butter::Points points;
+    points.reserve(100);
+    size_t oldCap = points.posX.capacity();
+
+    // Reserve a smaller number
+    points.reserve(10);
+
+    // Capacity should not decrease
+    EXPECT_EQ(points.posX.capacity(), oldCap);
+}
     
 }

@@ -3,6 +3,28 @@
 namespace butter {
 
 /**
+ * @brief Reserve a given number of point.
+ * 
+ * @param t_amount The number of points to reserve.
+ * 
+ * This function allocates memory for new points.
+ */
+void Points::reserve(const size_t t_amount) noexcept
+{
+    posX.reserve(t_amount);
+    posY.reserve(t_amount);
+    posZ.reserve(t_amount);
+
+    normalX.reserve(t_amount);
+    normalY.reserve(t_amount);
+    normalZ.reserve(t_amount);
+
+    colorR.reserve(t_amount);
+    colorG.reserve(t_amount);
+    colorB.reserve(t_amount);
+}
+
+/**
  * @brief Add a point to the Points struct.
  *
  * @param t_x X coordinate of the point.
