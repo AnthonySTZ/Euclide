@@ -46,4 +46,12 @@ TEST(Node, CookWithoutInputNode) {
     EXPECT_EQ(result, nullptr);
 }
 
+TEST(Node, CachedMesh) {
+    auto node = std::make_shared<CreatePointNode>();
+
+    auto first_result = node->cook(0);
+    auto second_result = node->cook(0);
+    EXPECT_EQ(first_result, second_result);
+}
+
 }
