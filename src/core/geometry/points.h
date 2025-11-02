@@ -15,6 +15,7 @@ struct Points {
     std::vector<float, AlignedAllocator<float, 32>> colorR, colorG, colorB;
 
     void reserve(const size_t t_amount) noexcept;
+    void clear() noexcept;
     size_t size() const noexcept { return posX.size(); }
     size_t addPoint(const float t_x, const float t_y, const float t_z) noexcept;
 

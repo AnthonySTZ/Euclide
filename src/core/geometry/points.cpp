@@ -25,6 +25,24 @@ void Points::reserve(const size_t t_amount) noexcept
 }
 
 /**
+ * @brief Clear all points in `Points`
+ */
+void Points::clear() noexcept
+{
+    posX.clear();
+    posY.clear();
+    posZ.clear();
+
+    normalX.clear();
+    normalY.clear();
+    normalZ.clear();
+
+    colorR.clear();
+    colorG.clear();
+    colorB.clear();
+}
+
+/**
  * @brief Add a point to the Points struct.
  *
  * @param t_x X coordinate of the point.
