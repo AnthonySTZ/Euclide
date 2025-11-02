@@ -39,4 +39,11 @@ TEST(Node, CookOutOfBoundsOutput) {
     EXPECT_EQ(result, nullptr);
 }
 
+TEST(Node, CookWithoutInputNode) {
+    auto node = std::make_shared<TestNode>();
+
+    auto result = node->cook(0);
+    EXPECT_EQ(result, nullptr);
+}
+
 }
