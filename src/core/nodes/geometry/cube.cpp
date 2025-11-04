@@ -23,14 +23,14 @@ std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std:
     size_t p7 = output->addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[3]);
 
     /* Clockwise order */
-    output->addPrimitive({0, 1, 2, 3}); // Top face
-    output->addPrimitive({7, 6, 5, 4}); // Bottom face
+    output->addPrimitive({p0, p1, p2, p3}); // +Y
+    output->addPrimitive({p7, p6, p5, p4}); // -Y
 
-    output->addPrimitive({4, 5, 1, 0});
-    output->addPrimitive({3, 2, 6, 7});
+    output->addPrimitive({p4, p5, p1, p0}); // -Z
+    output->addPrimitive({p3, p2, p6, p7}); // +Z
 
-    output->addPrimitive({0, 3, 7, 4});
-    output->addPrimitive({1, 5, 6, 2});
+    output->addPrimitive({p0, p3, p7, p4}); // +X
+    output->addPrimitive({p1, p5, p6, p2}); // -X
 
     return output;
 }
