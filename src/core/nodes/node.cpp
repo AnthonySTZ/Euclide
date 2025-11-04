@@ -9,7 +9,7 @@ Node::Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t
     m_inputConnections.resize(t_nInputs, nullptr);
     m_outputConnections.resize(t_nOutputs, {});
     m_cachedMesh.resize(t_nOutputs, nullptr);
-    m_isDirty.resize(t_nOutputs, true);
+    m_isDirty = true;
     m_name = t_name;
 }
 
@@ -69,7 +69,7 @@ void Node::deleteInputConnection(const size_t t_index)
  */
 void Node::setDirty()
 {
-    std::fill(m_isDirty.begin(), m_isDirty.end(), true);
+    m_isDirty = true;
     for (auto& outputConnections: m_outputConnections) {
         for (auto& conn: outputConnections) {
             if (conn == nullptr) continue;
@@ -109,7 +109,7 @@ std::vector<std::shared_ptr<NodeConnection>> Node::getOutputConnections(const si
 std::shared_ptr<Mesh> Node::cook(const size_t t_index)
 {
     if(t_index >= m_outputConnections.size()) return nullptr;
-    if (!m_isDirty[t_index]) return m_cachedMesh[t_index];
+    if (!m_isDirty) return m_cachedMesh[t_index];
 
     std::vector<std::shared_ptr<Mesh>> inputMeshes;
     for (auto& conn: m_inputConnections){
@@ -123,7 +123,7 @@ std::shared_ptr<Mesh> Node::cook(const size_t t_index)
     }
 
     m_cachedMesh[t_index] = compute(t_index, inputMeshes);
-    m_isDirty[t_index] = false;
+    m_isDirty = false;
     return m_cachedMesh[t_index];
 }
     

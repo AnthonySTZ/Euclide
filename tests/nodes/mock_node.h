@@ -27,7 +27,7 @@ public:
 
 private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
-        if (t_inputs.empty() || t_inputs[0] == nullptr) return nullptr;
+        if (t_inputs[0] == nullptr) return nullptr;
         auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
         if (t_index == 0) {

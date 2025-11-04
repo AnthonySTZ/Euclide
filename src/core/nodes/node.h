@@ -41,7 +41,7 @@ private:
     std::vector<std::shared_ptr<NodeConnection>> m_inputConnections;
     std::vector<std::vector<std::shared_ptr<NodeConnection>>> m_outputConnections;
 
-    std::vector<uint8_t> m_isDirty;
+    bool m_isDirty;
     std::vector<std::shared_ptr<Mesh>> m_cachedMesh; // cache every outputs
 
 protected:
