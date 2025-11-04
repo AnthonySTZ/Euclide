@@ -15,7 +15,7 @@ public:
     std::shared_ptr<Node> node(const std::string& t_name) const noexcept;
     
 private:
-    std::string findName(const std::string &t_name);
+    std::string findName(const std::string &t_name) const;
     std::unordered_map<std::string, std::shared_ptr<Node>> m_nodes;
 
 };

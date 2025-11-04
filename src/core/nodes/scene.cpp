@@ -35,7 +35,7 @@ std::shared_ptr<Node> Scene::node(const std::string &t_name) const noexcept
  * 
  * @return A not taken name, can return the `t_name` if it is not taken 
  */
-std::string Scene::findName(const std::string& t_name) {
+std::string Scene::findName(const std::string& t_name) const {
     if (m_nodes.find(t_name) == m_nodes.end()) return t_name;
     
     unsigned int index = 1;

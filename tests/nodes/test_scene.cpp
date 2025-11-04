@@ -45,7 +45,7 @@ TEST(Scene, GetNodeByName) {
     EXPECT_EQ(scene.node(other_node->name()), other_node);
 }
 
-TEST(Scene, ShouldRenturnNullptrIfNodeDoesNotExist) {
+TEST(Scene, ShouldReturnNullptrIfNodeDoesNotExist) {
 
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
