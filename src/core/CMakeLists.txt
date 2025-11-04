@@ -4,8 +4,11 @@ add_library(core STATIC
     geometry/points.cpp
     geometry/vertex.cpp
     geometry/primitive.cpp
+
     nodes/node.cpp
     nodes/scene.cpp
+
+    nodes/geometry/cube.cpp
 )
 
 target_include_directories(core

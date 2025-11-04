@@ -4,6 +4,7 @@
 #include "node_connection.h"
 
 #include <memory>
+#include <string>
 
 namespace butter {
 
