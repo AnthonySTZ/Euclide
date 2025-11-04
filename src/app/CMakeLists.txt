@@ -1,5 +1,7 @@
 add_library(app_lib STATIC
     interface/window.cpp
+    interface/interface.cpp
+
     interface/engine.cpp
 )
 
@@ -10,7 +12,7 @@ target_include_directories(app_lib
 
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(app_lib PUBLIC core glfw OpenGL::GL glad)
+target_link_libraries(app_lib PUBLIC core imgui glfw OpenGL::GL glad)
 
 
 add_executable(app_exec main.cpp)
