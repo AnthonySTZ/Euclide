@@ -1,7 +1,11 @@
 #include <iostream>
 
-int main(){
+#include "interface/engine.h"
 
-    std::cout << "Hello World !\n";
+#include <memory>
+
+int main(){
+    butter::Engine engine{1200, 800, "Test"};
+    engine.mainLoop();
     return 0;
 }
