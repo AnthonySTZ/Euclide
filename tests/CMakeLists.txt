@@ -4,6 +4,7 @@ add_executable(ButterTests
                 nodes/test_scene.cpp
                 
                 fields/test_field.cpp
+                fields/test_float3.cpp
 
                 nodes/test_cube.cpp
                 )
