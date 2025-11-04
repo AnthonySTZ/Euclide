@@ -53,7 +53,7 @@ void Points::clear() noexcept
  * This function appends the given coordinates to the internal SoA
  * storage (`posX`, `posY`, `posZ`) and returns the index of the new point.
 */
-size_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexcept
+uint32_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexcept
 {
     posX.push_back(t_x);
     posY.push_back(t_y);
@@ -67,7 +67,7 @@ size_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexc
     colorG.push_back(1.0f);
     colorB.push_back(1.0f);
 
-    return posX.size() - 1;
+    return static_cast<uint32_t>(posX.size() - 1);
 }
 
 }

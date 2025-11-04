@@ -11,16 +11,16 @@ std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std:
 
     size *= 0.5;
     /* Top Face */
-    size_t p0 = output->addPoint(size[0] + position[0], size[1] + position[1], -size[2] + position[3]);
-    size_t p1 = output->addPoint(-size[0] + position[0], size[1] + position[1], -size[2] + position[3]);
-    size_t p2 = output->addPoint(-size[0] + position[0], size[1] + position[1], size[2] + position[3]);
-    size_t p3 = output->addPoint(size[0] + position[0], size[1] + position[1], size[2] + position[3]);
+    uint32_t p0 = output->addPoint(size[0] + position[0], size[1] + position[1], -size[2] + position[3]);
+    uint32_t p1 = output->addPoint(-size[0] + position[0], size[1] + position[1], -size[2] + position[3]);
+    uint32_t p2 = output->addPoint(-size[0] + position[0], size[1] + position[1], size[2] + position[3]);
+    uint32_t p3 = output->addPoint(size[0] + position[0], size[1] + position[1], size[2] + position[3]);
     
     /* Bottom Face */
-    size_t p4 = output->addPoint(size[0] + position[0], -size[1] + position[1], -size[2] + position[3]);
-    size_t p5 = output->addPoint(-size[0] + position[0], -size[1] + position[1], -size[2] + position[3]);
-    size_t p6 = output->addPoint(-size[0] + position[0], -size[1] + position[1], size[2] + position[3]);
-    size_t p7 = output->addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[3]);
+    uint32_t p4 = output->addPoint(size[0] + position[0], -size[1] + position[1], -size[2] + position[3]);
+    uint32_t p5 = output->addPoint(-size[0] + position[0], -size[1] + position[1], -size[2] + position[3]);
+    uint32_t p6 = output->addPoint(-size[0] + position[0], -size[1] + position[1], size[2] + position[3]);
+    uint32_t p7 = output->addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[3]);
 
     /* Clockwise order */
     output->addPrimitive({p0, p1, p2, p3}); // +Y

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cstdint>
 #include "utils/allocator_utils.h"
 
 namespace butter {
@@ -17,7 +18,7 @@ struct Points {
     void reserve(const size_t t_amount);
     void clear() noexcept;
     size_t size() const noexcept { return posX.size(); }
-    size_t addPoint(const float t_x, const float t_y, const float t_z) noexcept;
+    uint32_t addPoint(const float t_x, const float t_y, const float t_z) noexcept;
 
 };
 
