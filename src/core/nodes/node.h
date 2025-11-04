@@ -2,16 +2,18 @@
 
 #include "geometry/mesh.h"
 #include "node_connection.h"
+#include "fields/node_field.h"
 
 #include <memory>
 #include <string>
+
+#include <unordered_map>
 
 namespace butter {
 
 class Node : public std::enable_shared_from_this<Node> {
 
 public:
-
     Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name = "Unknown");
 
     std::shared_ptr<Mesh> cook(const size_t t_index);
@@ -33,6 +35,8 @@ private:
 
     std::vector<uint8_t> m_isDirty;
     std::vector<std::shared_ptr<Mesh>> m_cachedMesh; // cache every outputs
+
+    std::unordered_map<std::string, std::shared_ptr<NodeFieldBase>> m_fields;
 };
 
 }
