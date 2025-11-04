@@ -32,4 +32,29 @@ TEST(Scene, RenameNodeIfNameAlreadyTaken) {
     EXPECT_EQ(other_node->name(), "Test1");
 }
 
+TEST(Scene, GetNodeByName) {
+
+    Scene scene;
+    auto node = std::make_shared<CreatePointNode>();
+    auto other_node = std::make_shared<CreatePointNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    EXPECT_EQ(scene.node(node->name()), node);
+    EXPECT_EQ(scene.node(other_node->name()), other_node);
+}
+
+TEST(Scene, ShouldRenturnNullptrIfNodeDoesNotExist) {
+
+    Scene scene;
+    auto node = std::make_shared<CreatePointNode>();
+    auto other_node = std::make_shared<CreatePointNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    EXPECT_EQ(scene.node("NameThatDoesNotExist"), nullptr);
+}
+
 }
