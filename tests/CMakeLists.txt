@@ -1,12 +1,15 @@
 add_executable(ButterTests 
-                test_points.cpp
+                geometry/test_points.cpp
+                geometry/test_mesh.cpp
+                
                 nodes/test_node.cpp
                 nodes/test_scene.cpp
+                
+                nodes/test_cube.cpp
                 
                 fields/test_field.cpp
                 fields/test_float3.cpp
 
-                nodes/test_cube.cpp
                 )
 
 target_link_libraries(ButterTests PRIVATE core gtest gtest_main)
