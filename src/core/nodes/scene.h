@@ -10,6 +10,7 @@ namespace butter {
 class Scene {
 
 public:
+    size_t size() const noexcept { return m_nodes.size(); }
     void addNode(const std::shared_ptr<Node>& t_node);
 
     

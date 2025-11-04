@@ -6,6 +6,18 @@
 
 namespace butter {
 
+TEST(Scene, AddNode) {
+
+    Scene scene;
+    auto node = std::make_shared<CreatePointNode>();
+    auto other_node = std::make_shared<CreatePointNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    EXPECT_EQ(scene.size(), 2);
+}
+
 TEST(Scene, RenameNodeIfNameAlreadyTaken) {
 
     Scene scene;
@@ -18,7 +30,6 @@ TEST(Scene, RenameNodeIfNameAlreadyTaken) {
     scene.addNode(other_node);
 
     EXPECT_EQ(other_node->name(), "Test1");
-
 }
 
 }
