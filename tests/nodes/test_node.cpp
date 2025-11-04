@@ -5,6 +5,14 @@
 
 namespace butter {
 
+TEST(Node, RenameNode) {
+    auto node = std::make_shared<CreatePointNode>();
+    EXPECT_EQ(node->name(), "Point");
+    
+    node->setName("NewNode");
+    EXPECT_EQ(node->name(), "NewNode");
+}
+
 TEST(Node, CookSingleNode) {
     auto node = std::make_shared<CreatePointNode>();
 

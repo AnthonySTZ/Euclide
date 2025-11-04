@@ -7,7 +7,7 @@ namespace butter {
 class CreatePointNode: public Node {
 
 public:
-    CreatePointNode() : Node(0, 1) {};
+    CreatePointNode() : Node(0, 1, "Point") {};
 
 private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
@@ -20,7 +20,7 @@ private:
 class TestNode: public Node {
     
 public:
-    TestNode() : Node(1, 2) {};
+    TestNode() : Node(1, 2, "Test") {};
 
 private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {

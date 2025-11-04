@@ -4,12 +4,13 @@
 
 namespace butter {
 
-Node::Node(const size_t t_nInputs, const size_t t_nOutputs)
+Node::Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name)
 {
     m_inputConnections.resize(t_nInputs, nullptr);
     m_outputConnections.resize(t_nOutputs, {});
     m_cachedMesh.resize(t_nOutputs, nullptr);
     m_isDirty.resize(t_nOutputs, true);
+    m_name = t_name;
 }
 
 /**
