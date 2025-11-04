@@ -25,6 +25,14 @@ public:
     std::string name() const noexcept { return m_name; }
     void setName(const std::string& t_name) noexcept { m_name = t_name; }
 
+    template <typename T>
+    std::shared_ptr<T> getField(const std::string& t_fieldName) {
+        auto it = m_fields.find(t_fieldName);
+        if (it == m_fields.end()) return nullptr;
+
+        return std::dynamic_pointer_cast<T>(it->second);
+    }
+
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
 
@@ -36,6 +44,7 @@ private:
     std::vector<uint8_t> m_isDirty;
     std::vector<std::shared_ptr<Mesh>> m_cachedMesh; // cache every outputs
 
+protected:
     std::unordered_map<std::string, std::shared_ptr<NodeFieldBase>> m_fields;
 };
 

@@ -1,13 +1,16 @@
 #pragma once
 
 #include "nodes/node.h"
+#include "fields/node_field.h"
 
 namespace butter {
     
 class CreatePointNode: public Node {
 
 public:
-    CreatePointNode() : Node(0, 1, "Point") {};
+    CreatePointNode() : Node(0, 1, "Point") {
+        m_fields.emplace("posX", std::make_shared<NodeField<float>>(5.0));
+    };
 
 private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {

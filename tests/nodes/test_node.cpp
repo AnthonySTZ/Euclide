@@ -109,4 +109,16 @@ TEST(NodeConnectionTest, DeleteInputConnection) {
     EXPECT_EQ(sourceNode->getOutputConnections(0).size(), 0);
 }
 
+TEST(Node, GetFieldByName) {
+    auto node = std::make_shared<CreatePointNode>();
+
+    auto posX = node->getField<NodeField<float>>("posX");
+    EXPECT_EQ(posX->getValue(), 5.0);
+    
+    posX->setValue(1.0);
+    
+    auto new_posX = node->getField<NodeField<float>>("posX");
+    EXPECT_EQ(posX->getValue(), 1.0);
+}
+
 }
