@@ -57,4 +57,35 @@ TEST(Scene, ShouldReturnNullptrIfNodeDoesNotExist) {
     EXPECT_EQ(scene.node("NameThatDoesNotExist"), nullptr);
 }
 
+TEST(Scene, RemoveNodeFromScene) {
+
+    Scene scene;
+    auto node = std::make_shared<CreatePointNode>();
+    auto other_node = std::make_shared<CreatePointNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    EXPECT_EQ(scene.size(), 2);
+    EXPECT_EQ(scene.node(node->name()), node);
+    
+    scene.removeNode(node->name());
+    EXPECT_EQ(scene.size(), 1);
+    EXPECT_EQ(scene.node(node->name()), nullptr);
+}
+
+TEST(Scene, RemoveNothingIfNameDoesNotExist) {
+
+    Scene scene;
+    auto node = std::make_shared<CreatePointNode>();
+    auto other_node = std::make_shared<CreatePointNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    EXPECT_EQ(scene.size(), 2);
+    scene.removeNode("NodeThatDoesNotExist");
+    EXPECT_EQ(scene.size(), 2);
+}
+
 }

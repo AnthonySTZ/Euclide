@@ -15,6 +15,16 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
 }
 
 /**
+ * @brief Remove a node from the scene based on its name
+ * 
+ * @param t_name The node name
+ */
+void Scene::removeNode(const std::string &t_name)
+{
+    m_nodes.erase(t_name);
+}
+
+/**
  * @brief Get a node in the scene based on its name
  * 
  * @param  t_name The node name
