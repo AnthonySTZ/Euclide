@@ -8,6 +8,8 @@ add_library(core STATIC
     nodes/node.cpp
     nodes/scene.cpp
 
+    fields/node_field.cpp
+
     nodes/geometry/cube.cpp
 )
 
