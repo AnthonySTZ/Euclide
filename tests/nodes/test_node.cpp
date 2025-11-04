@@ -2,7 +2,6 @@
 #include "mock_node.h"
 
 #include <memory>
-#include <iostream>
 
 namespace butter {
 

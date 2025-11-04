@@ -8,10 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(third_party/Pythagore)
 add_subdirectory(src/core)
 
-add_executable(Butter app/main.cpp)
-
-target_link_libraries(Butter PRIVATE core)
-
 # --- Optional tests
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt")
     enable_testing()

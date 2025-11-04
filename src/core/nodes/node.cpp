@@ -1,7 +1,6 @@
 #include "node.h"
 
 #include <algorithm>
-#include <iostream>
 
 namespace butter {
 
@@ -50,7 +49,7 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
 void Node::deleteInputConnection(const size_t t_index)
 {
     if (t_index >= m_inputConnections.size()) return;
-    
+
     auto conn = m_inputConnections[t_index];
     m_inputConnections[t_index] = nullptr;
     if (conn == nullptr) return;
