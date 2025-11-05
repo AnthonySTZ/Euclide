@@ -1,5 +1,7 @@
 #include "node_graph_panel.h"
 
+#include "nodes/geometry/cube.h"
+
 namespace butter {
 
 NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
@@ -25,7 +27,29 @@ void NodeGraph::draw()
 {
     beginTab("Node Graph", m_padding);
 
+    handleInputs();
+    
+    drawNodes();
     endTab();
+}
+
+void NodeGraph::handleInputs()
+{
+    ImVec2 regionAvail = ImGui::GetContentRegionAvail();
+	ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
+    ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
+    if(ImGui::IsItemHovered() && (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsKeyPressed(ImGuiKey_Tab)) ) {
+        if (auto scene = m_scene.lock()) {
+            scene->addNode(std::make_shared<Cube>());
+        }
+    }
+}
+
+void NodeGraph::drawNodes()
+{
+    for (auto& [id, nodeItem]: m_nodeItems) {
+        nodeItem->draw();
+    }
 }
 
 }
