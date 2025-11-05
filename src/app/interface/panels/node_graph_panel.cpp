@@ -63,6 +63,7 @@ void NodeGraph::handleCreateNode() {
  */
 void NodeGraph::handleNodeDragging() {
     ImGuiIO& io = ImGui::GetIO();
+    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     if (m_isDrag) {
         ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
@@ -72,19 +73,23 @@ void NodeGraph::handleNodeDragging() {
         }   
     }
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
         if (m_nodeHovered) {
             m_isDrag = true;
             m_isClicked = true;
         } else {
-            m_selectedNode = nullptr;
+            clearSelection();
         }
     } 
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
         m_isDrag = false;
         if (m_isClicked) {
-            m_selectedNode = m_nodeHovered;
+            if(!ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+                clearSelection();
+            }
+            bool isSelected = addToSelection(m_nodeHovered);
+            m_nodeHovered->setSelected(isSelected);
             m_isClicked = false;
         }
     }
@@ -96,6 +101,7 @@ void NodeGraph::handleNodeDragging() {
  */
 void NodeGraph::handleDragGraph() {
     ImGuiIO& io = ImGui::GetIO();
+    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     if (m_isGraphDrag) {
         ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
@@ -104,7 +110,7 @@ void NodeGraph::handleDragGraph() {
         }
     }
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle) && isWindowHovered) {
         m_isGraphDrag = true;
     }
 
@@ -122,15 +128,32 @@ void NodeGraph::drawNodes()
     if (!m_isDrag)
         m_nodeHovered = nullptr;
 
-    bool isWindowHovered = ImGui::IsWindowHovered();
+    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
     for (auto& [id, nodeItem]: m_nodeItems) {
-        nodeItem->draw(nodeItem == m_selectedNode);
+        nodeItem->draw();
 
         if(m_isDrag || !isWindowHovered) continue;
         if (nodeItem->isHovered()) {
             m_nodeHovered = nodeItem;
         }
     }
+}
+
+void NodeGraph::clearSelection()
+{
+    for (auto node: m_selectedNodes) {
+        node->setSelected(false);
+    }
+    m_selectedNodes.clear();
+}
+
+bool NodeGraph::addToSelection(const std::shared_ptr<NodeItem>& t_nodeItem) {
+    if (m_selectedNodes.find(t_nodeItem) != m_selectedNodes.end()) {
+        m_selectedNodes.erase(t_nodeItem);
+        return false;
+    }
+    m_selectedNodes.insert(t_nodeItem);
+    return true;
 }
 
 }
