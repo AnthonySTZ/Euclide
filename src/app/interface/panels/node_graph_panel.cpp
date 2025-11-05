@@ -53,10 +53,8 @@ void NodeGraph::handleInputs()
         m_nodeHovered->moveBy(dragDelta);
     }
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        if (m_nodeHovered != nullptr) {
-            m_isDrag = true;
-        }
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_nodeHovered) {
+        m_isDrag = true;
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
