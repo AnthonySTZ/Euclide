@@ -1,5 +1,7 @@
 #include "interface.h"
 
+#include "panels/node_graph_panel.h"
+
 namespace butter {
 
 Interface::Interface(GLFWwindow *t_window, const std::shared_ptr<Scene>& t_scene)
@@ -56,6 +58,11 @@ void Interface::createDockSpace() const {
 
 void Interface::addPanel(std::shared_ptr<Panel> t_panel) {
     m_panels.emplace_back(t_panel);
+}
+
+void Interface::addNodeGraph()
+{
+    addPanel(std::make_shared<NodeGraph>(scene()));
 }
 
 void Interface::draw() const {

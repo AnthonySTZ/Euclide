@@ -8,8 +8,7 @@
 int main(){
     butter::Engine engine{1200, 800, "Test"};
     
-    std::shared_ptr<butter::NodeGraph> nodeGraph = std::make_shared<butter::NodeGraph>(engine.scene());
-    engine.interface().addPanel(nodeGraph);
+    engine.interface().addNodeGraph();
     
     engine.mainLoop();
     return 0;

@@ -21,7 +21,11 @@ public:
     Interface &operator=(Interface &&) noexcept = default;
 
     void addPanel(std::shared_ptr<Panel> t_panel);
+    void addNodeGraph();
+
     void draw() const;
+
+    std::shared_ptr<Scene> scene() const { return m_scene.lock(); }
 
 private:
     void createDockSpace() const;
