@@ -18,9 +18,7 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
     
         scene->onNodeRemoved.subscribe(
             [this](uint32_t t_nodeId) {
-                auto it = m_nodeItems.find(t_nodeId); 
-                if(it == m_nodeItems.end()) return;
-                m_selectedNodes.erase(it->second);
+                if(m_nodeItems.find(t_nodeId) == m_nodeItems.end()) return;
                 m_nodeItems.erase(t_nodeId);
             }
         );
@@ -42,6 +40,7 @@ void NodeGraph::handleInputs()
     handleCreateNode();
     handleNodeDragging();
     handleDragGraph();
+    handleKeyInput();
 }
 
 /**
@@ -119,6 +118,30 @@ void NodeGraph::handleDragGraph() {
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle)) {
         m_isGraphDrag = false;
     }
+}
+
+void NodeGraph::handleKeyInput() {
+
+    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete) && isWindowHovered) {
+        removeSelectedNodes();
+    }
+
+}
+
+void NodeGraph::removeSelectedNodes() {
+    if (auto scene = m_scene.lock()) {
+        for (auto nodeItem: m_selectedNodes) {
+            if (nodeItem == nullptr) continue;
+
+            if (auto node = nodeItem->node()) {
+                scene->removeNode(node->name());
+            }
+        }
+    }
+
+    m_selectedNodes.clear();
 }
 
 /**

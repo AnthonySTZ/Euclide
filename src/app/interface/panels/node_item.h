@@ -18,6 +18,8 @@ public:
     void moveBy(const ImVec2& t_delta);
     void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
 
+    std::shared_ptr<Node> node() { return m_node.lock(); }
+
 private:
     void drawRect(const std::string &t_nodeName);
  

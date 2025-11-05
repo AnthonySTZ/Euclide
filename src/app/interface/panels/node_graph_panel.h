@@ -21,6 +21,8 @@ private:
     void handleCreateNode();
     void handleNodeDragging();
     void handleDragGraph();
+    void handleKeyInput();
+    void removeSelectedNodes();
     void drawNodes();
 
     void clearSelection();
