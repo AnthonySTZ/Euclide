@@ -37,6 +37,8 @@ void NodeGraph::draw()
 
 void NodeGraph::handleInputs()
 {
+    ImGuiIO& io = ImGui::GetIO();
+
     ImVec2 regionAvail = ImGui::GetContentRegionAvail();
 	ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
     ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
@@ -45,12 +47,36 @@ void NodeGraph::handleInputs()
             scene->addNode(std::make_shared<Cube>());
         }
     }
+
+    if (m_isDrag) {
+        ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
+        m_nodeHovered->moveBy(dragDelta);
+    }
+
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+        if (m_nodeHovered != nullptr) {
+            m_isDrag = true;
+        }
+    }
+
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+        m_isDrag = false;
+    }
 }
 
 void NodeGraph::drawNodes()
 {
+    if (!m_isDrag)
+        m_nodeHovered = nullptr;
+
     for (auto& [id, nodeItem]: m_nodeItems) {
         nodeItem->draw();
+
+        if (!m_isDrag) {
+            if (nodeItem->isHovered() && ImGui::IsWindowHovered()) {
+                m_nodeHovered = nodeItem;
+            }
+        }
     }
 }
 

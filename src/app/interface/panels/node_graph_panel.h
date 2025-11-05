@@ -21,7 +21,9 @@ private:
     std::weak_ptr<Scene> m_scene;
 
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> m_nodeItems;
-
+    
+    bool m_isDrag = false;
+    std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
 };
 
 }

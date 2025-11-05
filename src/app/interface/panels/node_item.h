@@ -14,13 +14,14 @@ public:
 
     void draw();
     bool isHovered() const;
+
+    void moveBy(const ImVec2& t_delta);
+
 private:
     void drawRect(const std::string &t_nodeName);
-    void handleInputs();
  
     std::weak_ptr<Node> m_node;
 
-    bool m_isDrag = false;
     ImVec2 m_position;
 	ImVec2 m_size = ImVec2(100, 30);
 	ImU32 m_color = IM_COL32(100, 100, 100, 255);

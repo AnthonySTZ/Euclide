@@ -10,7 +10,6 @@ void NodeItem::draw()
 {
     if (auto node = m_node.lock()) {
         drawRect(node->name());
-        handleInputs();
     }
 }
 
@@ -21,6 +20,11 @@ bool NodeItem::isHovered() const
 
 	return io.MousePos.x >= m_position.x && io.MousePos.x <= nodeEnd.x &&
 		io.MousePos.y >= m_position.y && io.MousePos.y <= nodeEnd.y;
+}
+
+void NodeItem::moveBy(const ImVec2& t_delta)
+{
+    m_position += t_delta;
 }
 
 void NodeItem::drawRect(const std::string& t_nodeName) {
@@ -35,21 +39,6 @@ void NodeItem::drawRect(const std::string& t_nodeName) {
 	textPos.x += m_size.x * 0.5f - textSize.x * 0.5f;
 	textPos.y += m_size.y * 0.5f - textSize.y * 0.5f;
 	drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), t_nodeName.c_str());
-}
-
-void NodeItem::handleInputs()
-{
-    if (isHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        m_isDrag = true;
-    }
-    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-        m_isDrag = false;
-    }
-    if (m_isDrag) {
-        ImGuiIO& io = ImGui::GetIO();
-        ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
-        m_position += dragDelta;
-    }
 }
 
 }
