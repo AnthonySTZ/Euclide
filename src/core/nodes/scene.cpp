@@ -10,8 +10,10 @@ namespace butter {
 void Scene::addNode(const std::shared_ptr<Node>& t_node)
 {
     const std::string nodeName = findName(t_node->name());
-    m_nodes.emplace(nodeName, t_node);
+    const uint32_t id = findId();
     t_node->setName(nodeName);
+    m_nodesIds.emplace(nodeName, id);
+    m_nodes.emplace(id, t_node);
 }
 
 /**
@@ -21,7 +23,13 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
  */
 void Scene::removeNode(const std::string &t_name)
 {
-    m_nodes.erase(t_name);
+    auto it_id = m_nodesIds.find(t_name);
+    if (it_id == m_nodesIds.end()) return;
+    
+    auto it_node = m_nodes.find(it_id->second);    
+    if (it_node == m_nodes.end()) return;
+
+    m_nodes.erase(it_id->second);
 }
 
 /**
@@ -33,9 +41,13 @@ void Scene::removeNode(const std::string &t_name)
  */
 std::shared_ptr<Node> Scene::node(const std::string &t_name) const noexcept
 {
-    auto it = m_nodes.find(t_name);
-    if (it == m_nodes.end()) return nullptr;
-    return it->second;
+    auto it_id = m_nodesIds.find(t_name);
+    if (it_id == m_nodesIds.end()) return nullptr;
+    
+    auto it_node = m_nodes.find(it_id->second);    
+    if (it_node == m_nodes.end()) return nullptr;
+
+    return it_node->second;
 }
 
 /**
@@ -46,13 +58,23 @@ std::shared_ptr<Node> Scene::node(const std::string &t_name) const noexcept
  * @return A not taken name, can return the `t_name` if it is not taken 
  */
 std::string Scene::findName(const std::string& t_name) const {
-    if (m_nodes.find(t_name) == m_nodes.end()) return t_name;
+    if (m_nodesIds.find(t_name) == m_nodesIds.end()) return t_name;
     
     unsigned int index = 1;
-    while (m_nodes.find(t_name + std::to_string(index)) != m_nodes.end()){
+    while (m_nodesIds.find(t_name + std::to_string(index)) != m_nodesIds.end()){
         index++;
     }
     return t_name + std::to_string(index);
+}
+
+uint32_t Scene::findId() const {
+
+    uint32_t id = m_nodes.size();
+    while (m_nodes.find(id) != m_nodes.end()) {
+        id++;
+    }
+    return id;
+
 }
     
 }

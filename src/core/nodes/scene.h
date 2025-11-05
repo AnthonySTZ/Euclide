@@ -17,7 +17,10 @@ public:
     
 private:
     std::string findName(const std::string &t_name) const;
-    std::unordered_map<std::string, std::shared_ptr<Node>> m_nodes;
+    uint32_t findId() const;
+
+    std::unordered_map<std::uint32_t, std::shared_ptr<Node>> m_nodes;
+    std::unordered_map<std::string, std::uint32_t> m_nodesIds;
 
 };
 
