@@ -19,6 +19,7 @@ public:
 
     const T& getValue() const noexcept { return m_value; }
     void setValue(const T& t_value){
+        if (t_value == m_value) return;
         m_value = t_value;
         onValueChanged.notify();
     }
