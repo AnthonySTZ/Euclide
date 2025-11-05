@@ -7,7 +7,6 @@ void NodeGraph::draw()
     beginTab("Node Graph", m_padding);
 
     endTab();
-
 }
 
 }

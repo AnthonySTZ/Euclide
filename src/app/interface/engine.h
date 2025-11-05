@@ -2,7 +2,7 @@
 
 #include "window.h"
 #include "interface.h"
-
+#include "nodes/scene.h"
 
 namespace butter {
 
@@ -21,6 +21,7 @@ private:
     static void resizeCallback(GLFWwindow *window, int width, int height);
 
     Window m_window;
+    std::shared_ptr<Scene> m_scene;
     Interface m_interface;
 };
 
