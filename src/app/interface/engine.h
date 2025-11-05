@@ -14,6 +14,8 @@ public:
 
     void mainLoop();
 
+    Interface& interface() { return m_interface; }
+
 private:
     void draw();
     static void resizeCallback(GLFWwindow *window, int width, int height);

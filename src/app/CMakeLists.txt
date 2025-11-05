@@ -3,6 +3,9 @@ add_library(app_lib STATIC
     interface/interface.cpp
 
     interface/engine.cpp
+
+    interface/panels/panel.cpp
+    interface/panels/node_graph_panel.cpp
 )
 
 target_include_directories(app_lib

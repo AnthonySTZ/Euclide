@@ -17,6 +17,7 @@ void Engine::mainLoop() {
 }
 
 void Engine::draw() {
+    m_interface.draw();
     m_window.swapBuffers();
 }
 
