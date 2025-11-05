@@ -8,7 +8,7 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
     if (auto scene = m_scene.lock()) {
         scene->onNodeAdded.subscribe(
             [this](uint32_t t_nodeId, std::shared_ptr<Node> t_node) {
-                m_nodeItems.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node));
+                m_nodeItems.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node, ImVec2(0.0, 0.0)));
             }
         );
     

@@ -2,12 +2,9 @@
 
 #include "panel.h"
 #include "nodes/scene.h"
+#include "node_item.h"
 
 namespace butter {
-
-struct NodeItem{
-    std::weak_ptr<Node> m_node;
-};
 
 class NodeGraph : public Panel {
 
