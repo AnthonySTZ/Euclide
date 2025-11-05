@@ -14,8 +14,20 @@ inline ImVec2 operator+(const ImVec2 &lvec, const ImVec2 &rvec) {
     return ImVec2(lvec.x + rvec.x, lvec.y + rvec.y);
 }
 
+inline ImVec2& operator+=(ImVec2& lvec, const ImVec2& rvec) {
+    lvec.x += rvec.x;
+    lvec.y += rvec.y;
+    return lvec;
+}
+
 inline ImVec2 operator-(const ImVec2 &lvec, const ImVec2 &rvec) {
     return ImVec2(lvec.x - rvec.x, lvec.y - rvec.y);
+}
+
+inline ImVec2& operator-=(ImVec2& lvec, const ImVec2& rvec) {
+    lvec.x -= rvec.x;
+    lvec.y -= rvec.y;
+    return lvec;
 }
 
 inline ImVec2 operator*(const ImVec2 &lvec, const float &rval) {
