@@ -20,6 +20,11 @@ public:
     void setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
     void deleteInputConnection(const size_t t_index);
     void setDirty();
+
+
+    void addField(const std::string& t_name, std::shared_ptr<NodeFieldBase> t_field);
+
+
     std::shared_ptr<NodeConnection> getInputConnection(const size_t t_index);
     std::vector<std::shared_ptr<NodeConnection>> getOutputConnections(const size_t t_index);
     std::string name() const noexcept { return m_name; }

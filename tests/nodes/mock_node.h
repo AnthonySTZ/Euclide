@@ -9,7 +9,7 @@ class CreatePointNode: public Node {
 
 public:
     CreatePointNode() : Node(0, 1, "Point") {
-        m_fields.emplace("posX", std::make_shared<NodeField<float>>(5.0));
+        addField("posX", std::make_shared<NodeField<float>>(5.0));
     };
 
 private:

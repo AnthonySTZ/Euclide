@@ -1,16 +1,14 @@
 #pragma once
 
+#include "utils/observer.h"
+
 namespace butter {
 
 class NodeFieldBase {
 public:
     virtual ~NodeFieldBase() = default;
-    void markDirty() noexcept { m_isDirty = true; }
-    void unmarkDirty() noexcept { m_isDirty = false; }
-    bool isDirty() const noexcept { return m_isDirty; }
 
-private:
-    bool m_isDirty = true;
+    Observer<> onValueChanged;
 };
 
 template <typename T>
@@ -22,7 +20,7 @@ public:
     const T& getValue() const noexcept { return m_value; }
     void setValue(const T& t_value){
         m_value = t_value;
-        markDirty();
+        onValueChanged.notify();
     }
 
 private:

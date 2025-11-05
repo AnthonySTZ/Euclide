@@ -80,6 +80,16 @@ void Node::setDirty()
     }
 }
 
+void Node::addField(const std::string &t_name, std::shared_ptr<NodeFieldBase> t_field)
+{
+    t_field->onValueChanged.subscribe(
+        [this]() {
+            setDirty();
+        }
+    );
+    m_fields.emplace(t_name, t_field);
+}
+
 /**
  * @brief Get the input `Node` at the given index 
  * 
