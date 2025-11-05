@@ -26,9 +26,11 @@ private:
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> m_nodeItems;
     
     bool m_isDrag = false;
+    bool m_isClicked = false;
     bool m_isGraphDrag = false;
     
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
+    std::shared_ptr<NodeItem> m_selectedNode = nullptr;
 };
 
 }

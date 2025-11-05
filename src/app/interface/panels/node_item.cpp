@@ -6,10 +6,10 @@ NodeItem::NodeItem(const std::shared_ptr<Node> &t_node, const ImVec2 t_position)
     : m_node(t_node), m_position(t_position)
 {}
 
-void NodeItem::draw()
+void NodeItem::draw(const bool t_isSelected)
 {
     if (auto node = m_node.lock()) {
-        drawRect(node->name());
+        drawRect(node->name(), t_isSelected);
     }
 }
 
@@ -27,12 +27,12 @@ void NodeItem::moveBy(const ImVec2& t_delta)
     m_position += t_delta;
 }
 
-void NodeItem::drawRect(const std::string& t_nodeName) {
+void NodeItem::drawRect(const std::string& t_nodeName, const bool t_isSelected) {
     ImVec2 nodeEnd = m_position + m_size;
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
 	drawList->AddRectFilled(m_position, nodeEnd, m_color, 4.0f);
-	drawList->AddRect(m_position, nodeEnd, m_outlineColor, 4.0f, 0, 2.0f);
+	drawList->AddRect(m_position, nodeEnd, t_isSelected ? m_selectedOutlineColor : m_outlineColor, 4.0f, 0, 2.0f);
 
 	ImVec2 textSize = ImGui::CalcTextSize(t_nodeName.c_str());
 	ImVec2 textPos = m_position;

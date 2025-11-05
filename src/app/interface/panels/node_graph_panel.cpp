@@ -67,14 +67,26 @@ void NodeGraph::handleNodeDragging() {
     if (m_isDrag) {
         ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
         m_nodeHovered->moveBy(dragDelta);
+        if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
+            m_isClicked = false;
+        }   
     }
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_nodeHovered) {
-        m_isDrag = true;
-    }
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+        if (m_nodeHovered) {
+            m_isDrag = true;
+            m_isClicked = true;
+        } else {
+            m_selectedNode = nullptr;
+        }
+    } 
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
         m_isDrag = false;
+        if (m_isClicked) {
+            m_selectedNode = m_nodeHovered;
+            m_isClicked = false;
+        }
     }
 }
 
@@ -112,7 +124,7 @@ void NodeGraph::drawNodes()
 
     bool isWindowHovered = ImGui::IsWindowHovered();
     for (auto& [id, nodeItem]: m_nodeItems) {
-        nodeItem->draw();
+        nodeItem->draw(nodeItem == m_selectedNode);
 
         if(m_isDrag || !isWindowHovered) continue;
         if (nodeItem->isHovered()) {
