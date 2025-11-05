@@ -147,11 +147,22 @@ void NodeGraph::clearSelection()
     m_selectedNodes.clear();
 }
 
-bool NodeGraph::addToSelection(const std::shared_ptr<NodeItem>& t_nodeItem) {
-    if (m_selectedNodes.find(t_nodeItem) != m_selectedNodes.end()) {
-        m_selectedNodes.erase(t_nodeItem);
-        return false;
+/**
+ * @brief Add node to selection, can be removed if it is already selected and `t_removeIfAlreadySelected` is set to `true`
+ * 
+ * @param t_nodeItem The Node Item to select
+ * @param t_removeIfAlreadySelected Remove the item from selection if it was already selected
+ * 
+ * @return Is the node selected or not
+ */
+bool NodeGraph::addToSelection(const std::shared_ptr<NodeItem>& t_nodeItem, const bool t_removeIfAlreadySelected) {
+    if (t_removeIfAlreadySelected) {
+        if (m_selectedNodes.find(t_nodeItem) != m_selectedNodes.end()) { // Remove Node Item if its already selected
+            m_selectedNodes.erase(t_nodeItem);
+            return false;
+        }    
     }
+
     m_selectedNodes.insert(t_nodeItem);
     return true;
 }

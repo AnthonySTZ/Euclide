@@ -25,7 +25,7 @@ private:
 
     void clearSelection();
 
-    bool addToSelection(const std::shared_ptr<NodeItem> &t_nodeItem);
+    bool addToSelection(const std::shared_ptr<NodeItem> &t_nodeItem, const bool t_removeIfAlreadySelected = true);
 
     std::weak_ptr<Scene> m_scene;
 
