@@ -2,7 +2,8 @@
 
 namespace butter {
 
-Interface::Interface(GLFWwindow *t_window)
+Interface::Interface(GLFWwindow *t_window, const std::shared_ptr<Scene>& t_scene)
+    : m_scene(t_scene)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

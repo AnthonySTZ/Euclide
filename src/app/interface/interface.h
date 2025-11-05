@@ -1,7 +1,7 @@
 #pragma once
 
 #include "panels/panel.h"
-
+#include "nodes/scene.h"
 
 #include <vector>
 #include <memory>
@@ -11,7 +11,7 @@ namespace butter {
 class Interface {
 
 public:
-    Interface(GLFWwindow* t_window);
+    Interface(GLFWwindow* t_window, const std::shared_ptr<Scene>& t_scene);
     ~Interface();
 
     Interface(const Interface &) = delete;
@@ -31,6 +31,8 @@ private:
 
     ImFont* m_font;
     
+
+    std::weak_ptr<Scene> m_scene;
     std::vector<std::shared_ptr<Panel>> m_panels;
 
     static constexpr struct { float r, g, b, a; } s_bgColor = {0.3f, 0.3f, 0.3f, 1.0f};

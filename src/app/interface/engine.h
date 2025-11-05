@@ -15,6 +15,7 @@ public:
     void mainLoop();
 
     Interface& interface() { return m_interface; }
+    std::shared_ptr<Scene> scene() const { return m_scene; }
 
 private:
     void draw();

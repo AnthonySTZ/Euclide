@@ -15,7 +15,7 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
     m_nodesIds.emplace(nodeName, id);
     m_nodes.emplace(id, t_node);
 
-    onNodeAdded.notify(id);
+    onNodeAdded.notify(id, t_node);
 }
 
 /**
