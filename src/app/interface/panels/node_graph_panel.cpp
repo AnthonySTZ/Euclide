@@ -18,7 +18,9 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
     
         scene->onNodeRemoved.subscribe(
             [this](uint32_t t_nodeId) {
-                if(m_nodeItems.find(t_nodeId) == m_nodeItems.end()) return;
+                auto it = m_nodeItems.find(t_nodeId); 
+                if(it == m_nodeItems.end()) return;
+                m_selectedNodes.erase(it->second);
                 m_nodeItems.erase(t_nodeId);
             }
         );
