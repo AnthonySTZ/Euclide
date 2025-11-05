@@ -16,6 +16,8 @@ public:
     
 private:
     void handleInputs();
+    void handleCreateNode();
+    void handleNodeDragging();
     void drawNodes();
 
     std::weak_ptr<Scene> m_scene;

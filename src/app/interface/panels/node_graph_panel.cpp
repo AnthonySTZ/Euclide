@@ -25,7 +25,7 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
     }
 }
 
-void NodeGraph::draw()
+inline void NodeGraph::draw()
 {
     beginTab("Node Graph", m_padding);
 
@@ -35,10 +35,17 @@ void NodeGraph::draw()
     endTab();
 }
 
-void NodeGraph::handleInputs()
+inline void NodeGraph::handleInputs()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    handleCreateNode();
+    handleNodeDragging();
+}
 
+/**
+ * @brief handle if user right clicked or pressed Tab to create a Node
+ * 
+ */
+inline void NodeGraph::handleCreateNode() {
     ImVec2 regionAvail = ImGui::GetContentRegionAvail();
 	ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
     ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
@@ -47,6 +54,14 @@ void NodeGraph::handleInputs()
             scene->addNode(std::make_shared<Cube>());
         }
     }
+}
+
+/**
+ * @brief Update dragging node position if needed
+ * 
+ */
+inline void NodeGraph::handleNodeDragging() {
+    ImGuiIO& io = ImGui::GetIO();
 
     if (m_isDrag) {
         ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
@@ -62,18 +77,22 @@ void NodeGraph::handleInputs()
     }
 }
 
+/**
+ * @brief Draw all nodes and stores the top hovered node in `m_nodeHovered`
+ * 
+ */
 void NodeGraph::drawNodes()
 {
     if (!m_isDrag)
         m_nodeHovered = nullptr;
 
+    bool isWindowHovered = ImGui::IsWindowHovered();
     for (auto& [id, nodeItem]: m_nodeItems) {
         nodeItem->draw();
 
-        if (!m_isDrag) {
-            if (nodeItem->isHovered() && ImGui::IsWindowHovered()) {
-                m_nodeHovered = nodeItem;
-            }
+        if(m_isDrag || !isWindowHovered) continue;
+        if (nodeItem->isHovered()) {
+            m_nodeHovered = nodeItem;
         }
     }
 }
