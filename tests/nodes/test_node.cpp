@@ -122,4 +122,18 @@ TEST(Node, GetFieldByName) {
     EXPECT_EQ(posX->getValue(), 1.0);
 }
 
+TEST(Node, DirtyIfFieldChanged) {
+    auto point_node = std::make_shared<CreatePointNode>();
+    auto second_node = std::make_shared<TestNode>();
+    second_node->setInput(0, point_node);
+    
+    auto first_result = second_node->cook(0);
+    auto second_result = second_node->cook(0);
+    EXPECT_TRUE(first_result == second_result);
+    
+    point_node->getField<NodeField<float>>("posX")->setValue(8.0);
+    auto third_result = second_node->cook(0);
+    EXPECT_FALSE(first_result == third_result);
+}
+
 }
