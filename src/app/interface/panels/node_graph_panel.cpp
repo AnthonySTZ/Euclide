@@ -25,7 +25,7 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
     }
 }
 
-inline void NodeGraph::draw()
+void NodeGraph::draw()
 {
     beginTab("Node Graph", m_padding);
 
@@ -35,17 +35,18 @@ inline void NodeGraph::draw()
     endTab();
 }
 
-inline void NodeGraph::handleInputs()
+void NodeGraph::handleInputs()
 {
     handleCreateNode();
     handleNodeDragging();
+    handleDragGraph();
 }
 
 /**
  * @brief handle if user right clicked or pressed Tab to create a Node
  * 
  */
-inline void NodeGraph::handleCreateNode() {
+void NodeGraph::handleCreateNode() {
     ImVec2 regionAvail = ImGui::GetContentRegionAvail();
 	ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
     ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
@@ -60,7 +61,7 @@ inline void NodeGraph::handleCreateNode() {
  * @brief Update dragging node position if needed
  * 
  */
-inline void NodeGraph::handleNodeDragging() {
+void NodeGraph::handleNodeDragging() {
     ImGuiIO& io = ImGui::GetIO();
 
     if (m_isDrag) {
@@ -74,6 +75,29 @@ inline void NodeGraph::handleNodeDragging() {
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
         m_isDrag = false;
+    }
+}
+
+/**
+ * @brief Move all the graph when user press middle click
+ * 
+ */
+void NodeGraph::handleDragGraph() {
+    ImGuiIO& io = ImGui::GetIO();
+
+    if (m_isGraphDrag) {
+        ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
+        for (auto& [id, nodeItem]: m_nodeItems) {
+            nodeItem->moveBy(dragDelta);
+        }
+    }
+
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+        m_isGraphDrag = true;
+    }
+
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle)) {
+        m_isGraphDrag = false;
     }
 }
 

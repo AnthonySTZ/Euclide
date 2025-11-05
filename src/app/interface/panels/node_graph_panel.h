@@ -18,6 +18,7 @@ private:
     void handleInputs();
     void handleCreateNode();
     void handleNodeDragging();
+    void handleDragGraph();
     void drawNodes();
 
     std::weak_ptr<Scene> m_scene;
@@ -25,6 +26,8 @@ private:
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> m_nodeItems;
     
     bool m_isDrag = false;
+    bool m_isGraphDrag = false;
+    
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
 };
 
