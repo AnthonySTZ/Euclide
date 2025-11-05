@@ -14,6 +14,8 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
     t_node->setName(nodeName);
     m_nodesIds.emplace(nodeName, id);
     m_nodes.emplace(id, t_node);
+
+    onNodeAdded.notify(id);
 }
 
 /**
@@ -30,6 +32,8 @@ void Scene::removeNode(const std::string &t_name)
     auto it_node = m_nodes.find(it_id->second);
     if (it_node == m_nodes.end()) return;
     m_nodes.erase(it_id->second);
+
+    onNodeRemoved.notify(it_id->second);
 }
 
 /**

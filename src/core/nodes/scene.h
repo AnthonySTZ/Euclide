@@ -10,6 +10,9 @@ namespace butter {
 class Scene {
 
 public:
+    Observer<uint32_t> onNodeAdded;
+    Observer<uint32_t> onNodeRemoved;
+
     size_t size() const noexcept { return m_nodes.size(); }
     void addNode(const std::shared_ptr<Node>& t_node);
     void removeNode(const std::string& t_name);
