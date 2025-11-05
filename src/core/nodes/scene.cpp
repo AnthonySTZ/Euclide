@@ -25,10 +25,10 @@ void Scene::removeNode(const std::string &t_name)
 {
     auto it_id = m_nodesIds.find(t_name);
     if (it_id == m_nodesIds.end()) return;
+    m_nodesIds.erase(t_name);
     
-    auto it_node = m_nodes.find(it_id->second);    
+    auto it_node = m_nodes.find(it_id->second);
     if (it_node == m_nodes.end()) return;
-
     m_nodes.erase(it_id->second);
 }
 
