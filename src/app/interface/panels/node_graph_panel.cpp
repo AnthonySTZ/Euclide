@@ -62,6 +62,11 @@ void NodeGraph::handleCreateNode() {
     }
 }
 
+/**
+ * @brief Handle all mouse buttons when the user hovered a NodeItem
+ * 
+ * 
+ */
 void NodeGraph::handleNodeInteractions() {
 
     bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
