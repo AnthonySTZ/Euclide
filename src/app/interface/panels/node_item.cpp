@@ -23,9 +23,49 @@ bool NodeItem::isHovered() const
 		io.MousePos.y >= m_position.y && io.MousePos.y <= nodeEnd.y;
 }
 
+int NodeItem::inputIOHovered() const
+{
+	return isIOsHovered(m_inputIOPositions);
+}
+
+int NodeItem::outputIOHovered() const
+{
+	return isIOsHovered(m_outputIOPositions);
+}
+
+int NodeItem::isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const {
+	ImGuiIO& io = ImGui::GetIO();
+	
+	for (size_t i = 0; i < t_ioPositions.size(); ++i) {
+		const ImVec2 diff = t_ioPositions[i] - io.MousePos;
+		const float dist2 = diff.x * diff.x + diff.y * diff.y;
+		if (dist2 <= s_radius2) return i;
+	}
+
+    return -1;
+}
+
 void NodeItem::moveBy(const ImVec2& t_delta)
 {
     m_position += t_delta;
+}
+
+ImVec2 NodeItem::getInputIOPosition(uint32_t index) const
+{
+	const float ioSpacing = m_size.x / (m_inputIOPositions.size() + 1);
+    return ImVec2{
+		m_position.x + index * ioSpacing,
+		m_position.y - s_spacing - s_radius
+	};
+}
+
+ImVec2 NodeItem::getOutputIOPosition(uint32_t index) const
+{
+	const float ioSpacing = m_size.x / (m_outputIOPositions.size() + 1);
+    return ImVec2{
+		m_position.x + index * ioSpacing,
+		m_position.y + s_spacing + s_radius
+	};
 }
 
 void NodeItem::drawRect(const std::string& t_nodeName) {
@@ -47,13 +87,16 @@ void NodeItem::drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs) 
 	ImVec2 inputIOPos{m_position.x, m_position.y - s_spacing - s_radius}; 
 	ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + s_spacing + s_radius}; 
 	
-	drawIOsOnLine(t_numberOfInputs, inputIOPos);
-	drawIOsOnLine(t_numberOfOutputs, outputIOPos);
+	m_inputIOPositions = drawIOsOnLine(t_numberOfInputs, inputIOPos);
+	m_outputIOPositions = drawIOsOnLine(t_numberOfOutputs, outputIOPos);
 
 }
 
-void NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
-	if (t_numberOfIOs <= 0) return;
+std::vector<ImVec2> NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
+	std::vector<ImVec2> positions{};
+	if (t_numberOfIOs <= 0) return positions;
+
+	positions.reserve(t_numberOfIOs);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
 	const float ioSpacing = m_size.x / (t_numberOfIOs + 1);
@@ -65,7 +108,10 @@ void NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
 
 		drawList->AddCircleFilled(ioPos, s_radius, s_ioColor);
 		drawList->AddCircle(ioPos, s_radius, s_ioOutlineColor);
+
+		positions.push_back(ioPos);
 	}
+	return positions;
 }
 
 }
