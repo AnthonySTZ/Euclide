@@ -21,6 +21,7 @@ private:
     void handleCreateNode();
     void handleNodeInteractions();
     void leftMouseReleased();
+    void handleNodeClicked();
     void leftMouseDown();
     void refreshHoveredNode();
     void handleDragGraph();

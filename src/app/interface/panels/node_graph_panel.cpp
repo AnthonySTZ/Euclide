@@ -87,13 +87,17 @@ void NodeGraph::handleNodeInteractions() {
 }
 
 void NodeGraph::leftMouseReleased() {
-    if (!m_nodeHovered) {
-        clearSelection();
+    if (m_isNodeDrag) {
+        m_isNodeDrag = false;
         return;
     }
 
-    if (m_isNodeDrag) {
-        m_isNodeDrag = false;
+    handleNodeClicked();   
+}
+
+void NodeGraph::handleNodeClicked() {
+    if (!m_nodeHovered) {
+        clearSelection();
         return;
     }
 
@@ -111,14 +115,15 @@ void NodeGraph::leftMouseDown() {
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
     if (m_isNodeDrag) {
-        m_nodeHovered->moveBy(dragDelta);
+        for (auto node: m_selectedNodes){
+            node->moveBy(dragDelta);
+        }
         return;
     }
 
     if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
         m_isNodeDrag = true;
     }
-    
 }
 
 void NodeGraph::refreshHoveredNode() {
