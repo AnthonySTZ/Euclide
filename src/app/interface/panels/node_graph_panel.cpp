@@ -216,8 +216,15 @@ void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
         return;
     }
 
+    uint32_t currentIndex = currentType == IOType::OUTPUT ? m_currentConnection->sourceIndex() : m_currentConnection->destinationIndex();
+    
     // Create connection
-    //TODO: Create Connection with scene and clearCurrentConnection
+    if (currentType == IOType::INPUT) {
+        currentNode->node()->setInput(currentIndex, t_infos.nodeItem->node(), t_infos.index);
+    } else {
+        t_infos.nodeItem->node()->setInput(t_infos.index, currentNode->node(), currentIndex);
+    }
+    clearCurrentConnection();
 }
 
 void NodeGraph::clearCurrentConnection() {
