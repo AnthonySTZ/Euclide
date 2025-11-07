@@ -19,6 +19,7 @@ public:
 
     void moveBy(const ImVec2& t_delta);
     void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
+    bool isSelected() const noexcept { return m_isSelected; }
 
     ImVec2 getInputIOPosition(uint32_t index) const;
     ImVec2 getOutputIOPosition(uint32_t index) const;
