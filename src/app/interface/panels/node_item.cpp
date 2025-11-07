@@ -54,7 +54,7 @@ ImVec2 NodeItem::getInputIOPosition(uint32_t index) const
 {
 	const float ioSpacing = m_size.x / (m_inputIOPositions.size() + 1);
     return ImVec2{
-		m_position.x + index * ioSpacing,
+		m_position.x + (index + 1) * ioSpacing,
 		m_position.y - s_spacing - s_radius
 	};
 }
@@ -63,8 +63,8 @@ ImVec2 NodeItem::getOutputIOPosition(uint32_t index) const
 {
 	const float ioSpacing = m_size.x / (m_outputIOPositions.size() + 1);
     return ImVec2{
-		m_position.x + index * ioSpacing,
-		m_position.y + s_spacing + s_radius
+		m_position.x + (index + 1) * ioSpacing,
+		m_position.y + m_size.y + s_spacing + s_radius
 	};
 }
 

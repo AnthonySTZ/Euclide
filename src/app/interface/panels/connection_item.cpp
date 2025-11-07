@@ -9,14 +9,14 @@ void ConnectionItem::draw() const
     ImVec2 m_end = io.MousePos;
 
     if (auto sourceNode = m_sourceNode.lock()) {
-        m_start = sourceNode->getInputIOPosition(m_sourceIndex);
+        m_start = sourceNode->getOutputIOPosition(m_sourceIndex);
     }
     if (auto destNode = m_destNode.lock()) {
         m_end = destNode->getInputIOPosition(m_destIndex);
     }
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddBezierCubic(m_start, m_start + ImVec2(50, 0), m_end - ImVec2(50, 0), m_end, IM_COL32(200, 200, 100, 255), 2.0f);
+    drawList->AddLine(m_start, m_end, s_color, s_thickness);
 }
 
 void ConnectionItem::setSource(const std::shared_ptr<NodeItem> &t_sourceNode, const uint32_t t_sourceIndex)

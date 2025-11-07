@@ -29,6 +29,9 @@ private:
     uint32_t m_sourceIndex = 0;
     uint32_t m_destIndex = 0;
 
+    static constexpr ImU32 s_color = IM_COL32(200, 200, 100, 255);
+    static constexpr float s_thickness = 2.0f; 
+
 };
 
 
