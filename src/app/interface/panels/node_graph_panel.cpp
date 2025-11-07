@@ -209,6 +209,13 @@ void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
         return;
     }
     
+    std::shared_ptr<NodeItem> currentNode = currentType == IOType::OUTPUT ? m_currentConnection->sourceNode() : m_currentConnection->destinationNode();
+    // Check if same node
+    if (t_infos.nodeItem == currentNode) {
+        clearCurrentConnection();
+        return;
+    }
+
     // Create connection
     //TODO: Create Connection with scene and clearCurrentConnection
 }
