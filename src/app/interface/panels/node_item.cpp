@@ -45,14 +45,15 @@ void NodeItem::drawRect(const std::string& t_nodeName) {
 void NodeItem::drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs) {
 
 	ImVec2 inputIOPos{m_position.x, m_position.y - s_spacing - s_radius}; 
-	drawIOsOnLine(t_numberOfInputs, inputIOPos);
-
 	ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + s_spacing + s_radius}; 
+	
+	drawIOsOnLine(t_numberOfInputs, inputIOPos);
 	drawIOsOnLine(t_numberOfOutputs, outputIOPos);
 
 }
 
 void NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
+	if (t_numberOfIOs <= 0) return;
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
 	const float ioSpacing = m_size.x / (t_numberOfIOs + 1);
