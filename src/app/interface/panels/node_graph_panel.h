@@ -9,6 +9,17 @@
 
 namespace butter {
 
+enum class IOType {
+    INPUT,
+    OUTPUT
+};
+
+struct IOClickedInfos {
+    std::shared_ptr<NodeItem> nodeItem = nullptr;
+    IOType type = IOType::INPUT;
+    int index = -1;
+};
+
 class NodeGraph : public Panel {
 
 public:
@@ -25,9 +36,11 @@ private:
     void handleNodeClicked();
     void leftMouseDown();
     void refreshHoveredNode();
+    IOClickedInfos isHoveredIO();
     void handleDragGraph();
     void handleKeyInput();
     void removeSelectedNodes();
+    void drawConnections();
     void drawNodes();
 
     void clearSelection();
@@ -45,6 +58,8 @@ private:
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
     std::set<std::shared_ptr<NodeItem>> m_selectedNodes{};
     std::vector<std::shared_ptr<ConnectionItem>> m_nodeConnections;
+
+    std::unique_ptr<ConnectionItem> m_currentConnection;
 };
 
 }

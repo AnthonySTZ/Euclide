@@ -54,6 +54,7 @@ void NodeGraph::draw()
 
     handleInputs();
     
+    drawConnections();
     drawNodes();
     endTab();
 }
@@ -117,6 +118,13 @@ void NodeGraph::leftMouseReleased() {
 }
 
 void NodeGraph::handleNodeClicked() {
+
+    IOClickedInfos ioInfos = isHoveredIO();
+    if (ioInfos.nodeItem) {
+        std::cout << "IO Clicked\n";
+        return;
+    }
+
     if (!m_nodeHovered) {
         clearSelection();
         return;
@@ -140,7 +148,7 @@ void NodeGraph::leftMouseDown() {
             m_nodeHovered->moveBy(dragDelta);
             return;
         }
-        
+
         for (auto node: m_selectedNodes){
             node->moveBy(dragDelta);
         }
@@ -161,6 +169,22 @@ void NodeGraph::refreshHoveredNode() {
             return;
         }
     }
+}
+
+IOClickedInfos NodeGraph::isHoveredIO() {
+    for(auto [id, nodeItem]: m_nodeItems) {
+        int inputIndex = nodeItem->inputIOHovered();
+        if (inputIndex >= 0) {
+            return IOClickedInfos{nodeItem, IOType::INPUT, inputIndex};
+        }  
+
+        int outputIndex = nodeItem->outputIOHovered();
+        if (outputIndex >= 0) {
+            return IOClickedInfos{nodeItem, IOType::OUTPUT, outputIndex};
+        } 
+    }
+
+    return IOClickedInfos{};
 }
 
 /**
@@ -210,6 +234,15 @@ void NodeGraph::removeSelectedNodes() {
 
     m_selectedNodes.clear();
 }
+
+void NodeGraph::drawConnections() {
+    for (auto conn: m_nodeConnections){
+        conn->draw();
+    }
+
+    if (m_currentConnection) 
+        m_currentConnection->draw();
+} 
 
 /**
  * @brief Draw all nodes and stores the top hovered node in `m_nodeHovered`
