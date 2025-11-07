@@ -12,10 +12,19 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
     const std::string nodeName = findName(t_node->name());
     const uint32_t id = findId();
     t_node->setName(nodeName);
+    t_node->setId(id);
     m_nodesIds.emplace(nodeName, id);
     m_nodes.emplace(id, t_node);
 
     onNodeAdded.notify(id, t_node);
+
+    t_node->onSetInput.subscribe([this](const uint32_t t_sourceId, const uint32_t t_sourceIndex, const uint32_t t_destId, const uint32_t t_destIndex) {
+        onConnectionAdded.notify(t_sourceId, t_sourceIndex, t_destId, t_destIndex);
+    });
+
+    t_node->onRemoveInput.subscribe([this](const uint32_t t_sourceId, const uint32_t t_destId, const uint32_t t_destIndex) {
+        onConnectionRemoved.notify(t_sourceId, t_destId, t_destIndex);
+    });
 }
 
 /**

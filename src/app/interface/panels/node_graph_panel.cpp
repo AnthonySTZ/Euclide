@@ -24,6 +24,27 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
                 m_drawOrder.erase(std::remove(m_drawOrder.begin(), m_drawOrder.end(), t_nodeId), m_drawOrder.end());
             }
         );
+
+        scene->onConnectionAdded.subscribe(
+            [this](const uint32_t t_sourceId, const uint32_t t_sourceIndex, const uint32_t t_destId, const uint32_t t_destIndex) {
+                std::shared_ptr<ConnectionItem> conn = std::make_shared<ConnectionItem>();
+                conn->setSource(m_nodeItems[t_sourceId], t_sourceIndex);
+                conn->setDestination(m_nodeItems[t_destId], t_destIndex);
+                m_nodeConnections.push_back(conn);
+            }
+        );
+
+        scene->onConnectionRemoved.subscribe(
+            [this](const uint32_t t_sourceId, const uint32_t t_destId, const uint32_t t_destIndex) {
+                m_nodeConnections.erase(std::remove_if(m_nodeConnections.begin(), m_nodeConnections.end(), 
+                    [&](const std::shared_ptr<ConnectionItem>& conn){
+                        auto sourceNodeItem = conn->sourceNode();
+                        auto destNodeItem = conn->destinationNode();
+                        return sourceNodeItem && destNodeItem && sourceNodeItem == m_nodeItems[t_sourceId] && destNodeItem == m_nodeItems[t_destId] && conn->destinationIndex() == t_destIndex;
+                    }),
+                m_nodeConnections.end());
+            }
+        );
     }
 }
 

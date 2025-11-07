@@ -38,7 +38,9 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
         sourceNode->m_outputConnections[t_sourceIndex].push_back(conn);
         
         setDirty();
+        onSetInput.notify(sourceNode->id(), t_sourceIndex, m_id, t_index);
     }
+
 }
 
 /**
@@ -60,6 +62,7 @@ void Node::deleteInputConnection(const size_t t_index)
             std::remove(sourceOutputConnections.begin(), sourceOutputConnections.end(), conn),
             sourceOutputConnections.end()
         );
+        onRemoveInput.notify(sourceNode->id(), m_id, t_index);
     }
 }
 

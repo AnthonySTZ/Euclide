@@ -14,13 +14,15 @@ namespace butter {
 class Node : public std::enable_shared_from_this<Node> {
 
 public:
+    Observer<uint32_t, uint32_t, uint32_t, uint32_t> onSetInput; // source_id, source_index, dest_id, dest_index
+    Observer<uint32_t, uint32_t, uint32_t> onRemoveInput; // source_id, dest_id, dest_index
+
     Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name = "Unknown");
 
     std::shared_ptr<Mesh> cook(const size_t t_index);
     void setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
     void deleteInputConnection(const size_t t_index);
     void setDirty();
-
 
     void addField(const std::string& t_name, std::shared_ptr<NodeFieldBase> t_field);
 
@@ -40,6 +42,9 @@ public:
         return std::dynamic_pointer_cast<T>(it->second);
     }
 
+    void setId(const uint32_t t_id) { m_id = t_id; }
+    uint32_t id() const noexcept { return m_id; }
+
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
 
@@ -50,6 +55,8 @@ private:
 
     bool m_isDirty;
     std::vector<std::shared_ptr<Mesh>> m_cachedMesh; // cache every outputs
+
+    uint32_t m_id = 0;
 
 protected:
     std::unordered_map<std::string, std::shared_ptr<NodeFieldBase>> m_fields;

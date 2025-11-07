@@ -7,6 +7,7 @@ add_library(app_lib STATIC
     interface/panels/panel.cpp
     interface/panels/node_graph_panel.cpp
     interface/panels/node_item.cpp
+    interface/panels/connection_item.cpp
 )
 
 target_include_directories(app_lib

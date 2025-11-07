@@ -16,6 +16,12 @@ public:
     void setSource(const std::shared_ptr<NodeItem>& t_sourceNode, const uint32_t t_sourceIndex);
     void setDestination(const std::shared_ptr<NodeItem> &t_destNode, const uint32_t t_destIndex);
 
+    std::shared_ptr<NodeItem> sourceNode() { return m_sourceNode.lock(); }
+    std::shared_ptr<NodeItem> destinationNode() { return m_destNode.lock(); }
+
+    uint32_t sourceIndex() const noexcept { return m_sourceIndex; }
+    uint32_t destinationIndex() const noexcept { return m_destIndex; }
+
 private:
     std::weak_ptr<NodeItem> m_sourceNode = std::weak_ptr<NodeItem>();
     std::weak_ptr<NodeItem> m_destNode = std::weak_ptr<NodeItem>();

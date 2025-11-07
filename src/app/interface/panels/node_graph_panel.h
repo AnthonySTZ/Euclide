@@ -3,6 +3,7 @@
 #include "panel.h"
 #include "nodes/scene.h"
 #include "node_item.h"
+#include "connection_item.h"
 
 #include <set>
 
@@ -43,6 +44,7 @@ private:
     
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
     std::set<std::shared_ptr<NodeItem>> m_selectedNodes{};
+    std::vector<std::shared_ptr<ConnectionItem>> m_nodeConnections;
 };
 
 }
