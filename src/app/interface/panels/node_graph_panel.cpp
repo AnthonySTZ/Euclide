@@ -121,7 +121,7 @@ void NodeGraph::handleNodeClicked() {
 
     IOClickedInfos ioInfos = isHoveredIO();
     if (ioInfos.nodeItem) {
-        std::cout << "IO Clicked\n";
+        addConnection(ioInfos);
         return;
     }
 
@@ -185,6 +185,19 @@ IOClickedInfos NodeGraph::isHoveredIO() {
     }
 
     return IOClickedInfos{};
+}
+
+void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
+    if(!m_currentConnection) {
+        std::unique_ptr<ConnectionItem> conn = std::make_unique<ConnectionItem>();
+        if(t_infos.type == IOType::INPUT) {
+            conn->setDestination(t_infos.nodeItem, t_infos.index);
+        } else {
+            conn->setSource(t_infos.nodeItem, t_infos.index);
+        }
+        m_currentConnection = std::move(conn);
+        return;
+    }
 }
 
 /**

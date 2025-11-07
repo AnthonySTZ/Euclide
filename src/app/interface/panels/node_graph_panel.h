@@ -36,7 +36,10 @@ private:
     void handleNodeClicked();
     void leftMouseDown();
     void refreshHoveredNode();
+
     IOClickedInfos isHoveredIO();
+    void addConnection(const IOClickedInfos &t_infos);
+    
     void handleDragGraph();
     void handleKeyInput();
     void removeSelectedNodes();
