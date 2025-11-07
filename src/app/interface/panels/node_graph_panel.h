@@ -39,7 +39,9 @@ private:
 
     IOClickedInfos isHoveredIO();
     void addConnection(const IOClickedInfos &t_infos);
-    
+
+    void clearCurrentConnection();
+
     void handleDragGraph();
     void handleKeyInput();
     void removeSelectedNodes();

@@ -125,6 +125,8 @@ void NodeGraph::handleNodeClicked() {
         return;
     }
 
+    clearCurrentConnection();
+
     if (!m_nodeHovered) {
         clearSelection();
         return;
@@ -198,6 +200,10 @@ void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
         m_currentConnection = std::move(conn);
         return;
     }
+}
+
+void NodeGraph::clearCurrentConnection() {
+    m_currentConnection = nullptr;
 }
 
 /**
