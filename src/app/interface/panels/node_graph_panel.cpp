@@ -116,8 +116,10 @@ void NodeGraph::leftMouseDown() {
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
     if (m_isNodeDrag) {
         for (auto node: m_selectedNodes){
+            if (node == m_nodeHovered) continue;
             node->moveBy(dragDelta);
         }
+        m_nodeHovered->moveBy(dragDelta);
         return;
     }
 
