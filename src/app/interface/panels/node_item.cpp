@@ -10,6 +10,7 @@ void NodeItem::draw()
 {
     if (auto node = m_node.lock()) {
         drawRect(node->name());
+		drawIOs(node->numInputs(), node->numOutputs());
     }
 }
 
@@ -39,6 +40,31 @@ void NodeItem::drawRect(const std::string& t_nodeName) {
 	textPos.x += m_size.x * 0.5f - textSize.x * 0.5f;
 	textPos.y += m_size.y * 0.5f - textSize.y * 0.5f;
 	drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), t_nodeName.c_str());
+}
+
+void NodeItem::drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs) {
+
+	ImVec2 inputIOPos{m_position.x, m_position.y - s_spacing - s_radius}; 
+	drawIOsOnLine(t_numberOfInputs, inputIOPos);
+
+	ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + s_spacing + s_radius}; 
+	drawIOsOnLine(t_numberOfOutputs, outputIOPos);
+
+}
+
+void NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+	const float ioSpacing = m_size.x / (t_numberOfIOs + 1);
+	for (size_t i = 1; i < t_numberOfIOs + 1; ++i) {
+		ImVec2 ioPos{
+			t_linePosition.x + i * ioSpacing,
+			t_linePosition.y
+		};
+
+		drawList->AddCircleFilled(ioPos, s_radius, s_ioColor);
+		drawList->AddCircle(ioPos, s_radius, s_ioOutlineColor);
+	}
 }
 
 }
