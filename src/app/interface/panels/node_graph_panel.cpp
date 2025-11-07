@@ -123,9 +123,8 @@ void NodeGraph::leftMouseDown() {
 
 void NodeGraph::refreshHoveredNode() {
     m_nodeHovered = nullptr;
-    for (int i = m_drawOrder.size() - 1; i >= 0; --i) {
-        uint32_t id = m_drawOrder[i];
-        auto nodeItem = m_nodeItems[id]; 
+    for (auto it = m_drawOrder.rbegin(); it != m_drawOrder.rend(); ++it) {
+        auto nodeItem = m_nodeItems[*it];
         if (nodeItem->isHovered()) {
             m_nodeHovered = nodeItem;
             return;

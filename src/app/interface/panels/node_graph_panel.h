@@ -38,7 +38,6 @@ private:
     std::vector<uint32_t> m_drawOrder{};
     
     bool m_isNodeDrag = false;
-    bool m_isClicked = false;
     bool m_isGraphDrag = false;
     
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
