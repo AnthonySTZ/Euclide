@@ -200,6 +200,17 @@ void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
         m_currentConnection = std::move(conn);
         return;
     }
+
+    // Same IO type clicked
+    IOType currentType = m_currentConnection->sourceNode() ? IOType::OUTPUT: IOType::INPUT;
+    if (currentType == t_infos.type){
+        clearCurrentConnection();
+        addConnection(t_infos);
+        return;
+    }
+    
+    // Create connection
+    //TODO: Create Connection with scene and clearCurrentConnection
 }
 
 void NodeGraph::clearCurrentConnection() {
