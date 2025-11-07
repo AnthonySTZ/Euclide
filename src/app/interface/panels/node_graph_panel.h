@@ -19,7 +19,10 @@ public:
 private:
     void handleInputs();
     void handleCreateNode();
-    void handleNodeDragging();
+    void handleNodeInteractions();
+    void leftMouseReleased();
+    void leftMouseDown();
+    void refreshHoveredNode();
     void handleDragGraph();
     void handleKeyInput();
     void removeSelectedNodes();
@@ -27,13 +30,14 @@ private:
 
     void clearSelection();
 
-    bool addToSelection(const std::shared_ptr<NodeItem> &t_nodeItem, const bool t_removeIfAlreadySelected = true);
+    void addToSelection(const std::shared_ptr<NodeItem> &t_nodeItem, const bool t_removeIfAlreadySelected = true);
 
     std::weak_ptr<Scene> m_scene;
 
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> m_nodeItems;
+    std::vector<uint32_t> m_drawOrder{};
     
-    bool m_isDrag = false;
+    bool m_isNodeDrag = false;
     bool m_isClicked = false;
     bool m_isGraphDrag = false;
     

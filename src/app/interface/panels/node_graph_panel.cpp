@@ -13,13 +13,15 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
             [this](uint32_t t_nodeId, std::shared_ptr<Node> t_node) {
                 ImGuiIO& io = ImGui::GetIO();
                 m_nodeItems.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node, io.MousePos));
+                m_drawOrder.push_back(t_nodeId);
             }
         );
-    
+        
         scene->onNodeRemoved.subscribe(
             [this](uint32_t t_nodeId) {
                 if(m_nodeItems.find(t_nodeId) == m_nodeItems.end()) return;
                 m_nodeItems.erase(t_nodeId);
+                m_drawOrder.erase(std::remove(m_drawOrder.begin(), m_drawOrder.end(), t_nodeId), m_drawOrder.end());
             }
         );
     }
@@ -38,7 +40,9 @@ void NodeGraph::draw()
 void NodeGraph::handleInputs()
 {
     handleCreateNode();
-    handleNodeDragging();
+
+    handleNodeInteractions();
+
     handleDragGraph();
     handleKeyInput();
 }
@@ -58,40 +62,68 @@ void NodeGraph::handleCreateNode() {
     }
 }
 
-/**
- * @brief Update dragging node position if needed
- * 
- */
-void NodeGraph::handleNodeDragging() {
-    ImGuiIO& io = ImGui::GetIO();
-    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+void NodeGraph::handleNodeInteractions() {
 
-    if (m_isDrag) {
-        ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
-        m_nodeHovered->moveBy(dragDelta);
-        if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
-            m_isClicked = false;
-        }   
+    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    if(!isWindowHovered) return;
+
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+        refreshHoveredNode();
     }
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
-        if (m_nodeHovered) {
-            m_isDrag = true;
-            m_isClicked = true;
-        } else {
-            clearSelection();
-        }
-    } 
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+        leftMouseDown();
+    }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-        m_isDrag = false;
-        if (m_isClicked) {
-            if(!ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
-                clearSelection();
-            }
-            bool isSelected = addToSelection(m_nodeHovered);
-            m_nodeHovered->setSelected(isSelected);
-            m_isClicked = false;
+        leftMouseReleased();
+    }
+
+}
+
+void NodeGraph::leftMouseReleased() {
+    if (!m_nodeHovered) {
+        clearSelection();
+        return;
+    }
+
+    if (m_isNodeDrag) {
+        m_isNodeDrag = false;
+        return;
+    }
+
+    if(ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+        addToSelection(m_nodeHovered);
+    } else {
+        clearSelection();
+        addToSelection(m_nodeHovered);
+    }
+}
+
+void NodeGraph::leftMouseDown() {
+    if (!m_nodeHovered) return;
+    
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
+    if (m_isNodeDrag) {
+        m_nodeHovered->moveBy(dragDelta);
+        return;
+    }
+
+    if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
+        m_isNodeDrag = true;
+    }
+    
+}
+
+void NodeGraph::refreshHoveredNode() {
+    m_nodeHovered = nullptr;
+    for (int i = m_drawOrder.size() - 1; i >= 0; --i) {
+        uint32_t id = m_drawOrder[i];
+        auto nodeItem = m_nodeItems[id]; 
+        if (nodeItem->isHovered()) {
+            m_nodeHovered = nodeItem;
+            return;
         }
     }
 }
@@ -150,17 +182,9 @@ void NodeGraph::removeSelectedNodes() {
  */
 void NodeGraph::drawNodes()
 {
-    if (!m_isDrag)
-        m_nodeHovered = nullptr;
-
     bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-    for (auto& [id, nodeItem]: m_nodeItems) {
-        nodeItem->draw();
-
-        if(m_isDrag || !isWindowHovered) continue;
-        if (nodeItem->isHovered()) {
-            m_nodeHovered = nodeItem;
-        }
+    for (uint32_t id: m_drawOrder) {
+        m_nodeItems[id]->draw();
     }
 }
 
@@ -178,18 +202,18 @@ void NodeGraph::clearSelection()
  * @param t_nodeItem The Node Item to select
  * @param t_removeIfAlreadySelected Remove the item from selection if it was already selected
  * 
- * @return Is the node selected or not
  */
-bool NodeGraph::addToSelection(const std::shared_ptr<NodeItem>& t_nodeItem, const bool t_removeIfAlreadySelected) {
+void NodeGraph::addToSelection(const std::shared_ptr<NodeItem>& t_nodeItem, const bool t_removeIfAlreadySelected) {
     if (t_removeIfAlreadySelected) {
         if (m_selectedNodes.find(t_nodeItem) != m_selectedNodes.end()) { // Remove Node Item if its already selected
             m_selectedNodes.erase(t_nodeItem);
-            return false;
-        }    
+            t_nodeItem->setSelected(false);
+            return;
+        }
     }
 
     m_selectedNodes.insert(t_nodeItem);
-    return true;
+    t_nodeItem->setSelected(true);
 }
 
 }
