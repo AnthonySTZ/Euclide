@@ -45,7 +45,7 @@ private:
     ImU32 m_outlineColor = IM_COL32(200, 200, 200, 255);
     ImU32 m_selectedOutlineColor = IM_COL32(255, 178, 102, 255);
 
-    static constexpr float s_radius = 5.0;
+    static constexpr float s_radius = 5.5;
     static constexpr float s_radius2 = s_radius * s_radius;
     static constexpr float s_spacing = 3.0;
 	static constexpr ImU32 s_ioOutlineColor =  IM_COL32(200, 200, 200, 255);
