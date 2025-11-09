@@ -21,28 +21,40 @@ Node::Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t
  * @param t_sourceIndex The output index of the source node
  * 
  */
-void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNode, const size_t t_sourceIndex)
+void Node::setInput(const size_t t_index, const std::shared_ptr<Node> &t_sourceNode, const size_t t_sourceIndex)
 {
+    auto this_shared = shared_from_this();
     if(t_index >= m_inputConnections.size()) return;
-    if (auto sourceNode = t_sourceNode.lock()) {
-        if(sourceNode == shared_from_this()) return;
-        if (t_sourceIndex >= sourceNode->m_outputConnections.size()) return;
-        deleteInputConnection(t_index);
-        
-        auto conn = std::make_shared<NodeConnection>(
-            t_sourceIndex,
-            t_index,
-            sourceNode,
-            shared_from_this()
-        );
-        
-        m_inputConnections[t_index] = conn;
-        sourceNode->m_outputConnections[t_sourceIndex].push_back(conn);
-        
-        setDirty();
-        onSetInput.notify(sourceNode->id(), t_sourceIndex, m_id, t_index);
+    if(t_sourceNode == this_shared) return;
+    if (t_sourceIndex >= t_sourceNode->m_outputConnections.size()) return;
+    if (t_sourceNode->isInInputsHierarchy(this_shared)) return;
+
+    deleteInputConnection(t_index);
+    
+    auto conn = std::make_shared<NodeConnection>(
+        t_sourceIndex,
+        t_index,
+        t_sourceNode,
+        this_shared
+    );
+    
+    m_inputConnections[t_index] = conn;
+    t_sourceNode->m_outputConnections[t_sourceIndex].push_back(conn);
+    
+    setDirty();
+    onSetInput.notify(t_sourceNode->id(), t_sourceIndex, m_id, t_index);
+}
+
+bool Node::isInInputsHierarchy(const std::shared_ptr<Node> t_node) const noexcept {
+    for (const auto& conn: m_inputConnections) {
+        if (conn == nullptr) continue;
+        if (const auto sourceNode = conn->sourceNode.lock()) {
+            if (sourceNode == t_node) return true;
+            if (sourceNode->isInInputsHierarchy(t_node)) return true; // recursive
+        }
     }
 
+    return false;
 }
 
 /**

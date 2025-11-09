@@ -142,4 +142,30 @@ TEST(Node, SetInputToSameNode) {
     EXPECT_EQ(node->getInputConnection(0), nullptr);
 }
 
+TEST(Node, IsInInputHierarchy) {
+    auto node_1 = std::make_shared<TestNode>();
+    auto node_2 = std::make_shared<TestNode>();
+    auto node_3 = std::make_shared<TestNode>();
+
+    node_2->setInput(0, node_1); // 1 -> 2
+    node_3->setInput(0, node_2); // 1 -> 2 -> 3
+
+    EXPECT_TRUE(node_3->isInInputsHierarchy(node_1));
+    EXPECT_FALSE(node_1->isInInputsHierarchy(node_3));
+}
+
+TEST(Node, TestCyclicConnection) {
+    auto node_1 = std::make_shared<TestNode>();
+    auto node_2 = std::make_shared<TestNode>();
+    auto node_3 = std::make_shared<TestNode>();
+
+    node_2->setInput(0, node_1); // 1 -> 2
+    node_3->setInput(0, node_2); // 1 -> 2 -> 3
+    node_1->setInput(0, node_3); // 1 -> 2 -> 3 -> 1
+
+    EXPECT_EQ(node_2->getInputConnection(0)->sourceNode.lock(), node_1);
+    EXPECT_EQ(node_3->getInputConnection(0)->sourceNode.lock(),  node_2);
+    EXPECT_EQ(node_1->getInputConnection(0), nullptr);
+}
+
 }

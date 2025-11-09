@@ -20,31 +20,32 @@ public:
     Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name = "Unknown");
 
     std::shared_ptr<Mesh> cook(const size_t t_index);
-    void setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
+    void setInput(const size_t t_index, const std::shared_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
     void deleteInputConnection(const size_t t_index);
     void setDirty();
-
+    
     void addField(const std::string& t_name, std::shared_ptr<NodeFieldBase> t_field);
-
+    
     std::shared_ptr<NodeConnection> getInputConnection(const size_t t_index);
     std::vector<std::shared_ptr<NodeConnection>> getOutputConnections(const size_t t_index);
     std::string name() const noexcept { return m_name; }
     void setName(const std::string& t_name) noexcept { m_name = t_name; }
-
+    
     int numInputs() const noexcept { return m_inputConnections.size(); }
     int numOutputs() const noexcept { return m_outputConnections.size(); } 
-
+    
     template <typename T>
     std::shared_ptr<T> getField(const std::string& t_fieldName) {
         auto it = m_fields.find(t_fieldName);
         if (it == m_fields.end()) return nullptr;
-
+        
         return std::dynamic_pointer_cast<T>(it->second);
     }
-
+    
     void setId(const uint32_t t_id) { m_id = t_id; }
     uint32_t id() const noexcept { return m_id; }
-
+    
+    bool isInInputsHierarchy(const std::shared_ptr<Node> t_node) const noexcept;
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
 
