@@ -1,4 +1,4 @@
-#include "node_graph_panel.h"
+#include "node_graph.h"
 
 #include "nodes/geometry/cube.h"
 

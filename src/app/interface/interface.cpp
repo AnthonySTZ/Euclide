@@ -1,6 +1,6 @@
 #include "interface.h"
 
-#include "panels/node_graph_panel.h"
+#include "panels/node_graph.h"
 
 namespace butter {
 

@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "interface/engine.h"
-#include "interface/panels/node_graph_panel.h"
+#include "interface/panels/node_graph.h"
 
 #include <memory>
 
