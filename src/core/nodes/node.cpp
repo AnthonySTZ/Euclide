@@ -29,11 +29,12 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
         if (t_sourceIndex >= sourceNode->m_outputConnections.size()) return;
         deleteInputConnection(t_index);
         
-        auto conn = std::make_shared<NodeConnection>();
-        conn->sourceNode = t_sourceNode;
-        conn->sourceIndex = t_sourceIndex;
-        conn->destNode = shared_from_this();
-        conn->destIndex = t_index;
+        auto conn = std::make_shared<NodeConnection>(
+            t_sourceIndex,
+            t_index,
+            sourceNode,
+            shared_from_this()
+        );
         
         m_inputConnections[t_index] = conn;
         sourceNode->m_outputConnections[t_sourceIndex].push_back(conn);

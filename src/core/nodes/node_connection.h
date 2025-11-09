@@ -18,7 +18,7 @@ struct NodeConnection{
     std::weak_ptr<Node> sourceNode;
     std::weak_ptr<Node> destNode;
 
-    NodeConnection(size_t t_sourceIndex, size_t t_destIndex,
+    NodeConnection(const size_t t_sourceIndex, const size_t t_destIndex,
         std::shared_ptr<Node> t_sourceNode,
         std::shared_ptr<Node> t_destNode)
         : sourceIndex(t_sourceIndex), destIndex(t_destIndex), sourceNode(t_sourceNode), destNode(t_destNode) {}
