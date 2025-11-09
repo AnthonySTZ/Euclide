@@ -1,6 +1,7 @@
 #include "interface.h"
 
 #include "panels/node_graph.h"
+#include "panels/viewport.h"
 
 namespace butter {
 
@@ -63,6 +64,11 @@ void Interface::addPanel(std::shared_ptr<Panel> t_panel) {
 void Interface::addNodeGraph()
 {
     addPanel(std::make_shared<NodeGraph>(scene()));
+}
+
+void Interface::addViewport()
+{
+    addPanel(std::make_shared<Viewport>(scene()));
 }
 
 void Interface::draw() const {

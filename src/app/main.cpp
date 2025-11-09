@@ -9,6 +9,7 @@ int main(){
     butter::Engine engine{1200, 800, "Test"};
     
     engine.interface().addNodeGraph();
+    engine.interface().addViewport();
     
     engine.mainLoop();
     return 0;

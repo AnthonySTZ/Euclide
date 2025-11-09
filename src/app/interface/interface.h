@@ -22,6 +22,7 @@ public:
 
     void addPanel(std::shared_ptr<Panel> t_panel);
     void addNodeGraph();
+    void addViewport();
 
     void draw() const;
 
