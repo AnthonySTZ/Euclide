@@ -2,6 +2,7 @@
 
 #include "nodes/scene.h"
 #include "panel.h"
+#include "rendering/renderer.h"
 
 #include <memory>
 #include <chrono>
@@ -16,19 +17,29 @@ public:
     ~Viewport() = default;
 
     void draw() override;
-
+    
 private:
+    void drawRender() const;
+    void checkForResize();
     void drawInfos() const;
 
     void updateFps();
 
     std::weak_ptr<Scene> m_scene;
 
+    ImVec2 m_windowPosition;
+
+    // Rendering requirements
+    std::unique_ptr<Renderer> m_renderer;
+    uint32_t m_viewportWidth, m_viewportHeight;
+
     // Fps requirements
     float m_refreshFpsEvery = .5f;
     std::chrono::steady_clock::time_point m_lastTime;
     uint32_t m_frameCount = 0;
     std::string m_fpsText;
+
+    ImVec2 m_padding {0, 0};
 
 };
 
