@@ -2,8 +2,8 @@
 
 #include "panel.h"
 #include "nodes/scene.h"
-#include "node_item.h"
-#include "connection_item.h"
+#include "graph/node_item.h"
+#include "graph/connection_item.h"
 
 #include <set>
 
