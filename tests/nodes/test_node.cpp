@@ -136,4 +136,10 @@ TEST(Node, DirtyIfFieldChanged) {
     EXPECT_FALSE(first_result == third_result);
 }
 
+TEST(Node, SetInputToSameNode) {
+    auto node = std::make_shared<TestNode>();
+    node->setInput(0, node, 0);
+    EXPECT_EQ(node->getInputConnection(0), nullptr);
+}
+
 }

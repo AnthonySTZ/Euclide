@@ -210,12 +210,6 @@ void NodeGraph::addConnection(const IOClickedInfos& t_infos) {
     }
     
     std::shared_ptr<NodeItem> currentNode = currentType == IOType::OUTPUT ? m_currentConnection->sourceNode() : m_currentConnection->destinationNode();
-    // Check if same node
-    if (t_infos.nodeItem == currentNode) {
-        clearCurrentConnection();
-        return;
-    }
-
     uint32_t currentIndex = currentType == IOType::OUTPUT ? m_currentConnection->sourceIndex() : m_currentConnection->destinationIndex();
     
     // Create connection

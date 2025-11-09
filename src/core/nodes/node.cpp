@@ -25,6 +25,7 @@ void Node::setInput(const size_t t_index, const std::weak_ptr<Node> &t_sourceNod
 {
     if(t_index >= m_inputConnections.size()) return;
     if (auto sourceNode = t_sourceNode.lock()) {
+        if(sourceNode == shared_from_this()) return;
         if (t_sourceIndex >= sourceNode->m_outputConnections.size()) return;
         deleteInputConnection(t_index);
         
