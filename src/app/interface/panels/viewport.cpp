@@ -12,14 +12,15 @@ Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
 
 void Viewport::draw()
 {
+    beginTab("Viewport", m_padding);
     updateFps();
 
-    beginTab("Viewport", m_padding);
     m_windowPosition = ImGui::GetCursorPos();
     checkForResize();
+
     drawRender();
-    
     drawInfos();
+    
     endTab();
 }
 
