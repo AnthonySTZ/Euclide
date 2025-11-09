@@ -43,7 +43,7 @@ void Viewport::checkForResize() {
 void Viewport::drawInfos() const
 {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddText(m_windowPosition, IM_COL32(255, 255, 255, 255), m_fpsText.c_str());
+    drawList->AddText(m_windowPosition + ImVec2(10, 10), IM_COL32(255, 255, 255, 255), m_fpsText.c_str());
 }
 
 void Viewport::updateFps() {
