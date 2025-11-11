@@ -19,7 +19,15 @@ void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight)
 
     m_faceShaderProgram.use();
     bindCameraUniforms(m_faceShaderProgram);
-    // m_model.draw();
+    m_model.draw();
+
+    m_edgeShaderProgram.use();
+    bindCameraUniforms(m_edgeShaderProgram);
+    m_model.drawEdges();
+    
+    m_pointShaderProgram.use();
+    bindCameraUniforms(m_pointShaderProgram);
+    m_model.drawPoints();
 
     clearFrame();
     endFrame(t_screenWidth, t_screenHeight);

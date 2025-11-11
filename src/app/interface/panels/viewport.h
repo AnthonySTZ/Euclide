@@ -17,9 +17,11 @@ public:
     ~Viewport() = default;
 
     void draw() override;
-    
+
 private:
-    void drawRender() const;
+    void handleMouse();
+    void moveCamera(const ImVec2 &t_dragDelta);
+    void drawRender();
     void checkForResize();
     void drawInfos() const;
 
@@ -41,6 +43,8 @@ private:
 
     ImVec2 m_padding {0, 0};
     std::shared_ptr<Camera> m_camera;
+
+    bool m_isItemHovered = false;
 
 };
 

@@ -33,10 +33,12 @@ private:
 
     uint32_t m_vao = 0;
     uint32_t m_vbo = 0;
+    uint32_t m_eboVertex = 0;
     uint32_t m_eboPoints = 0;
     uint32_t m_eboEdges = 0;
 
-    size_t m_numOfVertices = 0;
+    size_t m_numOfPoints = 0;
+    size_t m_numOfVertexIndices = 0; // Triangulized mesh
     size_t m_numOfEdgesIndices = 0;
 
 

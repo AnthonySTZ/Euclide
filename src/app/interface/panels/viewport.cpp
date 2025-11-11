@@ -24,17 +24,45 @@ void Viewport::draw()
     m_windowPosition = ImGui::GetCursorPos();
     checkForResize();
 
+    handleMouse();
+
     drawRender();
     drawInfos();
     
     endTab();
 }
 
-void Viewport::drawRender() const {
+void Viewport::handleMouse() {
+    if (m_isItemHovered) {
+        ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
+        moveCamera(dragDelta);
+    }
+}
+
+void Viewport::moveCamera(const ImVec2& t_dragDelta) {
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+        ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
+        m_camera->orbit(-t_dragDelta.x, -t_dragDelta.y);
+    }
+
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
+        ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
+        m_camera->pan(-t_dragDelta.x, t_dragDelta.y);
+    }
+
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+        ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
+        m_camera->dolly(-t_dragDelta.y);
+    }
+}
+
+void Viewport::drawRender() {
     m_renderer->draw(m_viewportWidth, m_viewportHeight);
     
     ImTextureID textureID = m_renderer->getRenderTexture();
     ImGui::Image(textureID, ImVec2((float)m_viewportWidth, (float)m_viewportHeight));
+
+    m_isItemHovered = ImGui::IsItemHovered();
 }
 
 void Viewport::checkForResize() {
