@@ -9,6 +9,7 @@ add_subdirectory(third_party/glfw)
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/imgui)
 add_subdirectory(third_party/Pythagore)
+add_subdirectory(third_party/glm)
 
 add_subdirectory(src/core)
 add_subdirectory(src/app)

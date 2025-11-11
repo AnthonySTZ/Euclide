@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace butter {
 
 ShaderProgram::ShaderProgram(const std::string &t_vertexFile, const std::string &t_fragmentFile) {
@@ -56,10 +58,10 @@ void ShaderProgram::use() const {
     glUseProgram(m_id);
 }
 
-void ShaderProgram::bindUniform(const char *t_name, const py::mat4 &t_value)
+void ShaderProgram::bindUniform(const char *t_name, const glm::mat4x4& t_value)
 {
     GLuint location = glGetUniformLocation(m_id, t_name);
-    glUniformMatrix4fv(location, 1, GL_TRUE, t_value.data());
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(t_value));
 }
 
 const uint32_t ShaderProgram::createShader(const char *t_shaderSrc, GLenum t_type) {

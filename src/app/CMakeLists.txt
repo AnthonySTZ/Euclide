@@ -26,7 +26,7 @@ target_include_directories(app_lib
 
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(app_lib PUBLIC core imgui glfw OpenGL::GL glad)
+target_link_libraries(app_lib PUBLIC core imgui glfw OpenGL::GL glad glm)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/interface/panels/rendering/shaders DESTINATION ${CMAKE_BINARY_DIR})
 
