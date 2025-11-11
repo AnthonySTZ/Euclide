@@ -32,6 +32,7 @@ public:
     void resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
 
     void updateMesh(std::shared_ptr<Mesh> t_mesh);
+    void setCamera(std::shared_ptr<Camera> t_camera);
 
 private:
     void beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
@@ -53,7 +54,7 @@ private:
     ShaderProgram m_edgeShaderProgram;
 
     FrameBuffer m_frameBuffer{};
-    std::shared_ptr<Camera> m_camera;
+    std::weak_ptr<Camera> m_camera;
 
     RenderModel m_model;
 };

@@ -40,6 +40,7 @@ private:
     std::string m_fpsText;
 
     ImVec2 m_padding {0, 0};
+    std::shared_ptr<Camera> m_camera;
 
 };
 

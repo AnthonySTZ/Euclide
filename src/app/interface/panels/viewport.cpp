@@ -3,7 +3,7 @@
 namespace butter {
     
 Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
-    : m_scene(t_scene), m_renderer(std::make_unique<Renderer>())
+    : m_scene(t_scene), m_renderer(std::make_unique<Renderer>()), m_camera(std::make_shared<Camera>())
 {
     if (auto scene = m_scene.lock()) {
         scene->onMeshUpdate.subscribe(
@@ -12,6 +12,8 @@ Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
             }
         );
     }
+
+    m_renderer->setCamera(m_camera);
 }
 
 void Viewport::draw()

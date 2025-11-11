@@ -15,6 +15,7 @@ add_library(app_lib STATIC
     interface/panels/rendering/framebuffer.cpp
     interface/panels/rendering/shader_program.cpp
     interface/panels/rendering/render_model.cpp
+    interface/panels/rendering/camera.cpp
     
     )
 

@@ -17,9 +17,9 @@ Renderer::Renderer()
 void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     beginFrame(t_screenWidth, t_screenHeight);
 
-    // m_faceShaderProgram.use();
-    // bindCameraUniforms(m_faceShaderProgram);
-    // m_mesh.draw();
+    m_faceShaderProgram.use();
+    bindCameraUniforms(m_faceShaderProgram);
+    // m_model.draw();
 
     clearFrame();
     endFrame(t_screenWidth, t_screenHeight);
@@ -41,6 +41,11 @@ void Renderer::updateMesh(std::shared_ptr<Mesh> t_mesh)
     m_model.updateWithMesh(t_mesh);
 }
 
+void Renderer::setCamera(std::shared_ptr<Camera> t_camera)
+{
+    m_camera = t_camera;
+}
+
 void Renderer::beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     m_frameBuffer.bind();
     glViewport(0, 0, t_screenWidth, t_screenHeight);
@@ -54,8 +59,10 @@ void Renderer::endFrame(const uint32_t t_screenWidth, const uint32_t t_screenHei
 
 void Renderer::bindCameraUniforms(ShaderProgram &t_shaderProgram)
 {
-    t_shaderProgram.bindUniform("projection", m_camera->getProjection());
-    t_shaderProgram.bindUniform("view", m_camera->getView());
+    if (const auto camera = m_camera.lock()) {
+        t_shaderProgram.bindUniform("projection", camera->getProjection());
+        t_shaderProgram.bindUniform("view", camera->getView());
+    }
 }
 
 void Renderer::clearFrame() const noexcept {
