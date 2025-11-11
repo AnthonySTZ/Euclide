@@ -10,9 +10,9 @@
 namespace butter {
 
 struct RenderVertex {
-    py::vec3 position;
-    py::vec3 color;
-    py::vec3 normal;
+    float position[3];
+    float color[3];
+    float normal[3];
 };
 
 class RenderModel {

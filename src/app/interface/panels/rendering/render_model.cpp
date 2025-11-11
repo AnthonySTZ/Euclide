@@ -75,9 +75,9 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     for (size_t i = 0; i < m_numOfPoints; ++i) {
         vertices.emplace_back(
             RenderVertex{
-                py::vec3{points.posX[i], points.posY[i], points.posZ[i]},
-                py::vec3{points.colorR[i], points.colorG[i], points.colorB[i]},
-                py::vec3{points.normalX[i], points.normalY[i], points.normalZ[i]},
+                {points.posX[i], points.posY[i], points.posZ[i]},
+                {points.colorR[i], points.colorG[i], points.colorB[i]},
+                {points.normalX[i], points.normalY[i], points.normalZ[i]},
             }
         );
     }
