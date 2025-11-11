@@ -1,7 +1,6 @@
 #pragma once 
 
-#include "Vector.h"
-#include "Matrix.h"
+#include "py.h"
 
 namespace butter {
 
@@ -44,7 +43,7 @@ private:
 
     py::vec3 m_cameraPosition{0.f, 0.f, 3.f};
     py::vec3 m_targetPosition{0.f};
-    py::quat m_orientation = py::quat{py::vec3(0.f)}; // Camera orientation as a quaternion
+    py::quat m_orientation{}; // Camera orientation as a quaternion
 
     float m_distanceToTarget = 10.f;
     float m_fov = py::radians(50.f);
