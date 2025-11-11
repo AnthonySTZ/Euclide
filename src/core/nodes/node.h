@@ -46,6 +46,8 @@ public:
     uint32_t id() const noexcept { return m_id; }
     
     bool isInInputsHierarchy(const std::shared_ptr<Node> t_node) const noexcept;
+    void setIsRender(bool t_isRender) noexcept { m_isRender = t_isRender; }
+    bool isRender() const noexcept { return m_isRender; }
 private:
     virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
 
@@ -59,6 +61,7 @@ private:
 
     uint32_t m_id = 0;
 
+    bool m_isRender = false;
 protected:
     std::unordered_map<std::string, std::shared_ptr<NodeFieldBase>> m_fields;
 };

@@ -9,7 +9,7 @@ NodeItem::NodeItem(const std::shared_ptr<Node> &t_node, const ImVec2 t_position)
 void NodeItem::draw()
 {
     if (auto node = m_node.lock()) {
-        drawRect(node->name());
+        drawRect(node->name(), node->isRender());
 		drawIOs(node->numInputs(), node->numOutputs());
     }
 }
@@ -68,11 +68,11 @@ ImVec2 NodeItem::getOutputIOPosition(uint32_t index) const
 	};
 }
 
-void NodeItem::drawRect(const std::string& t_nodeName) {
+void NodeItem::drawRect(const std::string& t_nodeName, const bool isRender) {
     ImVec2 nodeEnd = m_position + m_size;
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
-	drawList->AddRectFilled(m_position, nodeEnd, m_color, 4.0f);
+	drawList->AddRectFilled(m_position, nodeEnd, isRender ? m_renderColor : m_color, 4.0f);
 	drawList->AddRect(m_position, nodeEnd, m_isSelected ? m_selectedOutlineColor : m_outlineColor, 4.0f, 0, 2.0f);
 
 	ImVec2 textSize = ImGui::CalcTextSize(t_nodeName.c_str());

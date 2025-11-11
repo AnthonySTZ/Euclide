@@ -30,6 +30,8 @@ private:
     std::unordered_map<std::uint32_t, std::shared_ptr<Node>> m_nodes;
     std::unordered_map<std::string, std::uint32_t> m_nodesIds;
 
+    std::weak_ptr<Node> m_currentRenderNode;
+
 };
 
 }

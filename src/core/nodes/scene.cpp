@@ -29,6 +29,12 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
 
 void Scene::cookNode(const std::shared_ptr<Node> &t_node, const uint32_t t_index)
 {
+    if (auto currentRenderNode = m_currentRenderNode.lock()){
+        currentRenderNode->setIsRender(false);
+    }
+
+    t_node->setIsRender(true);
+    m_currentRenderNode = t_node;
     onMeshUpdate.notify(t_node->cook(t_index));
 }
 
