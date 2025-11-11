@@ -106,6 +106,9 @@ void NodeGraph::handleNodeInteractions() {
         leftMouseReleased();
     }
 
+    if (ImGui::IsKeyReleased(ImGuiKey_R)) {
+        renderSelectedNode();
+    }
 }
 
 void NodeGraph::leftMouseReleased() {
@@ -170,6 +173,14 @@ void NodeGraph::refreshHoveredNode() {
             m_nodeHovered = nodeItem;
             return;
         }
+    }
+}
+
+void NodeGraph::renderSelectedNode() {
+    if(m_selectedNodes.size() == 0) return;
+    if (auto scene = m_scene.lock()){
+        auto nodeItem = m_selectedNodes.begin()->get();
+        scene->cookNode(nodeItem->node());
     }
 }
 

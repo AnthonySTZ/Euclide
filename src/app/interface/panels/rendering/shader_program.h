@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <string>
 
+#include "py.h"
+
 namespace butter {
 
 class ShaderProgram {
@@ -20,6 +22,7 @@ public:
     ~ShaderProgram();
 
     void use() const;
+    void bindUniform(const char* t_name, const py::mat4& t_value);
 
 private:
     static const std::string readFile(const std::string &t_filepath);

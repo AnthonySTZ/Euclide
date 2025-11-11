@@ -56,6 +56,12 @@ void ShaderProgram::use() const {
     glUseProgram(m_id);
 }
 
+void ShaderProgram::bindUniform(const char *t_name, const py::mat4 &t_value)
+{
+    GLuint location = glGetUniformLocation(m_id, t_name);
+    glUniformMatrix4fv(location, 1, GL_TRUE, t_value.data());
+}
+
 const uint32_t ShaderProgram::createShader(const char *t_shaderSrc, GLenum t_type) {
     const uint32_t shader = glCreateShader(t_type);
     glShaderSource(shader, 1, &t_shaderSrc, 0);

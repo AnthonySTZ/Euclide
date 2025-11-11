@@ -37,6 +37,8 @@ private:
     void leftMouseDown();
     void refreshHoveredNode();
 
+    void renderSelectedNode();
+
     IOClickedInfos isHoveredIO();
     void addConnection(const IOClickedInfos &t_infos);
 

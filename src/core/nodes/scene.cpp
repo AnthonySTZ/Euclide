@@ -27,6 +27,11 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
     });
 }
 
+void Scene::cookNode(const std::shared_ptr<Node> &t_node, const uint32_t t_index)
+{
+    onMeshUpdate.notify(t_node->cook(t_index));
+}
+
 /**
  * @brief Remove a node from the scene based on its name
  * 

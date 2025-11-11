@@ -49,7 +49,7 @@ private:
     ShaderProgram m_pointShaderProgram;
     ShaderProgram m_edgeShaderProgram;
 
-    FrameBuffer m_frameBuffer;
+    FrameBuffer m_frameBuffer{};
     std::shared_ptr<Camera> m_camera;
 };
 
