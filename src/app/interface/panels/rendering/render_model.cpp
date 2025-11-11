@@ -150,7 +150,8 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 
 void RenderModel::draw() {
     glBindVertexArray(m_vao);
-    glDrawElements(GL_TRIANGLES, m_numOfVertexIndices, GL_UNSIGNED_INT, nullptr);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
+    glDrawElements(GL_TRIANGLES, m_numOfVertexIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

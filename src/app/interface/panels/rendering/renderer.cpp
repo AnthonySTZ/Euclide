@@ -22,13 +22,13 @@ void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight)
     bindCameraUniforms(m_faceShaderProgram);
     m_model.draw();
 
-    // m_edgeShaderProgram.use();
-    // bindCameraUniforms(m_edgeShaderProgram);
-    // m_model.drawEdges();
+    m_edgeShaderProgram.use();
+    bindCameraUniforms(m_edgeShaderProgram);
+    m_model.drawEdges();
     
-    // m_pointShaderProgram.use();
-    // bindCameraUniforms(m_pointShaderProgram);
-    // m_model.drawPoints();
+    m_pointShaderProgram.use();
+    bindCameraUniforms(m_pointShaderProgram);
+    m_model.drawPoints();
 
     endFrame(t_screenWidth, t_screenHeight);
 }
