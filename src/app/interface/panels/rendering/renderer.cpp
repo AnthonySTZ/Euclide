@@ -5,22 +5,19 @@
 namespace butter {
 
 Renderer::Renderer()
-    : m_faceShaderProgram(std::make_unique<ShaderProgram>("shaders/faceStandard.vert", "shaders/faceStandard.frag")),
-      m_pointShaderProgram(std::make_unique<ShaderProgram>("shaders/pointStandard.vert", "shaders/pointStandard.frag")),
-      m_edgeShaderProgram(std::make_unique<ShaderProgram>("shaders/edgeStandard.vert", "shaders/edgeStandard.frag")),
-      m_frameBuffer(std::make_unique<FrameBuffer>()) {
+    : m_faceShaderProgram(ShaderProgram("shaders/faceStandard.vert", "shaders/faceStandard.frag")),
+      m_pointShaderProgram(ShaderProgram("shaders/pointStandard.vert", "shaders/pointStandard.frag")),
+      m_edgeShaderProgram(ShaderProgram("shaders/edgeStandard.vert", "shaders/edgeStandard.frag")),
+      m_frameBuffer(FrameBuffer()) {
     glEnable(GL_PROGRAM_POINT_SIZE);
     glLineWidth(m_edgesLineWidth);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 }
 
-void Renderer::useShader(const std::string &t_vertexFile, const std::string &t_fragmentFile) {
-    m_faceShaderProgram = std::make_unique<ShaderProgram>(t_vertexFile, t_fragmentFile);
-}
-
 void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     beginFrame(t_screenWidth, t_screenHeight);
+
     clearFrame();
     endFrame(t_screenWidth, t_screenHeight);
 }
@@ -33,18 +30,18 @@ float Renderer::getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_sc
 };
 
 void Renderer::resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
-    m_frameBuffer->resize(t_screenWidth, t_screenHeight);
+    m_frameBuffer.resize(t_screenWidth, t_screenHeight);
 }
 
 void Renderer::beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
-    m_frameBuffer->bind();
+    m_frameBuffer.bind();
     glViewport(0, 0, t_screenWidth, t_screenHeight);
 }
 
 void Renderer::endFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     glUseProgram(0);
-    m_frameBuffer->blit(t_screenWidth, t_screenHeight);
-    m_frameBuffer->unbind();
+    m_frameBuffer.blit(t_screenWidth, t_screenHeight);
+    m_frameBuffer.unbind();
 }
 
 void Renderer::clearFrame() const noexcept {

@@ -3,6 +3,7 @@
 #include "interface/utils/imgui_utils.h"
 #include "framebuffer.h"
 #include "shader_program.h"
+#include "camera.h"
 
 #include <cstdint>
 #include <memory>
@@ -25,7 +26,7 @@ public:
 
     void draw(const uint32_t t_width, const uint32_t t_height);
     ImTextureID getRenderTexture() const {
-        return (ImTextureID)(intptr_t)m_frameBuffer->getRenderTexture();
+        return (ImTextureID)(intptr_t)m_frameBuffer.getRenderTexture();
     }
 
     void resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
@@ -34,6 +35,8 @@ private:
     void beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
     void endFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
     
+    void bindCameraUniforms(ShaderProgram& t_shaderProgram);
+
     void clearFrame() const noexcept;
     
     float getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const;
@@ -42,11 +45,12 @@ private:
 
     const float m_edgesLineWidth = 1.0f;
 
-    std::unique_ptr<ShaderProgram> m_faceShaderProgram;
-    std::unique_ptr<ShaderProgram> m_pointShaderProgram;
-    std::unique_ptr<ShaderProgram> m_edgeShaderProgram;
+    ShaderProgram m_faceShaderProgram;
+    ShaderProgram m_pointShaderProgram;
+    ShaderProgram m_edgeShaderProgram;
 
-    std::unique_ptr<FrameBuffer> m_frameBuffer;
+    FrameBuffer m_frameBuffer;
+    std::shared_ptr<Camera> m_camera;
 };
 
 }
