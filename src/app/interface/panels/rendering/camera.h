@@ -41,7 +41,7 @@ private:
     py::mat4 m_projectionMatrix{1.f};
     py::mat4 m_viewMatrix{1.f};
 
-    py::vec3 m_cameraPosition{0.f, 0.f, 3.f};
+    py::vec3 m_cameraPosition{0.f, 1.f, 3.f};
     py::vec3 m_targetPosition{0.f};
     py::quat m_orientation{}; // Camera orientation as a quaternion
 

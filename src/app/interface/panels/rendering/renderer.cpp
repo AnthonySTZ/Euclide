@@ -34,6 +34,9 @@ float Renderer::getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_sc
 
 void Renderer::resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     m_frameBuffer.resize(t_screenWidth, t_screenHeight);
+    if (auto camera = m_camera.lock()) {
+        camera->updateAspectRatio(getAspectRatio(t_screenWidth, t_screenHeight));
+    }
 }
 
 void Renderer::updateMesh(std::shared_ptr<Mesh> t_mesh)
