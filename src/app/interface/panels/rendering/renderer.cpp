@@ -36,6 +36,11 @@ void Renderer::resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_
     m_frameBuffer.resize(t_screenWidth, t_screenHeight);
 }
 
+void Renderer::updateMesh(std::shared_ptr<Mesh> t_mesh)
+{
+    m_model.updateWithMesh(t_mesh);
+}
+
 void Renderer::beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
     m_frameBuffer.bind();
     glViewport(0, 0, t_screenWidth, t_screenHeight);

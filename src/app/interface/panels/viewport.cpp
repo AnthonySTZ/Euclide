@@ -6,7 +6,11 @@ Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
     : m_scene(t_scene), m_renderer(std::make_unique<Renderer>())
 {
     if (auto scene = m_scene.lock()) {
-
+        scene->onMeshUpdate.subscribe(
+            [this](std::shared_ptr<Mesh> t_mesh) {
+                m_renderer->updateMesh(t_mesh);
+            }
+        );
     }
 }
 

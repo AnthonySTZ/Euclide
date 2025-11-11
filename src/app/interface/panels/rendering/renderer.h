@@ -5,6 +5,8 @@
 #include "shader_program.h"
 #include "camera.h"
 
+#include "render_model.h"
+
 #include <cstdint>
 #include <memory>
 
@@ -22,14 +24,14 @@ public:
     Renderer(Renderer &&) noexcept = default;
     Renderer &operator=(Renderer &&) noexcept = default;
 
-    void useShader(const std::string &t_vertexFile, const std::string &t_fragmentFile);
-
     void draw(const uint32_t t_width, const uint32_t t_height);
     ImTextureID getRenderTexture() const {
         return (ImTextureID)(intptr_t)m_frameBuffer.getRenderTexture();
     }
 
     void resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
+
+    void updateMesh(std::shared_ptr<Mesh> t_mesh);
 
 private:
     void beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
@@ -38,6 +40,7 @@ private:
     void bindCameraUniforms(ShaderProgram& t_shaderProgram);
 
     void clearFrame() const noexcept;
+
     
     float getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const;
 
@@ -51,6 +54,8 @@ private:
 
     FrameBuffer m_frameBuffer{};
     std::shared_ptr<Camera> m_camera;
+
+    RenderModel m_model;
 };
 
 }
