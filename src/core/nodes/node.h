@@ -23,6 +23,8 @@ public:
     std::shared_ptr<Mesh> cook(const size_t t_index);
     void setInput(const size_t t_index, const std::shared_ptr<Node> &t_sourceNode, const size_t t_sourceIndex = 0);
     void deleteInputConnection(const size_t t_index);
+    void deleteOutputConnections(const size_t t_index);
+    void clearConnections();
     void setDirty();
     
     void addField(const std::string& t_name, std::shared_ptr<NodeFieldBase> t_field);

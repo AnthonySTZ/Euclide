@@ -77,6 +77,27 @@ void Node::deleteInputConnection(const size_t t_index)
             sourceOutputConnections.end()
         );
         onRemoveInput.notify(sourceNode->id(), m_id, t_index);
+        setDirty();
+    }
+}
+
+void Node::deleteOutputConnections(const size_t t_index) {
+    if (t_index >= m_outputConnections.size()) return;
+    auto connectionsCopy = m_outputConnections[t_index];
+    for(auto conn : connectionsCopy) {
+        if (auto destNode = conn->destNode.lock()) {
+            destNode->deleteInputConnection(conn->destIndex);
+        }
+    }
+}
+
+void Node::clearConnections()
+{
+    for (size_t inputIndex = 0; inputIndex < m_inputConnections.size(); ++inputIndex){
+        deleteInputConnection(inputIndex);
+    }
+    for (size_t outputIndex = 0; outputIndex < m_outputConnections.size(); ++outputIndex){
+        deleteOutputConnections(outputIndex);
     }
 }
 
