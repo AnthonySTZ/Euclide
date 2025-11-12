@@ -1,7 +1,5 @@
 #include "node_graph.h"
 
-#include "nodes/geometry/cube.h"
-
 namespace butter {
 
 NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
@@ -51,6 +49,7 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
 void NodeGraph::draw()
 {
     beginTab("Node Graph", m_padding);
+    createNodeMenu();
 
     handleInputs();
     
@@ -78,10 +77,42 @@ void NodeGraph::handleCreateNode() {
 	ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
     ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
     if(ImGui::IsItemHovered() && (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsKeyPressed(ImGuiKey_Tab)) ) {
-        if (auto scene = m_scene.lock()) {
-            scene->addNode(std::make_shared<Cube>());
-        }
+        ImGui::OpenPopup("node_menu");
     }
+}
+
+void NodeGraph::createNodeMenu() {
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, IM_COL32(70, 70, 70, 255));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5.0f, 5.0f));
+
+	if (ImGui::BeginPopup("node_menu")) {
+		const auto& menuItems = NodesInfo::getMenuItems();
+        for (auto& [menuName, items] : menuItems) {
+            if (ImGui::BeginMenu(menuName.c_str())) {
+                drawNodesItems(items);
+                ImGui::EndMenu();
+            }
+        }
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
+}
+
+void NodeGraph::drawNodesItems(const std::vector<NodeMenuItem>& items) {
+
+	for (size_t i = 0; i < items.size(); ++i) {
+		const auto& item = items[i];
+		if (ImGui::MenuItem(item.name.c_str(), nullptr)) {
+            if (auto scene = m_scene.lock()) {
+                scene->addNode(item.createNode());
+            }
+		}
+		if (i < items.size() - 1) {
+			ImGui::Separator();
+		}
+	}
 }
 
 /**

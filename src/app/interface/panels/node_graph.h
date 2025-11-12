@@ -5,6 +5,7 @@
 #include "graph/node_item.h"
 #include "graph/connection_item.h"
 
+#include "nodes/nodes_info.h"
 #include <set>
 
 namespace butter {
@@ -31,6 +32,8 @@ public:
 private:
     void handleInputs();
     void handleCreateNode();
+    void createNodeMenu();
+    void drawNodesItems(const std::vector<NodeMenuItem> &items);
     void handleNodeInteractions();
     void leftMouseReleased();
     void handleNodeClicked();

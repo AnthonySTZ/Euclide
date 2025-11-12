@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "nodes/geometry/cube.h"
+#include "nodes/primitive/cube.h"
 
 #include <memory>
 

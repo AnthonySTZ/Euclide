@@ -7,10 +7,13 @@ add_library(core STATIC
 
     nodes/node.cpp
     nodes/scene.cpp
+    nodes/nodes_info.cpp
 
     fields/node_field.cpp
 
-    nodes/geometry/cube.cpp
+    nodes/primitive/cube.cpp
+    
+    nodes/geometry/transform.cpp
 )
 
 target_include_directories(core
