@@ -2,8 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "py.h"
-
 #include "geometry/mesh.h"
 #include <memory>
 

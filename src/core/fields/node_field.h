@@ -3,6 +3,8 @@
 #include "utils/observer.h"
 
 namespace butter {
+    
+using vec3 = std::array<float, 3>;
 
 class NodeFieldBase {
 public:
