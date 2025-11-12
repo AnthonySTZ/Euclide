@@ -3,9 +3,12 @@
 #include "panel.h"
 #include "nodes/scene.h"
 #include "graph/node_item.h"
+#include "graph/cutting_line.h"
 #include "graph/connection_item.h"
 
 #include "nodes/nodes_info.h"
+
+#include "interface/utils/fixed_queue.h"
 #include <set>
 
 namespace butter {
@@ -49,6 +52,8 @@ private:
 
     void handleDragGraph();
     void handleKeyInput();
+    void addCuttingLine();
+    void drawCuttingLines();
     void removeSelectedNodes();
     void drawConnections();
     void drawNodes();
@@ -70,6 +75,8 @@ private:
     std::vector<std::shared_ptr<ConnectionItem>> m_nodeConnections;
 
     std::unique_ptr<ConnectionItem> m_currentConnection;
+
+    FixedQueue<CuttingLine> m_cuttingsLines{200};
 };
 
 }

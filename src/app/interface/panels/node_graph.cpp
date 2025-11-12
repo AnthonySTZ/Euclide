@@ -294,11 +294,33 @@ void NodeGraph::handleDragGraph() {
 void NodeGraph::handleKeyInput() {
 
     bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    if (!isWindowHovered) return;
     
-    if (ImGui::IsKeyPressed(ImGuiKey_Delete) && isWindowHovered) {
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete)) {
         removeSelectedNodes();
     }
 
+    if (ImGui::IsKeyDown(ImGuiKey_Y)) {
+        addCuttingLine();
+        drawCuttingLines();
+    } else if (ImGui::IsKeyReleased(ImGuiKey_Y)){
+        m_cuttingsLines.clear();
+    }
+
+}
+
+void NodeGraph::addCuttingLine() {
+    ImGuiIO& io = ImGui::GetIO();
+    m_cuttingsLines.push(CuttingLine{
+        io.MousePosPrev, io.MousePos
+    });
+}
+
+void NodeGraph::drawCuttingLines()
+{
+    for (const auto& line: m_cuttingsLines) {
+        line.draw();
+    }
 }
 
 void NodeGraph::removeSelectedNodes() {
