@@ -303,6 +303,7 @@ void NodeGraph::handleKeyInput() {
     if (ImGui::IsKeyDown(ImGuiKey_Y)) {
         addCuttingLine();
         drawCuttingLines();
+        checkCutConnection();
     } else if (ImGui::IsKeyReleased(ImGuiKey_Y)){
         m_cuttingsLines.clear();
     }
@@ -320,6 +321,18 @@ void NodeGraph::drawCuttingLines()
 {
     for (const auto& line: m_cuttingsLines) {
         line.draw();
+    }
+}
+
+void NodeGraph::checkCutConnection() {
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.MousePos == io.MousePosPrev) return;
+
+    for (const auto& connection : m_nodeConnections) {
+        if (lineIntersect(connection->sourcePosition(), connection->destinationPosition(), io.MousePos, io.MousePosPrev)) {
+            connection->deleteConnection();
+            break;
+        }
     }
 }
 

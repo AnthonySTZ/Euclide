@@ -55,3 +55,11 @@ static int StringImGuiCallBack(ImGuiInputTextCallbackData *data) {
     }
     return 0;
 }
+
+static bool ccw(ImVec2 A, ImVec2 B, ImVec2 C) {
+	return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+}
+
+static bool lineIntersect(ImVec2 A, ImVec2 B, ImVec2 C, ImVec2 D) {
+	return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
+}

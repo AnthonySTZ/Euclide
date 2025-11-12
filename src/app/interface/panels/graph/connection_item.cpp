@@ -2,11 +2,11 @@
 
 namespace butter {
 
-void ConnectionItem::draw() const
+void ConnectionItem::draw()
 {
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 m_start = io.MousePos;
-    ImVec2 m_end = io.MousePos;
+    m_start = io.MousePos;
+    m_end = io.MousePos;
 
     if (auto sourceNode = m_sourceNode.lock()) {
         m_start = sourceNode->getOutputIOPosition(m_sourceIndex);
@@ -29,6 +29,13 @@ void ConnectionItem::setDestination(const std::shared_ptr<NodeItem> &t_destNode,
 {
     m_destNode = t_destNode;
     m_destIndex = t_destIndex;
+}
+
+void ConnectionItem::deleteConnection()
+{
+    if (auto destNode = m_destNode.lock()) {
+        destNode->node()->deleteInputConnection(m_destIndex);
+    }
 }
 
 }

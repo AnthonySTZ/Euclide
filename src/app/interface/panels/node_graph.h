@@ -54,6 +54,7 @@ private:
     void handleKeyInput();
     void addCuttingLine();
     void drawCuttingLines();
+    void checkCutConnection();
     void removeSelectedNodes();
     void drawConnections();
     void drawNodes();
