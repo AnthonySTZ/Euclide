@@ -16,6 +16,7 @@ class Node : public std::enable_shared_from_this<Node> {
 public:
     Observer<uint32_t, uint32_t, uint32_t, uint32_t> onSetInput; // source_id, source_index, dest_id, dest_index
     Observer<uint32_t, uint32_t, uint32_t> onRemoveInput; // source_id, dest_id, dest_index
+    Observer<std::shared_ptr<Node>> onDirty;
 
     Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name = "Unknown");
 

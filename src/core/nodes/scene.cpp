@@ -27,6 +27,14 @@ void Scene::addNode(const std::shared_ptr<Node>& t_node)
     t_node->onRemoveInput.subscribe([this](const uint32_t t_sourceId, const uint32_t t_destId, const uint32_t t_destIndex) {
         onConnectionRemoved.notify(t_sourceId, t_destId, t_destIndex);
     });
+
+    t_node->onDirty.subscribe([this](const std::shared_ptr<Node> t_dirtyNode) {
+        if (auto renderNode = m_currentRenderNode.lock()) {
+            if (renderNode == t_dirtyNode) {
+                onMeshUpdate.notify(renderNode->cook(0));
+            }
+        }
+    });
 }
 
 void Scene::cookNode(const std::shared_ptr<Node> &t_node, const uint32_t t_index)

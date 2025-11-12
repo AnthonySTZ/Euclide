@@ -95,6 +95,7 @@ void Node::setDirty()
             }
         }
     }
+    onDirty.notify(shared_from_this());
 }
 
 void Node::addField(const std::string &t_name, std::shared_ptr<NodeFieldBase> t_field)
