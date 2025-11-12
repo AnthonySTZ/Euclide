@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include <iostream>
+
 namespace butter {
 
 /**
@@ -54,6 +56,10 @@ void Scene::removeNode(const std::string &t_name)
     m_nodes.erase(it_id->second);
 
     onNodeRemoved.notify(it_id->second);
+
+    if (m_currentRenderNode.lock() == it_node->second) {
+        onMeshUpdate.notify(std::make_shared<Mesh>());
+    }
 }
 
 /**
