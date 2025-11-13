@@ -45,7 +45,8 @@ void Node::setInput(const size_t t_index, const std::shared_ptr<Node> &t_sourceN
     onSetInput.notify(t_sourceNode->id(), t_sourceIndex, m_id, t_index);
 }
 
-bool Node::isInInputsHierarchy(const std::shared_ptr<Node> t_node) const noexcept {
+bool Node::isInInputsHierarchy(const std::shared_ptr<Node> t_node) const noexcept
+{
     for (const auto& conn: m_inputConnections) {
         if (conn == nullptr) continue;
         if (const auto sourceNode = conn->sourceNode.lock()) {
@@ -121,12 +122,15 @@ void Node::setDirty()
 
 void Node::addField(const std::string &t_name, std::shared_ptr<NodeFieldBase> t_field)
 {
+    if (m_fields.find(t_name) != m_fields.end()) return; //Field name already exists
+
     t_field->onValueChanged.subscribe(
         [this]() {
             setDirty();
         }
     );
     m_fields.emplace(t_name, t_field);
+    m_fieldsOrder.push_back({t_name, t_field});
 }
 
 /**

@@ -11,6 +11,8 @@
 
 namespace butter {
 
+using FieldEntry = std::pair<std::string, std::shared_ptr<NodeFieldBase>>;
+
 class Node : public std::enable_shared_from_this<Node> {
 
 public:
@@ -45,6 +47,8 @@ public:
         return std::dynamic_pointer_cast<T>(it->second);
     }
     
+    std::vector<FieldEntry> fields() const noexcept { return m_fieldsOrder; }
+
     void setId(const uint32_t t_id) { m_id = t_id; }
     uint32_t id() const noexcept { return m_id; }
     
@@ -67,6 +71,7 @@ private:
     bool m_isRender = false;
 protected:
     std::unordered_map<std::string, std::shared_ptr<NodeFieldBase>> m_fields;
+    std::vector<FieldEntry> m_fieldsOrder;
 };
 
 }
