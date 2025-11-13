@@ -3,6 +3,10 @@
 #include "panels/panel.h"
 #include "nodes/scene.h"
 
+#include "panels/viewport.h"
+#include "panels/node_graph.h"
+#include "panels/parameters.h"
+
 #include <vector>
 #include <memory>
 
@@ -23,6 +27,7 @@ public:
     void addPanel(std::shared_ptr<Panel> t_panel);
     void addNodeGraph();
     void addViewport();
+    void addParameters();
 
     void draw() const;
 
@@ -39,6 +44,10 @@ private:
 
     std::weak_ptr<Scene> m_scene;
     std::vector<std::shared_ptr<Panel>> m_panels;
+
+    std::vector<std::shared_ptr<Viewport>> m_viewports;
+    std::vector<std::shared_ptr<NodeGraph>> m_nodeGraphs;
+    std::vector<std::shared_ptr<Parameters>> m_parameters;
 
     static constexpr struct { float r, g, b, a; } s_bgColor = {0.3f, 0.3f, 0.3f, 1.0f};
 };

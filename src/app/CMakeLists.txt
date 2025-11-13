@@ -10,7 +10,7 @@ add_library(app_lib STATIC
     interface/panels/graph/node_item.cpp
     interface/panels/graph/connection_item.cpp
     interface/panels/graph/cutting_line.cpp
-
+    
     interface/panels/viewport.cpp
     interface/panels/rendering/renderer.cpp
     interface/panels/rendering/framebuffer.cpp
@@ -18,6 +18,7 @@ add_library(app_lib STATIC
     interface/panels/rendering/render_model.cpp
     interface/panels/rendering/camera.cpp
     
+    interface/panels/parameters.cpp
     )
 
 target_include_directories(app_lib

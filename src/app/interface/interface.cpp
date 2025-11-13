@@ -1,8 +1,5 @@
 #include "interface.h"
 
-#include "panels/node_graph.h"
-#include "panels/viewport.h"
-
 namespace butter {
 
 Interface::Interface(GLFWwindow *t_window, const std::shared_ptr<Scene>& t_scene)
@@ -63,12 +60,14 @@ void Interface::addPanel(std::shared_ptr<Panel> t_panel) {
 
 void Interface::addNodeGraph()
 {
-    addPanel(std::make_shared<NodeGraph>(scene()));
+    const auto& nodeGraph = m_nodeGraphs.emplace_back(std::make_shared<NodeGraph>(scene()));
+    m_panels.push_back(nodeGraph);
 }
 
 void Interface::addViewport()
 {
-    addPanel(std::make_shared<Viewport>(scene()));
+    const auto& viewport = m_viewports.emplace_back(std::make_shared<Viewport>(scene()));
+    m_panels.push_back(viewport);
 }
 
 void Interface::draw() const {
