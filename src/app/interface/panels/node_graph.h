@@ -7,6 +7,7 @@
 #include "graph/connection_item.h"
 
 #include "nodes/nodes_info.h"
+#include "utils/observer.h"
 
 #include "interface/utils/fixed_queue.h"
 #include <set>
@@ -27,6 +28,8 @@ struct IOClickedInfos {
 class NodeGraph : public Panel {
 
 public:
+    Observer<std::weak_ptr<Node>> onNodeSelected; 
+
     NodeGraph(const std::shared_ptr<Scene>& t_scene);
     ~NodeGraph() = default;
 

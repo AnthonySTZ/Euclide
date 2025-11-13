@@ -60,14 +60,20 @@ void Interface::addPanel(std::shared_ptr<Panel> t_panel) {
 
 void Interface::addNodeGraph()
 {
-    const auto& nodeGraph = m_nodeGraphs.emplace_back(std::make_shared<NodeGraph>(scene()));
-    m_panels.push_back(nodeGraph);
+    m_nodeGraph = std::make_shared<NodeGraph>(scene());
+    m_panels.push_back(m_nodeGraph);
 }
 
 void Interface::addViewport()
 {
-    const auto& viewport = m_viewports.emplace_back(std::make_shared<Viewport>(scene()));
-    m_panels.push_back(viewport);
+    m_viewport = std::make_shared<Viewport>(scene());
+    m_panels.push_back(m_viewport);
+}
+
+void Interface::addParameters()
+{
+    m_parameters = std::make_shared<Parameters>(m_nodeGraph);
+    m_panels.push_back(m_parameters);
 }
 
 void Interface::draw() const {

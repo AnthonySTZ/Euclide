@@ -8,6 +8,7 @@ int main(){
     
     engine.interface().addNodeGraph();
     engine.interface().addViewport();
+    engine.interface().addParameters();
     
     engine.mainLoop();
     return 0;

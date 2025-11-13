@@ -171,6 +171,7 @@ void NodeGraph::handleNodeClicked() {
     } else {
         clearSelection();
         addToSelection(m_nodeHovered);
+        onNodeSelected.notify(m_nodeHovered->node());
     }
 }
 
@@ -377,6 +378,7 @@ void NodeGraph::clearSelection()
         node->setSelected(false);
     }
     m_selectedNodes.clear();
+    onNodeSelected.notify(std::weak_ptr<Node>());
 }
 
 /**

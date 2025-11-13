@@ -13,9 +13,12 @@ public:
     ~Parameters() = default;
 
     void draw() override;
-    
+
 private:
+    
+    void drawParameters();
     std::weak_ptr<NodeGraph> m_nodeGraph;
+    std::weak_ptr<Node> m_node;
 };
 
 }
