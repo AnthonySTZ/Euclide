@@ -28,10 +28,7 @@ void Parameters::draw()
 void Parameters::drawParameters() {
     FieldDrawer drawer;
     if (auto node = m_node.lock()) {
-        ImGui::Text("Node Name :");
-        ImGui::SameLine();
-        ImGui::Text(node->name().c_str());
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
+        drawTitleName(node->name());
         
         if (ImGui::BeginTable("params", 2, ImGuiTableFlags_SizingFixedFit))
         {
@@ -44,17 +41,22 @@ void Parameters::drawParameters() {
                 
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
-
                 ImGui::TextUnformatted(displayName.c_str());
-
-                ImGui::TableSetColumnIndex(1);
                 
+                ImGui::TableSetColumnIndex(1);
                 field->accept(name, drawer);
             }
             
             ImGui::EndTable();
         }
     }
+}
+
+void Parameters::drawTitleName(const std::string& t_title) {
+    ImGui::Text("Name: ");
+    ImGui::SameLine();
+    ImGui::Text(t_title.c_str());
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
 }
 
 void Parameters::pushStyle() {

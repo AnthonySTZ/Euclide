@@ -16,6 +16,7 @@ public:
 
 private:
     void drawParameters();
+    void drawTitleName(const std::string &t_title);
     void pushStyle();
     void popStyle();
 
