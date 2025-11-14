@@ -13,7 +13,6 @@ public:
     void visit(const std::string& t_name, NodeField<float>& t_field) override {
     }
     void visit(const std::string& t_name, NodeField<float3>& t_field) override {
-        ImGui::Text(t_name.c_str());
         drawFloat3Field(t_name, t_field);
     }
 

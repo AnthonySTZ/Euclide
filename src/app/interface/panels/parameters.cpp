@@ -32,6 +32,7 @@ void Parameters::drawParameters() {
             ImGui::Text("Node Name :");
             ImGui::SameLine();
             ImGui::Text(node->name().c_str());
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
             field->accept(name, drawer);
         }
     }

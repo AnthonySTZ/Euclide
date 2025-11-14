@@ -22,6 +22,8 @@ private:
 
     std::weak_ptr<NodeGraph> m_nodeGraph;
     std::weak_ptr<Node> m_node;
+
+    static constexpr float s_titleSpacing = 6.0f;
 };
 
 }
