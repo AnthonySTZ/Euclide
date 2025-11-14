@@ -20,8 +20,14 @@ class NodeFieldBase {
 public:
     virtual ~NodeFieldBase() = default;
     virtual void accept(const std::string& t_name, NodeFieldVisitor& t_visitor) = 0;
+    void setMetadata(const NodeFieldMetadata& t_meta) { m_metadata = t_meta; }
+    const NodeFieldMetadata& metadata() const noexcept { return m_metadata; }
+
 
     Observer<> onValueChanged;
+
+private:
+    NodeFieldMetadata m_metadata;
 };
 
 template <typename T>
@@ -41,12 +47,8 @@ public:
         t_visitor.visit(t_name, *this);
     }
 
-    const NodeFieldMetadata& metadata() const noexcept { return m_metadata; }
-    void setMetadata(const NodeFieldMetadata& t_meta) { m_metadata = t_meta; } 
-
 protected:
     T m_value;
-    NodeFieldMetadata m_metadata;
 };
 
 
