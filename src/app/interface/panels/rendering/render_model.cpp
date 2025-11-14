@@ -1,8 +1,13 @@
 #include "render_model.h"
 
+#include "interface/utils/hash.h"
+
 #include <numeric>
-#include <set>
+#include <unordered_set>
 #include <iostream>
+
+#include <chrono>
+
 namespace butter {
     
 RenderModel::RenderModel()
@@ -69,7 +74,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 {
     const Points& points = t_mesh->points;
     m_numOfPoints = points.size();
-
+    
     std::vector<RenderVertex> vertices;
     vertices.reserve(m_numOfPoints);
     for (size_t i = 0; i < m_numOfPoints; ++i) {
@@ -83,28 +88,24 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     }
     
     glBindVertexArray(m_vao);
-
+    
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
     
-    const std::vector<Vertex>& meshVertices = t_mesh->vertices;
-
     std::vector<uint32_t> vertexIndices;
-    for(const Primitive& prim : t_mesh->primitives){
-        const std::vector<uint32_t>& primVertices = prim.vertices;
-        const size_t numOfPrimVertices = primVertices.size();
-        if (numOfPrimVertices <= 2) continue;
+    for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
+        const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
+        const size_t numOfPointIds = primPointIds.size();
+        if (numOfPointIds <= 2) continue;
 
-        for (size_t i = 1; i + 1 < numOfPrimVertices; ++i){
-            const uint32_t first = meshVertices[primVertices[0]].refPoint;
-            const uint32_t second = meshVertices[primVertices[i]].refPoint;
-            const uint32_t third = meshVertices[primVertices[i + 1]].refPoint;
-            vertexIndices.push_back(first);
-            vertexIndices.push_back(second);
-            vertexIndices.push_back(third);
+        for (size_t i = 1; i + 1 < numOfPointIds; ++i){
+            vertexIndices.push_back(primPointIds[0]);
+            vertexIndices.push_back(primPointIds[i]);
+            vertexIndices.push_back(primPointIds[i+1]);
         }
 
     }
+    
     m_numOfVertexIndices = vertexIndices.size();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(), GL_DYNAMIC_DRAW);
@@ -117,25 +118,31 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 
 
-    std::set<std::pair<uint32_t, uint32_t>> edges;
-    std::vector<uint32_t> edgeIndices;
-    
-    for(const Primitive& prim : t_mesh->primitives){
-        const std::vector<uint32_t>& primVertices = prim.vertices;
-        const size_t numOfPrimVertices = primVertices.size();
-        if (numOfPrimVertices <= 1) continue;
+    auto t1 = std::chrono::high_resolution_clock::now();
 
-        for (size_t i = 0; i < numOfPrimVertices; ++i){
-            const uint32_t first = meshVertices[primVertices[i]].refPoint;
-            const uint32_t second = meshVertices[primVertices[(i + 1) % numOfPrimVertices]].refPoint;
+    const std::vector<Vertex>& meshVertices = t_mesh->vertices;
+    std::unordered_set<std::pair<uint32_t, uint32_t>, EdgeHash> edges;
+    std::vector<uint32_t> edgeIndices;    
+    for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
+        const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
+        const size_t numOfPointIds = primPointIds.size();
+        if (numOfPointIds <= 1) continue;
 
-            if (edges.find({first, second}) != edges.end() || edges.find({second, first}) != edges.end()) continue;
-            edgeIndices.push_back(first);
-            edgeIndices.push_back(second);
-            edges.insert({first, second});
+        for (size_t i = 0; i < numOfPointIds; ++i){
+            uint32_t first = primPointIds[i];
+            uint32_t second = primPointIds[(i + 1) % numOfPointIds];
+
+            if (first > second) std::swap(first, second);
+
+            auto edge = std::make_pair(first, second);
+            if (edges.insert(edge).second){
+                edgeIndices.push_back(first);
+                edgeIndices.push_back(second);
+            }
         }
 
     }
+    auto t2 = std::chrono::high_resolution_clock::now();
 
     m_numOfEdgesIndices = edgeIndices.size();
 
@@ -145,6 +152,12 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
+
+
+   
+    auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    std::chrono::duration<double, std::milli> ms_double = t2 - t1;
+    std::cout << ms_int.count() << "ms\n";
 }
 
 
