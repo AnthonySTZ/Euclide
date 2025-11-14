@@ -22,3 +22,10 @@ target_include_directories(core
 )
 
 target_link_libraries(core PUBLIC)
+
+option(USE_SIMD "Enable SIMD optimizations" OFF)
+
+if (USE_SIMD)
+    target_compile_definitions(core PUBLIC USE_SIMD)
+    target_compile_options(core PUBLIC -mavx -mfma -msse3)
+endif()
