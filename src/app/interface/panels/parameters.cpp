@@ -37,6 +37,9 @@ void Parameters::drawParameters() {
 
             for(const auto& [name, field]: node->fields()) {
                 const NodeFieldMetadata& meta = field->metadata();
+                if (meta.hidden) {
+                    continue;
+                }
                 std::string displayName = meta.displayName.value_or(name);
                 
                 ImGui::TableNextRow();
