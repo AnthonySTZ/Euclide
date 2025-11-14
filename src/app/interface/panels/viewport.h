@@ -20,7 +20,7 @@ public:
 
 private:
     void handleMouse();
-    void moveCamera(const ImVec2 &t_dragDelta);
+    void moveCamera();
     void drawRender();
     void checkForResize();
     void drawInfos() const;
@@ -45,6 +45,10 @@ private:
     std::shared_ptr<Camera> m_camera;
 
     bool m_isItemHovered = false;
+
+    bool m_isLeftClicked = false;
+    bool m_isMiddleClicked = false;
+    bool m_isRightClicked = false;
 
 };
 

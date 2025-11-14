@@ -33,26 +33,51 @@ void Viewport::draw()
 }
 
 void Viewport::handleMouse() {
+
     if (m_isItemHovered) {
-        ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
-        moveCamera(dragDelta);
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+            m_isLeftClicked = true;
+        }
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+            m_isMiddleClicked = true;
+        }
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+            m_isRightClicked = true;
+        }
     }
+
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+        m_isLeftClicked = false;
+    }
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle)) {
+        m_isMiddleClicked = false;
+    }
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+        m_isRightClicked = false;
+    }
+
+    moveCamera();
+    
 }
 
-void Viewport::moveCamera(const ImVec2& t_dragDelta) {
-    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+void Viewport::moveCamera() {
+
+    if (m_isLeftClicked) {
+        ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
         ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
-        m_camera->orbit(-t_dragDelta.x, -t_dragDelta.y);
+        m_camera->orbit(-dragDelta.x, -dragDelta.y);
     }
 
-    if (ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
+    if (m_isMiddleClicked) {
+        ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
         ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
-        m_camera->pan(-t_dragDelta.x, t_dragDelta.y);
+        m_camera->pan(-dragDelta.x, dragDelta.y);
     }
 
-    if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+    if (m_isRightClicked) {
+        ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
         ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
-        m_camera->dolly(-t_dragDelta.y);
+        m_camera->dolly(-dragDelta.y);
     }
 }
 

@@ -81,6 +81,11 @@ private:
     std::unique_ptr<ConnectionItem> m_currentConnection;
 
     FixedQueue<CuttingLine> m_cuttingsLines{200};
-};
 
+
+    bool m_isLeftClicked = false;
+    bool m_isMiddleClicked = false;
+    bool m_isRightClicked = false;
+};
+    
 }

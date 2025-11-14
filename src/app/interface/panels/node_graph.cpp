@@ -123,21 +123,22 @@ void NodeGraph::drawNodesItems(const std::vector<NodeMenuItem>& items) {
 void NodeGraph::handleNodeInteractions() {
 
     bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-    if(!isWindowHovered) return;
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
+        m_isLeftClicked = true;
         refreshHoveredNode();
     }
+    
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+        leftMouseReleased();
+        m_isLeftClicked = false;
+    }
 
-    if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+    if (m_isLeftClicked) {
         leftMouseDown();
     }
 
-    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-        leftMouseReleased();
-    }
-
-    if (ImGui::IsKeyReleased(ImGuiKey_R)) {
+    if (ImGui::IsKeyReleased(ImGuiKey_R) && isWindowHovered) {
         renderSelectedNode();
     }
 }
@@ -175,26 +176,27 @@ void NodeGraph::handleNodeClicked() {
     }
 }
 
-void NodeGraph::leftMouseDown() {
+void NodeGraph::leftMouseDown() { 
     if (!m_nodeHovered) return;
     
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
-    if (m_isNodeDrag) {
-        if (!m_nodeHovered->isSelected()) {
-            m_nodeHovered->moveBy(dragDelta);
-            return;
-        }
 
-        for (auto node: m_selectedNodes){
-            node->moveBy(dragDelta);
+    if (!m_isNodeDrag) {
+        if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
+            m_isNodeDrag = true;
         }
+    }
+
+    if (!m_nodeHovered->isSelected()) {
+        m_nodeHovered->moveBy(dragDelta);
         return;
     }
 
-    if (std::abs(dragDelta.x) > 0.01 || std::abs(dragDelta.y) > 0.01) {
-        m_isNodeDrag = true;
+    for (auto node: m_selectedNodes){
+        node->moveBy(dragDelta);
     }
+    
 }
 
 void NodeGraph::refreshHoveredNode() {
