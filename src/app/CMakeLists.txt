@@ -19,6 +19,7 @@ add_library(app_lib STATIC
     interface/panels/rendering/camera.cpp
     
     interface/panels/parameters.cpp
+    interface/panels/fields/field_drawer.cpp
     )
 
 target_include_directories(app_lib

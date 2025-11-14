@@ -1,8 +1,7 @@
 #pragma once
 
 #include "fields/node_field.h"
-
-#include <memory>
+#include "interface/utils/imgui_utils.h"
 
 namespace butter {
 
@@ -15,13 +14,12 @@ public:
     }
     void visit(const std::string& t_name, NodeField<float3>& t_field) override {
         ImGui::Text(t_name.c_str());
-        float3 values = t_field.getValue();
-
-        const std::string sliderId = std::string("##slider_") + t_name;
-        if (ImGui::SliderFloat3(sliderId.c_str(), values.data(), 0, 10)) {
-            t_field.setValue(values);
-        }
+        drawFloat3Field(t_name, t_field);
     }
+
+
+private:
+    void drawFloat3Field(const std::string& t_name, NodeField<float3>& t_field);
 };  
 
 }
