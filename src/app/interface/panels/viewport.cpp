@@ -19,7 +19,6 @@ Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
 void Viewport::draw()
 {
     beginTab("Viewport", m_padding);
-    updateFps();
 
     m_windowPosition = ImGui::GetCursorPos();
     checkForResize();
@@ -103,22 +102,9 @@ void Viewport::checkForResize() {
 void Viewport::drawInfos() const
 {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddText(m_windowPosition + ImVec2(10, 10), IM_COL32(255, 255, 255, 255), m_fpsText.c_str());
-}
-
-void Viewport::updateFps() {
-    auto currentTime = std::chrono::steady_clock::now();
-    std::chrono::duration<float> delta = currentTime - m_lastTime;
-    float elapsedTime = delta.count();
-    m_frameCount++;
-
-    if (elapsedTime >= m_refreshFpsEvery) {
-        int fps = static_cast<uint32_t>(m_frameCount / elapsedTime);
-        m_fpsText = std::string("Fps: ") + std::to_string(fps);
-        
-        m_frameCount = 0;
-        m_lastTime = currentTime;
-    }
+    ImGuiIO& io = ImGui::GetIO();
+    std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
+    drawList->AddText(m_windowPosition + ImVec2(10, 10), IM_COL32(255, 255, 255, 255), fpsText.c_str());
 }
 
 }
