@@ -14,6 +14,7 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3> &
     
     ImGui::Text(displayName.c_str());
     ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10.0f);
 
     const std::string sliderId = std::string("##slider_") + t_name;
     if (ImGui::DragFloat3(sliderId.c_str(), values.data(), step, min, max)) {

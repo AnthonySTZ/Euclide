@@ -28,12 +28,14 @@ void Parameters::draw()
 void Parameters::drawParameters() {
     FieldDrawer drawer;
     if (auto node = m_node.lock()) {
+        ImGui::Text("Node Name :");
+        ImGui::SameLine();
+        ImGui::Text(node->name().c_str());
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
+        
         for(const auto& [name, field]: node->fields()) {
-            ImGui::Text("Node Name :");
-            ImGui::SameLine();
-            ImGui::Text(node->name().c_str());
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
             field->accept(name, drawer);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_fieldSpacing);
         }
     }
 }
