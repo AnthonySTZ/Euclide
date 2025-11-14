@@ -37,6 +37,7 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
 {
     auto output = std::make_shared<Mesh>();
     
+    float3 position = getField<Float3Field>("position")->getValue();
     float2 size = getField<Float2Field>("size")->getValue();
     const int2 divisions = getField<Int2Field>("divisions")->getValue();
 
@@ -46,13 +47,15 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     const float columnSpacing = size[0] / static_cast<float>(columns - 1);
     const float rowSpacing = size[1] / static_cast<float>(rows - 1);
 
-    output->points.reserve(rows * columns);
+    const float startX = position[0] - (size[0] * 0.5f);
+    const float startZ = position[2] - (size[1] * 0.5f);
 
+    output->points.reserve(rows * columns);
     for (size_t row = 0; row < rows; ++row) {
         for (size_t column = 0; column < columns; ++column) {
-            const float posX = static_cast<float>(column) * columnSpacing;
-            const float posZ = static_cast<float>(row) * rowSpacing;
-            output->addPoint(posX, 0, posZ);
+            const float offsetX = static_cast<float>(column) * columnSpacing;
+            const float offsetZ = static_cast<float>(row) * rowSpacing;
+            output->addPoint(startX + offsetX, position[1], startZ + offsetZ);
         }
     }
 
