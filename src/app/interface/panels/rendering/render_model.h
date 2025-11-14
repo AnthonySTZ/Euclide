@@ -13,6 +13,11 @@ struct RenderVertex {
     float normal[3];
 };
 
+struct Edge { 
+    uint32_t a, b;
+};
+inline Edge makeEdge(uint32_t a, uint32_t b) { return {std::min(a,b), std::max(a,b)}; }
+
 class RenderModel {
 
 public:

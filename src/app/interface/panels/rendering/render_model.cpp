@@ -3,8 +3,8 @@
 #include "interface/utils/hash.h"
 
 #include <numeric>
-#include <unordered_set>
 #include <iostream>
+#include <algorithm>
 
 #include <chrono>
 
@@ -72,8 +72,6 @@ void RenderModel::initBuffers() {
 
 void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
-
     const Points& points = t_mesh->points;
     m_numOfPoints = points.size();
     
@@ -99,8 +97,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
     
     std::vector<uint32_t> vertexIndices;
-    std::unordered_set<std::pair<uint32_t, uint32_t>, EdgeHash> edges;
-    std::vector<uint32_t> edgeIndices;
+    std::vector<Edge> edges;
     for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
         const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
         const size_t numOfPointIds = primPointIds.size();
@@ -111,12 +108,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
             uint32_t first = primPointIds[i];
             uint32_t second = primPointIds[(i + 1) % numOfPointIds];
 
-            if (first > second) std::swap(first, second);
-            auto edge = std::make_pair(first, second);
-            if (edges.insert(edge).second){
-                edgeIndices.push_back(first);
-                edgeIndices.push_back(second);
-            }
+            edges.push_back(makeEdge(first, second));
         }
 
         if (numOfPointIds <= 3) continue;
@@ -129,6 +121,12 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
         }
 
     }
+    std::sort(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){ 
+        return e1.a < e2.a || (e1.a==e2.a && e1.b < e2.b); 
+    });
+    edges.erase(std::unique(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){
+        return e1.a==e2.a && e1.b==e2.b;
+    }), edges.end());
     
     m_numOfVertexIndices = vertexIndices.size();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
@@ -140,19 +138,13 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 
-    m_numOfEdgesIndices = edgeIndices.size();
+    m_numOfEdgesIndices = edges.size() * 2;
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, edgeIndices.size() * sizeof(uint32_t), edgeIndices.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
-
-
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-    std::chrono::duration<double, std::milli> ms_double = t2 - t1;
-    std::cout << ms_int.count() << "ms\n";
 }
 
 
