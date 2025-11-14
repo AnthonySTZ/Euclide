@@ -31,6 +31,17 @@ struct Mesh {
         primitives.push_back({vertexIndices});
         return primitiveIndex;
     }
+
+    inline std::vector<uint32_t> getPointIndicesOfPrimitive(const uint32_t t_primitiveId) {
+        const Primitive& primitive = primitives[t_primitiveId];
+        
+        std::vector<uint32_t> pointIndices;
+        pointIndices.reserve(primitive.vertices.size());
+        for (uint32_t vertexIndex : primitive.vertices) {
+            pointIndices.push_back(vertices[vertexIndex].refPoint);
+        }
+        return pointIndices;
+        }
 };
 
 }
