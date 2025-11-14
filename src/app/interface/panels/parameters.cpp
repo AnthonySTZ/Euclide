@@ -29,6 +29,9 @@ void Parameters::drawParameters() {
     FieldDrawer drawer;
     if (auto node = m_node.lock()) {
         for(const auto& [name, field]: node->fields()) {
+            ImGui::Text("Node Name :");
+            ImGui::SameLine();
+            ImGui::Text(node->name().c_str());
             field->accept(name, drawer);
         }
     }
