@@ -52,14 +52,19 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
 
     const float startX = position[0] - (size[0] * 0.5f);
     const float startZ = position[2] - (size[1] * 0.5f);
+    const float posY = position[1];
 
     // Create Points
+    std::vector<float> posXs(columnsPoints);
+    for (size_t col = 0; col < columnsPoints; ++col){
+        posXs[col] = startX + col * columnSpacing;
+    }
+
     output->points.reserve(rowsPoints * columnsPoints);
     for (size_t row = 0; row < rowsPoints; ++row) {
+        const float posZ = startZ + static_cast<float>(row) * rowSpacing;
         for (size_t column = 0; column < columnsPoints; ++column) {
-            const float offsetX = static_cast<float>(column) * columnSpacing;
-            const float offsetZ = static_cast<float>(row) * rowSpacing;
-            output->addPoint(startX + offsetX, position[1], startZ + offsetZ);
+            output->addPoint(posXs[column], posY, posZ);
         }
     }
 
