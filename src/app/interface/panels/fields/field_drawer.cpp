@@ -1,5 +1,8 @@
 #include "field_drawer.h"
 
+#define MAX_FLOAT 999999999.9f
+#define MAX_INT 999999999
+
 namespace butter {
     
 void FieldDrawer::drawIntField(const std::string& t_name, NodeField<int> &t_field)
@@ -7,9 +10,9 @@ void FieldDrawer::drawIntField(const std::string& t_name, NodeField<int> &t_fiel
     int value = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
-    int min = meta.min.value_or(-INT_MAX);
-    int max = meta.max.value_or(INT_MAX);
-    int step = meta.step.value_or(0.05);
+    int min = static_cast<int>(meta.min.value_or(-MAX_INT));
+    int max = static_cast<int>(meta.max.value_or(MAX_INT));
+    int step = static_cast<int>(meta.step.value_or(1));
         
     const std::string sliderId = std::string("##param_") + t_name;
     if (ImGui::DragInt(sliderId.c_str(), &value, step, min, max)) {
@@ -22,9 +25,9 @@ void FieldDrawer::drawInt2Field(const std::string& t_name, NodeField<int2> &t_fi
     int2 value = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
-    int min = meta.min.value_or(-INT_MAX);
-    int max = meta.max.value_or(INT_MAX);
-    int step = meta.step.value_or(0.05);
+    int min = static_cast<int>(meta.min.value_or(-MAX_INT));
+    int max = static_cast<int>(meta.max.value_or(MAX_INT));
+    int step = static_cast<int>(meta.step.value_or(1));
         
     const std::string sliderId = std::string("##param_") + t_name;
     if (ImGui::DragInt2(sliderId.c_str(), value.data(), step, min, max)) {
@@ -37,8 +40,8 @@ void FieldDrawer::drawFloatField(const std::string& t_name, NodeField<float> &t_
     float value = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
-    float min = meta.min.value_or(-FLT_MAX);
-    float max = meta.max.value_or(FLT_MAX);
+    float min = meta.min.value_or(-MAX_FLOAT);
+    float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
     const std::string sliderId = std::string("##param_") + t_name;
@@ -52,8 +55,8 @@ void FieldDrawer::drawFloat2Field(const std::string& t_name, NodeField<float2> &
     float2 values = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
-    float min = meta.min.value_or(-FLT_MAX);
-    float max = meta.max.value_or(FLT_MAX);
+    float min = meta.min.value_or(-MAX_FLOAT);
+    float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
     const std::string sliderId = std::string("##param_") + t_name;
@@ -67,8 +70,8 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3> &
     float3 values = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
-    float min = meta.min.value_or(-FLT_MAX);
-    float max = meta.max.value_or(FLT_MAX);
+    float min = meta.min.value_or(-MAX_FLOAT);
+    float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
     const std::string sliderId = std::string("##param_") + t_name;

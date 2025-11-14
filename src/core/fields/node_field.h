@@ -11,7 +11,7 @@ struct NodeFieldMetadata {
     std::optional<std::string> displayName;
     std::optional<float> min;
     std::optional<float> max;
-    std::optional<float> step;
+    std::optional<float> step = 1.0f;
 
     bool hidden = false;
 };

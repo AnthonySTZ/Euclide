@@ -27,8 +27,8 @@ Grid::Grid()
     auto divisionsField = std::make_shared<Int2Field>(1, 1);
     divisionsField->setMetadata(NodeFieldMetadata{
         displayName: "Divisions",
-        min: 1,
-        step: 1
+        min: 1.0f,
+        step: 1.0f
     });
     addField("divisions", divisionsField);
 }
