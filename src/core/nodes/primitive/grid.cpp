@@ -64,6 +64,7 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     }
 
     // Create Primitives
+    output->primitives.reserve(rows * columns);
     for (uint32_t row = 0; row < rows; ++row) {
         for (uint32_t column = 0; column < columns; ++column) {
             const uint32_t top_left = row * (columnsPoints) + column;
