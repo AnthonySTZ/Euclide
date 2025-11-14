@@ -26,13 +26,21 @@ public:
     ~RenderModel();
     
     void updateWithMesh(std::shared_ptr<Mesh> t_mesh);
+
     
     void draw();
     void drawPoints();
     void drawEdges();
-
+    
 private:
     void initBuffers();
+    void bindVBO(const std::vector<RenderVertex> &vertices);
+
+    void bindEBOVertex(const std::vector<uint32_t> &vertexIndices);
+
+    void bindEBOPoints(const std::vector<uint32_t> &pointIndices);
+
+    void bindEBOEdges(const std::vector<Edge> &edges);
 
     uint32_t m_vao = 0;
     uint32_t m_vbo = 0;
