@@ -3,8 +3,17 @@
 #include "utils/observer.h"
 #include "node_field_visitor.h"
 
+#include <optional>
+
 namespace butter {
     
+struct NodeFieldMetadata {
+    std::optional<float> min;
+    std::optional<float> max;
+    std::optional<float> step;
+
+    bool hidden = false;
+};
 
 class NodeFieldBase {
 public:
@@ -31,8 +40,12 @@ public:
         t_visitor.visit(t_name, *this);
     }
 
+    const NodeFieldMetadata& metadata() const noexcept { return m_metadata; }
+    void setMetadata(const NodeFieldMetadata& t_meta) { m_metadata = t_meta; } 
+
 protected:
     T m_value;
+    NodeFieldMetadata m_metadata;
 };
 
 

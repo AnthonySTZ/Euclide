@@ -17,7 +17,11 @@ Parameters::Parameters(const std::shared_ptr<NodeGraph> &t_nodeGraph)
 void Parameters::draw()
 {
     beginTab("Parameters", m_padding);
+    
+    pushStyle();
     drawParameters();
+    popStyle();
+
     endTab();
 }
 
@@ -28,6 +32,23 @@ void Parameters::drawParameters() {
             field->accept(name, drawer);
         }
     }
+}
+
+void Parameters::pushStyle() {
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(90, 90, 90, 255));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, IM_COL32(70, 70, 70, 255));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, IM_COL32(60, 60, 60, 255));
+
+    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(90, 90, 90, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(70, 70, 70, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(60, 60, 60, 255));
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);
+}
+
+void Parameters::popStyle() {
+    ImGui::PopStyleColor(6);
+    ImGui::PopStyleVar(1);
 }
 
 }

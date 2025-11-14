@@ -10,8 +10,21 @@ class Cube: public Node {
     
 public:
     Cube() : Node(0, 1, "Cube") {
-        addField("position", std::make_shared<Float3Field>(0.0, 0.0, 0.0));
-        addField("size", std::make_shared<Float3Field>(1.0, 1.0, 1.0));
+        auto positionField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
+        positionField->setMetadata(NodeFieldMetadata{
+            min: -10.0f,
+            max: 10.0f,
+            step: 0.02f
+        });
+        addField("position", positionField);
+        
+        auto sizeField = std::make_shared<Float3Field>(1.0, 1.0, 1.0);
+        sizeField->setMetadata(NodeFieldMetadata{
+            min: 0.0f,
+            max: 10.0f,
+            step: 0.02f
+        });
+        addField("size", sizeField);
     }
 
 private:

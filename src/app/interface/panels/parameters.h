@@ -15,8 +15,11 @@ public:
     void draw() override;
 
 private:
-    
     void drawParameters();
+    void pushStyle();
+    void popStyle();
+
+
     std::weak_ptr<NodeGraph> m_nodeGraph;
     std::weak_ptr<Node> m_node;
 };
