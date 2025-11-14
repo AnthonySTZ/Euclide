@@ -1,5 +1,7 @@
 #include "parameters.h"
 
+#include "interface/panels/fields/field_drawer.h"
+
 namespace butter {
 
 Parameters::Parameters(const std::shared_ptr<NodeGraph> &t_nodeGraph)
@@ -20,8 +22,11 @@ void Parameters::draw()
 }
 
 void Parameters::drawParameters() {
+    FieldDrawer drawer;
     if (auto node = m_node.lock()) {
-        ImGui::Text(node->name().c_str());
+        for(const auto& [name, field]: node->fields()) {
+            field->accept(name, drawer);
+        }
     }
 }
 

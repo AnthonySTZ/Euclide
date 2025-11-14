@@ -6,8 +6,8 @@ std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std:
 {
     auto output = std::make_shared<Mesh>();
 
-    vec3 position = getField<Float3Field>("position")->getValue();
-    vec3 size = getField<Float3Field>("size")->getValue();
+    float3 position = getField<Float3Field>("position")->getValue();
+    float3 size = getField<Float3Field>("size")->getValue();
 
     size[0] *= 0.5;
     size[1] *= 0.5;

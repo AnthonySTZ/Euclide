@@ -1,14 +1,15 @@
 #pragma once
 
 #include "utils/observer.h"
+#include "node_field_visitor.h"
 
 namespace butter {
     
-using vec3 = std::array<float, 3>;
 
 class NodeFieldBase {
 public:
     virtual ~NodeFieldBase() = default;
+    virtual void accept(const std::string& t_name, NodeFieldVisitor& t_visitor) = 0;
 
     Observer<> onValueChanged;
 };
@@ -26,8 +27,13 @@ public:
         onValueChanged.notify();
     }
 
-private:
+    void accept(const std::string& t_name, NodeFieldVisitor& t_visitor) override {
+        t_visitor.visit(t_name, *this);
+    }
+
+protected:
     T m_value;
 };
+
 
 }
