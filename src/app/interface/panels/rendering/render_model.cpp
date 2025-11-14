@@ -74,20 +74,23 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 {
     auto t1 = std::chrono::high_resolution_clock::now();
 
-
     const Points& points = t_mesh->points;
     m_numOfPoints = points.size();
     
     std::vector<RenderVertex> vertices;
-    vertices.reserve(m_numOfPoints);
+    vertices.resize(m_numOfPoints);
     for (size_t i = 0; i < m_numOfPoints; ++i) {
-        vertices.emplace_back(
-            RenderVertex{
-                {points.posX[i], points.posY[i], points.posZ[i]},
-                {points.colorR[i], points.colorG[i], points.colorB[i]},
-                {points.normalX[i], points.normalY[i], points.normalZ[i]},
-            }
-        );
+        vertices[i].position[0] = points.posX[i];
+        vertices[i].position[1] = points.posY[i];
+        vertices[i].position[2] = points.posZ[i];
+
+        vertices[i].color[0] = points.colorR[i];
+        vertices[i].color[1] = points.colorG[i];
+        vertices[i].color[2] = points.colorB[i];
+
+        vertices[i].normal[0] = points.normalX[i];
+        vertices[i].normal[1] = points.normalY[i];
+        vertices[i].normal[2] = points.normalZ[i];
     }
     
     glBindVertexArray(m_vao);
@@ -116,7 +119,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
             }
         }
 
-        if (numOfPointIds <= 2) continue;
+        if (numOfPointIds <= 3) continue;
 
         // Vertices
         for (size_t i = 1; i + 1 < numOfPointIds; ++i){
@@ -131,7 +134,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(), GL_DYNAMIC_DRAW);
 
-
     std::vector<uint32_t> pointIndices(m_numOfPoints);
     std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
     
@@ -139,7 +141,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 
     m_numOfEdgesIndices = edgeIndices.size();
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, edgeIndices.size() * sizeof(uint32_t), edgeIndices.data(), GL_DYNAMIC_DRAW);
     
