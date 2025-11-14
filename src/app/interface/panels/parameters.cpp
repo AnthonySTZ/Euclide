@@ -30,7 +30,7 @@ void Parameters::drawParameters() {
     if (auto node = m_node.lock()) {
         drawTitleName(node->name());
         
-        if (ImGui::BeginTable("params", 2, ImGuiTableFlags_SizingFixedFit))
+        if (ImGui::BeginTable("params", 2))
         {
             ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
             ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
@@ -44,6 +44,7 @@ void Parameters::drawParameters() {
                 ImGui::TextUnformatted(displayName.c_str());
                 
                 ImGui::TableSetColumnIndex(1);
+                ImGui::SetNextItemWidth(-1);
                 field->accept(name, drawer);
             }
             
