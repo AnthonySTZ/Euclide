@@ -24,6 +24,7 @@ void Viewport::draw()
     checkForResize();
 
     handleMouse();
+    handleKeys();
 
     drawRender();
     drawInfos();
@@ -57,6 +58,14 @@ void Viewport::handleMouse() {
 
     moveCamera();
     
+}
+
+void Viewport::handleKeys() {
+    if (!m_isItemHovered) return;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderer->tooglePrimitives();
+    if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderer->toogleWireframe();
+    if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderer->tooglePoints();
 }
 
 void Viewport::moveCamera() {
@@ -105,6 +114,11 @@ void Viewport::drawInfos() const
     ImGuiIO& io = ImGui::GetIO();
     std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
     drawList->AddText(m_windowPosition + ImVec2(10, 10), IM_COL32(255, 255, 255, 255), fpsText.c_str());
+
+    drawList->AddText(m_windowPosition + ImVec2(10, 35), IM_COL32(255, 255, 255, 255), "P: Toogle Primitives");
+    drawList->AddText(m_windowPosition + ImVec2(10, 60), IM_COL32(255, 255, 255, 255), "W: Toogle Wireframe");
+    drawList->AddText(m_windowPosition + ImVec2(10, 85), IM_COL32(255, 255, 255, 255), "V: Toogle Points");
+
 }
 
 }

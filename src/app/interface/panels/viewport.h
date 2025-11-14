@@ -20,6 +20,7 @@ public:
 
 private:
     void handleMouse();
+    void handleKeys();
     void moveCamera();
     void drawRender();
     void checkForResize();

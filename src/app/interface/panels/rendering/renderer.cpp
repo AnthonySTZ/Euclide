@@ -18,17 +18,23 @@ void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight)
     beginFrame(t_screenWidth, t_screenHeight);
     clearFrame();
 
-    m_faceShaderProgram.use();
-    bindCameraUniforms(m_faceShaderProgram);
-    m_model.draw();
+    if (m_showPrimitives) {
+        m_faceShaderProgram.use();
+        bindCameraUniforms(m_faceShaderProgram);
+        m_model.draw();
+    }
 
-    m_edgeShaderProgram.use();
-    bindCameraUniforms(m_edgeShaderProgram);
-    m_model.drawEdges();
+    if (m_showWireframe) {
+        m_edgeShaderProgram.use();
+        bindCameraUniforms(m_edgeShaderProgram);
+        m_model.drawEdges();
+    }
     
-    m_pointShaderProgram.use();
-    bindCameraUniforms(m_pointShaderProgram);
-    m_model.drawPoints();
+    if (m_showPoints) {
+        m_pointShaderProgram.use();
+        bindCameraUniforms(m_pointShaderProgram);
+        m_model.drawPoints();
+    }
 
     endFrame(t_screenWidth, t_screenHeight);
 }
