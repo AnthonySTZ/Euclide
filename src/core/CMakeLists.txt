@@ -12,6 +12,7 @@ add_library(core STATIC
     fields/node_field.cpp
 
     nodes/primitive/cube.cpp
+    nodes/primitive/grid.cpp
     
     nodes/geometry/transform.cpp
 )

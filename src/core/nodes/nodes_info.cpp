@@ -1,6 +1,8 @@
 #include "nodes_info.h"
 
 #include "primitive/cube.h"
+#include "primitive/grid.h"
+
 #include "geometry/transform.h"
 
 namespace butter {
@@ -9,6 +11,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
     {"Primitive", 
         {
             {"Cube", []() { return std::make_shared<Cube>(); }},
+            {"Grid", []() { return std::make_shared<Grid>(); }},
         }
     },
     {"Geometry",
