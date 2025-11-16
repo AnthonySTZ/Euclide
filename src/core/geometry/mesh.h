@@ -3,6 +3,7 @@
 #include "points.h"
 #include "vertex.h"
 #include "primitive.h"
+#include "utils/types.h"
 
 namespace butter {
 
@@ -13,6 +14,10 @@ struct Mesh {
 
     inline uint32_t addPoint(const float t_x, const float t_y, const float t_z) {
         return points.addPoint(t_x, t_y, t_z);
+    }
+
+    inline uint32_t addPoint(const float3 t_position) {
+        return points.addPoint(t_position[0], t_position[1], t_position[2]);
     }
 
     inline uint32_t addVertex(const uint32_t t_pointIndex, const uint32_t t_primIndex) {
