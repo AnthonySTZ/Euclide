@@ -71,9 +71,7 @@ void RenderModel::initBuffers() {
 }
 
 void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
-{
-    auto t1 = std::chrono::high_resolution_clock::now();
-    
+{    
     glBindVertexArray(m_vao);
 
     {
@@ -147,13 +145,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
-
-
-    auto t2 = std::chrono::high_resolution_clock::now();
-    
-    auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-    std::chrono::duration<double, std::milli> ms_double = t2 - t1;
-    std::cout << ms_int.count() << "ms\n";
 }
 
 inline void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
