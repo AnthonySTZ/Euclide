@@ -4,6 +4,12 @@
 
 namespace butter {
 
+enum GridOrientation{
+    ZX = 0,
+    XY = 1,
+    YZ = 2
+};
+
 class Grid: public Node {
     
 public:

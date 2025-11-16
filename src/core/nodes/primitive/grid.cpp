@@ -6,12 +6,6 @@
 
 namespace butter {
 
-enum GridOrientation{
-    ZX = 0,
-    XY = 1,
-    YZ = 2
-};
-
 Grid::Grid()
     : Node(0, 1, "Grid") 
 {
@@ -65,11 +59,8 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     const float columnSpacing = size[0] / static_cast<float>(columns);
     const float rowSpacing = size[1] / static_cast<float>(rows);
 
-    float startX = position[0] - (size[0] * 0.5f);
-    float startY = position[1] - (size[1] * 0.5f);
-    float startZ = position[2] - (size[1] * 0.5f);
     float3 base{
-        position[0] - size[0] * 0.5f,
+        position[0] - size[0] * 0.5f, //FIXME: i think X doesn't sub size[0] in other orientation than ZX ? but should maybe sub by size[1] or changed the grid creation 
         position[1] - size[1] * 0.5f,
         position[2] - size[1] * 0.5f
     };
@@ -106,7 +97,6 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     }
 
     output->points.reserve(rowsPoints * columnsPoints);
-
     for (size_t row = 0; row < rowsPoints; ++row) {
         for (size_t col = 0; col < columnsPoints; ++col) {
             output->addPoint(makePoint(posRows[row], posCols[col]));
