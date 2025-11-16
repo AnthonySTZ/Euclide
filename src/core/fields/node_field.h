@@ -1,9 +1,11 @@
 #pragma once
 
+
 #include "utils/observer.h"
 #include "node_field_visitor.h"
 
 #include <optional>
+#include <string>
 
 namespace butter {
     
@@ -12,8 +14,10 @@ struct NodeFieldMetadata {
     std::optional<float> min;
     std::optional<float> max;
     std::optional<float> step = 1.0f;
-
+    
     bool hidden = false;
+    bool is_combo = false;
+    std::optional<std::vector<std::string>> choices;
 };
 
 class NodeFieldBase {

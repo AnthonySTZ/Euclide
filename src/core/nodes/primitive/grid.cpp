@@ -31,6 +31,14 @@ Grid::Grid()
         step: 1.0f
     });
     addField("divisions", divisionsField);
+
+    auto orientationField = std::make_shared<NodeField<int>>(0);
+    orientationField->setMetadata(NodeFieldMetadata{
+        displayName: "Orientation",
+        is_combo: true,
+        choices: std::move(std::vector<std::string>{"ZX Plane", "XY Plane", "YZ Plane"})
+    });
+    addField("orientation", orientationField);
 }
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)

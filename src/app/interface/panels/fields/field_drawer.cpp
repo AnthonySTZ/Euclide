@@ -4,7 +4,29 @@
 #define MAX_INT 999999999
 
 namespace butter {
-    
+
+void FieldDrawer::drawComboField(const std::string &t_name, NodeField<int> &t_field)
+{
+    int index = t_field.getValue();
+    const NodeFieldMetadata& meta = t_field.metadata();
+
+    const auto& choices = meta.choices.value_or({});
+        
+    const std::string comboId = std::string("##param_") + t_name;
+    if (ImGui::BeginCombo(comboId.c_str(), choices[index].c_str())) {
+        for (size_t i = 0; i < choices.size(); ++i) {
+            bool is_selected = index == i;
+            if (ImGui::Selectable(choices[i].c_str(), is_selected)){
+                t_field.setValue(i);
+            }
+            if (is_selected) {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+    ImGui::EndCombo();
+    }
+}
+
 void FieldDrawer::drawIntField(const std::string& t_name, NodeField<int> &t_field)
 {
     int value = t_field.getValue();

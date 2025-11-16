@@ -9,7 +9,12 @@ class FieldDrawer : public NodeFieldVisitor {
 
 public:
 void visit(const std::string& t_name, NodeField<int>& t_field) override {
-        drawIntField(t_name, t_field);
+        const auto& meta = t_field.metadata();
+        if (meta.is_combo) {
+            drawComboField(t_name, t_field);
+        } else {
+            drawIntField(t_name, t_field);
+        }
     }
     void visit(const std::string& t_name, NodeField<int2>& t_field) override {
         drawInt2Field(t_name, t_field);
@@ -27,6 +32,7 @@ void visit(const std::string& t_name, NodeField<int>& t_field) override {
 
 
 private:
+    void drawComboField(const std::string& t_name, NodeField<int>& t_field);
     void drawIntField(const std::string& t_name, NodeField<int>& t_field);
     void drawInt2Field(const std::string& t_name, NodeField<int2>& t_field);
 
