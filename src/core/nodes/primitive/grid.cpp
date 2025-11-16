@@ -6,6 +6,12 @@
 
 namespace butter {
 
+enum GridOrientation{
+    ZX = 0,
+    XY = 1,
+    YZ = 2
+};
+
 Grid::Grid()
     : Node(0, 1, "Grid") 
 {
@@ -45,9 +51,10 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
 {
     auto output = std::make_shared<Mesh>();
     
-    float3 position = getField<Float3Field>("position")->getValue();
-    float2 size = getField<Float2Field>("size")->getValue();
+    const float3 position = getField<Float3Field>("position")->getValue();
+    const float2 size = getField<Float2Field>("size")->getValue();
     const int2 divisions = getField<Int2Field>("divisions")->getValue();
+    const int orientation = getField<NodeField<int>>("orientation")->getValue();
 
     const int columns = divisions[0];
     const int rows = divisions[1];
@@ -58,21 +65,39 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     const float columnSpacing = size[0] / static_cast<float>(columns);
     const float rowSpacing = size[1] / static_cast<float>(rows);
 
-    const float startX = position[0] - (size[0] * 0.5f);
-    const float startZ = position[2] - (size[1] * 0.5f);
-    const float posY = position[1];
+    float startX = position[0] - (size[0] * 0.5f);
+    float startY = position[1] - (size[1] * 0.5f);
+    float startZ = position[2] - (size[1] * 0.5f);
 
     // Create Points
-    std::vector<float> posXs(columnsPoints);
+    output->points.reserve(rowsPoints * columnsPoints);
+
+    std::vector<float> posCols(columnsPoints);
     for (size_t col = 0; col < columnsPoints; ++col){
-        posXs[col] = startX + col * columnSpacing;
+        posCols[col] = col * columnSpacing;
+    }
+    std::vector<float> posRows(rowsPoints);
+    for (size_t row = 0; row < rowsPoints; ++row){
+        posRows[row] = static_cast<float>(row) * rowSpacing;
     }
 
-    output->points.reserve(rowsPoints * columnsPoints);
-    for (size_t row = 0; row < rowsPoints; ++row) {
-        const float posZ = startZ + static_cast<float>(row) * rowSpacing;
-        for (size_t column = 0; column < columnsPoints; ++column) {
-            output->addPoint(posXs[column], posY, posZ);
+    if (orientation == GridOrientation::XY) {
+        for (size_t row = 0; row < rowsPoints; ++row) {
+            for (size_t column = 0; column < columnsPoints; ++column) {
+                output->addPoint(startX + posRows[row], startY + posCols[column], position[2]);
+            }
+        }
+    } else if (orientation == GridOrientation::YZ) {
+        for (size_t row = 0; row < rowsPoints; ++row) {
+            for (size_t column = 0; column < columnsPoints; ++column) {
+                output->addPoint(position[0], startY + posCols[column], startZ + posRows[row]);
+            }
+        }
+    } else if (orientation == GridOrientation::ZX) {
+        for (size_t row = 0; row < rowsPoints; ++row) {
+            for (size_t column = 0; column < columnsPoints; ++column) {
+                output->addPoint(startX + posCols[column], position[1], startZ + posRows[row]);
+            }
         }
     }
 
