@@ -38,10 +38,21 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
 
     auto& points = output->points;
 
+    //Scale
     for (size_t i = 0; i < points.size(); ++i) {
         points.posX[i] *= size[0];
         points.posY[i] *= size[1];
         points.posZ[i] *= size[2];
+    }
+
+    //Rotate
+
+
+    //Translate
+    for (size_t i = 0; i < points.size(); ++i) {
+        points.posX[i] += translate[0];
+        points.posY[i] += translate[1];
+        points.posZ[i] += translate[2];
     }
 
     return output;
