@@ -102,6 +102,32 @@ TEST(Grid, Grid2x3_XY) {
     }
 }
 
+TEST(Grid, Grid2x3_YZ) {
+
+    auto grid = std::make_shared<Grid>();
+
+    grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
+    grid->getField<Float2Field>("size")->setValue(4, 6);
+    grid->getField<Int2Field>("divisions")->setValue(2, 3);
+    grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::YZ);
+
+    auto mesh = grid->cook(0);
+    EXPECT_EQ(mesh->points.size(), 12);
+
+    float expectedZ[4] = { 18.0f, 58.0f / 3.0f, 62.0f / 3.0f, 22.0f };
+    float expectedY[3] = { 2.0f, 5.0f, 8.0f};
+
+    float expectedX = 10.0f;
+    for (size_t row = 0; row < 3; ++row) {
+        for (size_t col = 0; col < 4; ++col) {
+            const size_t idx = row * 4 + col;
+            EXPECT_FLOAT_EQ(mesh->points.posX[idx], expectedX);
+            EXPECT_FLOAT_EQ(mesh->points.posY[idx], expectedY[row]);
+            EXPECT_FLOAT_EQ(mesh->points.posZ[idx], expectedZ[col]);
+        }
+    }
+}
+
 TEST(GridTest, PrimitiveVerticesFor2x3Grid)
 {
     auto grid = std::make_shared<Grid>();
