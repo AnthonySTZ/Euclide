@@ -1,6 +1,7 @@
 #include "render_model.h"
 
 #include "interface/utils/hash.h"
+#include "utils/timer.h"
 
 #include <numeric>
 #include <iostream>
@@ -72,6 +73,8 @@ void RenderModel::initBuffers() {
 
 void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 {    
+    Timer timer{"Build Render Model"};
+
     glBindVertexArray(m_vao);
 
     {
