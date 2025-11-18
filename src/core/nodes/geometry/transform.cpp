@@ -3,6 +3,8 @@
 #include "utils/math.h"
 #include "utils/timer.h"
 
+// #define USE_SIMD
+
 #ifdef USE_SIMD
 #include <immintrin.h>
 #endif
@@ -48,11 +50,32 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
     {
         //Scale
         Timer timer{"Scale"};
-        for (size_t i = 0; i < points.size(); ++i) {
+
+        size_t i = 0;
+        #ifdef USE_SIMD
+        __m256 __scaleX = _mm256_set1_ps(size[0]);
+        __m256 __scaleY = _mm256_set1_ps(size[1]);
+        __m256 __scaleZ = _mm256_set1_ps(size[2]);
+        for (; i + 8 < points.size(); i += 8) {
+            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+
+            __m256 __posXp = _mm256_mul_ps(__posX, __scaleX);
+            __m256 __posYp = _mm256_mul_ps(__posY, __scaleY);
+            __m256 __posZp = _mm256_mul_ps(__posZ, __scaleZ);
+
+            _mm256_store_ps(&points.posX[i], __posXp);
+            _mm256_store_ps(&points.posY[i], __posYp);
+            _mm256_store_ps(&points.posZ[i], __posZp);
+        }
+        #endif
+        for (; i < points.size(); ++i) {
             points.posX[i] *= size[0];
             points.posY[i] *= size[1];
             points.posZ[i] *= size[2];
         }
+
     }
 
     {
@@ -81,8 +104,6 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
         };
 
         size_t i = 0;
-
-        //TODO: optimize and SIMD
         #ifdef USE_SIMD
         __m256 __row_00 = _mm256_set1_ps(row_0[0]);
         __m256 __row_01 = _mm256_set1_ps(row_0[1]);
