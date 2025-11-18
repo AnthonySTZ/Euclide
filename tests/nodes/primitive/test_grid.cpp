@@ -102,35 +102,32 @@ TEST(Grid, Grid2x3_XY) {
     }
 }
 
-// TEST(GridTest, PrimitiveVerticesFor2x3Grid)
-// {
-//     auto grid = std::make_shared<Grid>();
+TEST(GridTest, PrimitiveVerticesFor2x3Grid)
+{
+    auto grid = std::make_shared<Grid>();
 
-//     grid->getField<Float3Field>("position")->setValue(0.0f, 0.0f, 0.0f);
-//     grid->getField<Float2Field>("size")->setValue(2.0f, 3.0f);
-//     grid->getField<Int2Field>("divisions")->setValue(2, 3);
+    grid->getField<Float3Field>("position")->setValue(0.0f, 0.0f, 0.0f);
+    grid->getField<Float2Field>("size")->setValue(2.0f, 3.0f);
+    grid->getField<Int2Field>("divisions")->setValue(2, 3);
 
-//     // 0   -   1   -    2
-//     // |   0   |   1    | 
-//     // 3   -   4   -    5 
-//     // |   2   |   3    |  
-//     // 6   -   7   -    8 
-//     // |   4   |   5    |
-//     // 9   -   10  -    11
+    // 0  -  1  -  2  -  3
+    // |  0  |  1  |  2  |
+    // 4  -  5  -  6  -  7
+    // |  3  |  4  |  5  |
+    // 8  -  9  -  10 -  11
 
-//     auto mesh = grid->cook(0);
+    auto mesh = grid->cook(0);
 
-//     EXPECT_EQ(mesh->primitives.size(), 6);
+    EXPECT_EQ(mesh->primitives.size(), 6);
 
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(0), (std::vector<uint32_t>{0, 1, 4, 3}));
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(1), (std::vector<uint32_t>{1, 2, 5, 4}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(0), (std::vector<uint32_t>{0, 1, 5, 4}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(1), (std::vector<uint32_t>{1, 2, 6, 5}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(2), (std::vector<uint32_t>{2, 3, 7, 6}));
 
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(2), (std::vector<uint32_t>{3, 4, 7, 6}));
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(3), (std::vector<uint32_t>{4, 5, 8, 7}));
-
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(4), (std::vector<uint32_t>{6, 7, 10, 9}));
-//     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(5), (std::vector<uint32_t>{7, 8, 11, 10}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(3), (std::vector<uint32_t>{4, 5, 9, 8}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(4), (std::vector<uint32_t>{5, 6, 10, 9}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(5), (std::vector<uint32_t>{6, 7, 11, 10}));
     
-// }
+}
 
 }
