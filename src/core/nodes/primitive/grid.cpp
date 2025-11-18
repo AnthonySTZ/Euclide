@@ -50,19 +50,22 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     const int2 divisions = getField<Int2Field>("divisions")->getValue();
     const int orientation = getField<NodeField<int>>("orientation")->getValue();
 
-    const int columns = divisions[0];
-    const int rows = divisions[1];
+    const int rows = divisions[0];
+    const int columns = divisions[1];
 
     const int columnsPoints = columns + 1;
     const int rowsPoints = rows + 1;
 
-    const float columnSpacing = size[0] / static_cast<float>(columns);
-    const float rowSpacing = size[1] / static_cast<float>(rows);
+
+    const float size_cols = size[0];
+    const float size_rows = size[1];
+    const float columnSpacing = size_cols / static_cast<float>(columns);
+    const float rowSpacing = size_rows / static_cast<float>(rows);
 
     float3 base{
-        position[0] - size[0] * 0.5f, //FIXME: i think X doesn't sub size[0] in other orientation than ZX ? but should maybe sub by size[1] or changed the grid creation 
-        position[1] - size[1] * 0.5f,
-        position[2] - size[1] * 0.5f
+        position[0],
+        position[1],
+        position[2]
     };
 
     // Create Points
@@ -78,18 +81,24 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     std::function<float3(float rowOffset, float colOffset)> makePoint;
     switch (orientation) {
         case GridOrientation::XY:
+            base[0] -= size_cols / 2;
+            base[1] -= size_rows / 2;
             makePoint = [&](float t_row, float t_col) {
-                return float3{base[0] + t_row, base[1] + t_col, position[2]};
+                return float3{base[0] + t_col, base[1] + t_row, position[2]};
             };
             break;
-
+            
         case GridOrientation::YZ:
+            base[1] -= size_rows / 2;
+            base[2] -= size_cols / 2;
             makePoint = [&](float t_row, float t_col) {
-                return float3{position[0], base[1] + t_col, base[2] + t_row};
+                return float3{position[0], base[1] + t_row, base[2] + t_col};
             };
             break;
-
+            
         case GridOrientation::ZX:
+            base[0] -= size_cols / 2;
+            base[2] -= size_rows / 2;
             makePoint = [&](float t_row, float t_col) {
                 return float3{base[0] + t_col, position[1], base[2] + t_row};
             };
