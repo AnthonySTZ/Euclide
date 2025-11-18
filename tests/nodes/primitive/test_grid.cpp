@@ -51,7 +51,7 @@ TEST(Grid, CorrectSpacing)
     EXPECT_FLOAT_EQ(mesh->points.posX[2], 2);
 }
 
-TEST(Grid, Grid2x3CustomPositionAndSize) {
+TEST(Grid, Grid2x4CustomPositionAndSize) {
 
     auto grid = std::make_shared<Grid>();
 
@@ -76,31 +76,31 @@ TEST(Grid, Grid2x3CustomPositionAndSize) {
     }
 }
 
-// TEST(Grid, Grid2x3_XY) {
+TEST(Grid, Grid2x3_XY) {
 
-//     auto grid = std::make_shared<Grid>();
+    auto grid = std::make_shared<Grid>();
 
-//     grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
-//     grid->getField<Float2Field>("size")->setValue(4, 6);
-//     grid->getField<Int2Field>("divisions")->setValue(2, 3);
-//     grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::XY);
+    grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
+    grid->getField<Float2Field>("size")->setValue(4, 6);
+    grid->getField<Int2Field>("divisions")->setValue(2, 3);
+    grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::XY);
 
-//     auto mesh = grid->cook(0);
-//     EXPECT_EQ(mesh->points.size(), 12);
+    auto mesh = grid->cook(0);
+    EXPECT_EQ(mesh->points.size(), 12);
 
-//     float expectedX[4] = { 7.0f, 9.0f, 11.0f, 13.0f };
-//     float expectedY[3] = { 4.0f, 5.0f, 6.0f};
+    float expectedX[4] = { 8.0f, 28.0f / 3.0f, 32.0f / 3.0f, 12.0f };
+    float expectedY[3] = { 2.0f, 5.0f, 8.0f};
 
-//     float expectedZ = 20.0f;
-//     for (size_t row = 0; row < 4; ++row) {
-//         for (size_t col = 0; col < 3; ++col) {
-//             const size_t idx = row * 3 + col;
-//             EXPECT_FLOAT_EQ(mesh->points.posX[idx], expectedX[col]);
-//             EXPECT_FLOAT_EQ(mesh->points.posY[idx], expectedY[row]);
-//             EXPECT_FLOAT_EQ(mesh->points.posZ[idx], expectedZ);
-//         }
-//     }
-// }
+    float expectedZ = 20.0f;
+    for (size_t row = 0; row < 3; ++row) {
+        for (size_t col = 0; col < 4; ++col) {
+            const size_t idx = row * 4 + col;
+            EXPECT_FLOAT_EQ(mesh->points.posX[idx], expectedX[col]);
+            EXPECT_FLOAT_EQ(mesh->points.posY[idx], expectedY[row]);
+            EXPECT_FLOAT_EQ(mesh->points.posZ[idx], expectedZ);
+        }
+    }
+}
 
 // TEST(GridTest, PrimitiveVerticesFor2x3Grid)
 // {
