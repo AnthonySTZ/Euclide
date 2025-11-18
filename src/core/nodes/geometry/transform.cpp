@@ -1,6 +1,11 @@
 #include "transform.h"
 
 #include "utils/math.h"
+#include "utils/timer.h"
+
+#ifdef USE_SIMD
+#include <immintrin.h>
+#endif
 
 namespace butter {
     
@@ -40,51 +45,86 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
 
     auto& points = output->points;
 
-    //Scale
-    for (size_t i = 0; i < points.size(); ++i) {
-        points.posX[i] *= size[0];
-        points.posY[i] *= size[1];
-        points.posZ[i] *= size[2];
+    {
+        //Scale
+        Timer timer{"Scale"};
+        for (size_t i = 0; i < points.size(); ++i) {
+            points.posX[i] *= size[0];
+            points.posY[i] *= size[1];
+            points.posZ[i] *= size[2];
+        }
     }
 
-    //Rotate
-    const double rotX = radians(rotate[0]);
-    const double rotY = radians(rotate[1]);
-    const double rotZ = radians(rotate[2]);
+    {
+        //Rotate
+        Timer timer{"Rotate"}; // 11.63ms for grid 1000x1000
+        const double rotX = radians(rotate[0]);
+        const double rotY = radians(rotate[1]);
+        const double rotZ = radians(rotate[2]);
 
-    const double cosX = std::cos(rotX);
-    const double cosY = std::cos(rotY);
-    const double cosZ = std::cos(rotZ);
+        const float cosX = std::cos(rotX);
+        const float cosY = std::cos(rotY);
+        const float cosZ = std::cos(rotZ);
 
-    const double sinX = std::sin(rotX);
-    const double sinY = std::sin(rotY);
-    const double sinZ = std::sin(rotZ);
+        const float sinX = std::sin(rotX);
+        const float sinY = std::sin(rotY);
+        const float sinZ = std::sin(rotZ);
 
-    const double row_1[3] = {
-        cosY * cosX, (sinZ * sinY * cosX) - (cosZ * sinX), (cosZ * sinY * cosX) + (sinZ * sinX)
-    };
-    const double row_2[3] = {
-        cosY * sinX, (sinZ * sinY * sinX) + (cosZ * cosX), (cosZ * sinY * sinX) - (sinZ * cosX)
-    };
-    const double row_3[3] = {
-        -sinY, sinZ * cosY, cosZ * cosY
-    };
+        const float row_0[3] = {
+            cosY * cosX, (sinZ * sinY * cosX) - (cosZ * sinX), (cosZ * sinY * cosX) + (sinZ * sinX)
+        };
+        const float row_1[3] = {
+            cosY * sinX, (sinZ * sinY * sinX) + (cosZ * cosX), (cosZ * sinY * sinX) - (sinZ * cosX)
+        };
+        const float row_2[3] = {
+            -sinY, sinZ * cosY, cosZ * cosY
+        };
 
-    for (size_t i = 0; i < points.size(); ++i) {
-        const float posX = points.posX[i];
-        const float posY = points.posY[i];
-        const float posZ = points.posZ[i];
-        points.posX[i] = posX * row_1[0] + posY * row_1[1] + posZ * row_1[2];
-        points.posY[i] = posX * row_2[0] + posY * row_2[1] + posZ * row_2[2];
-        points.posZ[i] = posX * row_3[0] + posY * row_3[1] + posZ * row_3[2];
+        size_t i = 0;
+
+        //TODO: optimize and SIMD
+        #ifdef USE_SIMD
+        __m256 __row_00 = _mm256_set1_ps(row_0[0]);
+        __m256 __row_01 = _mm256_set1_ps(row_0[1]);
+        __m256 __row_02 = _mm256_set1_ps(row_0[2]);
+        __m256 __row_10 = _mm256_set1_ps(row_1[0]);
+        __m256 __row_11 = _mm256_set1_ps(row_1[1]);
+        __m256 __row_12 = _mm256_set1_ps(row_1[2]);
+        __m256 __row_20 = _mm256_set1_ps(row_2[0]);
+        __m256 __row_21 = _mm256_set1_ps(row_2[1]);
+        __m256 __row_22 = _mm256_set1_ps(row_2[2]);
+        for (; i + 8 < points.size(); i += 8) {
+            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+
+            __m256 __posXp = _mm256_fmadd_ps(__posZ, __row_02, _mm256_fmadd_ps(__posY, __row_01, _mm256_mul_ps(__posX, __row_00)));
+            __m256 __posYp = _mm256_fmadd_ps(__posZ, __row_12, _mm256_fmadd_ps(__posY, __row_11, _mm256_mul_ps(__posX, __row_10)));
+            __m256 __posZp = _mm256_fmadd_ps(__posZ, __row_22, _mm256_fmadd_ps(__posY, __row_21, _mm256_mul_ps(__posX, __row_20)));
+
+            _mm256_store_ps(&points.posX[i], __posXp);
+            _mm256_store_ps(&points.posY[i], __posYp);
+            _mm256_store_ps(&points.posZ[i], __posZp);
+        }
+        #endif
+        for (; i < points.size(); ++i) {
+            const float posX = points.posX[i];
+            const float posY = points.posY[i];
+            const float posZ = points.posZ[i];
+            points.posX[i] = posX * row_0[0] + posY * row_0[1] + posZ * row_0[2];
+            points.posY[i] = posX * row_1[0] + posY * row_1[1] + posZ * row_1[2];
+            points.posZ[i] = posX * row_2[0] + posY * row_2[1] + posZ * row_2[2];
+        }
     }
 
-
-    //Translate
-    for (size_t i = 0; i < points.size(); ++i) {
-        points.posX[i] += translate[0];
-        points.posY[i] += translate[1];
-        points.posZ[i] += translate[2];
+    {
+        //Translate
+        Timer timer{"Translate"};
+        for (size_t i = 0; i < points.size(); ++i) {
+            points.posX[i] += translate[0];
+            points.posY[i] += translate[1];
+            points.posZ[i] += translate[2];
+        }
     }
 
     return output;
