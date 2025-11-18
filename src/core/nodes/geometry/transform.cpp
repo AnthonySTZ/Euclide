@@ -141,7 +141,27 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
     {
         //Translate
         Timer timer{"Translate"};
-        for (size_t i = 0; i < points.size(); ++i) {
+
+        size_t i = 0;
+        #ifdef USE_SIMD
+        __m256 __translateX = _mm256_set1_ps(translate[0]);
+        __m256 __translateY = _mm256_set1_ps(translate[1]);
+        __m256 __translateZ = _mm256_set1_ps(translate[2]);
+        for (; i + 8 < points.size(); i += 8) {
+            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+
+            __m256 __posXp = _mm256_add_ps(__posX, __translateX);
+            __m256 __posYp = _mm256_add_ps(__posY, __translateY);
+            __m256 __posZp = _mm256_add_ps(__posZ, __translateZ);
+
+            _mm256_store_ps(&points.posX[i], __posXp);
+            _mm256_store_ps(&points.posY[i], __posYp);
+            _mm256_store_ps(&points.posZ[i], __posZp);
+        }
+        #endif
+        for (; i < points.size(); ++i) {
             points.posX[i] += translate[0];
             points.posY[i] += translate[1];
             points.posZ[i] += translate[2];
