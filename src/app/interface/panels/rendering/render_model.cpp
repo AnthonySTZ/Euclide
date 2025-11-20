@@ -102,17 +102,23 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     
     
     std::vector<uint32_t> vertexIndices;
+    std::vector<Edge> edges; // 420ms
     size_t totalTriangles = 0;
+    size_t totalEdges = 0;
     for (const auto& prim : t_mesh->primitives) {
+        if (prim.numVertices <= 1) continue;
+        totalEdges += prim.numVertices == 2 ? 1 : prim.numVertices;
         if (prim.numVertices <= 2) continue;
         totalTriangles += prim.numVertices - 2;
     }
     vertexIndices.resize(totalTriangles * 3);
+    edges.resize(totalEdges);
     
-    std::vector<Edge> edges;
+
     { //TODO: Check for multithreading or CUDA parallelism
-        Timer timer{"Prim"}; // 65ms
-        size_t offset = 0;
+        Timer timer{"Prim"}; // 98ms
+        size_t primOffset = 0;
+        size_t edgeOffset = 0;
         const auto& vertices = t_mesh->vertices; 
         for (const auto& prim : t_mesh->primitives) {
             if (prim.numVertices <= 1) continue;
@@ -122,16 +128,16 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
                 uint32_t first = vertices[prim.verticesIndex + i].refPoint;
                 uint32_t second = vertices[prim.verticesIndex + (i + 1) % prim.numVertices].refPoint;
 
-                edges.push_back(makeEdge(first, second));
+                edges[edgeOffset++] = makeEdge(first, second);
             }
 
             // Vertices
             if (prim.numVertices <= 2) continue;
 
             for (size_t i = 1; i + 1 < prim.numVertices; ++i){
-                vertexIndices[offset++] = vertices[prim.verticesIndex].refPoint;
-                vertexIndices[offset++] = vertices[prim.verticesIndex + i].refPoint;
-                vertexIndices[offset++] = vertices[prim.verticesIndex + i + 1].refPoint;
+                vertexIndices[primOffset++] = vertices[prim.verticesIndex].refPoint;
+                vertexIndices[primOffset++] = vertices[prim.verticesIndex + i].refPoint;
+                vertexIndices[primOffset++] = vertices[prim.verticesIndex + i + 1].refPoint;
             }
 
         }
