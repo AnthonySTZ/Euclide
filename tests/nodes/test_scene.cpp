@@ -88,4 +88,20 @@ TEST(Scene, RemoveNothingIfNameDoesNotExist) {
     EXPECT_EQ(scene.size(), 2);
 }
 
+TEST(Scene, RemoveNodeThatIsConnected) {
+    Scene scene;
+    auto node = std::make_shared<TestNode>();
+    auto other_node = std::make_shared<TestNode>();
+
+    scene.addNode(node);
+    scene.addNode(other_node);
+
+    other_node->setInput(0, node);
+    scene.removeNode(node->name());
+    EXPECT_EQ(scene.size(), 1);
+    EXPECT_EQ(scene.node(node->name()), nullptr);
+
+    EXPECT_EQ(other_node->getInputConnection(0), nullptr);
+}
+
 }
