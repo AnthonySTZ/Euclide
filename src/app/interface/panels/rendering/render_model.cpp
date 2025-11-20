@@ -110,11 +110,22 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     vertexIndices.resize(totalTriangles * 3);
     
     std::vector<Edge> edges;
-    {
-        Timer timer{"Prim"}; // 85ms
+    { //TODO: Check for multithreading or CUDA parallelism
+        Timer timer{"Prim"}; // 65ms
         size_t offset = 0;
         const auto& vertices = t_mesh->vertices; 
         for (const auto& prim : t_mesh->primitives) {
+            if (prim.numVertices <= 1) continue;
+
+            // Edges
+            for (size_t i = 0; i < prim.numVertices; ++i){
+                uint32_t first = vertices[prim.verticesIndex + i].refPoint;
+                uint32_t second = vertices[prim.verticesIndex + (i + 1) % prim.numVertices].refPoint;
+
+                edges.push_back(makeEdge(first, second));
+            }
+
+            // Vertices
             if (prim.numVertices <= 2) continue;
 
             for (size_t i = 1; i + 1 < prim.numVertices; ++i){
@@ -124,29 +135,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
             }
 
         }
-        // for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
-        //     const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
-        //     const size_t numOfPointIds = primPointIds.size();
-        //     // if (numOfPointIds <= 1) continue;
-
-        //     // // Edges
-        //     // for (size_t i = 0; i < numOfPointIds; ++i){
-        //     //     uint32_t first = primPointIds[i];
-        //     //     uint32_t second = primPointIds[(i + 1) % numOfPointIds];
-
-        //     //     edges.push_back(makeEdge(first, second));
-        //     // }
-
-        //     if (numOfPointIds <= 2) continue;
-
-        //     // Vertices
-        //     for (size_t i = 1; i + 1 < numOfPointIds; ++i){
-        //         vertexIndices.push_back(primPointIds[0]);
-        //         vertexIndices.push_back(primPointIds[i]);
-        //         vertexIndices.push_back(primPointIds[i+1]);
-        //     }
-
-        // }
     }
     std::sort(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){ 
         return e1.a < e2.a || (e1.a==e2.a && e1.b < e2.b); 
