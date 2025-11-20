@@ -35,14 +35,30 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
         );
 
         scene->onConnectionRemoved.subscribe(
-            [this](const uint32_t t_sourceId, const uint32_t t_destId, const uint32_t t_destIndex) {
-                m_nodeConnections.erase(std::remove_if(m_nodeConnections.begin(), m_nodeConnections.end(), 
-                    [&](const std::shared_ptr<ConnectionItem>& conn){
-                        auto sourceNodeItem = conn->sourceNode();
-                        auto destNodeItem = conn->destinationNode();
-                        return sourceNodeItem && destNodeItem && sourceNodeItem == m_nodeItems[t_sourceId] && destNodeItem == m_nodeItems[t_destId] && conn->destinationIndex() == t_destIndex;
-                    }),
-                m_nodeConnections.end());
+            [this](uint32_t t_sourceId, uint32_t t_destId, uint32_t t_destIndex)
+            {
+                auto itSrc = m_nodeItems.find(t_sourceId);
+                auto itDst = m_nodeItems.find(t_destId);
+
+                if (itSrc == m_nodeItems.end() || itDst == m_nodeItems.end())
+                    return;
+
+                const auto srcNode = itSrc->second;
+                const auto dstNode = itDst->second;
+
+                m_nodeConnections.erase(
+                    std::remove_if(
+                        m_nodeConnections.begin(),
+                        m_nodeConnections.end(),
+                        [&](const std::shared_ptr<ConnectionItem>& conn)
+                        {
+                            return conn &&
+                                conn->sourceNode() == srcNode &&
+                                conn->destinationNode() == dstNode &&
+                                conn->destinationIndex() == t_destIndex;
+                        }),
+                    m_nodeConnections.end()
+                );
             }
         );
     }
@@ -52,7 +68,7 @@ void NodeGraph::draw()
 {
     beginTab("Node Graph", m_padding);
     createNodeMenu();
-
+    
     handleInputs();
     
     drawConnections();
@@ -63,9 +79,9 @@ void NodeGraph::draw()
 void NodeGraph::handleInputs()
 {
     handleCreateNode();
-
+    
     handleNodeInteractions();
-
+    
     handleDragGraph();
     handleKeyInput();
 }
@@ -376,13 +392,13 @@ void NodeGraph::removeSelectedNodes() {
     if (auto scene = m_scene.lock()) {
         for (auto nodeItem: m_selectedNodes) {
             if (nodeItem == nullptr) continue;
-
+            
             if (auto node = nodeItem->node()) {
                 scene->removeNode(node->name());
             }
         }
     }
-
+    
     m_selectedNodes.clear();
 }
 
