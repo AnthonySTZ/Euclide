@@ -146,13 +146,13 @@ TEST(GridTest, PrimitiveVerticesFor2x3Grid)
 
     EXPECT_EQ(mesh->primitives.size(), 6);
 
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(0), (std::vector<uint32_t>{0, 1, 5, 4}));
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(1), (std::vector<uint32_t>{1, 2, 6, 5}));
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(2), (std::vector<uint32_t>{2, 3, 7, 6}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(0), (std::vector<uint32_t>{0, 1, 5, 4}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(1), (std::vector<uint32_t>{1, 2, 6, 5}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(2), (std::vector<uint32_t>{2, 3, 7, 6}));
 
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(3), (std::vector<uint32_t>{4, 5, 9, 8}));
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(4), (std::vector<uint32_t>{5, 6, 10, 9}));
-    // EXPECT_EQ(mesh->getPointIndicesOfPrimitive(5), (std::vector<uint32_t>{6, 7, 11, 10}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(3), (std::vector<uint32_t>{4, 5, 9, 8}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(4), (std::vector<uint32_t>{5, 6, 10, 9}));
+    EXPECT_EQ(mesh->getPointIndicesOfPrimitive(5), (std::vector<uint32_t>{6, 7, 11, 10}));
     
 }
 
