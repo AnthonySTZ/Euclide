@@ -39,6 +39,7 @@ private:
     void handleInputs();
     void handleCreateNode();
     void createNodeMenu();
+    void searchBar();
     void drawNodesItems(const std::vector<NodeMenuItem> &items);
     void handleNodeInteractions();
     void leftMouseReleased();
@@ -82,6 +83,9 @@ private:
 
     FixedQueue<CuttingLine> m_cuttingsLines{200};
 
+    std::string m_searchNode;
+    ImU32 m_searchBarColor = IM_COL32(50, 50, 50, 255);
+    bool m_focusSearchBar = false;
 
     bool m_isLeftClicked = false;
     bool m_isMiddleClicked = false;

@@ -1,5 +1,7 @@
 #include "node_graph.h"
 
+#include "interface/utils/string_utils.h"
+
 namespace butter {
 
 NodeGraph::NodeGraph(const std::shared_ptr<Scene>& t_scene)
@@ -78,6 +80,7 @@ void NodeGraph::handleCreateNode() {
     ImGui::InvisibleButton("nodegraph_click_area", region, ImGuiButtonFlags_None);
     if(ImGui::IsItemHovered() && (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsKeyPressed(ImGuiKey_Tab)) ) {
         ImGui::OpenPopup("node_menu");
+        m_focusSearchBar = true;
     }
 }
 
@@ -87,17 +90,47 @@ void NodeGraph::createNodeMenu() {
 
 	if (ImGui::BeginPopup("node_menu")) {
 		const auto& menuItems = NodesInfo::getMenuItems();
+
+        searchBar();
+
         for (auto& [menuName, items] : menuItems) {
-            if (ImGui::BeginMenu(menuName.c_str())) {
-                drawNodesItems(items);
-                ImGui::EndMenu();
+            if (m_searchNode.empty()) {
+                if (ImGui::BeginMenu(menuName.c_str())) {
+                    drawNodesItems(items);
+                    ImGui::EndMenu();
+                }
+            } else {
+                for (const auto& item: items) {
+                    if (toLower(item.name).find(toLower(m_searchNode)) == std::string::npos) continue;
+                    if (ImGui::MenuItem(item.name.c_str(), nullptr)) {
+                        if (auto scene = m_scene.lock()) {
+                            scene->addNode(item.createNode());
+                        }
+                    }
+                }
             }
         }
 		ImGui::EndPopup();
-	}
+	} else {
+        m_searchNode.clear();
+    }
 
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
+}
+
+void NodeGraph::searchBar() {
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, m_searchBarColor);
+
+    if (m_focusSearchBar) {
+        ImGui::SetKeyboardFocusHere();
+        m_focusSearchBar = false;
+    }
+
+    if (ImGui::InputTextWithHint("##searchBar", "Search", (char*)m_searchNode.c_str(), m_searchNode.capacity() + 1, ImGuiInputTextFlags_CallbackResize, StringImGuiCallBack, (void*)&m_searchNode)) {
+        
+    }
+    ImGui::PopStyleColor();
 }
 
 void NodeGraph::drawNodesItems(const std::vector<NodeMenuItem>& items) {
