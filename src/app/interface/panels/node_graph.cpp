@@ -112,6 +112,7 @@ void NodeGraph::createNodeMenu() {
         for (auto& [menuName, items] : menuItems) {
             if (m_searchNode.empty()) {
                 if (ImGui::BeginMenu(menuName.c_str())) {
+                    m_focusSearchBar = true; // When Menu is hovered it loses the focus
                     drawNodesItems(items);
                     ImGui::EndMenu();
                 }
