@@ -104,24 +104,23 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     std::vector<uint32_t> vertexIndices;
     size_t totalTriangles = 0;
     for (const auto& prim : t_mesh->primitives) {
-        if (prim.vertices.size() <= 2) continue;
-        totalTriangles += prim.vertices.size() - 2;
+        if (prim.numVertices <= 2) continue;
+        totalTriangles += prim.numVertices - 2;
     }
     vertexIndices.resize(totalTriangles * 3);
     
     std::vector<Edge> edges;
     {
-        Timer timer{"Prim"};
+        Timer timer{"Prim"}; // 85ms
         size_t offset = 0;
         const auto& vertices = t_mesh->vertices; 
         for (const auto& prim : t_mesh->primitives) {
-            const size_t numOfPointIds = prim.vertices.size();
-            if (numOfPointIds <= 2) continue;
+            if (prim.numVertices <= 2) continue;
 
-            for (size_t i = 1; i + 1 < numOfPointIds; ++i){
-                vertexIndices[offset++] = vertices[prim.vertices[0]].refPoint;
-                vertexIndices[offset++] = vertices[prim.vertices[i]].refPoint;
-                vertexIndices[offset++] = vertices[prim.vertices[i + 1]].refPoint;
+            for (size_t i = 1; i + 1 < prim.numVertices; ++i){
+                vertexIndices[offset++] = vertices[prim.verticesIndex].refPoint;
+                vertexIndices[offset++] = vertices[prim.verticesIndex + i].refPoint;
+                vertexIndices[offset++] = vertices[prim.verticesIndex + i + 1].refPoint;
             }
 
         }

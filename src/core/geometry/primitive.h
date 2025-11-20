@@ -7,7 +7,8 @@ namespace butter {
 
 struct Primitive{
 
-    std::vector<uint32_t> vertices; // list of vertex indices
+    uint32_t verticesIndex; // index of first vertex in vertices
+    uint32_t numVertices;
 
 };
 

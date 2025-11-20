@@ -26,26 +26,19 @@ struct Mesh {
     }
 
     inline uint32_t addPrimitive(const std::vector<uint32_t>& pointIndices) {
-        Primitive prim;
-        prim.vertices.reserve(pointIndices.size());
 
         const uint32_t primitiveIndex = static_cast<uint32_t>(primitives.size());
-        for (const uint32_t pointId: pointIndices) {
-            prim.vertices.push_back(addVertex(pointId));
-        }
-        primitives.push_back(std::move(prim));
-        return primitiveIndex;
-    }
 
-    inline std::vector<uint32_t> getPointIndicesOfPrimitive(const uint32_t t_primitiveId) {
-        const Primitive& primitive = primitives[t_primitiveId];
-        
-        std::vector<uint32_t> pointIndices;
-        pointIndices.reserve(primitive.vertices.size());
-        for (uint32_t vertexIndex : primitive.vertices) {
-            pointIndices.push_back(vertices[vertexIndex].refPoint);
+        primitives.emplace_back(Primitive{
+            static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(pointIndices.size())
+        });
+
+        vertices.reserve(pointIndices.size());
+        for (const uint32_t point: pointIndices) {
+            vertices.emplace_back(Vertex{point});
         }
-        return pointIndices;
+
+        return primitiveIndex;
     }
 };
 
