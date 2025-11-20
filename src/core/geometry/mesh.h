@@ -20,8 +20,8 @@ struct Mesh {
         return points.addPoint(t_position[0], t_position[1], t_position[2]);
     }
 
-    inline uint32_t addVertex(const uint32_t t_pointIndex, const uint32_t t_primIndex) {
-        vertices.push_back(Vertex{t_pointIndex, t_primIndex});
+    inline uint32_t addVertex(const uint32_t t_pointIndex) {
+        vertices.push_back(Vertex{t_pointIndex});
         return static_cast<uint32_t>(vertices.size() - 1);
     }
 
@@ -31,7 +31,7 @@ struct Mesh {
 
         const uint32_t primitiveIndex = static_cast<uint32_t>(primitives.size());
         for (const uint32_t pointId: pointIndices) {
-            prim.vertices.push_back(addVertex(pointId, primitiveIndex));
+            prim.vertices.push_back(addVertex(pointId));
         }
         primitives.push_back(std::move(prim));
         return primitiveIndex;
@@ -46,7 +46,7 @@ struct Mesh {
             pointIndices.push_back(vertices[vertexIndex].refPoint);
         }
         return pointIndices;
-        }
+    }
 };
 
 }

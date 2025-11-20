@@ -76,9 +76,9 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     Timer timer{"Build Render Model"};
 
     glBindVertexArray(m_vao);
+    const Points& points = t_mesh->points;
 
     {
-        const Points& points = t_mesh->points;
         m_numOfPoints = points.size();
         
         std::vector<RenderVertex> vertices;
@@ -102,29 +102,52 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     
     
     std::vector<uint32_t> vertexIndices;
+    size_t totalTriangles = 0;
+    for (const auto& prim : t_mesh->primitives) {
+        if (prim.vertices.size() <= 2) continue;
+        totalTriangles += prim.vertices.size() - 2;
+    }
+    vertexIndices.resize(totalTriangles * 3);
+    
     std::vector<Edge> edges;
-    for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
-        const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
-        const size_t numOfPointIds = primPointIds.size();
-        if (numOfPointIds <= 1) continue;
+    {
+        Timer timer{"Prim"};
+        size_t offset = 0;
+        const auto& vertices = t_mesh->vertices; 
+        for (const auto& prim : t_mesh->primitives) {
+            const size_t numOfPointIds = prim.vertices.size();
+            if (numOfPointIds <= 2) continue;
 
-        // Edges
-        for (size_t i = 0; i < numOfPointIds; ++i){
-            uint32_t first = primPointIds[i];
-            uint32_t second = primPointIds[(i + 1) % numOfPointIds];
+            for (size_t i = 1; i + 1 < numOfPointIds; ++i){
+                vertexIndices[offset++] = vertices[prim.vertices[0]].refPoint;
+                vertexIndices[offset++] = vertices[prim.vertices[i]].refPoint;
+                vertexIndices[offset++] = vertices[prim.vertices[i + 1]].refPoint;
+            }
 
-            edges.push_back(makeEdge(first, second));
         }
+        // for(size_t primId = 0; primId < t_mesh->primitives.size(); ++primId){
+        //     const std::vector<uint32_t> primPointIds = std::move(t_mesh->getPointIndicesOfPrimitive(primId));
+        //     const size_t numOfPointIds = primPointIds.size();
+        //     // if (numOfPointIds <= 1) continue;
 
-        if (numOfPointIds <= 3) continue;
+        //     // // Edges
+        //     // for (size_t i = 0; i < numOfPointIds; ++i){
+        //     //     uint32_t first = primPointIds[i];
+        //     //     uint32_t second = primPointIds[(i + 1) % numOfPointIds];
 
-        // Vertices
-        for (size_t i = 1; i + 1 < numOfPointIds; ++i){
-            vertexIndices.push_back(primPointIds[0]);
-            vertexIndices.push_back(primPointIds[i]);
-            vertexIndices.push_back(primPointIds[i+1]);
-        }
+        //     //     edges.push_back(makeEdge(first, second));
+        //     // }
 
+        //     if (numOfPointIds <= 2) continue;
+
+        //     // Vertices
+        //     for (size_t i = 1; i + 1 < numOfPointIds; ++i){
+        //         vertexIndices.push_back(primPointIds[0]);
+        //         vertexIndices.push_back(primPointIds[i]);
+        //         vertexIndices.push_back(primPointIds[i+1]);
+        //     }
+
+        // }
     }
     std::sort(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){ 
         return e1.a < e2.a || (e1.a==e2.a && e1.b < e2.b); 
