@@ -13,11 +13,6 @@ struct RenderVertex {
     float normal[3];
 };
 
-struct Edge { 
-    uint32_t a, b;
-};
-inline Edge makeEdge(uint32_t a, uint32_t b) { return {std::min(a,b), std::max(a,b)}; }
-
 class RenderModel {
 
 public:
@@ -40,7 +35,7 @@ private:
 
     void bindEBOPoints(const std::vector<uint32_t> &pointIndices);
 
-    void bindEBOEdges(const std::vector<Edge> &edges);
+    void bindEBOEdges(const std::vector<uint32_t> &edges);
 
     uint32_t m_vao = 0;
     uint32_t m_vbo = 0;

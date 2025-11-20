@@ -102,7 +102,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     
     
     std::vector<uint32_t> vertexIndices;
-    std::vector<Edge> edges; // 420ms
+    std::vector<uint32_t> edges;
     size_t totalTriangles = 0;
     size_t totalEdges = 0;
     for (const auto& prim : t_mesh->primitives) {
@@ -112,28 +112,25 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
         totalTriangles += prim.numVertices - 2;
     }
     vertexIndices.resize(totalTriangles * 3);
-    edges.resize(totalEdges);
+    edges.resize(totalEdges * 2);
     
 
     { //TODO: Check for multithreading or CUDA parallelism
-        Timer timer{"Prim"}; // 98ms
+        Timer timer{"Prim"}; // 45ms for 1000x1000 grid
         size_t primOffset = 0;
         size_t edgeOffset = 0;
         const auto& vertices = t_mesh->vertices; 
         for (const auto& prim : t_mesh->primitives) {
-            if (prim.numVertices <= 1) continue;
-
+        
             // Edges
+            if (prim.numVertices <= 1) continue;
             for (size_t i = 0; i < prim.numVertices; ++i){
-                uint32_t first = vertices[prim.verticesIndex + i].refPoint;
-                uint32_t second = vertices[prim.verticesIndex + (i + 1) % prim.numVertices].refPoint;
-
-                edges[edgeOffset++] = makeEdge(first, second);
+                edges[edgeOffset++] = vertices[prim.verticesIndex + i].refPoint;
+                edges[edgeOffset++] = vertices[prim.verticesIndex + (i + 1) % prim.numVertices].refPoint;
             }
 
             // Vertices
             if (prim.numVertices <= 2) continue;
-
             for (size_t i = 1; i + 1 < prim.numVertices; ++i){
                 vertexIndices[primOffset++] = vertices[prim.verticesIndex].refPoint;
                 vertexIndices[primOffset++] = vertices[prim.verticesIndex + i].refPoint;
@@ -142,12 +139,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 
         }
     }
-    std::sort(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){ 
-        return e1.a < e2.a || (e1.a==e2.a && e1.b < e2.b); 
-    });
-    edges.erase(std::unique(edges.begin(), edges.end(), [](const Edge &e1, const Edge &e2){
-        return e1.a==e2.a && e1.b==e2.b;
-    }), edges.end());
     
     m_numOfVertexIndices = vertexIndices.size();
     bindEBOVertex(vertexIndices);
@@ -158,7 +149,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
         bindEBOPoints(pointIndices);   
     }
 
-    m_numOfEdgesIndices = edges.size() * 2;
+    m_numOfEdgesIndices = edges.size();
     bindEBOEdges(edges);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -181,7 +172,7 @@ inline void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 }
 
-inline void RenderModel::bindEBOEdges(const std::vector<Edge>& edges){
+inline void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
 }
