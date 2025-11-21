@@ -73,7 +73,7 @@ void RenderModel::initBuffers() {
 
 void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 {    
-    Timer timer{"Build Render Model"};
+    Timer timer{"Build Render Model"}; // 100ms for 1000x1000 grid
 
     glBindVertexArray(m_vao);
     const Points& points = t_mesh->points;
@@ -114,7 +114,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     std::vector<uint32_t> edges(totalEdges * 2);
     
 
-    { //TODO: Check for multithreading or CUDA parallelism
+    {
         Timer timer{"Prim"}; // 45ms for 1000x1000 grid
         size_t primOffset = 0;
         size_t edgeOffset = 0;

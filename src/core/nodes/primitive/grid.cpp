@@ -45,7 +45,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
-    Timer timer{"grid"}; // 200ms 1000x1000 grid
+    Timer timer{"grid"}; // 100ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
@@ -116,12 +116,31 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     }
 
     // Create Primitives
-    output->primitives.reserve(rows * columns);
+    auto& primitives = output->primitives;
+    auto& vertices = output->vertices;
+    size_t primIdx = primitives.size();
+    size_t vertIdx = vertices.size();
+
+    const size_t numOfPrims = rows * columns;
+    primitives.reserve(primitives.size() + numOfPrims);
+    primitives.resize(primitives.size() + numOfPrims);
+
+    vertices.reserve(vertices.size() + numOfPrims * 4);
+    vertices.resize(vertices.size() + numOfPrims * 4);
+    
     for (uint32_t row = 0; row < rows; ++row) {
         for (uint32_t column = 0; column < columns; ++column) {
             const uint32_t top_left = row * (columnsPoints) + column;
             const uint32_t bottom_left = top_left + columnsPoints;
-            output->addPrimitive({top_left, top_left + 1, bottom_left + 1, bottom_left});
+
+            primitives[primIdx++] = Primitive{
+                static_cast<uint32_t>(vertIdx), 4
+            };
+
+            vertices[vertIdx++] = Vertex{top_left};
+            vertices[vertIdx++] = Vertex{top_left + 1};
+            vertices[vertIdx++] = Vertex{bottom_left + 1};
+            vertices[vertIdx++] = Vertex{bottom_left};
         }
     }
 
