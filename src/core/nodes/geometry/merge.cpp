@@ -2,10 +2,6 @@
 
 #include "utils/timer.h"
 
-#ifdef USE_SIMD
-#include "utils/simd.h"
-#endif
-
 namespace butter {
     
 Merge::Merge()
