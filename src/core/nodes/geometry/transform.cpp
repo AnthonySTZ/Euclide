@@ -6,7 +6,7 @@
 // #define USE_SIMD
 
 #ifdef USE_SIMD
-#include <immintrin.h>
+#include "utils/simd.h"
 #endif
 
 namespace butter {
@@ -61,7 +61,7 @@ void Transform::scaleMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_scale) {
     __m256 __scaleX = _mm256_set1_ps(t_scale[0]);
     __m256 __scaleY = _mm256_set1_ps(t_scale[1]);
     __m256 __scaleZ = _mm256_set1_ps(t_scale[2]);
-    for (; i + 8 < points.size(); i += 8) {
+    for (; i + 8 <= points.size(); i += 8) {
         __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
         __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
         __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
@@ -119,7 +119,7 @@ void Transform::rotateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_rotatio
     __m256 __row_20 = _mm256_set1_ps(row_2[0]);
     __m256 __row_21 = _mm256_set1_ps(row_2[1]);
     __m256 __row_22 = _mm256_set1_ps(row_2[2]);
-    for (; i + 8 < points.size(); i += 8) {
+    for (; i + 8 <= points.size(); i += 8) {
         __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
         __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
         __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
@@ -152,7 +152,7 @@ void Transform::translateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_tran
     __m256 __translateX = _mm256_set1_ps(t_translation[0]);
     __m256 __translateY = _mm256_set1_ps(t_translation[1]);
     __m256 __translateZ = _mm256_set1_ps(t_translation[2]);
-    for (; i + 8 < points.size(); i += 8) {
+    for (; i + 8 <= points.size(); i += 8) {
         __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
         __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
         __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ

@@ -6,10 +6,8 @@
 
 #include "utils/timer.h"
 
-// #define USE_SIMD
-
 #ifdef USE_SIMD
-#include <immintrin.h>
+#include "utils/simd.h"
 #endif
 
 namespace butter {
@@ -135,7 +133,7 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
 
             __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
 
-            for (; col + 8 < columnsPoints; col += 8) {
+            for (; col + 8 <= columnsPoints; col += 8) {
 
                 __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
 
