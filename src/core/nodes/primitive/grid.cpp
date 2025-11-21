@@ -6,6 +6,12 @@
 
 #include "utils/timer.h"
 
+// #define USE_SIMD
+
+#ifdef USE_SIMD
+#include <immintrin.h>
+#endif
+
 namespace butter {
 
 Grid::Grid()
@@ -45,7 +51,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
-    Timer timer{"grid"}; // 65ms 1000x1000 grid
+    Timer timer{"grid"}; // 48ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
@@ -87,11 +93,11 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     }
 
     // Create Points
-    std::vector<float> posCols(columnsPoints);
+    std::vector<float, AlignedAllocator<float, 32>> posCols(columnsPoints);
     for (size_t col = 0; col < columnsPoints; ++col){
         posCols[col] = col * columnSpacing;
     }
-    std::vector<float> posRows(rowsPoints);
+    std::vector<float, AlignedAllocator<float, 32>> posRows(rowsPoints);
     for (size_t row = 0; row < rowsPoints; ++row){
         posRows[row] = static_cast<float>(row) * rowSpacing;
     }
@@ -102,9 +108,77 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     points.reserve(points.size() + rowsPoints * columnsPoints);
     points.resize(points.size() + rowsPoints * columnsPoints);
 
+    #ifdef USE_SIMD
+        __m256 __normalX = _mm256_set1_ps(0.0f);
+        __m256 __normalY = _mm256_set1_ps(1.0f);
+        __m256 __normalZ = _mm256_set1_ps(0.0f);
+
+        switch (orientation) {
+            case GridOrientation::XY:
+                __normalY = _mm256_set1_ps(0.0f);
+                __normalZ = _mm256_set1_ps(1.0f);
+                break;
+            case GridOrientation::YZ:
+                __normalY = _mm256_set1_ps(0.0f);
+                __normalX = _mm256_set1_ps(1.0f);
+                break;
+        }
+
+        __m256 __colorR = _mm256_set1_ps(1.0f);
+        __m256 __colorG = _mm256_set1_ps(1.0f);
+        __m256 __colorB = _mm256_set1_ps(1.0f);
+    #endif
+
     for (size_t row = 0; row < rowsPoints; ++row) {
+        size_t col = 0;
+
+        #ifdef USE_SIMD
+
+            __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
+
+            for (; col + 8 < columnsPoints; col += 8) {
+
+                __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
+
+                __m256 __posX = _mm256_set1_ps(basePos[0]);
+                __m256 __posY = _mm256_set1_ps(basePos[1]);
+                __m256 __posZ = _mm256_set1_ps(basePos[2]);
+
+                switch (orientation) {
+                    case GridOrientation::XY:
+                        __posX = _mm256_add_ps(__posX, __colOffsets);
+                        __posY = _mm256_add_ps(__posY, __rowOffsets);
+                        break;
+                    case GridOrientation::YZ:
+                        __posY = _mm256_add_ps(__posY, __rowOffsets);
+                        __posZ = _mm256_add_ps(__posZ, __colOffsets);
+                        break;
+                    case GridOrientation::ZX:
+                        __posX = _mm256_add_ps(__posX, __colOffsets);
+                        __posZ = _mm256_add_ps(__posZ, __rowOffsets);
+                        break;
+                }
+
+                _mm256_storeu_ps(&points.posX[pointIdx], __posX);
+                _mm256_storeu_ps(&points.posY[pointIdx], __posY);
+                _mm256_storeu_ps(&points.posZ[pointIdx], __posZ);
+
+                _mm256_storeu_ps(&points.normalX[pointIdx], __normalX);
+                _mm256_storeu_ps(&points.normalY[pointIdx], __normalY);
+                _mm256_storeu_ps(&points.normalZ[pointIdx], __normalZ);
+
+                _mm256_storeu_ps(&points.colorR[pointIdx], __colorR);
+                _mm256_storeu_ps(&points.colorG[pointIdx], __colorG);
+                _mm256_storeu_ps(&points.colorB[pointIdx], __colorB);
+
+                pointIdx += 8;
+            }
+
+        #endif
+
         const float rowOffset = posRows[row];
-        for (size_t col = 0; col < columnsPoints; ++col) {
+
+        for (; col < columnsPoints; ++col) {
             const float colOffset = posCols[col];
             float3 pos = basePos;
             switch (orientation) {
