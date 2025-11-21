@@ -4,6 +4,8 @@
 #include "fields/float3field.h"
 #include "fields/int2field.h"
 
+#include "utils/timer.h"
+
 namespace butter {
 
 Grid::Grid()
@@ -43,6 +45,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
+    Timer timer{"grid"}; // 200ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();

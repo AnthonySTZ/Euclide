@@ -79,6 +79,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     const Points& points = t_mesh->points;
 
     {
+        Timer timer{"Points"}; // 36ms 1000x1000 grid
         m_numOfPoints = points.size();
         
         std::vector<RenderVertex> vertices;
