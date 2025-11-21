@@ -45,7 +45,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
-    Timer timer{"grid"}; // 80ms 1000x1000 grid
+    Timer timer{"grid"}; // 67ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
@@ -65,7 +65,7 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     const float columnSpacing = size_cols / static_cast<float>(columns);
     const float rowSpacing = size_rows / static_cast<float>(rows);
 
-    float3 base{
+    float3 basePos{
         position[0],
         position[1],
         position[2]
@@ -81,30 +81,18 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
         posRows[row] = static_cast<float>(row) * rowSpacing;
     }
 
-    std::function<float3(float rowOffset, float colOffset)> makePoint;
     switch (orientation) {
         case GridOrientation::XY:
-            base[0] -= size_cols / 2;
-            base[1] -= size_rows / 2;
-            makePoint = [&](float t_row, float t_col) {
-                return float3{base[0] + t_col, base[1] + t_row, position[2]};
-            };
+            basePos[0] -= size_cols / 2;
+            basePos[1] -= size_rows / 2;
             break;
-            
         case GridOrientation::YZ:
-            base[1] -= size_rows / 2;
-            base[2] -= size_cols / 2;
-            makePoint = [&](float t_row, float t_col) {
-                return float3{position[0], base[1] + t_row, base[2] + t_col};
-            };
+            basePos[1] -= size_rows / 2;
+            basePos[2] -= size_cols / 2;
             break;
-            
         case GridOrientation::ZX:
-            base[0] -= size_cols / 2;
-            base[2] -= size_rows / 2;
-            makePoint = [&](float t_row, float t_col) {
-                return float3{base[0] + t_col, position[1], base[2] + t_row};
-            };
+            basePos[0] -= size_cols / 2;
+            basePos[2] -= size_rows / 2;
             break;
     }
 
@@ -116,8 +104,28 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     points.resize(points.size() + rowsPoints * columnsPoints);
 
     for (size_t row = 0; row < rowsPoints; ++row) {
+        const float rowOffset = posRows[row];
         for (size_t col = 0; col < columnsPoints; ++col) {
-            const float3 pos = makePoint(posRows[row], posCols[col]);
+            const float colOffset = posCols[col];
+            float3 pos;
+            switch (orientation) {
+                case GridOrientation::XY:
+                    pos[0] = basePos[0] + colOffset;
+                    pos[1] = basePos[1] + rowOffset;
+                    pos[2] = position[2];
+                    break;
+                case GridOrientation::YZ:
+                    pos[0] = position[0];
+                    pos[1] = basePos[1] + rowOffset;
+                    pos[2] = basePos[2] + colOffset;
+                    break;
+                case GridOrientation::ZX:
+                    pos[0] = basePos[0] + colOffset;
+                    pos[1] = position[1];
+                    pos[2] = basePos[2] + rowOffset;
+                    break;
+            }
+
             points.posX[pointIdx] = pos[0];
             points.posY[pointIdx] = pos[1];
             points.posZ[pointIdx] = pos[2];
@@ -132,7 +140,6 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
             pointIdx++;
         }
     }
-
 
     // Create Primitives
     auto& primitives = output->primitives;
