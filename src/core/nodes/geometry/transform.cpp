@@ -3,8 +3,6 @@
 #include "utils/math.h"
 #include "utils/timer.h"
 
-// #define USE_SIMD
-
 #ifdef USE_SIMD
 #include "utils/simd.h"
 #endif

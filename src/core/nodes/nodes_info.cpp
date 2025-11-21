@@ -4,6 +4,7 @@
 #include "primitive/grid.h"
 
 #include "geometry/transform.h"
+#include "geometry/merge.h"
 
 namespace butter {
     
@@ -16,7 +17,8 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
     },
     {"Geometry",
         {
-            {"Transform", []() { return std::make_shared<Transform>(); }}
+            {"Transform", []() { return std::make_shared<Transform>(); }},
+            {"Merge", []() { return std::make_shared<Merge>(); }},
         }
     }
 };

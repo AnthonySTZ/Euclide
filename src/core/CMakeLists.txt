@@ -15,6 +15,7 @@ add_library(core STATIC
     nodes/primitive/grid.cpp
     
     nodes/geometry/transform.cpp
+    nodes/geometry/merge.cpp
 )
 
 target_include_directories(core
