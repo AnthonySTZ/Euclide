@@ -130,8 +130,9 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
 
             // Vertices
             if (prim.numVertices <= 2) continue;
+            const uint32_t v0 = vertices[prim.verticesIndex].refPoint;
             for (size_t i = 1; i + 1 < prim.numVertices; ++i){
-                vertexIndices[primOffset++] = vertices[prim.verticesIndex].refPoint;
+                vertexIndices[primOffset++] = v0;
                 vertexIndices[primOffset++] = vertices[prim.verticesIndex + i].refPoint;
                 vertexIndices[primOffset++] = vertices[prim.verticesIndex + i + 1].refPoint;
             }
