@@ -22,6 +22,8 @@ public:
     void cookNode(const std::shared_ptr<Node> &t_node, const uint32_t t_index = 0);
     void removeNode(const std::string& t_name);
     std::shared_ptr<Node> node(const std::string& t_name) const noexcept;
+
+    std::shared_ptr<Node> renderNode() { return m_currentRenderNode.lock(); }
     
 private:
     std::string findName(const std::string &t_name) const;

@@ -50,6 +50,8 @@ struct Mesh {
         }
         return ids;
     }
+
+    float3 center() const;
 };
 
 }

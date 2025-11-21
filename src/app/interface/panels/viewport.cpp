@@ -66,6 +66,16 @@ void Viewport::handleKeys() {
     if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderer->tooglePrimitives();
     if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderer->toogleWireframe();
     if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderer->tooglePoints();
+    if (ImGui::IsKeyPressed(ImGuiKey_F)) retargetCamera();
+}
+
+void Viewport::retargetCamera() {
+    if (const auto scene = m_scene.lock()) {
+        if (const auto node = scene->renderNode()) {
+            float3 target = node->cook(0)->center();
+            m_camera->updateTarget(glm::vec3{target[0], target[1], target[2]});
+        }
+    }
 }
 
 void Viewport::moveCamera() {

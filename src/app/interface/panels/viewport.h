@@ -21,6 +21,7 @@ public:
 private:
     void handleMouse();
     void handleKeys();
+    void retargetCamera();
     void moveCamera();
     void drawRender();
     void checkForResize();
