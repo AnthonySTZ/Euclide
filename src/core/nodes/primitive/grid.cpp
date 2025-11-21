@@ -117,60 +117,57 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
     points.resize(points.size() + rowsPoints * columnsPoints);
 
     #ifdef USE_SIMD
-        __m256 __normalX = _mm256_set1_ps(normal[0]);
-        __m256 __normalY = _mm256_set1_ps(normal[1]);
-        __m256 __normalZ = _mm256_set1_ps(normal[2]);
+    __m256 __normalX = _mm256_set1_ps(normal[0]);
+    __m256 __normalY = _mm256_set1_ps(normal[1]);
+    __m256 __normalZ = _mm256_set1_ps(normal[2]);
 
-        __m256 __colorR = _mm256_set1_ps(1.0f);
-        __m256 __colorG = _mm256_set1_ps(1.0f);
-        __m256 __colorB = _mm256_set1_ps(1.0f);
+    __m256 __colorR = _mm256_set1_ps(1.0f);
+    __m256 __colorG = _mm256_set1_ps(1.0f);
+    __m256 __colorB = _mm256_set1_ps(1.0f);
     #endif
 
     for (size_t row = 0; row < rowsPoints; ++row) {
         size_t col = 0;
 
         #ifdef USE_SIMD
+        __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
+        for (; col + 8 <= columnsPoints; col += 8) {
 
-            __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
+            __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
 
-            for (; col + 8 <= columnsPoints; col += 8) {
+            __m256 __posX = _mm256_set1_ps(basePos[0]);
+            __m256 __posY = _mm256_set1_ps(basePos[1]);
+            __m256 __posZ = _mm256_set1_ps(basePos[2]);
 
-                __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
-
-                __m256 __posX = _mm256_set1_ps(basePos[0]);
-                __m256 __posY = _mm256_set1_ps(basePos[1]);
-                __m256 __posZ = _mm256_set1_ps(basePos[2]);
-
-                switch (orientation) {
-                    case GridOrientation::XY:
-                        __posX = _mm256_add_ps(__posX, __colOffsets);
-                        __posY = _mm256_add_ps(__posY, __rowOffsets);
-                        break;
-                    case GridOrientation::YZ:
-                        __posY = _mm256_add_ps(__posY, __rowOffsets);
-                        __posZ = _mm256_add_ps(__posZ, __colOffsets);
-                        break;
-                    case GridOrientation::ZX:
-                        __posX = _mm256_add_ps(__posX, __colOffsets);
-                        __posZ = _mm256_add_ps(__posZ, __rowOffsets);
-                        break;
-                }
-
-                _mm256_storeu_ps(&points.posX[pointIdx], __posX);
-                _mm256_storeu_ps(&points.posY[pointIdx], __posY);
-                _mm256_storeu_ps(&points.posZ[pointIdx], __posZ);
-
-                _mm256_storeu_ps(&points.normalX[pointIdx], __normalX);
-                _mm256_storeu_ps(&points.normalY[pointIdx], __normalY);
-                _mm256_storeu_ps(&points.normalZ[pointIdx], __normalZ);
-
-                _mm256_storeu_ps(&points.colorR[pointIdx], __colorR);
-                _mm256_storeu_ps(&points.colorG[pointIdx], __colorG);
-                _mm256_storeu_ps(&points.colorB[pointIdx], __colorB);
-
-                pointIdx += 8;
+            switch (orientation) {
+                case GridOrientation::XY:
+                    __posX = _mm256_add_ps(__posX, __colOffsets);
+                    __posY = _mm256_add_ps(__posY, __rowOffsets);
+                    break;
+                case GridOrientation::YZ:
+                    __posY = _mm256_add_ps(__posY, __rowOffsets);
+                    __posZ = _mm256_add_ps(__posZ, __colOffsets);
+                    break;
+                case GridOrientation::ZX:
+                    __posX = _mm256_add_ps(__posX, __colOffsets);
+                    __posZ = _mm256_add_ps(__posZ, __rowOffsets);
+                    break;
             }
 
+            _mm256_storeu_ps(&points.posX[pointIdx], __posX);
+            _mm256_storeu_ps(&points.posY[pointIdx], __posY);
+            _mm256_storeu_ps(&points.posZ[pointIdx], __posZ);
+
+            _mm256_storeu_ps(&points.normalX[pointIdx], __normalX);
+            _mm256_storeu_ps(&points.normalY[pointIdx], __normalY);
+            _mm256_storeu_ps(&points.normalZ[pointIdx], __normalZ);
+
+            _mm256_storeu_ps(&points.colorR[pointIdx], __colorR);
+            _mm256_storeu_ps(&points.colorG[pointIdx], __colorG);
+            _mm256_storeu_ps(&points.colorB[pointIdx], __colorB);
+
+            pointIdx += 8;
+        }
         #endif
 
         const float rowOffset = posRows[row];
