@@ -45,7 +45,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
-    Timer timer{"grid"}; // 67ms 1000x1000 grid
+    Timer timer{"grid"}; // 65ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
@@ -71,16 +71,6 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
         position[2]
     };
 
-    // Create Points
-    std::vector<float> posCols(columnsPoints);
-    for (size_t col = 0; col < columnsPoints; ++col){
-        posCols[col] = col * columnSpacing;
-    }
-    std::vector<float> posRows(rowsPoints);
-    for (size_t row = 0; row < rowsPoints; ++row){
-        posRows[row] = static_cast<float>(row) * rowSpacing;
-    }
-
     switch (orientation) {
         case GridOrientation::XY:
             basePos[0] -= size_cols / 2;
@@ -96,6 +86,15 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
             break;
     }
 
+    // Create Points
+    std::vector<float> posCols(columnsPoints);
+    for (size_t col = 0; col < columnsPoints; ++col){
+        posCols[col] = col * columnSpacing;
+    }
+    std::vector<float> posRows(rowsPoints);
+    for (size_t row = 0; row < rowsPoints; ++row){
+        posRows[row] = static_cast<float>(row) * rowSpacing;
+    }
 
     auto& points = output->points;
     size_t pointIdx = points.size();
@@ -107,22 +106,19 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
         const float rowOffset = posRows[row];
         for (size_t col = 0; col < columnsPoints; ++col) {
             const float colOffset = posCols[col];
-            float3 pos;
+            float3 pos = basePos;
             switch (orientation) {
                 case GridOrientation::XY:
-                    pos[0] = basePos[0] + colOffset;
-                    pos[1] = basePos[1] + rowOffset;
-                    pos[2] = position[2];
+                    pos[0] += colOffset;
+                    pos[1] += rowOffset;
                     break;
                 case GridOrientation::YZ:
-                    pos[0] = position[0];
-                    pos[1] = basePos[1] + rowOffset;
-                    pos[2] = basePos[2] + colOffset;
+                    pos[1] += rowOffset;
+                    pos[2] += colOffset;
                     break;
                 case GridOrientation::ZX:
-                    pos[0] = basePos[0] + colOffset;
-                    pos[1] = position[1];
-                    pos[2] = basePos[2] + rowOffset;
+                    pos[0] += colOffset;
+                    pos[2] += rowOffset;
                     break;
             }
 
