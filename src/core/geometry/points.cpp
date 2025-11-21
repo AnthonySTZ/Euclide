@@ -25,6 +25,28 @@ void Points::reserve(const size_t t_amount)
 }
 
 /**
+ * @brief Resize a given number of point.
+ * 
+ * @param t_amount The number of points to resize.
+ * 
+ * This function allocates memory for new points.
+ */
+void Points::resize(const size_t t_amount)
+{
+    posX.resize(t_amount);
+    posY.resize(t_amount);
+    posZ.resize(t_amount);
+
+    normalX.resize(t_amount);
+    normalY.resize(t_amount);
+    normalZ.resize(t_amount);
+
+    colorR.resize(t_amount);
+    colorG.resize(t_amount);
+    colorB.resize(t_amount);
+}
+
+/**
  * @brief Clear all points in `Points`
  */
 void Points::clear() noexcept

@@ -45,7 +45,7 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
-    Timer timer{"grid"}; // 100ms 1000x1000 grid
+    Timer timer{"grid"}; // 80ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
@@ -108,12 +108,31 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
             break;
     }
 
-    output->points.reserve(rowsPoints * columnsPoints);
+
+    auto& points = output->points;
+    size_t pointIdx = points.size();
+
+    points.reserve(points.size() + rowsPoints * columnsPoints);
+    points.resize(points.size() + rowsPoints * columnsPoints);
+
     for (size_t row = 0; row < rowsPoints; ++row) {
         for (size_t col = 0; col < columnsPoints; ++col) {
-            output->addPoint(makePoint(posRows[row], posCols[col]));
+            const float3 pos = makePoint(posRows[row], posCols[col]);
+            points.posX[pointIdx] = pos[0];
+            points.posY[pointIdx] = pos[1];
+            points.posZ[pointIdx] = pos[2];
+
+            points.normalX[pointIdx] = 0.0f;
+            points.normalY[pointIdx] = 1.0f;
+            points.normalZ[pointIdx] = 0.0f;
+
+            points.colorR[pointIdx] = 1.0f;
+            points.colorG[pointIdx] = 1.0f;
+            points.colorB[pointIdx] = 1.0f;
+            pointIdx++;
         }
     }
+
 
     // Create Primitives
     auto& primitives = output->primitives;
