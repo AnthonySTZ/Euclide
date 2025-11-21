@@ -1,14 +1,10 @@
 #include "mesh.h"
 
-#include "utils/timer.h"
-
 namespace butter {
 
 float3 Mesh::center() const
 {
     if (points.size() == 0) return {0.0, 0.0, 0.0};
-
-    Timer timer{"center"};
 
     float3 sumPos{0.0, 0.0, 0.0};
     size_t i = 0;
