@@ -102,8 +102,6 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     }
     
     
-    std::vector<uint32_t> vertexIndices;
-    std::vector<uint32_t> edges;
     size_t totalTriangles = 0;
     size_t totalEdges = 0;
     for (const auto& prim : t_mesh->primitives) {
@@ -112,8 +110,8 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
         if (prim.numVertices <= 2) continue;
         totalTriangles += prim.numVertices - 2;
     }
-    vertexIndices.resize(totalTriangles * 3);
-    edges.resize(totalEdges * 2);
+    std::vector<uint32_t> vertexIndices(totalTriangles * 3);
+    std::vector<uint32_t> edges(totalEdges * 2);
     
 
     { //TODO: Check for multithreading or CUDA parallelism
