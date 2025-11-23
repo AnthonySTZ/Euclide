@@ -4,7 +4,7 @@
 #include "interface/panels/node_graph.h"
 
 int main(){
-    butter::Engine engine{1200, 800, "Test"};
+    butter::Engine engine{1600, 900, "Test"};
     
     engine.interface().addNodeGraph();
     engine.interface().addViewport();
