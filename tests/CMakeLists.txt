@@ -8,6 +8,8 @@ add_executable(ButterTests
                 nodes/primitive/test_cube.cpp
                 nodes/primitive/test_grid.cpp
                 
+                nodes/geometry/test_transform.cpp
+                
                 fields/test_field.cpp
                 fields/test_float3.cpp
 
