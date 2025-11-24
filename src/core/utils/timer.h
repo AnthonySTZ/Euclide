@@ -9,7 +9,9 @@ class Timer {
     
 public:
     Timer(const char* t_name = "Timer") : m_name{ t_name } {
-        m_startTimepoint = std::chrono::high_resolution_clock::now();
+        if(s_enableTiming) {
+            m_startTimepoint = std::chrono::high_resolution_clock::now();
+        }
     }
     
     ~Timer() {
@@ -17,7 +19,8 @@ public:
     }
     
     void Stop() {
-        if (m_stopped) return;
+        #ifndef NO_TIMING
+        if (!s_enableTiming || m_stopped) return;
         m_stopped = true;
         
         auto endTimepoint = std::chrono::high_resolution_clock::now();
@@ -27,7 +30,10 @@ public:
         double ms = duration * 0.001;
         
         std::cout << m_name << " : " << ms << " ms\n";
+        #endif
     }
+
+    static bool s_enableTiming;
     
 private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimepoint;
