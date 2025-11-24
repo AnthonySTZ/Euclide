@@ -128,5 +128,27 @@ TEST(Transform, TestRotationAroundZAxis) {
     EXPECT_NEAR(mesh.points.posZ[p1], 4.0, 1e-4f);
 }
 
+TEST(Transform, TestRotationCombined) {
+
+    Mesh mesh;
+
+    uint32_t p0 = mesh.addPoint({0.0f, 1.0f, 2.0f});
+    uint32_t p1 = mesh.addPoint({5.0f, -3.0f, 4.0f});
+
+    TransformSettings settings{
+        .rotation = {15.0f, 80.0f, 176.0f}
+    };
+
+    Transform::transform(mesh, settings);
+
+    EXPECT_NEAR(mesh.points.posX[p0], -2.18341, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], -0.296704, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], 0.380406, 1e-4f);
+    
+    EXPECT_NEAR(mesh.points.posX[p1], -3.62471, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], 4.19612, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], -4.38794, 1e-4f);
+}
+
 
 }
