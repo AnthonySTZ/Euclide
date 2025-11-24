@@ -46,6 +46,8 @@ private:
     bool m_isMiddleClicked = false;
     bool m_isRightClicked = false;
 
+    bool m_showGrid = true;
+
 };
 
 

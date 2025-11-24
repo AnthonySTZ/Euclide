@@ -80,6 +80,7 @@ void Viewport::handleKeys() {
     if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderModel.tooglePrimitives();
     if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderModel.toogleWireframe();
     if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderModel.tooglePoints();
+    if (ImGui::IsKeyPressed(ImGuiKey_G)) m_showGrid = !m_showGrid;
     if (ImGui::IsKeyPressed(ImGuiKey_F)) retargetCamera();
 }
 
@@ -117,7 +118,9 @@ void Viewport::drawRender() {
     m_renderer->beginFrame(m_viewportWidth, m_viewportHeight);
     m_renderer->clearFrame();
 
-    m_renderer->draw(m_gridModel);
+    if (m_showGrid) {
+        m_renderer->draw(m_gridModel);
+    }
     m_renderer->draw(m_renderModel);
     
     m_renderer->endFrame(m_viewportWidth, m_viewportHeight);
@@ -148,6 +151,7 @@ void Viewport::drawInfos() const
     drawList->AddText(m_windowPosition + ImVec2(10, 35), IM_COL32(255, 255, 255, 255), "P: Toogle Primitives");
     drawList->AddText(m_windowPosition + ImVec2(10, 60), IM_COL32(255, 255, 255, 255), "W: Toogle Wireframe");
     drawList->AddText(m_windowPosition + ImVec2(10, 85), IM_COL32(255, 255, 255, 255), "V: Toogle Points");
+    drawList->AddText(m_windowPosition + ImVec2(10, 110), IM_COL32(255, 255, 255, 255), "G: Toogle Grid");
 
 }
 
