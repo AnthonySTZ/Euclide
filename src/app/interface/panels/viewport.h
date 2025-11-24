@@ -33,6 +33,8 @@ private:
 
     // Rendering requirements
     std::unique_ptr<Renderer> m_renderer;
+    RenderModel m_renderModel;
+    RenderModel m_gridModel;
     uint32_t m_viewportWidth, m_viewportHeight;
 
     ImVec2 m_padding {0, 0};

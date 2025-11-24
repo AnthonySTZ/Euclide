@@ -71,12 +71,12 @@ void RenderModel::initBuffers() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
+void RenderModel::updateWithMesh(const Mesh& t_mesh)
 {    
     Timer timer{"Build Render Model"}; // 100ms for 1000x1000 grid
 
     glBindVertexArray(m_vao);
-    const Points& points = t_mesh->points;
+    const Points& points = t_mesh.points;
 
     {
         Timer timer{"Points"}; // 36ms 1000x1000 grid
@@ -104,7 +104,7 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     
     size_t totalTriangles = 0;
     size_t totalEdges = 0;
-    for (const auto& prim : t_mesh->primitives) {
+    for (const auto& prim : t_mesh.primitives) {
         if (prim.numVertices <= 1) continue;
         totalEdges += prim.numVertices == 2 ? 1 : prim.numVertices;
         if (prim.numVertices <= 2) continue;
@@ -118,8 +118,8 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
         Timer timer{"Prim"}; // 45ms for 1000x1000 grid
         size_t primOffset = 0;
         size_t edgeOffset = 0;
-        const auto& vertices = t_mesh->vertices; 
-        for (const auto& prim : t_mesh->primitives) {
+        const auto& vertices = t_mesh.vertices; 
+        for (const auto& prim : t_mesh.primitives) {
         
             // Edges
             if (prim.numVertices <= 1) continue;
@@ -157,35 +157,35 @@ void RenderModel::updateWithMesh(std::shared_ptr<Mesh> t_mesh)
     glBindVertexArray(0);
 }
 
-inline void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
+void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
 }
 
-inline void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
+void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(), GL_DYNAMIC_DRAW);
 }
 
-inline void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices){
+void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 }
 
-inline void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges){
+void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
 }
 
 
-void RenderModel::draw() {
+void RenderModel::draw() const {
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glDrawElements(GL_TRIANGLES, m_numOfVertexIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void RenderModel::drawPoints() {
+void RenderModel::drawPoints() const {
 
     glBindVertexArray(m_vao);
 
@@ -201,7 +201,8 @@ void RenderModel::drawPoints() {
     
     
 }
-void RenderModel::drawEdges() {
+
+void RenderModel::drawEdges() const {
     
     glBindVertexArray(m_vao);
     

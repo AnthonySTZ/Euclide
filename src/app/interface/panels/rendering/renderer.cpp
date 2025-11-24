@@ -14,29 +14,24 @@ Renderer::Renderer()
     glDisable(GL_CULL_FACE);
 }
 
-void Renderer::draw(const uint32_t t_screenWidth, const uint32_t t_screenHeight) {
-    beginFrame(t_screenWidth, t_screenHeight);
-    clearFrame();
-
-    if (m_showPrimitives) {
+void Renderer::draw(const RenderModel& t_model) {
+    if (t_model.showPrimitives) {
         m_faceShaderProgram.use();
         bindCameraUniforms(m_faceShaderProgram);
-        m_model.draw();
+        t_model.draw();
     }
 
-    if (m_showWireframe) {
+    if (t_model.showWireframe) {
         m_edgeShaderProgram.use();
         bindCameraUniforms(m_edgeShaderProgram);
-        m_model.drawEdges();
+        t_model.drawEdges();
     }
     
-    if (m_showPoints) {
+    if (t_model.showPoints) {
         m_pointShaderProgram.use();
         bindCameraUniforms(m_pointShaderProgram);
-        m_model.drawPoints();
+        t_model.drawPoints();
     }
-
-    endFrame(t_screenWidth, t_screenHeight);
 }
 
 float Renderer::getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const {
@@ -51,11 +46,6 @@ void Renderer::resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_
     if (auto camera = m_camera.lock()) {
         camera->updateAspectRatio(getAspectRatio(t_screenWidth, t_screenHeight));
     }
-}
-
-void Renderer::updateMesh(std::shared_ptr<Mesh> t_mesh)
-{
-    m_model.updateWithMesh(t_mesh);
 }
 
 void Renderer::setCamera(std::shared_ptr<Camera> t_camera)

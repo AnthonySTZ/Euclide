@@ -1,14 +1,28 @@
 #include "viewport.h"
 
+#include "nodes/primitive/grid.h"
+
 namespace butter {
     
 Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
     : m_scene(t_scene), m_renderer(std::make_unique<Renderer>()), m_camera(std::make_shared<Camera>())
 {
+
+    Mesh grid{};
+    Grid::createGrid(grid, GridSettings{
+        .position = {0.0, 0.0, 0.0}, 
+        .size = {10.0, 10.0},
+        .divisions = {10, 10}
+    });
+    m_gridModel.updateWithMesh(grid);
+    m_gridModel.showPrimitives = false;
+    m_gridModel.showPoints = false;
+    m_gridModel.showWireframe = true;
+
     if (auto scene = m_scene.lock()) {
         scene->onMeshUpdate.subscribe(
             [this](std::shared_ptr<Mesh> t_mesh) {
-                m_renderer->updateMesh(t_mesh);
+                m_renderModel.updateWithMesh(*t_mesh);
             }
         );
     }
@@ -63,9 +77,9 @@ void Viewport::handleMouse() {
 void Viewport::handleKeys() {
     if (!m_isItemHovered) return;
 
-    if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderer->tooglePrimitives();
-    if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderer->toogleWireframe();
-    if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderer->tooglePoints();
+    if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderModel.tooglePrimitives();
+    if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderModel.toogleWireframe();
+    if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderModel.tooglePoints();
     if (ImGui::IsKeyPressed(ImGuiKey_F)) retargetCamera();
 }
 
@@ -100,8 +114,14 @@ void Viewport::moveCamera() {
 }
 
 void Viewport::drawRender() {
-    m_renderer->draw(m_viewportWidth, m_viewportHeight);
+    m_renderer->beginFrame(m_viewportWidth, m_viewportHeight);
+    m_renderer->clearFrame();
+
+    m_renderer->draw(m_gridModel);
+    m_renderer->draw(m_renderModel);
     
+    m_renderer->endFrame(m_viewportWidth, m_viewportHeight);
+
     ImTextureID textureID = m_renderer->getRenderTexture();
     ImGui::Image(textureID, ImVec2((float)m_viewportWidth, (float)m_viewportHeight));
 

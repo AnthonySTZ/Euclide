@@ -20,12 +20,19 @@ public:
     RenderModel();
     ~RenderModel();
     
-    void updateWithMesh(std::shared_ptr<Mesh> t_mesh);
+    void updateWithMesh(const Mesh& t_mesh);
 
-    
-    void draw();
-    void drawPoints();
-    void drawEdges();
+    void draw() const;
+    void drawPoints() const;
+    void drawEdges() const;
+
+    void tooglePrimitives() noexcept { showPrimitives = !showPrimitives; }
+    void toogleWireframe() noexcept { showWireframe = !showWireframe; }
+    void tooglePoints() noexcept { showPoints = !showPoints; }
+
+    bool showPrimitives = true;
+    bool showWireframe = true;
+    bool showPoints = false;
     
 private:
     void initBuffers();
