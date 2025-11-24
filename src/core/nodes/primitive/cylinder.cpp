@@ -137,6 +137,16 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
             static_cast<uint32_t>(t_settings.divisions), static_cast<uint32_t>(t_settings.divisions)
         });
     }
+
+    for (size_t i = 0; i < t_settings.divisions; i++) {
+		uint32_t topFirstPt = i;
+		uint32_t topSecondPt = (i + 1) % t_settings.divisions;
+
+		uint32_t bottomFirstPt = topFirstPt + t_settings.divisions;
+		uint32_t bottomSecondPt = topSecondPt + t_settings.divisions;
+
+		t_mesh.addPrimitive({ topFirstPt, topSecondPt, bottomSecondPt, bottomFirstPt });
+	}
 }
 
 }
