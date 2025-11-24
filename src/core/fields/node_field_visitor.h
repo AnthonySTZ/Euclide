@@ -9,6 +9,8 @@ template <typename T>
 class NodeField;
 
 struct NodeFieldVisitor {
+    virtual void visit(const std::string&, NodeField<bool>&) = 0;
+    
     virtual void visit(const std::string&, NodeField<int>&) = 0;
     virtual void visit(const std::string&, NodeField<int2>&) = 0
     ;

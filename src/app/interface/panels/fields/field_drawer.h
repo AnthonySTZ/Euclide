@@ -8,7 +8,10 @@ namespace butter {
 class FieldDrawer : public NodeFieldVisitor {
 
 public:
-void visit(const std::string& t_name, NodeField<int>& t_field) override {
+    void visit(const std::string& t_name, NodeField<bool>& t_field) override {
+        drawBoolField(t_name, t_field);        
+    }
+    void visit(const std::string& t_name, NodeField<int>& t_field) override {
         const auto& meta = t_field.metadata();
         if (meta.is_combo) {
             drawComboField(t_name, t_field);
@@ -32,6 +35,8 @@ void visit(const std::string& t_name, NodeField<int>& t_field) override {
 
 
 private:
+    void drawBoolField(const std::string& t_name, NodeField<bool>& t_field);
+
     void drawComboField(const std::string& t_name, NodeField<int>& t_field);
     void drawIntField(const std::string& t_name, NodeField<int>& t_field);
     void drawInt2Field(const std::string& t_name, NodeField<int2>& t_field);

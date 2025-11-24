@@ -5,6 +5,16 @@
 
 namespace butter {
 
+void FieldDrawer::drawBoolField(const std::string &t_name, NodeField<bool> &t_field)
+{
+    bool value = t_field.getValue();
+
+    const std::string sliderId = std::string("##param_") + t_name;
+    if (ImGui::Checkbox(sliderId.c_str(), &value)) {
+        t_field.setValue(value);
+    }
+}
+
 void FieldDrawer::drawComboField(const std::string &t_name, NodeField<int> &t_field)
 {
     int index = t_field.getValue();
