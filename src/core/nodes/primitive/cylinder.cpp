@@ -38,7 +38,7 @@ Cylinder::Cylinder()
     divisionsField->setMetadata(NodeFieldMetadata{
         displayName: "Divisions",
         min: 3,
-        step: 0.02f
+        step: 1
     });
     addField("divisions", divisionsField);
     
@@ -75,7 +75,7 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
 
 void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
 {
-    
+    //TODO:
 }
 
 }

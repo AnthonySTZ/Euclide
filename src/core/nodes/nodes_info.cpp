@@ -2,6 +2,7 @@
 
 #include "primitive/cube.h"
 #include "primitive/grid.h"
+#include "primitive/cylinder.h"
 
 #include "geometry/transform.h"
 #include "geometry/merge.h"
@@ -13,6 +14,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
         {
             {"Cube", []() { return std::make_shared<Cube>(); }},
             {"Grid", []() { return std::make_shared<Grid>(); }},
+            {"Cylinder", []() { return std::make_shared<Cylinder>(); }},
         }
     },
     {"Geometry",
