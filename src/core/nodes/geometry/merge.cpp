@@ -8,6 +8,20 @@ Merge::Merge()
     : Node(2, 1, "Merge")
 {}
 
+std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
+{
+    if (t_inputs[0] == nullptr && t_inputs[1] == nullptr) return std::make_shared<Mesh>();
+    if (t_inputs[0] == nullptr) return std::make_shared<Mesh>(*t_inputs[1]);
+    if (t_inputs[1] == nullptr) return std::make_shared<Mesh>(*t_inputs[0]);
+
+    auto output = std::make_shared<Mesh>(*t_inputs[0]);
+    Timer timer{"Merge"};
+
+    merge(*output, *t_inputs[1]);
+
+    return output;
+}
+
 void Merge::merge(Mesh &t_mesh, const Mesh &t_mesh_2)
 {    
     auto& outputPoints = t_mesh.points;
@@ -59,20 +73,6 @@ void Merge::merge(Mesh &t_mesh, const Mesh &t_mesh_2)
         outputPrimitives[primIdx] = prim;
         primIdx++;
     }
-}
-
-std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
-{
-    if (t_inputs[0] == nullptr && t_inputs[1] == nullptr) return std::make_shared<Mesh>();
-    if (t_inputs[0] == nullptr) return std::make_shared<Mesh>(*t_inputs[1]);
-    if (t_inputs[1] == nullptr) return std::make_shared<Mesh>(*t_inputs[0]);
-
-    auto output = std::make_shared<Mesh>(*t_inputs[0]);
-    Timer timer{"Merge"};
-
-   merge(*output, *t_inputs[1]);
-
-    return output;
 }
 
 }
