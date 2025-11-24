@@ -8,22 +8,13 @@ Merge::Merge()
     : Node(2, 1, "Merge")
 {}
 
-std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
-{
-    if (t_inputs[0] == nullptr && t_inputs[1] == nullptr) return std::make_shared<Mesh>();
-    if (t_inputs[0] == nullptr) return std::make_shared<Mesh>(*t_inputs[1]);
-    if (t_inputs[1] == nullptr) return std::make_shared<Mesh>(*t_inputs[0]);
-
-    auto output = std::make_shared<Mesh>(*t_inputs[0]);
-    Timer timer{"Merge"};
-
-    const auto& meshToMerge = t_inputs[1];
-    
-    auto& outputPoints = output->points;
+void Merge::merge(Mesh &t_mesh, const Mesh &t_mesh_2)
+{    
+    auto& outputPoints = t_mesh.points;
     const size_t numPoints = outputPoints.size(); 
     size_t pointIdx = numPoints;
     
-    const auto& pointsToMerge = meshToMerge->points;
+    const auto& pointsToMerge = t_mesh_2.points;
     outputPoints.reserve(outputPoints.size() + pointsToMerge.size());
     outputPoints.resize(outputPoints.size() + pointsToMerge.size());
     for (size_t i = 0; i < pointsToMerge.size(); ++i) {
@@ -42,11 +33,11 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
         pointIdx++;
     }
     
-    auto& outputVertices = output->vertices;
+    auto& outputVertices = t_mesh.vertices;
     const size_t numVertices = outputVertices.size(); 
     size_t vertexIdx = numVertices;
     
-    const auto& verticesToMerge = meshToMerge->vertices;
+    const auto& verticesToMerge = t_mesh_2.vertices;
     outputVertices.reserve(outputVertices.size() + verticesToMerge.size());
     outputVertices.resize(outputVertices.size() + verticesToMerge.size());
     for (size_t i = 0; i < verticesToMerge.size(); ++i) {
@@ -56,10 +47,10 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
         vertexIdx++;
     }
 
-    auto& outputPrimitives = output->primitives;
+    auto& outputPrimitives = t_mesh.primitives;
     size_t primIdx = outputPrimitives.size();
     
-    const auto& primsToMerge = meshToMerge->primitives;
+    const auto& primsToMerge = t_mesh_2.primitives;
     outputPrimitives.reserve(outputPrimitives.size() + primsToMerge.size());
     outputPrimitives.resize(outputPrimitives.size() + primsToMerge.size());
     for (size_t i = 0; i < primsToMerge.size(); ++i) {
@@ -68,6 +59,18 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
         outputPrimitives[primIdx] = prim;
         primIdx++;
     }
+}
+
+std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
+{
+    if (t_inputs[0] == nullptr && t_inputs[1] == nullptr) return std::make_shared<Mesh>();
+    if (t_inputs[0] == nullptr) return std::make_shared<Mesh>(*t_inputs[1]);
+    if (t_inputs[1] == nullptr) return std::make_shared<Mesh>(*t_inputs[0]);
+
+    auto output = std::make_shared<Mesh>(*t_inputs[0]);
+    Timer timer{"Merge"};
+
+   merge(*output, *t_inputs[1]);
 
     return output;
 }
