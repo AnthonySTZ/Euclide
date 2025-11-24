@@ -34,25 +34,46 @@ Transform::Transform()
     addField("rotate", rotateField);
 }
 
+
+
 std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
 {
     if (t_inputs[0] == nullptr) return std::make_shared<Mesh>();
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
+    Timer timer{"Transform"};
+
     float3 translate = getField<Float3Field>("translate")->getValue();
     float3 scale = getField<Float3Field>("scale")->getValue();
     float3 rotate = getField<Float3Field>("rotate")->getValue();
 
-    scaleMesh(output, scale);
-    rotateMesh(output, rotate);
-    translateMesh(output, translate);
+    TransformSettings settings {
+        translate,
+        scale,
+        rotate
+    };
+
+    transform(*output, settings);
         
     return output;
 }
 
-void Transform::scaleMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_scale) {
+void Transform::transform(Mesh &t_mesh, const TransformSettings &t_settings)
+{
+    if (t_settings.scale[0] != 1.0f || t_settings.scale[1] != 1.0f || t_settings.scale[1] != 1.0f){
+        scaleMesh(t_mesh, t_settings.scale);
+    }
+    if (t_settings.rotation[0] != 0.0f || t_settings.rotation[1] != 0.0f || t_settings.rotation[1] != 0.0f){
+        rotateMesh(t_mesh, t_settings.rotation);
+    }
+    if (t_settings.translation[0] != 0.0f || t_settings.translation[1] != 0.0f || t_settings.translation[1] != 0.0f){
+        translateMesh(t_mesh, t_settings.translation);
+    }
+}
 
-    auto& points = t_mesh->points;
+void Transform::scaleMesh(Mesh& t_mesh, const float3& t_scale) {
+
+    auto& points = t_mesh.points;
 
     size_t i = 0;
     #ifdef USE_SIMD
@@ -82,7 +103,7 @@ void Transform::scaleMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_scale) {
     }
 }
 
-void Transform::rotateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_rotation) {
+void Transform::rotateMesh(Mesh& t_mesh, const float3& t_rotation) {
     
     const double rotX = radians(t_rotation[0]);
     const double rotY = radians(t_rotation[1]);
@@ -106,7 +127,7 @@ void Transform::rotateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_rotatio
         -sinY, sinZ * cosY, cosZ * cosY
     };
     
-    auto& points = t_mesh->points;
+    auto& points = t_mesh.points;
     
     size_t i = 0;
     #ifdef USE_SIMD
@@ -145,9 +166,9 @@ void Transform::rotateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_rotatio
     }
 }
 
-void Transform::translateMesh(std::shared_ptr<Mesh> t_mesh, const float3& t_translation) {
+void Transform::translateMesh(Mesh& t_mesh, const float3& t_translation) {
 
-    auto& points = t_mesh->points;
+    auto& points = t_mesh.points;
 
     size_t i = 0;
     #ifdef USE_SIMD
