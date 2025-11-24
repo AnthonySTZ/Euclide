@@ -8,8 +8,6 @@ Cube::Cube()
     auto positionField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
     positionField->setMetadata(NodeFieldMetadata{
         displayName: "Position",
-        min: -10.0f,
-        max: 10.0f,
         step: 0.02f
     });
     addField("position", positionField);
@@ -18,7 +16,6 @@ Cube::Cube()
     sizeField->setMetadata(NodeFieldMetadata{
         displayName: "Size",
         min: 0.0f,
-        max: 10.0f,
         step: 0.02f
     });
     addField("size", sizeField);
