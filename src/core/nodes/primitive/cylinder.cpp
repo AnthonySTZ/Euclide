@@ -1,5 +1,9 @@
 #include "cylinder.h"
 
+#include "utils/timer.h"
+
+#include <cmath>
+
 namespace butter {
 
  float3 position = {0.0, 0.0, 0.0};
@@ -68,6 +72,8 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
         .capped = capped
     };
 
+    Timer timer{"Cylinder"};
+
     createCylinder(*output, settings);
 
     return output;
@@ -76,6 +82,61 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
 void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
 {
     //TODO:
+    if (t_settings.divisions < 3) return;
+
+    const float angleStep = (2.0f * M_PI) / static_cast<float>(t_settings.divisions);
+    
+    const float radiusTop = t_settings.radius[0];
+    const float radiusBottom = t_settings.radius[1];
+    const float heightOffset = t_settings.height * 0.5f;
+
+    float3 position = t_settings.position; 
+    auto& points = t_mesh.points;
+    auto& vertices = t_mesh.vertices;
+    auto& primitives = t_mesh.primitives;
+
+    // Top
+    for (size_t i = 0; i < t_settings.divisions; ++i) {
+
+        float angle = i * angleStep;
+        float cosAngle = std::cos(angle);
+		float sinAngle = std::sin(angle);
+
+        float posX = cosAngle * radiusTop + position[0];
+        float posY = heightOffset + position[1];
+        float posZ = sinAngle * radiusTop + position[2];
+
+        points.addPoint(posX, posY, posZ);
+    }
+
+    // Bottom
+    for (size_t i = 0; i < t_settings.divisions; ++i) {
+
+        float angle = i * angleStep;
+        float cosAngle = std::cos(angle);
+		float sinAngle = std::sin(angle);
+
+        float posX = cosAngle * radiusBottom + position[0];
+        float posY = -heightOffset + position[1];
+        float posZ = sinAngle * radiusBottom + position[2];
+
+        points.addPoint(posX, posY, posZ);
+    }
+
+    if (t_settings.capped) {
+        vertices.resize(t_settings.divisions * 2);
+
+        for (uint32_t i = 0; i < t_settings.divisions * 2; ++i) {
+            vertices[i] = Vertex{i};
+        }
+
+        primitives.emplace_back(Primitive{
+            0, static_cast<uint32_t>(t_settings.divisions)
+        });
+        primitives.emplace_back(Primitive{
+            static_cast<uint32_t>(t_settings.divisions), static_cast<uint32_t>(t_settings.divisions)
+        });
+    }
 }
 
 }
