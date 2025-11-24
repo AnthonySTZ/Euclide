@@ -60,13 +60,13 @@ std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector
 
 void Transform::transform(Mesh &t_mesh, const TransformSettings &t_settings)
 {
-    if (t_settings.scale[0] != 1.0f || t_settings.scale[1] != 1.0f || t_settings.scale[1] != 1.0f){
+    if (t_settings.scale[0] != 1.0f || t_settings.scale[1] != 1.0f || t_settings.scale[2] != 1.0f){
         scaleMesh(t_mesh, t_settings.scale);
     }
-    if (t_settings.rotation[0] != 0.0f || t_settings.rotation[1] != 0.0f || t_settings.rotation[1] != 0.0f){
+    if (t_settings.rotation[0] != 0.0f || t_settings.rotation[1] != 0.0f || t_settings.rotation[2] != 0.0f){
         rotateMesh(t_mesh, t_settings.rotation);
     }
-    if (t_settings.translation[0] != 0.0f || t_settings.translation[1] != 0.0f || t_settings.translation[1] != 0.0f){
+    if (t_settings.translation[0] != 0.0f || t_settings.translation[1] != 0.0f || t_settings.translation[2] != 0.0f){
         translateMesh(t_mesh, t_settings.translation);
     }
 }
@@ -118,13 +118,21 @@ void Transform::rotateMesh(Mesh& t_mesh, const float3& t_rotation) {
     const float sinZ = std::sin(rotZ);
     
     const float row_0[3] = {
-        cosY * cosX, (sinZ * sinY * cosX) - (cosZ * sinX), (cosZ * sinY * cosX) + (sinZ * sinX)
+        cosY * cosZ,
+        cosZ * sinX * sinY - cosX * sinZ,
+        sinX * sinZ + cosX * cosZ * sinY
     };
+
     const float row_1[3] = {
-        cosY * sinX, (sinZ * sinY * sinX) + (cosZ * cosX), (cosZ * sinY * sinX) - (sinZ * cosX)
+        cosY * sinZ,
+        cosX * cosZ + sinX * sinY * sinZ,
+        cosX * sinY * sinZ - cosZ * sinX
     };
+
     const float row_2[3] = {
-        -sinY, sinZ * cosY, cosZ * cosY
+        -sinY,
+        cosY * sinX,
+        cosX * cosY
     };
     
     auto& points = t_mesh.points;

@@ -12,22 +12,22 @@ TEST(Transform, TestTranslation) {
     uint32_t p2 = mesh.addPoint({0.0, 10.0, 0.0});
 
     TransformSettings settings {
-        translation: {1.0, -5.0, 2.5}
+        .translation = {1.0, -5.0, 2.5}
     };
 
     Transform::transform(mesh, settings);
 
-    EXPECT_EQ(mesh.points.posX[p0], 2.0);
-    EXPECT_EQ(mesh.points.posY[p0], -5.0);
-    EXPECT_EQ(mesh.points.posZ[p0], 7.5);
+    EXPECT_NEAR(mesh.points.posX[p0], 2.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], -5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], 7.5, 1e-4f);
     
-    EXPECT_EQ(mesh.points.posX[p1], 0.0);
-    EXPECT_EQ(mesh.points.posY[p1], 4.0);
-    EXPECT_EQ(mesh.points.posZ[p1], -2.5);
+    EXPECT_NEAR(mesh.points.posX[p1], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], 4.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], -2.5, 1e-4f);
 
-    EXPECT_EQ(mesh.points.posX[p2], 1.0);
-    EXPECT_EQ(mesh.points.posY[p2], 5.0);
-    EXPECT_EQ(mesh.points.posZ[p2], 2.5);
+    EXPECT_NEAR(mesh.points.posX[p2], 1.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p2], 5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p2], 2.5, 1e-4f);
 }
 
 TEST(Transform, TestScale) {
@@ -39,22 +39,22 @@ TEST(Transform, TestScale) {
     uint32_t p2 = mesh.addPoint({0.0, 10.0, 0.0});
 
     TransformSettings settings {
-        scale: {1.0, -5.0, 2.5}
+        .scale = {1.0, -5.0, 2.5}
     };
 
     Transform::transform(mesh, settings);
 
-    EXPECT_EQ(mesh.points.posX[p0], 1.0);
-    EXPECT_EQ(mesh.points.posY[p0], 0.0);
-    EXPECT_EQ(mesh.points.posZ[p0], 12.5);
+    EXPECT_NEAR(mesh.points.posX[p0], 1.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], 12.5, 1e-4f);
     
-    EXPECT_EQ(mesh.points.posX[p1], -1.0);
-    EXPECT_EQ(mesh.points.posY[p1], -45.0);
-    EXPECT_EQ(mesh.points.posZ[p1], -12.5);
+    EXPECT_NEAR(mesh.points.posX[p1], -1.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], -45.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], -12.5, 1e-4f);
 
-    EXPECT_EQ(mesh.points.posX[p2], 0.0);
-    EXPECT_EQ(mesh.points.posY[p2], -50.0);
-    EXPECT_EQ(mesh.points.posZ[p2], 0.0);
+    EXPECT_NEAR(mesh.points.posX[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p2], -50.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p2], 0.0, 1e-4f);
 }
 
 TEST(Transform, TestRotationAroundYAxis) {
@@ -66,22 +66,67 @@ TEST(Transform, TestRotationAroundYAxis) {
     uint32_t p2 = mesh.addPoint({0.0, 10.0, 0.0});
 
     TransformSettings settings {
-        rotation: {0.0, 90.0, 0.0}
+        .rotation = {0.0, 90.0, 0.0}
     };
 
     Transform::transform(mesh, settings);
 
-    EXPECT_EQ(mesh.points.posX[p0], 5.0);
-    EXPECT_EQ(mesh.points.posY[p0], 0.0);
-    EXPECT_EQ(mesh.points.posZ[p0], -1.0);
+    EXPECT_NEAR(mesh.points.posX[p0], 5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], -1.0, 1e-4f);
     
-    EXPECT_EQ(mesh.points.posX[p1], -5.0);
-    EXPECT_EQ(mesh.points.posY[p1], 9.0);
-    EXPECT_EQ(mesh.points.posZ[p1], 1.0);
+    EXPECT_NEAR(mesh.points.posX[p1], -5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], 9.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], 1.0, 1e-4f);
 
-    EXPECT_EQ(mesh.points.posX[p2], 0.0);
-    EXPECT_EQ(mesh.points.posY[p2], 10.0);
-    EXPECT_EQ(mesh.points.posZ[p2], 0.0);
+    EXPECT_NEAR(mesh.points.posX[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p2], 10.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p2], 0.0, 1e-4f);
 }
+
+TEST(Transform, TestRotationAroundXAxis) {
+
+    Mesh mesh;
+
+    uint32_t p0 = mesh.addPoint({0.0f, 1.0f, 2.0f});
+    uint32_t p1 = mesh.addPoint({5.0f, -3.0f, 4.0f});
+
+    TransformSettings settings{
+        .rotation = {90.0f, 0.0f, 0.0f}
+    };
+
+    Transform::transform(mesh, settings);
+
+    EXPECT_NEAR(mesh.points.posX[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], -2.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], 1.0, 1e-4f);
+    
+    EXPECT_NEAR(mesh.points.posX[p1], 5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], -4.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], -3.0, 1e-4f);
+}
+
+TEST(Transform, TestRotationAroundZAxis) {
+
+    Mesh mesh;
+
+    uint32_t p0 = mesh.addPoint({0.0f, 1.0f, 2.0f});
+    uint32_t p1 = mesh.addPoint({5.0f, -3.0f, 4.0f});
+
+    TransformSettings settings{
+        .rotation = {0.0f, 0.0f, 90.0f}
+    };
+
+    Transform::transform(mesh, settings);
+
+    EXPECT_NEAR(mesh.points.posX[p0], -1.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p0], 2.0, 1e-4f);
+    
+    EXPECT_NEAR(mesh.points.posX[p1], 3.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posY[p1], 5.0, 1e-4f);
+    EXPECT_NEAR(mesh.points.posZ[p1], 4.0, 1e-4f);
+}
+
 
 }
