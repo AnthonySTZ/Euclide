@@ -65,19 +65,18 @@ std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std:
         orientation
     };
 
-    createGrid(output, settings);
+    createGrid(*output, settings);
 
     return output;
 }
 
-void Grid::createGrid(std::shared_ptr<Mesh> t_mesh, const GridSettings& t_settings)
+void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
 {
     const int rows = t_settings.divisions[0];
     const int columns = t_settings.divisions[1];
 
     const int columnsPoints = columns + 1;
     const int rowsPoints = rows + 1;
-
 
     const float size_cols = t_settings.size[0];
     const float size_rows = t_settings.size[1];
@@ -125,8 +124,8 @@ void Grid::createGrid(std::shared_ptr<Mesh> t_mesh, const GridSettings& t_settin
         posRows[row] = static_cast<float>(row) * rowSpacing;
     }
 
-    auto& points = t_mesh->points;
-    size_t pointIdx = points.size();
+    auto& points = t_mesh.points;
+    size_t pointIdx = 0;
 
     points.reserve(points.size() + rowsPoints * columnsPoints);
     points.resize(points.size() + rowsPoints * columnsPoints);
@@ -221,8 +220,8 @@ void Grid::createGrid(std::shared_ptr<Mesh> t_mesh, const GridSettings& t_settin
     }
 
     // Create Primitives
-    auto& primitives = t_mesh->primitives;
-    auto& vertices = t_mesh->vertices;
+    auto& primitives = t_mesh.primitives;
+    auto& vertices = t_mesh.vertices;
     size_t primIdx = primitives.size();
     size_t vertIdx = vertices.size();
 

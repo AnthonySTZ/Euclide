@@ -22,7 +22,7 @@ class Grid: public Node {
 public:
     Grid();
 
-    static void createGrid(std::shared_ptr<Mesh> t_mesh, const GridSettings& t_settings);
+    static void createGrid(Mesh& t_mesh, const GridSettings& t_settings);
 
 private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override;
