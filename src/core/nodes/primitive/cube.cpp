@@ -31,32 +31,46 @@ std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std:
     float3 position = getField<Float3Field>("position")->getValue();
     float3 size = getField<Float3Field>("size")->getValue();
 
+    const CubeSettings settings{
+        position,
+        size
+    };
+
+    createCube(*output, settings);
+
+    return output;
+}
+
+void Cube::createCube(Mesh &t_mesh, const CubeSettings &t_settings)
+{
+    const float3& position = t_settings.position;
+    float3 size = t_settings.size;
+
     size[0] *= 0.5;
     size[1] *= 0.5;
     size[2] *= 0.5;
+
     /* Top Face */
-    uint32_t p0 = output->addPoint(size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
-    uint32_t p1 = output->addPoint(-size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
-    uint32_t p2 = output->addPoint(-size[0] + position[0], size[1] + position[1], size[2] + position[2]);
-    uint32_t p3 = output->addPoint(size[0] + position[0], size[1] + position[1], size[2] + position[2]);
+    uint32_t p0 = t_mesh.addPoint(size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
+    uint32_t p1 = t_mesh.addPoint(-size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
+    uint32_t p2 = t_mesh.addPoint(-size[0] + position[0], size[1] + position[1], size[2] + position[2]);
+    uint32_t p3 = t_mesh.addPoint(size[0] + position[0], size[1] + position[1], size[2] + position[2]);
     
     /* Bottom Face */
-    uint32_t p4 = output->addPoint(size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
-    uint32_t p5 = output->addPoint(-size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
-    uint32_t p6 = output->addPoint(-size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
-    uint32_t p7 = output->addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
+    uint32_t p4 = t_mesh.addPoint(size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
+    uint32_t p5 = t_mesh.addPoint(-size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
+    uint32_t p6 = t_mesh.addPoint(-size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
+    uint32_t p7 = t_mesh.addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
 
     /* Clockwise order */
-    output->addPrimitive({p0, p1, p2, p3}); // +Y
-    output->addPrimitive({p7, p6, p5, p4}); // -Y
+    t_mesh.addPrimitive({p0, p1, p2, p3}); // +Y
+    t_mesh.addPrimitive({p7, p6, p5, p4}); // -Y
 
-    output->addPrimitive({p4, p5, p1, p0}); // -Z
-    output->addPrimitive({p3, p2, p6, p7}); // +Z
+    t_mesh.addPrimitive({p4, p5, p1, p0}); // -Z
+    t_mesh.addPrimitive({p3, p2, p6, p7}); // +Z
 
-    output->addPrimitive({p0, p3, p7, p4}); // +X
-    output->addPrimitive({p1, p5, p6, p2}); // -X
-
-    return output;
+    t_mesh.addPrimitive({p0, p3, p7, p4}); // +X
+    t_mesh.addPrimitive({p1, p5, p6, p2}); // -X
 }
 
 }
