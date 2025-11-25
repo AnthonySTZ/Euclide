@@ -36,7 +36,7 @@ Transform::Transform()
 
 
 
-std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
+std::shared_ptr<Mesh> Transform::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
 {
     if (t_inputs[0] == nullptr) return std::make_shared<Mesh>();
     auto output = std::make_shared<Mesh>(*t_inputs[0]);

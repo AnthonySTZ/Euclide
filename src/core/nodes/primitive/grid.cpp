@@ -48,7 +48,7 @@ Grid::Grid()
 }
 
 
-std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
+std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
 {
     Timer timer{"grid"}; // 47ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();

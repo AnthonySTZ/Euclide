@@ -13,7 +13,7 @@ public:
     };
 
 private:
-    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override {
         auto output = std::make_shared<Mesh>();
         output->points.addPoint(1.0, 2.0, 3.0); // predictable creation
         return output;
@@ -26,7 +26,7 @@ public:
     TestNode() : Node(1, 2, "Test") {};
 
 private:
-    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override {
         if (t_inputs[0] == nullptr) return nullptr;
         auto output = std::make_shared<Mesh>(*t_inputs[0]);
 

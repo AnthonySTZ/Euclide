@@ -53,7 +53,7 @@ Cylinder::Cylinder()
     addField("capped", cappedField);
 }
 
-std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs)
+std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
 {
     auto output = std::make_shared<Mesh>();
 
@@ -81,7 +81,7 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
 
 void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
 {
-    //TODO:
+    //TODO: Optimize
     if (t_settings.divisions < 3) return;
 
     const float angleStep = (2.0f * M_PI) / static_cast<float>(t_settings.divisions);

@@ -40,7 +40,7 @@ public:
     int numOutputs() const noexcept { return m_outputConnections.size(); } 
     
     template <typename T>
-    std::shared_ptr<T> getField(const std::string& t_fieldName) {
+    std::shared_ptr<T> getField(const std::string& t_fieldName) const {
         auto it = m_fields.find(t_fieldName);
         if (it == m_fields.end()) return nullptr;
         
