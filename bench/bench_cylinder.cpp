@@ -2,7 +2,7 @@
 
 #include "nodes/primitive/cylinder.h"
 
-static void BM_Cylinder100000Div(benchmark::State& state) { // 27.5ms
+static void BM_Cylinder100000Div(benchmark::State& state) { // 19.5ms
     butter::CylinderSettings settings{
         .divisions = 100000
     };

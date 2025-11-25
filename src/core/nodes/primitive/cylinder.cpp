@@ -87,8 +87,6 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
 
     float3 position = t_settings.position; 
     auto& points = t_mesh.points;
-    auto& vertices = t_mesh.vertices;
-    auto& primitives = t_mesh.primitives;
 
     points.resize(t_settings.divisions * 2);
     std::fill(points.colorR.begin(), points.colorR.end(), 1.0);
@@ -140,30 +138,54 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
         points.normalZ[idx] = points.normalZ[i];
     }
 
-    if (t_settings.capped) {
-        vertices.resize(t_settings.divisions * 2);
+    auto& vertices = t_mesh.vertices;
+    auto& primitives = t_mesh.primitives;
 
-        for (uint32_t i = 0; i < t_settings.divisions * 2; ++i) {
-            vertices[i] = Vertex{i};
+    size_t totalVertices = t_settings.divisions * 4;
+    vertices.resize(totalVertices);
+    
+    size_t vertIdx = 0;
+    for (size_t i = 0; i < t_settings.divisions; i++) {
+        const uint32_t topFirstPt = i;
+		const uint32_t topSecondPt = (i + 1) % t_settings.divisions;
+		const uint32_t bottomFirstPt = topFirstPt + t_settings.divisions;
+		const uint32_t bottomSecondPt = topSecondPt + t_settings.divisions;
+        
+        vertices[vertIdx++] = Vertex{topFirstPt};
+        vertices[vertIdx++] = Vertex{topSecondPt};
+        vertices[vertIdx++] = Vertex{bottomSecondPt};
+        vertices[vertIdx++] = Vertex{bottomFirstPt};
+    }
+    
+    uint32_t primVertIdx = 0;
+    primitives.resize(t_settings.divisions);
+    for (size_t i = 0; i < t_settings.divisions; i++) {
+        primitives[i] = Primitive{
+            primVertIdx, 4
+        };
+        primVertIdx += 4;
+    }
+
+    if (t_settings.capped) {
+
+        totalVertices += t_settings.divisions * 2;
+        vertices.reserve(totalVertices);
+        vertices.resize(totalVertices);
+
+        for (uint32_t i = 0; i < t_settings.divisions; i++) {
+            vertices[vertIdx++] = Vertex{i};
+        }
+        for (uint32_t i = t_settings.divisions; i < t_settings.divisions*2; i++) {
+            vertices[vertIdx++] = Vertex{i};
         }
 
         primitives.emplace_back(Primitive{
-            0, static_cast<uint32_t>(t_settings.divisions)
+            primVertIdx, static_cast<uint32_t>(t_settings.divisions)
         });
         primitives.emplace_back(Primitive{
-            static_cast<uint32_t>(t_settings.divisions), static_cast<uint32_t>(t_settings.divisions)
+            primVertIdx + t_settings.divisions, static_cast<uint32_t>(t_settings.divisions)
         });
     }
-
-    for (size_t i = 0; i < t_settings.divisions; i++) {
-		uint32_t topFirstPt = i;
-		uint32_t topSecondPt = (i + 1) % t_settings.divisions;
-
-		uint32_t bottomFirstPt = topFirstPt + t_settings.divisions;
-		uint32_t bottomSecondPt = topSecondPt + t_settings.divisions;
-
-		t_mesh.addPrimitive({ topFirstPt, topSecondPt, bottomSecondPt, bottomFirstPt });
-	}
 }
 
 }
