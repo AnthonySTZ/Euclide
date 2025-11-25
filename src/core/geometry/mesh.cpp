@@ -53,4 +53,19 @@ float3 Mesh::center() const
     return sumPos;
 }
 
+std::vector<HalfEdge> Mesh::computeHalfEdges() const
+{
+    std::vector<HalfEdge> halfEdges;
+
+    for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
+        const Primitive& prim = primitives[primIdx];
+        if (prim.numVertices <= 2) continue;
+        
+        //TODO:
+        
+    }
+
+    return halfEdges;
+}
+
 }

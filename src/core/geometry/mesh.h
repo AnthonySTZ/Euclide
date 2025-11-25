@@ -3,6 +3,7 @@
 #include "points.h"
 #include "vertex.h"
 #include "primitive.h"
+#include "halfedge.h"
 #include "utils/types.h"
 
 namespace butter {
@@ -51,6 +52,7 @@ struct Mesh {
         return ids;
     }
 
+    std::vector<HalfEdge> computeHalfEdges() const;
     float3 center() const;
 };
 

@@ -67,10 +67,14 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
         facePosZ[i] = faceCenter[2] * factor;
     }
 
-    points.reserve(numOfPrims);
-    for(size_t i = 0; i < numOfPrims; ++i) {
-        points.addPoint(facePosX[i], facePosY[i], facePosZ[i]);
+    {   // TODO: DEBUG ONLY
+        points.reserve(numOfPrims);
+        for(size_t i = 0; i < numOfPrims; ++i) {
+            points.addPoint(facePosX[i], facePosY[i], facePosZ[i]);
+        }
     }
+
+    const std::vector<HalfEdge> halfEdges = t_mesh.computeHalfEdges();
 
 }
 

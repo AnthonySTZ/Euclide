@@ -3,8 +3,6 @@ add_library(core STATIC
     utils/timer.cpp
 
     geometry/mesh.cpp
-    geometry/points.cpp
-    geometry/vertex.cpp
     geometry/primitive.cpp
 
     nodes/node.cpp
