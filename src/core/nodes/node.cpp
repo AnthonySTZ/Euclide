@@ -141,12 +141,12 @@ void Node::addField(const std::string &t_name, std::shared_ptr<NodeFieldBase> t_
  * @return The NodeConnection at the given index
  * 
  */
-std::shared_ptr<NodeConnection> Node::getInputConnection(const size_t t_index)
+std::shared_ptr<NodeConnection> Node::getInputConnection(const size_t t_index) const
 {
     return m_inputConnections[t_index];
 }
 
-std::vector<std::shared_ptr<NodeConnection>> Node::getOutputConnections(const size_t t_index)
+std::vector<std::shared_ptr<NodeConnection>> Node::getOutputConnections(const size_t t_index) const
 {
     return m_outputConnections[t_index];
 }

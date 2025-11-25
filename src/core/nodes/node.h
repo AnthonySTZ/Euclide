@@ -31,8 +31,8 @@ public:
     
     void addField(const std::string& t_name, std::shared_ptr<NodeFieldBase> t_field);
     
-    std::shared_ptr<NodeConnection> getInputConnection(const size_t t_index);
-    std::vector<std::shared_ptr<NodeConnection>> getOutputConnections(const size_t t_index);
+    std::shared_ptr<NodeConnection> getInputConnection(const size_t t_index) const;
+    std::vector<std::shared_ptr<NodeConnection>> getOutputConnections(const size_t t_index) const;
     std::string name() const noexcept { return m_name; }
     void setName(const std::string& t_name) noexcept { m_name = t_name; }
     
@@ -56,7 +56,7 @@ public:
     void setIsRender(bool t_isRender) noexcept { m_isRender = t_isRender; }
     bool isRender() const noexcept { return m_isRender; }
 private:
-    virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
+    virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const = 0;
 
     std::string m_name = "Node";
 
