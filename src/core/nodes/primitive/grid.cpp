@@ -4,8 +4,6 @@
 #include "fields/float3field.h"
 #include "fields/int2field.h"
 
-#include "utils/timer.h"
-
 #ifdef USE_SIMD
 #include "utils/simd.h"
 #endif
@@ -50,7 +48,6 @@ Grid::Grid()
 
 std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
 {
-    Timer timer{"grid"}; // 47ms 1000x1000 grid
     auto output = std::make_shared<Mesh>();
     
     const float3 position = getField<Float3Field>("position")->getValue();
