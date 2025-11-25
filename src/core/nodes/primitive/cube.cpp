@@ -47,27 +47,83 @@ void Cube::createCube(Mesh &t_mesh, const CubeSettings &t_settings)
     size[1] *= 0.5;
     size[2] *= 0.5;
 
+    auto& points = t_mesh.points;
+    points.resize(8);
+
+    const float posX = size[0] + position[0];
+    const float invPosX = -size[0] + position[0];
+    const float posY = size[1] + position[1];
+    const float invPosY = -size[1] + position[1];
+    const float posZ = size[2] + position[2];
+    const float invPosZ = -size[2] + position[2];
+
+    constexpr float one_third = 1.0f / 3.0f;
+
     /* Top Face */
-    uint32_t p0 = t_mesh.addPoint(size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
-    uint32_t p1 = t_mesh.addPoint(-size[0] + position[0], size[1] + position[1], -size[2] + position[2]);
-    uint32_t p2 = t_mesh.addPoint(-size[0] + position[0], size[1] + position[1], size[2] + position[2]);
-    uint32_t p3 = t_mesh.addPoint(size[0] + position[0], size[1] + position[1], size[2] + position[2]);
-    
-    /* Bottom Face */
-    uint32_t p4 = t_mesh.addPoint(size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
-    uint32_t p5 = t_mesh.addPoint(-size[0] + position[0], -size[1] + position[1], -size[2] + position[2]);
-    uint32_t p6 = t_mesh.addPoint(-size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
-    uint32_t p7 = t_mesh.addPoint(size[0] + position[0], -size[1] + position[1], size[2] + position[2]);
+    points.posX[0] = posX;
+    points.posX[1] = invPosX;
+    points.posX[2] = invPosX;
+    points.posX[3] = posX;
+    points.posX[4] = posX;
+    points.posX[5] = invPosX;
+    points.posX[6] = invPosX;
+    points.posX[7] = posX;
+    points.normalX[0] = one_third;
+    points.normalX[1] = -one_third;
+    points.normalX[2] = -one_third;
+    points.normalX[3] = one_third;
+    points.normalX[4] = one_third;
+    points.normalX[5] = -one_third;
+    points.normalX[6] = -one_third;
+    points.normalX[7] = one_third;
+
+    points.posY[0] = posY;
+    points.posY[1] = posY;
+    points.posY[2] = posY;
+    points.posY[3] = posY;
+    points.posY[4] = invPosY;
+    points.posY[5] = invPosY;
+    points.posY[6] = invPosY;
+    points.posY[7] = invPosY;
+    points.normalY[0] = one_third;
+    points.normalY[1] = one_third;
+    points.normalY[2] = one_third;
+    points.normalY[3] = one_third;
+    points.normalY[4] = -one_third;
+    points.normalY[5] = -one_third;
+    points.normalY[6] = -one_third;
+    points.normalY[7] = -one_third;
+
+    points.posZ[0] = invPosZ;
+    points.posZ[1] = invPosZ;
+    points.posZ[2] = posZ;
+    points.posZ[3] = posZ;
+    points.posZ[4] = invPosZ;
+    points.posZ[5] = invPosZ;
+    points.posZ[6] = posZ;
+    points.posZ[7] = posZ;
+    points.normalZ[0] = -one_third;
+    points.normalZ[1] = -one_third;
+    points.normalZ[2] = one_third;
+    points.normalZ[3] = one_third;
+    points.normalZ[4] = -one_third;
+    points.normalZ[5] = -one_third;
+    points.normalZ[6] = one_third;
+    points.normalZ[7] = one_third;
+
+    std::fill(std::begin(points.colorR), std::end(points.colorR), 1.0);
+    std::fill(std::begin(points.colorG), std::end(points.colorG), 1.0);
+    std::fill(std::begin(points.colorB), std::end(points.colorB), 1.0);
 
     /* Clockwise order */
-    t_mesh.addPrimitive({p0, p1, p2, p3}); // +Y
-    t_mesh.addPrimitive({p7, p6, p5, p4}); // -Y
+    t_mesh.addPrimitive({0, 1, 2, 3}); // +Y
+    t_mesh.addPrimitive({7, 6, 5, 4}); // -Y
 
-    t_mesh.addPrimitive({p4, p5, p1, p0}); // -Z
-    t_mesh.addPrimitive({p3, p2, p6, p7}); // +Z
+    t_mesh.addPrimitive({4, 5, 1, 0}); // -Z
+    t_mesh.addPrimitive({3, 2, 6, 7}); // +Z
 
-    t_mesh.addPrimitive({p0, p3, p7, p4}); // +X
-    t_mesh.addPrimitive({p1, p5, p6, p2}); // -X
+    t_mesh.addPrimitive({0, 3, 7, 4}); // +X
+    t_mesh.addPrimitive({1, 5, 6, 2}); // -X
 }
 
 }
