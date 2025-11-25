@@ -1,7 +1,5 @@
 #include "cylinder.h"
 
-#include "utils/timer.h"
-
 #include <cmath>
 
 namespace butter {
@@ -72,8 +70,6 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
         .capped = capped
     };
 
-    Timer timer{"Cylinder"};
-
     createCylinder(*output, settings);
 
     return output;
@@ -81,7 +77,6 @@ std::shared_ptr<Mesh> Cylinder::compute(const size_t t_index, const std::vector<
 
 void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
 {
-    //TODO: Optimize
     if (t_settings.divisions < 3) return;
 
     const float angleStep = (2.0f * M_PI) / static_cast<float>(t_settings.divisions);
@@ -95,9 +90,13 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
     auto& vertices = t_mesh.vertices;
     auto& primitives = t_mesh.primitives;
 
+    points.resize(t_settings.divisions * 2);
+    std::fill(points.colorR.begin(), points.colorR.end(), 1.0);
+    std::fill(points.colorG.begin(), points.colorG.end(), 1.0);
+    std::fill(points.colorB.begin(), points.colorB.end(), 1.0);
+
     // Top
     for (size_t i = 0; i < t_settings.divisions; ++i) {
-
         float angle = i * angleStep;
         float cosAngle = std::cos(angle);
 		float sinAngle = std::sin(angle);
@@ -106,21 +105,25 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
         float posY = heightOffset + position[1];
         float posZ = sinAngle * radiusTop + position[2];
 
-        points.addPoint(posX, posY, posZ);
+        points.posX[i] = posX;
+        points.posY[i] = posY;
+        points.posZ[i] = posZ;
+
+        points.normalX[i] = cosAngle;
+        points.normalY[i] = 0.0f;
+        points.normalZ[i] = sinAngle;
     }
 
     // Bottom
     for (size_t i = 0; i < t_settings.divisions; ++i) {
+        size_t idx = i + t_settings.divisions;
+        points.posX[idx] = points.posX[i];
+        points.posY[idx] = -heightOffset + position[1];
+        points.posZ[idx] = points.posZ[i];
 
-        float angle = i * angleStep;
-        float cosAngle = std::cos(angle);
-		float sinAngle = std::sin(angle);
-
-        float posX = cosAngle * radiusBottom + position[0];
-        float posY = -heightOffset + position[1];
-        float posZ = sinAngle * radiusBottom + position[2];
-
-        points.addPoint(posX, posY, posZ);
+        points.normalX[idx] = points.normalX[i];
+        points.normalY[idx] = points.normalY[i];
+        points.normalZ[idx] = points.normalZ[i];
     }
 
     if (t_settings.capped) {
