@@ -19,6 +19,7 @@ add_library(core STATIC
     
     nodes/geometry/transform.cpp
     nodes/geometry/merge.cpp
+    nodes/geometry/subdivide.cpp
 )
 
 target_include_directories(core
