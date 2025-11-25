@@ -96,10 +96,17 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
     std::fill(points.colorB.begin(), points.colorB.end(), 1.0);
 
     // Top
+    std::vector<float> cosAngles(t_settings.divisions);
+    std::vector<float> sinAngles(t_settings.divisions);
     for (size_t i = 0; i < t_settings.divisions; ++i) {
         float angle = i * angleStep;
-        float cosAngle = std::cos(angle);
-		float sinAngle = std::sin(angle);
+        cosAngles[i] = std::cos(angle);
+        sinAngles[i] = std::sin(angle);
+    }
+
+    for (size_t i = 0; i < t_settings.divisions; ++i) {
+        const float cosAngle = cosAngles[i];
+        const float sinAngle = sinAngles[i];
 
         float posX = cosAngle * radiusTop + position[0];
         float posY = heightOffset + position[1];
@@ -110,16 +117,23 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
         points.posZ[i] = posZ;
 
         points.normalX[i] = cosAngle;
-        points.normalY[i] = 0.0f;
         points.normalZ[i] = sinAngle;
     }
 
     // Bottom
     for (size_t i = 0; i < t_settings.divisions; ++i) {
         size_t idx = i + t_settings.divisions;
-        points.posX[idx] = points.posX[i];
-        points.posY[idx] = -heightOffset + position[1];
-        points.posZ[idx] = points.posZ[i];
+
+        const float cosAngle = cosAngles[i];
+        const float sinAngle = sinAngles[i];
+
+        float posX = cosAngle * radiusBottom + position[0];
+        float posY = -heightOffset + position[1];
+        float posZ = sinAngle * radiusBottom + position[2];
+
+        points.posX[idx] = posX;
+        points.posY[idx] = posY;
+        points.posZ[idx] = posZ;
 
         points.normalX[idx] = points.normalX[i];
         points.normalY[idx] = points.normalY[i];
