@@ -118,7 +118,7 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
     }
     std::vector<float, AlignedAllocator<float, 32>> posRows(rowsPoints);
     for (size_t row = 0; row < rowsPoints; ++row){
-        posRows[row] = static_cast<float>(row) * rowSpacing;
+        posRows[row] = row * rowSpacing;
     }
 
     auto& points = t_mesh.points;
