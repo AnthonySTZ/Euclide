@@ -31,5 +31,5 @@ option(USE_SIMD "Enable SIMD optimizations" OFF)
 
 if (USE_SIMD)
     target_compile_definitions(core PUBLIC USE_SIMD)
-    target_compile_options(core PUBLIC -mavx -mfma -msse3)
+    target_compile_options(core PUBLIC -march=native)
 endif()

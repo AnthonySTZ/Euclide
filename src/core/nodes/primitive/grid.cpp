@@ -216,34 +216,39 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
         }
     }
 
-    // Create Primitives
-    auto& primitives = t_mesh.primitives;
-    auto& vertices = t_mesh.vertices;
-    size_t primIdx = primitives.size();
-    size_t vertIdx = vertices.size();
-
+    // Create Vertices 
     const size_t numOfPrims = rows * columns;
-    primitives.reserve(primitives.size() + numOfPrims);
-    primitives.resize(primitives.size() + numOfPrims);
-
-    vertices.reserve(vertices.size() + numOfPrims * 4);
-    vertices.resize(vertices.size() + numOfPrims * 4);
+    auto& vertices = t_mesh.vertices;
+    vertices.resize(numOfPrims * 4);
     
+    uint32_t vertIdx = 0;
     for (uint32_t row = 0; row < rows; ++row) {
-        for (uint32_t column = 0; column < columns; ++column) {
-            const uint32_t top_left = row * (columnsPoints) + column;
-            const uint32_t bottom_left = top_left + columnsPoints;
+        float rowVal = row * columnsPoints;
 
-            primitives[primIdx++] = Primitive{
-                static_cast<uint32_t>(vertIdx), 4
-            };
+        for (size_t column = 0; column < columns; ++column) {
+            const uint32_t top_left = rowVal + column;
+            const uint32_t bottom_left = top_left + columnsPoints;
 
             vertices[vertIdx++] = Vertex{top_left};
             vertices[vertIdx++] = Vertex{top_left + 1};
             vertices[vertIdx++] = Vertex{bottom_left + 1};
             vertices[vertIdx++] = Vertex{bottom_left};
+
         }
     }
+
+    // Create Primitives
+    auto& primitives = t_mesh.primitives;
+    primitives.resize(numOfPrims);
+    
+    uint32_t primVertIdx = 0;
+    for (size_t i = 0; i < numOfPrims; ++i) {
+        primitives[i] = Primitive{
+            primVertIdx, 4
+        };
+        primVertIdx += 4;
+    }
+    
 }
 
 }
