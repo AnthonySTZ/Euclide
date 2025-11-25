@@ -12,4 +12,4 @@ static void BM_Grid1000x1000(benchmark::State& state) { // 69ms
     }
 }
 
-BENCHMARK(BM_Grid1000x1000)->Iterations(50)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_Grid1000x1000)->Unit(benchmark::kMillisecond);
