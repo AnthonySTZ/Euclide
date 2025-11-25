@@ -2,6 +2,10 @@
 
 #include <cmath>
 
+#ifdef USE_SIMD
+#include "utils/simd.h"
+#endif
+
 namespace butter {
 
  float3 position = {0.0, 0.0, 0.0};
@@ -94,36 +98,83 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
     std::fill(points.colorB.begin(), points.colorB.end(), 1.0);
 
     // Top
-    std::vector<float> cosAngles(t_settings.divisions);
-    std::vector<float> sinAngles(t_settings.divisions);
+    std::vector<float, AlignedAllocator<float, 32>> cosAngles(t_settings.divisions);
+    std::vector<float, AlignedAllocator<float, 32>> sinAngles(t_settings.divisions);
     for (size_t i = 0; i < t_settings.divisions; ++i) {
         float angle = i * angleStep;
         cosAngles[i] = std::cos(angle);
         sinAngles[i] = std::sin(angle);
     }
 
-    for (size_t i = 0; i < t_settings.divisions; ++i) {
-        const float cosAngle = cosAngles[i];
-        const float sinAngle = sinAngles[i];
+    size_t div = 0;
+    #ifdef USE_SIMD
+    if (t_settings.divisions >= 8) {
+        __m256 __translateX = _mm256_set1_ps(position[0]);
+        __m256 __translateY = _mm256_set1_ps(position[1]);
+        __m256 __translateZ = _mm256_set1_ps(position[2]);
+
+        __m256 __radiusTop = _mm256_set1_ps(radiusTop);
+        __m256 __height = _mm256_set1_ps(heightOffset);
+
+        for (; div + 8 <= t_settings.divisions; div += 8) {
+            __m256 __cos = _mm256_load_ps(&cosAngles[div]);
+            __m256 __sin = _mm256_load_ps(&sinAngles[div]);
+
+            _mm256_store_ps(&points.posX[div], _mm256_fmadd_ps(__cos, __radiusTop, __translateX));
+            _mm256_store_ps(&points.posY[div], _mm256_add_ps(__height, __translateY));
+            _mm256_store_ps(&points.posZ[div], _mm256_fmadd_ps(__sin, __radiusTop, __translateZ));
+
+            _mm256_store_ps(&points.normalX[div], __cos);
+            _mm256_store_ps(&points.normalZ[div], __sin);
+        }
+    }
+    #endif
+
+    for (; div < t_settings.divisions; ++div) {
+        const float cosAngle = cosAngles[div];
+        const float sinAngle = sinAngles[div];
 
         float posX = cosAngle * radiusTop + position[0];
         float posY = heightOffset + position[1];
         float posZ = sinAngle * radiusTop + position[2];
 
-        points.posX[i] = posX;
-        points.posY[i] = posY;
-        points.posZ[i] = posZ;
+        points.posX[div] = posX;
+        points.posY[div] = posY;
+        points.posZ[div] = posZ;
 
-        points.normalX[i] = cosAngle;
-        points.normalZ[i] = sinAngle;
+        points.normalX[div] = cosAngle;
+        points.normalZ[div] = sinAngle;
     }
 
-    // Bottom
-    for (size_t i = 0; i < t_settings.divisions; ++i) {
-        size_t idx = i + t_settings.divisions;
+    div = 0;
+    #ifdef USE_SIMD
+    if (t_settings.divisions >= 8) {
+        __m256 __translateX = _mm256_set1_ps(position[0]);
+        __m256 __translateY = _mm256_set1_ps(position[1]);
+        __m256 __translateZ = _mm256_set1_ps(position[2]);
 
-        const float cosAngle = cosAngles[i];
-        const float sinAngle = sinAngles[i];
+        __m256 __radiusBottom = _mm256_set1_ps(radiusBottom);
+        __m256 __height = _mm256_set1_ps(-heightOffset);
+
+        for (; div + 8 <= t_settings.divisions; div += 8) {
+            __m256 __cos = _mm256_load_ps(&cosAngles[div]);
+            __m256 __sin = _mm256_load_ps(&sinAngles[div]);
+
+            _mm256_storeu_ps(&points.posX[div + t_settings.divisions], _mm256_fmadd_ps(__cos, __radiusBottom, __translateX));
+            _mm256_storeu_ps(&points.posY[div + t_settings.divisions], _mm256_add_ps(__height, __translateY));
+            _mm256_storeu_ps(&points.posZ[div + t_settings.divisions], _mm256_fmadd_ps(__sin, __radiusBottom, __translateZ));
+
+            _mm256_storeu_ps(&points.normalX[div + t_settings.divisions], __cos);
+            _mm256_storeu_ps(&points.normalZ[div + t_settings.divisions], __sin);
+        }
+    }
+    #endif
+
+    for (; div < t_settings.divisions; ++div) {
+        size_t idx = div + t_settings.divisions;
+
+        const float cosAngle = cosAngles[div];
+        const float sinAngle = sinAngles[div];
 
         float posX = cosAngle * radiusBottom + position[0];
         float posY = -heightOffset + position[1];
@@ -133,9 +184,9 @@ void Cylinder::createCylinder(Mesh &t_mesh, const CylinderSettings &t_settings)
         points.posY[idx] = posY;
         points.posZ[idx] = posZ;
 
-        points.normalX[idx] = points.normalX[i];
-        points.normalY[idx] = points.normalY[i];
-        points.normalZ[idx] = points.normalZ[i];
+        points.normalX[idx] = points.normalX[div];
+        points.normalY[idx] = points.normalY[div];
+        points.normalZ[idx] = points.normalZ[div];
     }
 
     auto& vertices = t_mesh.vertices;
