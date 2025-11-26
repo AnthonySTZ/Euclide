@@ -58,15 +58,13 @@ float3 Mesh::center() const
 
 std::vector<HalfEdge> Mesh::computeHalfEdges() const
 {
-    std::vector<HalfEdge> halfEdges;
     size_t totalHalfEdges = 0;
     for (const auto& prim: primitives) {
         if (prim.numVertices > 2) {
             totalHalfEdges += prim.numVertices;
         }
     }
-    halfEdges.resize(totalHalfEdges);
-
+    std::vector<HalfEdge> halfEdges(totalHalfEdges);
 
     std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, PairHash> halfedgeIndices;
 
@@ -80,12 +78,12 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             const uint32_t next = vertices[vertIdx + 1].refPoint;
             uint32_t twin = HalfEdge::NO_TWIN;
 
-            halfedgeIndices.try_emplace({origin, next}, halfEdgeIdx);
-
             const auto it = halfedgeIndices.find({next, origin});
             if (it != halfedgeIndices.end()) {
                 halfEdges[it->second].twin = halfEdgeIdx;
                 twin = it->second;
+            } else {
+                halfedgeIndices.emplace(std::make_pair(origin, next), halfEdgeIdx);
             }
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
@@ -101,12 +99,12 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         const uint32_t next = vertices[prim.verticesIndex].refPoint;
         uint32_t twin = HalfEdge::NO_TWIN;
 
-        halfedgeIndices.try_emplace({origin, next}, halfEdgeIdx);
-
         const auto it = halfedgeIndices.find({next, origin});
         if (it != halfedgeIndices.end()) {
             halfEdges[it->second].twin = halfEdgeIdx;
             twin = it->second;
+        } else {
+            halfedgeIndices.emplace(std::make_pair(origin, next), halfEdgeIdx);
         }
 
         halfEdges[halfEdgeIdx++] = HalfEdge{
