@@ -67,6 +67,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
     std::vector<HalfEdge> halfEdges(totalHalfEdges);
 
     std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, PairHash> halfedgeIndices;
+    halfedgeIndices.reserve(totalHalfEdges);
 
     uint32_t halfEdgeIdx = 0;
     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
