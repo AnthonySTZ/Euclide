@@ -69,39 +69,45 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         for(size_t vertIdx = prim.verticesIndex; vertIdx < prim.verticesIndex + prim.numVertices - 1; ++vertIdx) {
             const uint32_t origin = vertices[vertIdx].refPoint;
             const uint32_t next = vertices[vertIdx + 1].refPoint;
+            uint32_t twin = HalfEdge::NO_TWIN;
 
             const uint32_t halfedgeIdx = halfEdges.size();
             halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
 
-            halfEdges.emplace_back(HalfEdge{
-                .next = next,
-                .origin = origin,
-                .face = primIdx
-            });
-
             const auto it = halfedgeIndices.find({next, origin});
             if (it != halfedgeIndices.end()) {
                 halfEdges[it->second].twin = halfedgeIdx;
+                twin = it->second;
             }
+
+            halfEdges.emplace_back(HalfEdge{
+                .next = next,
+                .origin = origin,
+                .face = primIdx,
+                .twin = twin
+            });
         }
 
         // Last edge -> connect last vertex to the first vertex
         const uint32_t origin = vertices[prim.verticesIndex + prim.numVertices - 1].refPoint;
         const uint32_t next = vertices[prim.verticesIndex].refPoint;
+        uint32_t twin = HalfEdge::NO_TWIN;
 
         const uint32_t halfedgeIdx = halfEdges.size();
         halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
 
+        const auto it = halfedgeIndices.find({next, origin});
+        if (it != halfedgeIndices.end()) {
+            halfEdges[it->second].twin = halfedgeIdx;
+            twin = it->second;
+        }
+
         halfEdges.emplace_back(HalfEdge{
             .next = next,
             .origin = origin,
-            .face = primIdx
+            .face = primIdx,
+            .twin = twin
         });
-
-        const auto it = halfedgeIndices.find({next, origin}); 
-        if (it != halfedgeIndices.end()) {
-            halfEdges[it->second].twin = halfedgeIdx;
-        }
         
     }
 

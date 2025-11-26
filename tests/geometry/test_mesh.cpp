@@ -94,6 +94,46 @@ TEST(Mesh, ComputeHalfEdge) {
     const auto halfedges = mesh.computeHalfEdges();
 
     EXPECT_EQ(halfedges.size(), 8);
+
+    EXPECT_EQ(halfedges[0].origin, 0);
+    EXPECT_EQ(halfedges[0].next, 1);
+    EXPECT_EQ(halfedges[0].face, 0);
+    EXPECT_EQ(halfedges[0].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[1].origin, 1);
+    EXPECT_EQ(halfedges[1].next, 2);
+    EXPECT_EQ(halfedges[1].face, 0);
+    EXPECT_EQ(halfedges[1].twin, 7);
+
+    EXPECT_EQ(halfedges[2].origin, 2);
+    EXPECT_EQ(halfedges[2].next, 3);
+    EXPECT_EQ(halfedges[2].face, 0);
+    EXPECT_EQ(halfedges[2].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[3].origin, 3);
+    EXPECT_EQ(halfedges[3].next, 0);
+    EXPECT_EQ(halfedges[3].face, 0);
+    EXPECT_EQ(halfedges[3].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[4].origin, 1);
+    EXPECT_EQ(halfedges[4].next, 4);
+    EXPECT_EQ(halfedges[4].face, 1);
+    EXPECT_EQ(halfedges[4].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[5].origin, 4);
+    EXPECT_EQ(halfedges[5].next, 5);
+    EXPECT_EQ(halfedges[5].face, 1);
+    EXPECT_EQ(halfedges[5].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[6].origin, 5);
+    EXPECT_EQ(halfedges[6].next, 2);
+    EXPECT_EQ(halfedges[6].face, 1);
+    EXPECT_EQ(halfedges[6].twin, HalfEdge::NO_TWIN);
+
+    EXPECT_EQ(halfedges[7].origin, 2);
+    EXPECT_EQ(halfedges[7].next, 1);
+    EXPECT_EQ(halfedges[7].face, 1);
+    EXPECT_EQ(halfedges[7].twin, 1);
 }
 
 }
