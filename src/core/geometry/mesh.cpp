@@ -6,6 +6,9 @@
 #include "utils/simd.h"
 #endif
 
+#include <unordered_map>
+#include "utils/hash.h"
+
 namespace butter {
 
 float3 Mesh::center() const
@@ -57,11 +60,48 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
 {
     std::vector<HalfEdge> halfEdges;
 
+    std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, PairHash> halfedgeIndices;
+
     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
         const Primitive& prim = primitives[primIdx];
         if (prim.numVertices <= 2) continue;
         
-        //TODO:
+        for(size_t vertIdx = prim.verticesIndex; vertIdx < prim.verticesIndex + prim.numVertices - 1; ++vertIdx) {
+            const uint32_t origin = vertices[vertIdx].refPoint;
+            const uint32_t next = vertices[vertIdx + 1].refPoint;
+
+            const uint32_t halfedgeIdx = halfEdges.size();
+            halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
+
+            halfEdges.emplace_back(HalfEdge{
+                .next = next,
+                .origin = origin,
+                .face = primIdx
+            });
+
+            const auto it = halfedgeIndices.find({next, origin});
+            if (it != halfedgeIndices.end()) {
+                halfEdges[it->second].twin = halfedgeIdx;
+            }
+        }
+
+        // Last edge -> connect last vertex to the first vertex
+        const uint32_t origin = vertices[prim.verticesIndex + prim.numVertices - 1].refPoint;
+        const uint32_t next = vertices[prim.verticesIndex].refPoint;
+
+        const uint32_t halfedgeIdx = halfEdges.size();
+        halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
+
+        halfEdges.emplace_back(HalfEdge{
+            .next = next,
+            .origin = origin,
+            .face = primIdx
+        });
+
+        const auto it = halfedgeIndices.find({next, origin}); 
+        if (it != halfedgeIndices.end()) {
+            halfEdges[it->second].twin = halfedgeIdx;
+        }
         
     }
 

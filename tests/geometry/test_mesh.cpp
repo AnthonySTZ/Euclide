@@ -74,4 +74,26 @@ TEST(Mesh, GetMeshCenterMoreThan8Points){
     EXPECT_NEAR(z, expected[2], 1e-2f);
 }
 
+TEST(Mesh, ComputeHalfEdge) {
+
+    Mesh mesh;
+    mesh.addPoint(0, 0, 0);
+    mesh.addPoint(0, 0, 0);
+    mesh.addPoint(0, 0, 0);
+    mesh.addPoint(0, 0, 0);
+    mesh.addPoint(0, 0, 0);
+    mesh.addPoint(0, 0, 0);
+
+    mesh.addPrimitive({0, 1, 2, 3});
+    mesh.addPrimitive({1, 4, 5, 2});
+
+    // 0    -    1     -    4   
+    // |    1    |     2    |
+    // 3    -    2     -    5
+
+    const auto halfedges = mesh.computeHalfEdges();
+
+    EXPECT_EQ(halfedges.size(), 8);
+}
+
 }
