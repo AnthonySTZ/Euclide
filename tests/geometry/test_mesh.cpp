@@ -116,22 +116,22 @@ TEST(Mesh, ComputeHalfEdge) {
     EXPECT_EQ(halfedges[3].twin, HalfEdge::NO_TWIN);
 
     EXPECT_EQ(halfedges[4].origin, 1);
-    EXPECT_EQ(halfedges[4].next, 4);
+    EXPECT_EQ(halfedges[4].next, 5);
     EXPECT_EQ(halfedges[4].face, 1);
     EXPECT_EQ(halfedges[4].twin, HalfEdge::NO_TWIN);
 
     EXPECT_EQ(halfedges[5].origin, 4);
-    EXPECT_EQ(halfedges[5].next, 5);
+    EXPECT_EQ(halfedges[5].next, 6);
     EXPECT_EQ(halfedges[5].face, 1);
     EXPECT_EQ(halfedges[5].twin, HalfEdge::NO_TWIN);
 
     EXPECT_EQ(halfedges[6].origin, 5);
-    EXPECT_EQ(halfedges[6].next, 2);
+    EXPECT_EQ(halfedges[6].next, 7);
     EXPECT_EQ(halfedges[6].face, 1);
     EXPECT_EQ(halfedges[6].twin, HalfEdge::NO_TWIN);
 
     EXPECT_EQ(halfedges[7].origin, 2);
-    EXPECT_EQ(halfedges[7].next, 1);
+    EXPECT_EQ(halfedges[7].next, 4);
     EXPECT_EQ(halfedges[7].face, 1);
     EXPECT_EQ(halfedges[7].twin, 1);
 }

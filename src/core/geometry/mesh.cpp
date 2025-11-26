@@ -87,7 +87,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             }
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
-                .next = next,
+                .next = halfEdgeIdx, // halfEdgeIdx + 1 but it incremented before
                 .origin = origin,
                 .face = primIdx,
                 .twin = twin
@@ -108,7 +108,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         }
 
         halfEdges[halfEdgeIdx++] = HalfEdge{
-            .next = next,
+            .next = halfEdgeIdx - prim.numVertices,
             .origin = origin,
             .face = primIdx,
             .twin = twin
