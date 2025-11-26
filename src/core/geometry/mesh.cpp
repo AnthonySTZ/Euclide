@@ -59,9 +59,18 @@ float3 Mesh::center() const
 std::vector<HalfEdge> Mesh::computeHalfEdges() const
 {
     std::vector<HalfEdge> halfEdges;
+    size_t totalHalfEdges = 0;
+    for (const auto& prim: primitives) {
+        if (prim.numVertices > 2) {
+            totalHalfEdges += prim.numVertices;
+        }
+    }
+    halfEdges.resize(totalHalfEdges);
+
 
     std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, PairHash> halfedgeIndices;
 
+    uint32_t halfEdgeIdx = 0;
     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
         const Primitive& prim = primitives[primIdx];
         if (prim.numVertices <= 2) continue;
@@ -71,21 +80,20 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             const uint32_t next = vertices[vertIdx + 1].refPoint;
             uint32_t twin = HalfEdge::NO_TWIN;
 
-            const uint32_t halfedgeIdx = halfEdges.size();
-            halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
+            halfedgeIndices.try_emplace({origin, next}, halfEdgeIdx);
 
             const auto it = halfedgeIndices.find({next, origin});
             if (it != halfedgeIndices.end()) {
-                halfEdges[it->second].twin = halfedgeIdx;
+                halfEdges[it->second].twin = halfEdgeIdx;
                 twin = it->second;
             }
 
-            halfEdges.emplace_back(HalfEdge{
+            halfEdges[halfEdgeIdx++] = HalfEdge{
                 .next = next,
                 .origin = origin,
                 .face = primIdx,
                 .twin = twin
-            });
+            };
         }
 
         // Last edge -> connect last vertex to the first vertex
@@ -93,21 +101,20 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         const uint32_t next = vertices[prim.verticesIndex].refPoint;
         uint32_t twin = HalfEdge::NO_TWIN;
 
-        const uint32_t halfedgeIdx = halfEdges.size();
-        halfedgeIndices.try_emplace({origin, next}, halfedgeIdx);
+        halfedgeIndices.try_emplace({origin, next}, halfEdgeIdx);
 
         const auto it = halfedgeIndices.find({next, origin});
         if (it != halfedgeIndices.end()) {
-            halfEdges[it->second].twin = halfedgeIdx;
+            halfEdges[it->second].twin = halfEdgeIdx;
             twin = it->second;
         }
 
-        halfEdges.emplace_back(HalfEdge{
+        halfEdges[halfEdgeIdx++] = HalfEdge{
             .next = next,
             .origin = origin,
             .face = primIdx,
             .twin = twin
-        });
+        };
         
     }
 

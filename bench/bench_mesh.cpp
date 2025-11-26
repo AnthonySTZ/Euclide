@@ -2,7 +2,7 @@
 
 #include "nodes/primitive/grid.h"
 
-static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 1400ms
+static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 1320ms
     butter::Mesh mesh;
     butter::GridSettings settings{
         .divisions = {1000, 1000}
