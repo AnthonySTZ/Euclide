@@ -2,7 +2,7 @@
 
 #include "nodes/primitive/grid.h"
 
-static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.036 ms
+static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.02 ms
     butter::Mesh mesh;
     butter::GridSettings settings{
         .divisions = {10, 10}
@@ -15,7 +15,7 @@ static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.036
     }
 }
 
-static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 500 ms
+static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 387 ms
     butter::Mesh mesh;
     butter::GridSettings settings{
         .divisions = {1000, 1000}
@@ -29,4 +29,4 @@ static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 5
 }
 
 BENCHMARK(BM_HalfedgeConstructionGrid10x10)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_HalfedgeConstructionGrid1000x1000)->Iterations(10)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_HalfedgeConstructionGrid1000x1000)->Iterations(20)->Unit(benchmark::kMillisecond);

@@ -6,7 +6,7 @@
 #include "utils/simd.h"
 #endif
 
-#include <unordered_map>
+#include <algorithm>
 #include "utils/hash.h"
 
 namespace butter {
@@ -66,8 +66,14 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
     }
     std::vector<HalfEdge> halfEdges(totalHalfEdges);
 
-    std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, PairHash> halfedgeIndices;
-    halfedgeIndices.reserve(totalHalfEdges);
+    struct Edge {
+        size_t key;
+        uint32_t origin;
+        uint32_t next;
+        size_t idx; 
+    };
+    std::vector<Edge> edges;
+    edges.reserve(totalHalfEdges);
 
     uint32_t halfEdgeIdx = 0;
     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
@@ -80,24 +86,36 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         for (size_t i = 0; i < count; ++i) {
             const uint32_t origin = vertices[base + i].refPoint;
             const uint32_t next = vertices[base + (i + 1)%count].refPoint;
-            uint32_t twin = HalfEdge::NO_TWIN;
 
-            const auto it = halfedgeIndices.find({next, origin});
-            if (it != halfedgeIndices.end()) {
-                halfEdges[it->second].twin = halfEdgeIdx;
-                twin = it->second;
-            } else {
-                halfedgeIndices.emplace(std::make_pair(origin, next), halfEdgeIdx);
-            }
+            edges.emplace_back(Edge{
+                hash(std::min(origin, next), std::max(origin, next)),
+                origin,
+                next,
+                halfEdgeIdx
+            });
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
                 .next = (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before
                 .origin = origin,
                 .face = primIdx,
-                .twin = twin
             };
         }
         
+    }
+
+    std::sort(edges.begin(), edges.end(), [](const Edge&a, const Edge&b){
+        return a.key < b.key;
+    });
+
+    for (size_t i = 0; i + 1 < edges.size(); ++i) {
+        const auto& a = edges[i];
+        const auto& b = edges[i + 1];
+        if (a.key != b.key) continue;
+        if (a.origin == b.next && b.origin == a.next) {
+            halfEdges[a.idx].twin = b.idx;
+            halfEdges[b.idx].twin = a.idx;
+            i++;
+        }
     }
 
     return halfEdges;

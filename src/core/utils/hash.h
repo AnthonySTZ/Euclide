@@ -1,10 +1,10 @@
 #include <utility>
 #include <cstdint>
 
-struct PairHash
-{
-    size_t operator()(const std::pair<uint32_t, uint32_t>& p) const noexcept
-    {
-        return (static_cast<size_t>(p.first) << 32) ^ p.second;
-    }
-};
+namespace butter {
+
+inline size_t hash(const uint32_t t_first, const uint32_t t_second) {
+    return (static_cast<size_t>(t_first) << 32) ^ t_second;
+}
+
+}
