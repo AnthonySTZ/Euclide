@@ -102,9 +102,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             return a.key < b.key;
         });
     }
-
-
-
+    
     for (size_t i = 0; i + 1 < edges.size(); ++i) {
         const auto& a = edges[i];
         const auto& b = edges[i + 1];
