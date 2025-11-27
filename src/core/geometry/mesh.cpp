@@ -68,8 +68,6 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
 
     struct Edge {
         size_t key;
-        uint32_t origin;
-        uint32_t next;
         size_t idx; 
     };
     std::vector<Edge> edges(totalHalfEdges);
@@ -88,8 +86,6 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
 
             edges[halfEdgeIdx] = Edge{
                 hash(std::min(origin, next), std::max(origin, next)),
-                origin,
-                next,
                 halfEdgeIdx
             };
 
@@ -110,10 +106,17 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         const auto& a = edges[i];
         const auto& b = edges[i + 1];
         if (a.key != b.key) continue;
-        if (a.origin == b.next && b.origin == a.next) {
-            halfEdges[a.idx].twin = b.idx;
-            halfEdges[b.idx].twin = a.idx;
+
+        auto& halfedge_1 = halfEdges[a.idx];
+        auto& halfedge_2 = halfEdges[b.idx];
+
+        if (halfedge_1.origin == halfEdges[halfedge_2.next].origin &&
+            halfedge_2.origin == halfEdges[halfedge_1.next].origin) {
+
+            halfedge_1.twin = b.idx;
+            halfedge_2.twin = a.idx;
             i++;
+
         }
     }
 
