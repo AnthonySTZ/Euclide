@@ -72,8 +72,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         uint32_t next;
         size_t idx; 
     };
-    std::vector<Edge> edges;
-    edges.reserve(totalHalfEdges);
+    std::vector<Edge> edges(totalHalfEdges);
 
     uint32_t halfEdgeIdx = 0;
     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
@@ -87,12 +86,12 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             const uint32_t origin = vertices[base + i].refPoint;
             const uint32_t next = vertices[base + (i + 1)%count].refPoint;
 
-            edges.emplace_back(Edge{
+            edges[halfEdgeIdx] = Edge{
                 hash(std::min(origin, next), std::max(origin, next)),
                 origin,
                 next,
                 halfEdgeIdx
-            });
+            };
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
                 .next = (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before

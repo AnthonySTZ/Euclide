@@ -15,7 +15,7 @@ static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.02 
     }
 }
 
-static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 387 ms
+static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 360 ms
     butter::Mesh mesh;
     butter::GridSettings settings{
         .divisions = {1000, 1000}
