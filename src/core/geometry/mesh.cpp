@@ -74,9 +74,12 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         const Primitive& prim = primitives[primIdx];
         if (prim.numVertices <= 2) continue;
         
-        for(size_t vertIdx = prim.verticesIndex; vertIdx < prim.verticesIndex + prim.numVertices - 1; ++vertIdx) {
-            const uint32_t origin = vertices[vertIdx].refPoint;
-            const uint32_t next = vertices[vertIdx + 1].refPoint;
+        const uint32_t base = prim.verticesIndex;
+        const uint32_t count = prim.numVertices;
+
+        for (size_t i = 0; i < count; ++i) {
+            const uint32_t origin = vertices[base + i].refPoint;
+            const uint32_t next = vertices[base + (i + 1)%count].refPoint;
             uint32_t twin = HalfEdge::NO_TWIN;
 
             const auto it = halfedgeIndices.find({next, origin});
@@ -88,32 +91,12 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
             }
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
-                .next = halfEdgeIdx, // halfEdgeIdx + 1 but it incremented before
+                .next = (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before
                 .origin = origin,
                 .face = primIdx,
                 .twin = twin
             };
         }
-
-        // Last edge -> connect last vertex to the first vertex
-        const uint32_t origin = vertices[prim.verticesIndex + prim.numVertices - 1].refPoint;
-        const uint32_t next = vertices[prim.verticesIndex].refPoint;
-        uint32_t twin = HalfEdge::NO_TWIN;
-
-        const auto it = halfedgeIndices.find({next, origin});
-        if (it != halfedgeIndices.end()) {
-            halfEdges[it->second].twin = halfEdgeIdx;
-            twin = it->second;
-        } else {
-            halfedgeIndices.emplace(std::make_pair(origin, next), halfEdgeIdx);
-        }
-
-        halfEdges[halfEdgeIdx++] = HalfEdge{
-            .next = halfEdgeIdx - prim.numVertices,
-            .origin = origin,
-            .face = primIdx,
-            .twin = twin
-        };
         
     }
 
