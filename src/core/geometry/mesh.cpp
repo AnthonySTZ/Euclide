@@ -66,10 +66,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
     }
     std::vector<HalfEdge> halfEdges(totalHalfEdges);
 
-    struct Edge {
-        size_t key;
-        size_t idx; 
-    };
+    
     std::vector<Edge> edges(totalHalfEdges);
 
     uint32_t halfEdgeIdx = 0;
@@ -98,9 +95,15 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         
     }
 
-    std::sort(edges.begin(), edges.end(), [](const Edge&a, const Edge&b){
-        return a.key < b.key;
-    });
+    if (edges.size() > 10000) {
+        radixSortEdges(edges);
+    } else {
+        std::sort(edges.begin(), edges.end(), [](const Edge&a, const Edge&b){
+            return a.key < b.key;
+        });
+    }
+
+
 
     for (size_t i = 0; i + 1 < edges.size(); ++i) {
         const auto& a = edges[i];
