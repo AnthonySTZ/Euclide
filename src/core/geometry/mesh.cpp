@@ -95,14 +95,14 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         
     }
 
-    if (edges.size() > 10000) {
+    if (totalHalfEdges > 10000) {
         radixSortEdges(edges);
     } else {
         std::sort(edges.begin(), edges.end(), [](const Edge&a, const Edge&b){
             return a.key < b.key;
         });
     }
-    
+
     for (size_t i = 0; i + 1 < edges.size(); ++i) {
         const auto& a = edges[i];
         const auto& b = edges[i + 1];
