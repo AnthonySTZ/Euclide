@@ -35,56 +35,24 @@ std::shared_ptr<Mesh> Subdivide::compute(const size_t t_index, const std::vector
 
 void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
 {   
-    std::vector<float, AlignedAllocator<float, 32>> facePosX;
-    std::vector<float, AlignedAllocator<float, 32>> facePosY;
-    std::vector<float, AlignedAllocator<float, 32>> facePosZ;
-
+    // Base on paper: 'A Halfedge Refinement Rule for Parallel Catmull-Clark Subdivision'
+    // `https://onrendering.com/data/papers/catmark/HalfedgeCatmullClark.pdf`
     auto& points = t_mesh.points;
     auto& primitives = t_mesh.primitives;
     auto& vertices = t_mesh.vertices;
+    
+    const std::vector<HalfEdge> halfEdges_d = t_mesh.computeHalfEdges();    
 
-    size_t totalFace = 0;
-    for (const auto& prim: primitives) {
-        if (prim.numVertices > 2) totalFace++;
+    // Halfedge refinement
+    std::vector<HalfEdge> halfEdges_d1(halfEdges_d.size() * 4); // Next division
+    for (size_t h = 0; h < halfEdges_d.size(); ++h) {
+        const HalfEdge& hd = halfEdges_d[h];
+        const size_t newFaceId = 4 * h;
+        halfEdges_d1[newFaceId].twin = hd.twin == HalfEdge::NO_TWIN ? HalfEdge::NO_TWIN : 4 * halfEdges_d[hd.twin].next + 3;
+        halfEdges_d1[newFaceId + 1].twin = 4 * hd.next + 2;
+        halfEdges_d1[newFaceId + 2].twin = 4 * hd.prev + 1;
+        halfEdges_d1[newFaceId + 3].twin = hd.twin == HalfEdge::NO_TWIN ? HalfEdge::NO_TWIN : 4 * halfEdges_d[hd.twin].prev;
     }
-
-    facePosX.resize(totalFace);
-    facePosY.resize(totalFace);
-    facePosZ.resize(totalFace);
-
-    const std::vector<HalfEdge> halfEdges = t_mesh.computeHalfEdges();
-    size_t faceIdx = 0;
-    for (size_t i = 0; i < halfEdges.size(); ++i) {
-        const size_t primId = halfEdges[i].face;
-        const auto& prim = primitives[primId];
-        const size_t startIndex = prim.verticesIndex;
-        const size_t numVertices = prim.numVertices;
-
-        float3 faceCenter{0.0, 0.0, 0.0};
-        for (size_t vertIdx = startIndex; vertIdx < startIndex + numVertices; ++vertIdx){
-            const size_t pointIdx = vertices[vertIdx].refPoint;
-            faceCenter[0] += points.posX[pointIdx];
-            faceCenter[1] += points.posY[pointIdx];
-            faceCenter[2] += points.posZ[pointIdx];
-        }
-
-        const float factor = 1.0f / static_cast<float>(numVertices);
-
-        facePosX[faceIdx] = faceCenter[0] * factor;
-        facePosY[faceIdx] = faceCenter[1] * factor;
-        facePosZ[faceIdx] = faceCenter[2] * factor;
-        faceIdx++;
-
-        i += numVertices - 1;
-    }
-
-    {   // TODO: DEBUG ONLY
-        points.reserve(facePosX.size());
-        for(size_t i = 0; i < facePosX.size(); ++i) {
-            points.addPoint(facePosX[i], facePosY[i], facePosZ[i]);
-        }
-    }
-
 }
 
 }
