@@ -7,6 +7,7 @@ struct HalfEdge {
 
     uint32_t next; // Next HalfEdge Index
     uint32_t prev; // Previous HalfEdge Index
+    uint32_t edge; // Virtual unique edge id
     uint32_t origin; // Origin vertex Index
     uint32_t face; // Prim Index
     uint32_t twin = NO_TWIN; // Twin HalfEdge Index

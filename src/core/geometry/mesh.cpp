@@ -104,21 +104,24 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
         });
     }
 
+    size_t edgeIdx = 0;
     for (size_t i = 0; i + 1 < edges.size(); ++i) {
         const auto& a = edges[i];
         const auto& b = edges[i + 1];
-        if (a.key != b.key) continue;
-
         auto& halfedge_1 = halfEdges[a.idx];
         auto& halfedge_2 = halfEdges[b.idx];
+        halfedge_1.edge = edgeIdx;
+        edgeIdx++;
+        halfedge_2.edge = edgeIdx; 
+        if (a.key != b.key) continue;
 
         if (halfedge_1.origin == halfEdges[halfedge_2.next].origin &&
             halfedge_2.origin == halfEdges[halfedge_1.next].origin) {
 
             halfedge_1.twin = b.idx;
             halfedge_2.twin = a.idx;
+            halfedge_2.edge = halfedge_1.edge;
             i++;
-
         }
     }
 

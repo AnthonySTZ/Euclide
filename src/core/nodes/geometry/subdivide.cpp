@@ -71,6 +71,27 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
         points.posY[i] += points.posY[hd.origin] * factor; 
         points.posZ[i] += points.posZ[hd.origin] * factor; 
     }
+
+    // Smooth edge points
+    for (uint32_t h = 0; h < halfEdges_d.size(); ++h) {
+        const HalfEdge& hd = halfEdges_d[h];
+        const uint32_t i = numOfPoints + hd.face;
+        const size_t j = numOfPoints + primitives.size() + hd.edge;
+        points.posX[j] += (points.posX[hd.origin] + points.posX[i]) * 0.25f;
+        points.posY[j] += (points.posY[hd.origin] + points.posY[i]) * 0.25f;
+        points.posZ[j] += (points.posZ[hd.origin] + points.posZ[i]) * 0.25f;
+    }
+}
+
+size_t valence(const size_t t_idx, const std::vector<HalfEdge>& t_halfedges) {
+    // Number of edges connected to a point
+    size_t n = 1;
+    size_t h_primeIdx = t_halfedges[t_halfedges[t_idx].twin].next;
+    while (h_primeIdx != t_idx) {
+        n++;
+        h_primeIdx = t_halfedges[t_halfedges[h_primeIdx].twin].next;
+    }
+    return n;
 }
 
 }
