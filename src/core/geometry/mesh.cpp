@@ -128,4 +128,40 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
     return halfEdges;
 }
 
+void Mesh::reconstructFromHalfEdges(const std::vector<HalfEdge> &t_halfedges, const Points &t_points)
+{
+    points = t_points;
+    primitives.clear();
+    vertices.clear();
+
+    size_t numOfPrim = 0;
+    for (const auto& hf: t_halfedges){
+        if (hf.face > numOfPrim) numOfPrim = hf.face;
+    }
+    primitives.resize(numOfPrim + 1);
+    
+    for (const auto& hf: t_halfedges){
+        primitives[hf.face].numVertices++;
+    }
+
+    for (size_t i = 0; i < t_halfedges.size(); ++i){
+        const auto& hf = t_halfedges[i];
+        auto& prim = primitives[hf.face];
+        if(prim.verticesIndex != UINT32_MAX) continue;
+
+        prim.verticesIndex = vertices.size();
+        vertices.emplace_back(Vertex{hf.origin});
+
+        uint32_t next = hf.next;
+        uint32_t numVertices = 1;
+        while (next != i) {
+            vertices.emplace_back(Vertex{t_halfedges[next].origin});
+            next = t_halfedges[next].next;
+            numVertices++;
+        }
+        prim.numVertices = numVertices;
+    }
+
+}
+
 }

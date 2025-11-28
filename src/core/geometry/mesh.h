@@ -53,6 +53,7 @@ struct Mesh {
     }
 
     std::vector<HalfEdge> computeHalfEdges() const;
+    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points);
     float3 center() const;
 };
 
