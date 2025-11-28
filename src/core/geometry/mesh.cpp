@@ -88,6 +88,7 @@ std::vector<HalfEdge> Mesh::computeHalfEdges() const
 
             halfEdges[halfEdgeIdx++] = HalfEdge{
                 .next = (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before
+                .prev = (i == 0) ? halfEdgeIdx + count - 2 : halfEdgeIdx - 2,
                 .origin = origin,
                 .face = primIdx,
             };
