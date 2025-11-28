@@ -112,8 +112,8 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
         const float factor = 1.0f / static_cast<float>(primitives[hd.face].numVertices);
         const uint32_t i = numOfPoints + hd.face;
         points_d1.posX[i] += points.posX[hd.origin] * factor; 
-        points_d1.posY[i] += points.posY[hd.origin] * factor; 
-        points_d1.posZ[i] += points.posZ[hd.origin] * factor; 
+        points_d1.posY[i] += points.posY[hd.origin] * factor;
+        points_d1.posZ[i] += points.posZ[hd.origin] * factor;
     }
 
     // Smooth edge points
@@ -121,6 +121,14 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
         const HalfEdge& hd = halfEdges_d[h];
         const uint32_t i = numOfPoints + hd.face;
         const size_t j = numOfPoints + numOfPrims + hd.edge;
+        if (hd.twin == HalfEdge::NO_TWIN) {
+            const uint32_t next = halfEdges_d[hd.next].origin;
+            points_d1.posX[j] = (points.posX[hd.origin] + points.posX[next]) * 0.5f;
+            points_d1.posY[j] = (points.posY[hd.origin] + points.posY[next]) * 0.5f;
+            points_d1.posZ[j] = (points.posZ[hd.origin] + points.posZ[next]) * 0.5f;
+            continue;
+        }
+
         points_d1.posX[j] += (points.posX[hd.origin] + points_d1.posX[i]) * 0.25f;
         points_d1.posY[j] += (points.posY[hd.origin] + points_d1.posY[i]) * 0.25f;
         points_d1.posZ[j] += (points.posZ[hd.origin] + points_d1.posZ[i]) * 0.25f;
