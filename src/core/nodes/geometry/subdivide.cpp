@@ -45,6 +45,18 @@ size_t valence(const size_t t_idx, const std::vector<HalfEdge>& t_halfedges) {
     return n;
 }
 
+size_t isOnBorder(const size_t t_idx, const std::vector<HalfEdge>& t_halfedges) {
+    if (t_halfedges[t_idx].twin == HalfEdge::NO_TWIN) return true;
+
+    size_t h_primeIdx = t_halfedges[t_halfedges[t_idx].twin].next;
+    while (h_primeIdx != t_idx) {
+        if (t_halfedges[h_primeIdx].twin == HalfEdge::NO_TWIN) return true;
+        h_primeIdx = t_halfedges[t_halfedges[h_primeIdx].twin].next;
+    }
+
+    return false;
+}
+
 void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
 {   
     // Base on paper: 'A Halfedge Refinement Rule for Parallel Catmull-Clark Subdivision'
@@ -95,8 +107,6 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
     std::fill(std::begin(points_d1.normalY), std::end(points_d1.normalY), 1.0);
     std::fill(std::begin(points_d1.normalZ), std::end(points_d1.normalZ), 0.0);
 
-
-
     for (size_t h = 0; h < halfEdges_d.size(); ++h) {
         const HalfEdge& hd = halfEdges_d[h];
         const float factor = 1.0f / static_cast<float>(primitives[hd.face].numVertices);
@@ -119,7 +129,12 @@ void Subdivide::subdivide(Mesh &t_mesh, const SubdivideSettings& t_settings)
     // Smooth vertex points
     for (uint32_t h = 0; h < halfEdges_d.size(); ++h) {
         const HalfEdge& hd = halfEdges_d[h];
-        // TODO: check if on border
+        if (isOnBorder(h, halfEdges_d)){
+            points_d1.posX[hd.origin] = points.posX[hd.origin];
+            points_d1.posY[hd.origin] = points.posY[hd.origin];
+            points_d1.posZ[hd.origin] = points.posZ[hd.origin];
+            continue;
+        }
         const float n = static_cast<float>(valence(h, halfEdges_d));
         const float factor = 1.0f / (n * n);
         const float n_3 = n - 3;
