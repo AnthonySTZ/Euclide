@@ -22,7 +22,7 @@ public:
     void visit(const std::string& t_name, NodeField<bool>& t_field) override {
         drawBoolField(t_name, t_field);        
     }
-    /// @brief Draws an int field or combo box depending on metadata.
+    /// @brief Draws an int field or combo box depending on `metadata.is_combo`.
     void visit(const std::string& t_name, NodeField<int>& t_field) override {
         const auto& meta = t_field.metadata();
         if (meta.is_combo) {
