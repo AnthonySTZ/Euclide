@@ -2,36 +2,27 @@
 
 #include "nodes/primitive/grid.h"
 
-namespace butter {
-    
-Viewport::Viewport(const std::shared_ptr<Scene> &t_scene)
-    : m_scene(t_scene), m_renderer(std::make_unique<Renderer>()), m_camera(std::make_shared<Camera>())
-{
+// TODO: add viewport input handler...
 
+namespace butter {
+
+Viewport::Viewport(const std::shared_ptr<Scene>& t_scene)
+    : m_scene(t_scene), m_renderer(std::make_unique<Renderer>()), m_camera(std::make_shared<Camera>()) {
     Mesh grid{};
-    Grid::createGrid(grid, GridSettings{
-        .position = {0.0, 0.0, 0.0}, 
-        .size = {10.0, 10.0},
-        .divisions = {10, 10}
-    });
+    Grid::createGrid(grid, GridSettings{.position = {0.0, 0.0, 0.0}, .size = {10.0, 10.0}, .divisions = {10, 10}});
     m_gridModel.updateWithMesh(grid);
     m_gridModel.showPrimitives = false;
     m_gridModel.showPoints = false;
     m_gridModel.showWireframe = true;
 
     if (auto scene = m_scene.lock()) {
-        scene->onMeshUpdate.subscribe(
-            [this](std::shared_ptr<Mesh> t_mesh) {
-                m_renderModel.updateWithMesh(*t_mesh);
-            }
-        );
+        scene->onMeshUpdate.subscribe([this](std::shared_ptr<Mesh> t_mesh) { m_renderModel.updateWithMesh(*t_mesh); });
     }
 
     m_renderer->setCamera(m_camera);
 }
 
-void Viewport::draw()
-{
+void Viewport::draw() {
     beginTab("Viewport", m_padding);
 
     m_windowPosition = ImGui::GetCursorPos();
@@ -42,12 +33,11 @@ void Viewport::draw()
 
     drawRender();
     drawInfos();
-    
+
     endTab();
 }
 
 void Viewport::handleMouse() {
-
     if (m_isItemHovered) {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
             m_isLeftClicked = true;
@@ -71,17 +61,22 @@ void Viewport::handleMouse() {
     }
 
     moveCamera();
-    
 }
 
 void Viewport::handleKeys() {
-    if (!m_isItemHovered) return;
+    if (!m_isItemHovered)
+        return;
 
-    if (ImGui::IsKeyPressed(ImGuiKey_P)) m_renderModel.tooglePrimitives();
-    if (ImGui::IsKeyPressed(ImGuiKey_W)) m_renderModel.toogleWireframe();
-    if (ImGui::IsKeyPressed(ImGuiKey_V)) m_renderModel.tooglePoints();
-    if (ImGui::IsKeyPressed(ImGuiKey_G)) m_showGrid = !m_showGrid;
-    if (ImGui::IsKeyPressed(ImGuiKey_F)) retargetCamera();
+    if (ImGui::IsKeyPressed(ImGuiKey_P))
+        m_renderModel.tooglePrimitives();
+    if (ImGui::IsKeyPressed(ImGuiKey_W))
+        m_renderModel.toogleWireframe();
+    if (ImGui::IsKeyPressed(ImGuiKey_V))
+        m_renderModel.tooglePoints();
+    if (ImGui::IsKeyPressed(ImGuiKey_G))
+        m_showGrid = !m_showGrid;
+    if (ImGui::IsKeyPressed(ImGuiKey_F))
+        retargetCamera();
 }
 
 void Viewport::retargetCamera() {
@@ -94,7 +89,6 @@ void Viewport::retargetCamera() {
 }
 
 void Viewport::moveCamera() {
-
     if (m_isLeftClicked) {
         ImVec2 dragDelta = ImGui::GetIO().MouseDelta;
         ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
@@ -122,7 +116,7 @@ void Viewport::drawRender() {
         m_renderer->draw(m_gridModel);
     }
     m_renderer->draw(m_renderModel);
-    
+
     m_renderer->endFrame(m_viewportWidth, m_viewportHeight);
 
     ImTextureID textureID = m_renderer->getRenderTexture();
@@ -133,7 +127,7 @@ void Viewport::drawRender() {
 
 void Viewport::checkForResize() {
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-    
+
     if (m_viewportWidth != viewportSize.x || m_viewportHeight != viewportSize.y) {
         m_viewportWidth = viewportSize.x;
         m_viewportHeight = viewportSize.y;
@@ -141,8 +135,7 @@ void Viewport::checkForResize() {
     }
 }
 
-void Viewport::drawInfos() const
-{
+void Viewport::drawInfos() const {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
     ImGuiIO& io = ImGui::GetIO();
     std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
@@ -152,7 +145,6 @@ void Viewport::drawInfos() const
     drawList->AddText(m_windowPosition + ImVec2(10, 60), IM_COL32(255, 255, 255, 255), "W: Toogle Wireframe");
     drawList->AddText(m_windowPosition + ImVec2(10, 85), IM_COL32(255, 255, 255, 255), "V: Toogle Points");
     drawList->AddText(m_windowPosition + ImVec2(10, 110), IM_COL32(255, 255, 255, 255), "G: Toogle Grid");
-
 }
 
-}
+} // namespace butter
