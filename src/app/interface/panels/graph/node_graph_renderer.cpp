@@ -8,14 +8,22 @@ void NodeGraphRenderer::render() const {
 }
 
 void NodeGraphRenderer::drawConnections() const {
-    for (ConnectionItem& conn : m_graph->connections) {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    for (ConnectionItem& conn : graph->connections) {
         conn.draw();
     }
 }
 
 void NodeGraphRenderer::drawNodes() const {
-    for (const uint32_t id : m_graph->drawNodesOrder) {
-        m_graph->nodes[id]->draw();
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    for (const uint32_t id : graph->drawNodesOrder) {
+        graph->nodes[id]->draw();
     }
 }
 

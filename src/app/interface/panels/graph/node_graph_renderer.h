@@ -6,7 +6,7 @@ namespace butter {
 
 class NodeGraphRenderer {
   public:
-    NodeGraphRenderer(const std::shared_ptr<NodeGraph>& t_nodeGraph) : m_graph(t_nodeGraph){};
+    NodeGraphRenderer(const std::shared_ptr<NodeGraph> t_nodeGraph) : m_graph(std::move(t_nodeGraph)){};
 
     void render() const;
 
@@ -15,7 +15,7 @@ class NodeGraphRenderer {
     void drawConnections() const;
 
   private:
-    std::shared_ptr<NodeGraph> m_graph;
+    std::weak_ptr<NodeGraph> m_graph;
 };
 
 } // namespace butter
