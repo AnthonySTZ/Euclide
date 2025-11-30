@@ -2,8 +2,7 @@
 
 namespace butter {
 
-void Panel::beginTab(const char *t_name, ImVec2 t_padding, ImU32 t_bgCol) const {
-
+void Panel::beginTab(const char* t_name, ImVec2 t_padding, ImU32 t_bgCol) const {
     ImGuiWindowClass window_class;
     window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_AutoHideTabBar;
     ImGui::SetNextWindowClass(&window_class);
@@ -16,14 +15,14 @@ void Panel::beginTab(const char *t_name, ImVec2 t_padding, ImU32 t_bgCol) const 
 
     ImVec2 windowPos = ImGui::GetWindowPos();
     ImVec2 windowSize = ImGui::GetWindowSize();
-    ImVec2 titleRectSize = ImVec2(windowSize.x, s_tabTitleHeight);
+    ImVec2 titleRectSize = ImVec2(windowSize.x, TAB_TITLE_HEIGHT);
     ImVec2 endTitleBar = windowPos;
     endTitleBar.y = titleRectSize.y;
 
-    ImDrawList *draw_list = ImGui::GetWindowDrawList();
-    draw_list->AddRectFilled(windowPos, windowPos + titleRectSize, s_tabTitleBgColor);
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    draw_list->AddRectFilled(windowPos, windowPos + titleRectSize, TAB_TITLE_BG_COLOR);
 
-    draw_list->AddText(windowPos + s_tabTitleTextPadding, s_tabTitleTextColor, t_name);
+    draw_list->AddText(windowPos + TAB_TITLE_TEXT_PADDING, TAB_TITLE_TEXT_COLOR, t_name);
 
     ImVec2 newCursorPos = ImVec2(0.0, titleRectSize.y) + t_padding;
     ImGui::GetWindowDrawList()->PushClipRect(windowPos + newCursorPos, windowPos + windowSize);
