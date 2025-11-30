@@ -6,42 +6,60 @@
 #include "halfedge.h"
 #include "utils/types.h"
 
+#include <vector>
+
 namespace butter {
 
+/// @brief Represents a 3D mesh composed of points, vertices, and primitives.
 struct Mesh {
-    Points points;
-    std::vector<Vertex> vertices;
-    std::vector<Primitive> primitives;
+    Points points;                     ///< Mesh vertex positions.
+    std::vector<Vertex> vertices;      ///< Vertices referencing points.
+    std::vector<Primitive> primitives; ///< Faces (polygons) of the mesh.
 
+    /// @brief Add a point to the mesh.
+    /// @param t_x X-coordinate.
+    /// @param t_y Y-coordinate.
+    /// @param t_z Z-coordinate.
+    /// @return Index of the new point.
     inline uint32_t addPoint(const float t_x, const float t_y, const float t_z) {
         return points.addPoint(t_x, t_y, t_z);
     }
 
+    /// @brief Add a point to the mesh.
+    /// @param t_position Position vector of the point.
+    /// @return Index of the new point.
     inline uint32_t addPoint(const float3 t_position) {
         return points.addPoint(t_position[0], t_position[1], t_position[2]);
     }
 
+    /// @brief Add a vertex referencing an existing point.
+    /// @param t_pointIndex Index of the point this vertex references.
+    /// @return Index of the new vertex.
     inline uint32_t addVertex(const uint32_t t_pointIndex) {
         vertices.push_back(Vertex{t_pointIndex});
         return static_cast<uint32_t>(vertices.size() - 1);
     }
 
+    /// @brief Add a primitive (face) to the mesh.
+    /// @param pointIndices Vector of point indices forming the primitive.
+    /// @return Index of the new primitive.
     inline uint32_t addPrimitive(const std::vector<uint32_t>& pointIndices) {
-
         const uint32_t primitiveIndex = static_cast<uint32_t>(primitives.size());
 
-        primitives.emplace_back(Primitive{
-            static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(pointIndices.size())
-        });
+        primitives.emplace_back(
+            Primitive{static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(pointIndices.size())});
 
         vertices.reserve(pointIndices.size());
-        for (const uint32_t point: pointIndices) {
+        for (const uint32_t point : pointIndices) {
             vertices.emplace_back(Vertex{point});
         }
 
         return primitiveIndex;
     }
 
+    /// @brief Get point indices of a given primitive.
+    /// @param t_primId Index of the primitive.
+    /// @return Vector of point indices forming the primitive.
     inline std::vector<uint32_t> getPointIndicesOfPrimitive(const uint32_t t_primId) {
         const Primitive& prim = primitives[t_primId];
         std::vector<uint32_t> ids;
@@ -52,9 +70,18 @@ struct Mesh {
         return ids;
     }
 
+    /// @brief Compute half-edges for the mesh.
+    /// @return Vector of half-edge structures representing the mesh connectivity.
     std::vector<HalfEdge> computeHalfEdges() const;
+
+    /// @brief Reconstruct the mesh from a set of half-edges and points.
+    /// @param t_halfedges Half-edges describing the mesh.
+    /// @param t_points Points for the mesh.
     void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points);
+
+    /// @brief Compute the geometric center of the mesh points.
+    /// @return Center position as float3.
     float3 center() const;
 };
 
-}
+} // namespace butter
