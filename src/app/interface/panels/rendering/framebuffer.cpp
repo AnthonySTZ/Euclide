@@ -29,11 +29,10 @@ FrameBuffer::~FrameBuffer() noexcept {
     }
 }
 
-FrameBuffer::FrameBuffer(FrameBuffer &&t_other) noexcept
+FrameBuffer::FrameBuffer(FrameBuffer&& t_other) noexcept
     : m_renderTexture(t_other.m_renderTexture), m_FBO(t_other.m_FBO),
       m_textureColorBufferMultiSampled(t_other.m_textureColorBufferMultiSampled), m_rboDepth(t_other.m_rboDepth),
       m_intermediateFBO(t_other.m_intermediateFBO), m_samples(t_other.m_samples) {
-
     t_other.m_renderTexture = 0;
     t_other.m_FBO = 0;
     t_other.m_textureColorBufferMultiSampled = 0;
@@ -41,23 +40,18 @@ FrameBuffer::FrameBuffer(FrameBuffer &&t_other) noexcept
     t_other.m_intermediateFBO = 0;
 }
 
-FrameBuffer &FrameBuffer::operator=(FrameBuffer &&t_other) noexcept {
+FrameBuffer& FrameBuffer::operator=(FrameBuffer&& t_other) noexcept {
     if (this != &t_other) {
-        if (m_renderTexture) {
+        if (m_renderTexture)
             glDeleteTextures(1, &m_renderTexture);
-        }
-        if (m_textureColorBufferMultiSampled) {
+        if (m_textureColorBufferMultiSampled)
             glDeleteTextures(1, &m_textureColorBufferMultiSampled);
-        }
-        if (m_rboDepth) {
+        if (m_rboDepth)
             glDeleteRenderbuffers(1, &m_rboDepth);
-        }
-        if (m_FBO) {
+        if (m_FBO)
             glDeleteFramebuffers(1, &m_FBO);
-        }
-        if (m_intermediateFBO) {
+        if (m_intermediateFBO)
             glDeleteFramebuffers(1, &m_intermediateFBO);
-        }
 
         m_renderTexture = t_other.m_renderTexture;
         m_FBO = t_other.m_FBO;
@@ -131,7 +125,7 @@ void FrameBuffer::initMultiSampledFBO() {
 void FrameBuffer::initMultiSampledColorTexture() {
     glGenTextures(1, &m_textureColorBufferMultiSampled);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_textureColorBufferMultiSampled);
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_samples, GL_RGB, s_defaultWidth, s_defaultHeight, GL_TRUE);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_samples, GL_RGB, DEFAULT_WIDTH, DEFAULT_HEIGHT, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE,
                            m_textureColorBufferMultiSampled, 0);
@@ -141,7 +135,7 @@ void FrameBuffer::initMultiSampledDepthRenderBuffer() {
     // Create multisampled depth renderbuffer (easier for depth)
     glGenRenderbuffers(1, &m_rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, m_rboDepth);
-    glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_samples, GL_DEPTH_COMPONENT, s_defaultWidth, s_defaultHeight);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, m_samples, GL_DEPTH_COMPONENT, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rboDepth);
 }
 
@@ -156,7 +150,7 @@ void FrameBuffer::initRenderTexture() {
 
     glGenTextures(1, &m_renderTexture);
     glBindTexture(GL_TEXTURE_2D, m_renderTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, s_defaultWidth, s_defaultHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_renderTexture, 0);
@@ -168,4 +162,4 @@ void FrameBuffer::initRenderTexture() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-}
+} // namespace butter
