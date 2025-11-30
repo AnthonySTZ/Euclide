@@ -1,6 +1,7 @@
 #include "shader_program.h"
 
-#include <fstream>
+#include "interface/utils/string_utils.h"
+
 #include <iostream>
 #include <vector>
 
@@ -8,7 +9,7 @@
 
 namespace butter {
 
-ShaderProgram::ShaderProgram(const std::string &t_vertexFile, const std::string &t_fragmentFile) {
+ShaderProgram::ShaderProgram(const std::string& t_vertexFile, const std::string& t_fragmentFile) {
     const std::string vertCode = readFile(t_vertexFile);
     const std::string fragCode = readFile(t_fragmentFile);
 
@@ -33,13 +34,12 @@ ShaderProgram::ShaderProgram(const std::string &t_vertexFile, const std::string 
     glDeleteShader(fragmentShader);
 }
 
-ShaderProgram::ShaderProgram(ShaderProgram &&t_other) noexcept : m_id(t_other.m_id) {
+ShaderProgram::ShaderProgram(ShaderProgram&& t_other) noexcept : m_id(t_other.m_id) {
     t_other.m_id = 0; // Prevent the other shaderProgram to delete the current program
 }
 
-ShaderProgram &ShaderProgram::operator=(ShaderProgram &&t_other) noexcept {
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& t_other) noexcept {
     if (this != &t_other) {
-
         if (m_id != 0) {
             glDeleteProgram(m_id);
         }
@@ -58,13 +58,12 @@ void ShaderProgram::use() const {
     glUseProgram(m_id);
 }
 
-void ShaderProgram::bindUniform(const char *t_name, const glm::mat4x4& t_value)
-{
+void ShaderProgram::bindUniform(const char* t_name, const glm::mat4x4& t_value) {
     GLuint location = glGetUniformLocation(m_id, t_name);
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(t_value));
 }
 
-const uint32_t ShaderProgram::createShader(const char *t_shaderSrc, GLenum t_type) {
+const uint32_t ShaderProgram::createShader(const char* t_shaderSrc, GLenum t_type) {
     const uint32_t shader = glCreateShader(t_type);
     glShaderSource(shader, 1, &t_shaderSrc, 0);
     glCompileShader(shader);
@@ -81,19 +80,4 @@ const uint32_t ShaderProgram::createShader(const char *t_shaderSrc, GLenum t_typ
     return shader;
 }
 
-const std::string ShaderProgram::readFile(const std::string &t_filepath) {
-    std::ifstream file{t_filepath, std::ios::ate | std::ios::binary};
-    if (!file.is_open())
-        throw std::runtime_error("Failed to open file: " + t_filepath);
-
-    size_t fileSize = static_cast<size_t>(file.tellg());
-    std::vector<char> buffer(fileSize);
-
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-    file.close();
-
-    return std::string(begin(buffer), end(buffer));
-}
-
-} // namespace GooZ
+} // namespace butter
