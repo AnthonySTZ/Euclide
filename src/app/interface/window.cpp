@@ -4,7 +4,7 @@
 
 namespace butter {
 
-Window::Window(uint32_t t_width, uint32_t t_height, const char *t_name) {
+Window::Window(uint32_t t_width, uint32_t t_height, const char* t_name) {
     if (t_width <= 0 || t_height <= 0) {
         throw std::runtime_error("Window size invalid!");
     }
@@ -42,11 +42,11 @@ Window::~Window() {
     glfwTerminate();
 }
 
-Window::Window(Window &&t_other) noexcept : m_window(t_other.m_window) {
+Window::Window(Window&& t_other) noexcept : m_window(t_other.m_window) {
     t_other.m_window = nullptr;
 }
 
-Window &Window::operator=(Window &&t_other) noexcept {
+Window& Window::operator=(Window&& t_other) noexcept {
     if (this != &t_other) {
         if (m_window != nullptr) {
             glfwDestroyWindow(m_window);
@@ -57,7 +57,7 @@ Window &Window::operator=(Window &&t_other) noexcept {
     return *this;
 }
 
-GLFWwindow *Window::getWindow() const noexcept {
+GLFWwindow* Window::getWindow() const noexcept {
     return m_window;
 }
 
@@ -69,4 +69,4 @@ void Window::swapBuffers() {
     glfwSwapBuffers(m_window);
 }
 
-}
+} // namespace butter
