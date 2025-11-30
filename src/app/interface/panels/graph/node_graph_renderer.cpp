@@ -15,7 +15,7 @@ void NodeGraphRenderer::drawConnections() const {
 
 void NodeGraphRenderer::drawNodes() const {
     for (const uint32_t id : m_graph.drawNodesOrder) {
-        m_graph.nodes[id].draw();
+        m_graph.nodes[id]->draw();
     }
 }
 
