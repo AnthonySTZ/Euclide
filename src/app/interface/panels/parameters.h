@@ -2,7 +2,7 @@
 
 #include "panel.h"
 
-#include "node_graph.h"
+#include "graph/node_graph.h"
 
 namespace butter {
 

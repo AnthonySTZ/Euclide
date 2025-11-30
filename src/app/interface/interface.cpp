@@ -55,7 +55,7 @@ void Interface::addPanel(std::shared_ptr<Panel> t_panel) {
 }
 
 void Interface::addNodeGraph() {
-    m_nodeGraph = std::make_shared<NodeGraph>(scene());
+    m_nodeGraph = std::make_shared<NodeGraphPanel>(scene());
     m_panels.push_back(m_nodeGraph);
 }
 
@@ -65,7 +65,7 @@ void Interface::addViewport() {
 }
 
 void Interface::addParameters() {
-    m_parameters = std::make_shared<Parameters>(m_nodeGraph);
+    m_parameters = std::make_shared<Parameters>(m_nodeGraph->graph());
     m_panels.push_back(m_parameters);
 }
 

@@ -3,7 +3,7 @@
 #include "node_item.h"
 #include "connection_item.h"
 
-#include "scene.h"
+#include "nodes/scene.h"
 
 #include <unordered_map>
 #include <vector>
@@ -12,6 +12,8 @@ namespace butter {
 
 class NodeGraph {
   public:
+    Observer<std::weak_ptr<Node>> onNodeSelected;
+
     NodeGraph(const std::shared_ptr<Scene> t_scene);
     ~NodeGraph() = default;
 
