@@ -50,6 +50,10 @@ public:
 
 
 private:
+    inline static std::string getFieldIdFromName(const std::string& t_name) noexcept {
+        return "##param_" + t_name; 
+    }
+
     void drawBoolField(const std::string& t_name, NodeField<bool>& t_field);
 
     void drawComboField(const std::string& t_name, NodeField<int>& t_field);

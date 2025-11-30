@@ -16,7 +16,7 @@ void FieldDrawer::drawBoolField(const std::string &t_name, NodeField<bool> &t_fi
 {
     bool value = t_field.getValue();
 
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::Checkbox(sliderId.c_str(), &value)) {
         t_field.setValue(value);
     }
@@ -49,7 +49,7 @@ void FieldDrawer::drawComboField(const std::string &t_name, NodeField<int> &t_fi
         t_field.setValue(index);
     }
         
-    const std::string comboId = std::string("##param_") + t_name;
+    const std::string comboId = getFieldIdFromName(t_name);
     if (ImGui::BeginCombo(comboId.c_str(), choices[index].c_str())) {
         for (size_t i = 0; i < choices.size(); ++i) {
             bool is_selected = index == i;
@@ -85,7 +85,7 @@ void FieldDrawer::drawIntField(const std::string& t_name, NodeField<int> &t_fiel
     int max = static_cast<int>(meta.max.value_or(MAX_INT));
     int step = static_cast<int>(meta.step.value_or(1));
         
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::DragInt(sliderId.c_str(), &value, step, min, max)) {
         t_field.setValue(value);
     }
@@ -112,7 +112,7 @@ void FieldDrawer::drawInt2Field(const std::string& t_name, NodeField<int2> &t_fi
     int max = static_cast<int>(meta.max.value_or(MAX_INT));
     int step = static_cast<int>(meta.step.value_or(1));
         
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::DragInt2(sliderId.c_str(), value.data(), step, min, max)) {
         t_field.setValue(value);
     }
@@ -141,7 +141,7 @@ void FieldDrawer::drawFloatField(const std::string& t_name, NodeField<float> &t_
     float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::DragFloat(sliderId.c_str(), &value, step, min, max)) {
         t_field.setValue(value);
     }
@@ -170,7 +170,7 @@ void FieldDrawer::drawFloat2Field(const std::string& t_name, NodeField<float2> &
     float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::DragFloat2(sliderId.c_str(), values.data(), step, min, max)) {
         t_field.setValue(values);
     }
@@ -199,7 +199,7 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3> &
     float max = meta.max.value_or(MAX_FLOAT);
     float step = meta.step.value_or(0.05);
         
-    const std::string sliderId = std::string("##param_") + t_name;
+    const std::string sliderId = getFieldIdFromName(t_name);
     if (ImGui::DragFloat3(sliderId.c_str(), values.data(), step, min, max)) {
         t_field.setValue(values);
     }
