@@ -61,6 +61,7 @@ void NodeGraphMenu::drawItems(const std::string& t_menu, const std::vector<NodeM
         return;
     }
 
+    // Filter items by the text input in searchBar
     for (const auto& item : t_items) {
         if (toLower(item.name).find(toLower(m_searchText)) == std::string::npos)
             continue;
