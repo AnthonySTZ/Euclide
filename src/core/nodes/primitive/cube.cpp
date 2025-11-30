@@ -2,44 +2,30 @@
 
 namespace butter {
 
-Cube::Cube()
-    : Node(0, 1, "Cube") 
-{
+Cube::Cube() : Node(0, 1, "Cube") {
     auto positionField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
-    positionField->setMetadata(NodeFieldMetadata{
-        displayName: "Position",
-        step: 0.02f
-    });
+    positionField->setMetadata(NodeFieldMetadata{displayName : "Position", step : 0.02f});
     addField("position", positionField);
-    
+
     auto sizeField = std::make_shared<Float3Field>(1.0, 1.0, 1.0);
-    sizeField->setMetadata(NodeFieldMetadata{
-        displayName: "Size",
-        min: 0.0f,
-        step: 0.02f
-    });
+    sizeField->setMetadata(NodeFieldMetadata{displayName : "Size", min : 0.0f, step : 0.02f});
     addField("size", sizeField);
 }
 
-std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
-{
+std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
     auto output = std::make_shared<Mesh>();
 
     float3 position = getField<Float3Field>("position")->getValue();
     float3 size = getField<Float3Field>("size")->getValue();
 
-    const CubeSettings settings{
-        position,
-        size
-    };
+    const CubeSettings settings{position, size};
 
     createCube(*output, settings);
 
     return output;
 }
 
-void Cube::createCube(Mesh &t_mesh, const CubeSettings &t_settings)
-{
+void Cube::createCube(Mesh& t_mesh, const CubeSettings& t_settings) {
     const float3& position = t_settings.position;
     float3 size = t_settings.size;
 
@@ -126,4 +112,4 @@ void Cube::createCube(Mesh &t_mesh, const CubeSettings &t_settings)
     t_mesh.addPrimitive({1, 5, 6, 2}); // -X
 }
 
-}
+} // namespace butter
