@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nodes/nodes_info.h"
 #include "node_graph.h"
 
 namespace butter {
@@ -16,6 +17,8 @@ class NodeGraphMenu {
     void endStyle() const;
 
     void drawSearchBar();
+    void drawItems(const std::string& t_menu, const std::vector<NodeMenuItem>& t_items);
+    void drawItem(const NodeMenuItem& t_item);
 
   private:
     std::weak_ptr<NodeGraph> m_graph;

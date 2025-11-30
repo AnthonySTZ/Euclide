@@ -1,7 +1,5 @@
 #include "node_graph_menu.h"
 
-#include "nodes/nodes_info.h"
-
 #include "interface/utils/string_utils.h"
 
 namespace butter {
@@ -15,13 +13,7 @@ void NodeGraphMenu::render() {
         drawSearchBar();
 
         for (auto& [menuName, items] : menuItems) {
-            for (const auto& item : items) {
-                if (ImGui::MenuItem(item.name.c_str(), nullptr)) {
-                    if (auto graph = m_graph.lock()) {
-                        graph->addNode(item.createNode());
-                    }
-                }
-            }
+            drawItems(menuName, items);
         }
         ImGui::EndPopup();
     } else {
@@ -54,6 +46,34 @@ void NodeGraphMenu::drawSearchBar() {
                                  ImGuiInputTextFlags_CallbackResize, StringImGuiCallBack, (void*)&m_searchText)) {
     }
     ImGui::PopStyleColor();
+}
+
+void NodeGraphMenu::drawItems(const std::string& t_menu, const std::vector<NodeMenuItem>& t_items) {
+    if (m_searchText.empty()) {
+        // Draw Nodes with categories
+        if (ImGui::BeginMenu(t_menu.c_str())) {
+            for (const auto& item : t_items) {
+                drawItem(item);
+            }
+            ImGui::Separator();
+            ImGui::EndMenu();
+        }
+        return;
+    }
+
+    for (const auto& item : t_items) {
+        if (toLower(item.name).find(toLower(m_searchText)) == std::string::npos)
+            continue;
+        drawItem(item);
+    }
+}
+
+void NodeGraphMenu::drawItem(const NodeMenuItem& t_item) {
+    if (ImGui::MenuItem(t_item.name.c_str(), nullptr)) {
+        if (auto graph = m_graph.lock()) {
+            graph->addNode(t_item.createNode());
+        }
+    }
 }
 
 } // namespace butter
