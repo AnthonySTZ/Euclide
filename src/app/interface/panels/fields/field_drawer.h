@@ -50,6 +50,13 @@ public:
 
 
 private:
+    /// @brief Generates a unique ImGui ID for a field from its name.
+    ///
+    /// ImGui requires unique IDs for widgets, even if multiple widgets display the same label.
+    /// This function prepends a standard prefix to the given field name to produce a unique ID.
+    ///
+    /// @param t_name The field name.
+    /// @return A string suitable for use as a unique ImGui widget ID.
     inline static std::string getFieldIdFromName(const std::string& t_name) noexcept {
         return "##param_" + t_name; 
     }
