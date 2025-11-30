@@ -20,6 +20,7 @@ class FieldDrawer : public NodeFieldVisitor {
   public:
     /// @brief Draws a boolean field using a checkbox.
     void visit(const std::string& t_name, NodeField<bool>& t_field) override { drawBoolField(t_name, t_field); }
+
     /// @brief Draws an int field or combo box depending on `metadata.is_combo`.
     void visit(const std::string& t_name, NodeField<int>& t_field) override {
         const auto& meta = t_field.metadata();
@@ -29,12 +30,16 @@ class FieldDrawer : public NodeFieldVisitor {
             drawIntField(t_name, t_field);
         }
     }
+
     /// @brief Draws a 2-component integer field.
     void visit(const std::string& t_name, NodeField<int2>& t_field) override { drawInt2Field(t_name, t_field); }
+
     /// @brief Draws a single float field.
     void visit(const std::string& t_name, NodeField<float>& t_field) override { drawFloatField(t_name, t_field); }
+
     /// @brief Draws a 2-component float field.
     void visit(const std::string& t_name, NodeField<float2>& t_field) override { drawFloat2Field(t_name, t_field); }
+
     /// @brief Draws a 3-component float field.
     void visit(const std::string& t_name, NodeField<float3>& t_field) override { drawFloat3Field(t_name, t_field); }
 
