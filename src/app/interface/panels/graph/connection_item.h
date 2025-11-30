@@ -8,7 +8,7 @@ namespace butter {
 /// @brief Represents a connection between two nodes in the node editor.
 class ConnectionItem {
 
-public:
+  public:
     ConnectionItem() = default;
 
     /// @brief Draw the connection line between source and destination nodes.
@@ -45,7 +45,7 @@ public:
     /// @brief Remove the connection from the nodes and UI.
     void deleteConnection();
 
-private:
+  private:
     std::weak_ptr<NodeItem> m_sourceNode;
     std::weak_ptr<NodeItem> m_destNode;
 
@@ -56,7 +56,7 @@ private:
     ImVec2 m_end{0.0f, 0.0f};
 
     static constexpr ImU32 COLOR = IM_COL32(200, 200, 100, 255);
-    static constexpr float THICKNESS = 2.0f; 
+    static constexpr float THICKNESS = 2.0f;
 };
 
 } // namespace butter
