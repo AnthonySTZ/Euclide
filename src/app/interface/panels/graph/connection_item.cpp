@@ -6,26 +6,26 @@ void ConnectionItem::draw()
 {
     ImGuiIO& io = ImGui::GetIO();
     m_start = io.MousePos;
-    m_end = io.MousePos;
+    m_end = m_start;
 
-    if (auto sourceNode = m_sourceNode.lock()) {
+    if (const auto sourceNode = m_sourceNode.lock()) {
         m_start = sourceNode->getOutputIOPosition(m_sourceIndex);
     }
-    if (auto destNode = m_destNode.lock()) {
+    if (const auto destNode = m_destNode.lock()) {
         m_end = destNode->getInputIOPosition(m_destIndex);
     }
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddLine(m_start, m_end, s_color, s_thickness);
+    drawList->AddLine(m_start, m_end, COLOR, THICKNESS);
 }
 
-void ConnectionItem::setSource(const std::shared_ptr<NodeItem> &t_sourceNode, const uint32_t t_sourceIndex)
+void ConnectionItem::setSource(const std::shared_ptr<NodeItem> &t_sourceNode, const uint32_t t_sourceIndex) noexcept
 {
     m_sourceNode = t_sourceNode;
     m_sourceIndex = t_sourceIndex;
 }
 
-void ConnectionItem::setDestination(const std::shared_ptr<NodeItem> &t_destNode, const uint32_t t_destIndex)
+void ConnectionItem::setDestination(const std::shared_ptr<NodeItem> &t_destNode, const uint32_t t_destIndex) noexcept
 {
     m_destNode = t_destNode;
     m_destIndex = t_destIndex;
