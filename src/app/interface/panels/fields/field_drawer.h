@@ -17,11 +17,9 @@ namespace butter {
 ///     - `field.accept(drawer);`
 class FieldDrawer : public NodeFieldVisitor {
 
-public:
+  public:
     /// @brief Draws a boolean field using a checkbox.
-    void visit(const std::string& t_name, NodeField<bool>& t_field) override {
-        drawBoolField(t_name, t_field);        
-    }
+    void visit(const std::string& t_name, NodeField<bool>& t_field) override { drawBoolField(t_name, t_field); }
     /// @brief Draws an int field or combo box depending on `metadata.is_combo`.
     void visit(const std::string& t_name, NodeField<int>& t_field) override {
         const auto& meta = t_field.metadata();
@@ -32,24 +30,15 @@ public:
         }
     }
     /// @brief Draws a 2-component integer field.
-    void visit(const std::string& t_name, NodeField<int2>& t_field) override {
-        drawInt2Field(t_name, t_field);
-    }
+    void visit(const std::string& t_name, NodeField<int2>& t_field) override { drawInt2Field(t_name, t_field); }
     /// @brief Draws a single float field.
-    void visit(const std::string& t_name, NodeField<float>& t_field) override {
-        drawFloatField(t_name, t_field);
-    }
+    void visit(const std::string& t_name, NodeField<float>& t_field) override { drawFloatField(t_name, t_field); }
     /// @brief Draws a 2-component float field.
-    void visit(const std::string& t_name, NodeField<float2>& t_field) override {
-        drawFloat2Field(t_name, t_field);
-    }
+    void visit(const std::string& t_name, NodeField<float2>& t_field) override { drawFloat2Field(t_name, t_field); }
     /// @brief Draws a 3-component float field.
-    void visit(const std::string& t_name, NodeField<float3>& t_field) override {
-        drawFloat3Field(t_name, t_field);
-    }
+    void visit(const std::string& t_name, NodeField<float3>& t_field) override { drawFloat3Field(t_name, t_field); }
 
-
-private:
+  private:
     /// @brief Generates a unique ImGui ID for a field from its name.
     ///
     /// ImGui requires unique IDs for widgets, even if multiple widgets display the same label.
@@ -57,12 +46,10 @@ private:
     ///
     /// @param t_name The field name.
     /// @return A string suitable for use as a unique ImGui widget ID.
-    inline static std::string getFieldIdFromName(const std::string& t_name) noexcept {
-        return "##param_" + t_name; 
-    }
+    inline static std::string getFieldIdFromName(const std::string& t_name) noexcept { return "##param_" + t_name; }
 
     /// @brief Draws a boolean field as a checkbox within the UI.
-    /// 
+    ///
     /// Displays a checkbox associated with the given field. If the user toggles
     /// the checkbox, the underlying value stored in the field will be updated.
     ///
@@ -86,7 +73,7 @@ private:
 
     /// @brief Draws an integer input field with optional clamping and step control.
     ///
-    /// Renders an ImGui `DragInt` widget bound to the value inside `t_field`.  
+    /// Renders an ImGui `DragInt` widget bound to the value inside `t_field`.
     /// Minimum value, maximum value, and step size (drag sensitivity) are taken
     /// from the field's metadata, if provided. If not present, the value is left
     /// unbounded and/or uses a default step of `1`.
@@ -97,7 +84,7 @@ private:
     /// @param t_name  Name/identifier used to generate a unique ImGui widget ID.
     /// @param t_field Integer field whose stored value will be displayed and edited.
     void drawIntField(const std::string& t_name, NodeField<int>& t_field);
-    
+
     /// @brief Draws a 2-component integer field with optional range limits and step size.
     ///
     /// Renders an ImGui `DragInt2` widget for editing a pair of integers stored in
@@ -117,7 +104,7 @@ private:
     /// Displays an ImGui `DragFloat` control linked to the value stored in `t_field`.
     /// The editable float will use metadata-defined constraints when available:
     ///
-    ///   - `min` and `max` apply value clamping  
+    ///   - `min` and `max` apply value clamping
     ///
     ///   - `step` defines drag sensitivity (default: 0.05)
     ///
@@ -143,7 +130,7 @@ private:
     /// @param t_name  UI name used to build a unique ImGui ID.
     /// @param t_field Field storing the editable float2 value.
     void drawFloat2Field(const std::string& t_name, NodeField<float2>& t_field);
-    
+
     /// @brief Draws a 3-component float field using an ImGui DragFloat3 control.
     ///
     /// Displays and allows editing of a `float3` value stored in the given field.
@@ -160,9 +147,9 @@ private:
     /// @param t_field Field storing the editable float3 value.
     void drawFloat3Field(const std::string& t_name, NodeField<float3>& t_field);
 
-private:
+  private:
     static constexpr float MAX_FLOAT = 3'999'999'999.9f; ///< Max float supported by slider
-    static constexpr int MAX_INT = 4'000'000'000; ///< Max int supported by slider
-};  
+    static constexpr int MAX_INT = 4'000'000'000;        ///< Max int supported by slider
+};
 
-}
+} // namespace butter
