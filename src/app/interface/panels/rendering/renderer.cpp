@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-#include <iostream>
-
 namespace butter {
 
 Renderer::Renderer()
@@ -26,7 +24,7 @@ void Renderer::draw(const RenderModel& t_model) {
         bindCameraUniforms(m_edgeShaderProgram);
         t_model.drawEdges();
     }
-    
+
     if (t_model.showPoints) {
         m_pointShaderProgram.use();
         bindCameraUniforms(m_pointShaderProgram);
@@ -48,8 +46,7 @@ void Renderer::resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_
     }
 }
 
-void Renderer::setCamera(std::shared_ptr<Camera> t_camera)
-{
+void Renderer::setCamera(std::shared_ptr<Camera> t_camera) {
     m_camera = t_camera;
 }
 
@@ -64,8 +61,7 @@ void Renderer::endFrame(const uint32_t t_screenWidth, const uint32_t t_screenHei
     m_frameBuffer.unbind();
 }
 
-void Renderer::bindCameraUniforms(ShaderProgram &t_shaderProgram)
-{
+void Renderer::bindCameraUniforms(ShaderProgram& t_shaderProgram) {
     if (const auto camera = m_camera.lock()) {
         t_shaderProgram.bindUniform("projection", camera->getProjection());
         t_shaderProgram.bindUniform("view", camera->getView());
@@ -73,8 +69,8 @@ void Renderer::bindCameraUniforms(ShaderProgram &t_shaderProgram)
 }
 
 void Renderer::clearFrame() const noexcept {
-    glClearColor(s_bgColor.r, s_bgColor.g, s_bgColor.b, s_bgColor.a);
+    glClearColor(BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, BG_COLOR.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-}
+} // namespace butter

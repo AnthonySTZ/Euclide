@@ -4,7 +4,6 @@
 #include "framebuffer.h"
 #include "shader_program.h"
 #include "camera.h"
-
 #include "render_model.h"
 
 #include <cstdint>
@@ -12,50 +11,77 @@
 
 namespace butter {
 
+/// @brief Responsible for rendering a RenderModel using OpenGL, managing shaders, camera, and framebuffer.
 class Renderer {
-
-public:
+  public:
+    /// @brief Construct the renderer and initialize default shaders and OpenGL state.
     Renderer();
+
+    /// @brief Default destructor.
     ~Renderer() = default;
 
-    Renderer(const Renderer &) = delete;
-    Renderer &operator=(const Renderer &) = delete;
+    // Disable copy semantics
+    Renderer(const Renderer&) = delete;            ///< No copy allowed.
+    Renderer& operator=(const Renderer&) = delete; ///< No copy assignment.
 
-    Renderer(Renderer &&) noexcept = default;
-    Renderer &operator=(Renderer &&) noexcept = default;
+    // Enable move semantics
+    Renderer(Renderer&&) noexcept = default;            ///< Move constructor.
+    Renderer& operator=(Renderer&&) noexcept = default; ///< Move assignment.
 
+    /// @brief Render a RenderModel according to its current draw toggles (primitives, edges, points).
+    /// @param t_model The render model to draw.
     void draw(const RenderModel& t_model);
-    ImTextureID getRenderTexture() const {
+
+    /// @brief Get the ImGui texture handle corresponding to the framebuffer render target.
+    /// @return ImTextureID for use in ImGui.
+    [[nodiscard]] ImTextureID getRenderTexture() const {
         return (ImTextureID)(intptr_t)m_frameBuffer.getRenderTexture();
     }
 
+    /// @brief Resize the internal framebuffer and update the camera aspect ratio.
+    /// @param t_screenWidth  New framebuffer width.
+    /// @param t_screenHeight New framebuffer height.
     void resizeFrameBuffer(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
 
+    /// @brief Assign the camera used for rendering.
+    /// @param t_camera Shared pointer to a Camera object.
     void setCamera(std::shared_ptr<Camera> t_camera);
 
+    /// @brief Prepare the framebuffer and viewport for rendering.
+    /// @param t_screenWidth  Width of the viewport.
+    /// @param t_screenHeight Height of the viewport.
     void beginFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
+
+    /// @brief Finish rendering and blit the framebuffer content to the screen.
+    /// @param t_screenWidth  Width of the framebuffer.
+    /// @param t_screenHeight Height of the framebuffer.
     void endFrame(const uint32_t t_screenWidth, const uint32_t t_screenHeight);
+
+    /// @brief Clear the current framebuffer using the background color.
     void clearFrame() const noexcept;
 
-private:    
+  private:
+    /// @brief Upload camera projection and view matrices to the given shader.
+    /// @param t_shaderProgram Shader program to bind camera uniforms to.
     void bindCameraUniforms(ShaderProgram& t_shaderProgram);
 
-    float getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const;
+    /// @brief Compute the aspect ratio based on screen dimensions.
+    /// @param t_screenWidth  Width of the screen.
+    /// @param t_screenHeight Height of the screen.
+    /// @return Aspect ratio as width / height.
+    [[nodiscard]] float getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const;
 
-    static constexpr struct { float r, g, b, a; } s_bgColor{0.3f, 0.3f, 0.3f, 1.0f};
+  private:
+    const float m_edgesLineWidth = 1.0f; ///< Line width for edge rendering.
 
-    const float m_edgesLineWidth = 1.0f;
+    ShaderProgram m_faceShaderProgram;  ///< Shader for rendering filled triangles.
+    ShaderProgram m_pointShaderProgram; ///< Shader for rendering points.
+    ShaderProgram m_edgeShaderProgram;  ///< Shader for rendering edges (wireframe).
 
-    ShaderProgram m_faceShaderProgram;
-    ShaderProgram m_pointShaderProgram;
-    ShaderProgram m_edgeShaderProgram;
+    FrameBuffer m_frameBuffer{};    ///< Offscreen framebuffer for rendering.
+    std::weak_ptr<Camera> m_camera; ///< Camera used for view/projection matrices.
 
-    FrameBuffer m_frameBuffer{};
-    std::weak_ptr<Camera> m_camera;
-
-    bool m_showPrimitives = true;
-    bool m_showWireframe = true;
-    bool m_showPoints = true;
+    static constexpr struct { float r, g, b, a; } BG_COLOR{0.3f, 0.3f, 0.3f, 1.0f}; ///< Default background color.
 };
 
-}
+} // namespace butter
