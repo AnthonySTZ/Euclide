@@ -1,6 +1,5 @@
 #include "render_model.h"
 
-#include "interface/utils/hash.h"
 #include "utils/timer.h"
 
 #include <numeric>
