@@ -6,7 +6,6 @@ namespace butter {
 
 /// @brief Represents a simple line to be drawn in the ImGui context.
 class CuttingLine {
-
   public:
     /// @brief Construct a cutting line from start to end points.
     /// @param t_start Starting position of the line.

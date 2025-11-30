@@ -47,7 +47,6 @@ void Camera::setViewTarget(glm::vec3 t_position, glm::vec3 t_target, glm::vec3 t
 }
 
 void Camera::orbit(float t_deltaYaw, float t_deltaPitch) {
-
     t_deltaYaw *= m_viewSpeed;
     t_deltaPitch *= m_viewSpeed;
 
@@ -85,7 +84,6 @@ void Camera::orbit(float t_deltaYaw, float t_deltaPitch) {
 }
 
 void Camera::dolly(float t_delta) {
-
     t_delta *= m_zoomSpeed;
     m_distanceToTarget = std::max(0.1f, m_distanceToTarget + t_delta);
 
@@ -96,7 +94,6 @@ void Camera::dolly(float t_delta) {
 }
 
 void Camera::pan(float t_deltaX, float t_deltaY) {
-
     t_deltaX *= m_translateSpeed;
     t_deltaY *= m_translateSpeed;
 

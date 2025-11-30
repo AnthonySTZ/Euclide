@@ -14,7 +14,6 @@ namespace butter {
 /// Supports both perspective and orthographic projections. Provides orbit, pan, and dolly
 /// controls for interactive manipulation, as well as getters for matrices, position, and target.
 class Camera {
-
   public:
     /// @brief Construct a Camera with default perspective settings.
     Camera();

@@ -9,7 +9,6 @@ namespace butter {
 
 /// @brief Represents a visual node in the node editor UI.
 class NodeItem {
-
   public:
     /// @brief Construct a NodeItem with the associated Node and its initial position.
     /// @param t_node Shared pointer to the underlying Node data.

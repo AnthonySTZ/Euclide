@@ -71,7 +71,6 @@ void NodeItem::drawRect(const std::string& t_nodeName, const bool isRender) {
 }
 
 void NodeItem::drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs) {
-
     ImVec2 inputIOPos{m_position.x, m_position.y - SPACING - RADIUS};
     ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + SPACING + RADIUS};
 

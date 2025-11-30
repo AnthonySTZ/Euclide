@@ -16,7 +16,6 @@ namespace butter {
 ///
 ///     - `field.accept(drawer);`
 class FieldDrawer : public NodeFieldVisitor {
-
   public:
     /// @brief Draws a boolean field using a checkbox.
     void visit(const std::string& t_name, NodeField<bool>& t_field) override { drawBoolField(t_name, t_field); }

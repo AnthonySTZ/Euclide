@@ -7,7 +7,6 @@ namespace butter {
 
 /// @brief Represents a connection between two nodes in the node editor.
 class ConnectionItem {
-
   public:
     ConnectionItem() = default;
 
