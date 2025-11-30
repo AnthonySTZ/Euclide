@@ -7,8 +7,12 @@
 namespace butter {
 
 void NodeGraphMenu::render() {
+    beginStyle();
+
     if (ImGui::BeginPopup("NodeGraphContextMenu")) {
         const auto& menuItems = NodesInfo::getMenuItems();
+
+        drawSearchBar();
 
         for (auto& [menuName, items] : menuItems) {
             for (const auto& item : items) {
@@ -20,7 +24,12 @@ void NodeGraphMenu::render() {
             }
         }
         ImGui::EndPopup();
+    } else {
+        // Reset focus
+        m_focusSearchBar = true;
     }
+
+    endStyle();
 }
 
 void NodeGraphMenu::beginStyle() const {
@@ -31,6 +40,20 @@ void NodeGraphMenu::beginStyle() const {
 void NodeGraphMenu::endStyle() const {
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
+}
+
+void NodeGraphMenu::drawSearchBar() {
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, SEARCH_BAR_COLOR);
+
+    if (m_focusSearchBar) {
+        ImGui::SetKeyboardFocusHere();
+        m_focusSearchBar = false;
+    }
+
+    if (ImGui::InputTextWithHint("##searchBar", "Search", (char*)m_searchText.c_str(), m_searchText.capacity() + 1,
+                                 ImGuiInputTextFlags_CallbackResize, StringImGuiCallBack, (void*)&m_searchText)) {
+    }
+    ImGui::PopStyleColor();
 }
 
 } // namespace butter
