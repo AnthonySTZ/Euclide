@@ -4,20 +4,15 @@
 
 namespace butter {
 
-Parameters::Parameters(const std::shared_ptr<NodeGraph> &t_nodeGraph)
-    : m_nodeGraph(t_nodeGraph)
-{
-    if (auto nodeGraph = m_nodeGraph.lock()){
-        nodeGraph->onNodeSelected.subscribe([this](std::weak_ptr<Node> t_node) {
-            m_node = t_node;
-        });
+Parameters::Parameters(const std::shared_ptr<NodeGraph>& t_nodeGraph) : m_nodeGraph(t_nodeGraph) {
+    if (auto nodeGraph = m_nodeGraph.lock()) {
+        nodeGraph->onNodeSelected.subscribe([this](std::weak_ptr<Node> t_node) { m_node = t_node; });
     }
 }
 
-void Parameters::draw()
-{
+void Parameters::draw() {
     beginTab("Parameters", m_padding);
-    
+
     pushStyle();
     drawParameters();
     popStyle();
@@ -29,28 +24,27 @@ void Parameters::drawParameters() {
     FieldDrawer drawer;
     if (auto node = m_node.lock()) {
         drawTitleName(node->name());
-        
-        if (ImGui::BeginTable("params", 2))
-        {
+
+        if (ImGui::BeginTable("params", 2)) {
             ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
             ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
 
-            for(const auto& [name, field]: node->fields()) {
+            for (const auto& [name, field] : node->fields()) {
                 const NodeFieldMetadata& meta = field->metadata();
                 if (meta.hidden) {
                     continue;
                 }
                 std::string displayName = meta.displayName.value_or(name);
-                
+
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::TextUnformatted(displayName.c_str());
-                
+
                 ImGui::TableSetColumnIndex(1);
                 ImGui::SetNextItemWidth(-1);
                 field->accept(name, drawer);
             }
-            
+
             ImGui::EndTable();
         }
     }
@@ -60,7 +54,7 @@ void Parameters::drawTitleName(const std::string& t_title) {
     ImGui::Text("Name: ");
     ImGui::SameLine();
     ImGui::Text(t_title.c_str());
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + s_titleSpacing);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + TITLE_SPACING);
 }
 
 void Parameters::pushStyle() {
@@ -80,5 +74,4 @@ void Parameters::popStyle() {
     ImGui::PopStyleVar(1);
 }
 
-}
-
+} // namespace butter
