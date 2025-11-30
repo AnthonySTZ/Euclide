@@ -1,4 +1,4 @@
-#include "node_graph.h"
+#include "old_node_graph.h"
 
 #include "interface/utils/string_utils.h"
 
@@ -384,7 +384,6 @@ void NodeGraph::drawConnections() {
 }
 
 void NodeGraph::drawNodes() {
-    bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
     for (uint32_t id : m_drawOrder) {
         m_nodeItems[id]->draw();
     }

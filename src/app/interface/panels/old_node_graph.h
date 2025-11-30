@@ -31,6 +31,8 @@ class NodeGraph : public Panel {
 
     void draw() override;
 
+    std::vector<ConnectionItem> connections;
+
   private:
     void handleInputs();
     void handleCreateNode();
@@ -65,15 +67,11 @@ class NodeGraph : public Panel {
 
     std::weak_ptr<Scene> m_scene;
 
-    std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> m_nodeItems;
-    std::vector<uint32_t> m_drawOrder{};
-
     bool m_isNodeDrag = false;
     bool m_isGraphDrag = false;
 
     std::shared_ptr<NodeItem> m_nodeHovered = nullptr;
     std::set<std::shared_ptr<NodeItem>> m_selectedNodes{};
-    std::vector<std::shared_ptr<ConnectionItem>> m_nodeConnections;
 
     std::unique_ptr<ConnectionItem> m_currentConnection;
 
