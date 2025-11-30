@@ -46,17 +46,17 @@ class ConnectionItem {
     void deleteConnection();
 
   private:
-    std::weak_ptr<NodeItem> m_sourceNode;
-    std::weak_ptr<NodeItem> m_destNode;
+    std::weak_ptr<NodeItem> m_sourceNode; ///< Source node of the connection
+    std::weak_ptr<NodeItem> m_destNode;   ///< Destination node of the connection
 
-    uint32_t m_sourceIndex = 0;
-    uint32_t m_destIndex = 0;
+    uint32_t m_sourceIndex = 0; ///< Index of the source output slot
+    uint32_t m_destIndex = 0;   ///< Index of the destination input slot
 
-    ImVec2 m_start{0.0f, 0.0f};
-    ImVec2 m_end{0.0f, 0.0f};
+    ImVec2 m_start{0.0f, 0.0f}; ///< Start position of the connection line
+    ImVec2 m_end{0.0f, 0.0f};   ///< End position of the connection line
 
-    static constexpr ImU32 COLOR = IM_COL32(200, 200, 100, 255);
-    static constexpr float THICKNESS = 2.0f;
+    static constexpr ImU32 COLOR = IM_COL32(200, 200, 100, 255); ///< Default color of the connection
+    static constexpr float THICKNESS = 2.0f;                     ///< Thickness of the connection line
 };
 
 } // namespace butter
