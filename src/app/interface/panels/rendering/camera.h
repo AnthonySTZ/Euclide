@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -11,7 +11,7 @@ namespace butter {
 
 class Camera {
 
-public:
+  public:
     Camera();
     ~Camera() = default;
 
@@ -31,8 +31,8 @@ public:
     void pan(float t_deltaX, float t_deltaY);
 
     // View and projection matrices
-    const glm::mat4x4 &getProjection() const { return m_projectionMatrix; };
-    const glm::mat4x4 &getView() const { return m_viewMatrix; };
+    const glm::mat4x4& getProjection() const { return m_projectionMatrix; };
+    const glm::mat4x4& getView() const { return m_viewMatrix; };
 
     // Getters for position and target
     glm::vec3 getTarget() const { return m_targetPosition; };
@@ -40,7 +40,7 @@ public:
 
     void updateTarget(glm::vec3 target) { setViewTarget(m_cameraPosition, target); }
 
-private:
+  private:
     void updateViewMatrix();
 
     glm::mat4x4 m_projectionMatrix{1.f};
@@ -59,9 +59,6 @@ private:
     float m_translateSpeed = 0.003f;
     float m_viewSpeed = 0.005f;
     float m_zoomSpeed = 0.01f;
-
-
 };
 
-
-}
+} // namespace butter

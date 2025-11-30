@@ -116,4 +116,4 @@ void Camera::updateViewMatrix() {
     m_viewMatrix = glm::lookAt(m_cameraPosition, m_targetPosition, m_orientation * glm::vec3{0.f, 1.f, 0.f});
 }
 
-}
+} // namespace butter
