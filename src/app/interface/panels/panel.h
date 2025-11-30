@@ -29,7 +29,7 @@ class Panel {
     /// @brief End a panel tab.
     void endTab() const;
 
-  private:
+  protected:
     ImVec2 m_padding = {10.f, 10.f}; ///< Default padding for the panel content.
 
     static constexpr float TAB_TITLE_HEIGHT = 25.0f;                            ///< Height of the tab title bar.
