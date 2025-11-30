@@ -2,15 +2,7 @@
 
 namespace butter {
 
-/**
- * @brief Reserve a given number of point.
- * 
- * @param t_amount The number of points to reserve.
- * 
- * This function allocates memory for new points.
- */
-void Points::reserve(const size_t t_amount)
-{
+void Points::reserve(const size_t t_amount) {
     posX.reserve(t_amount);
     posY.reserve(t_amount);
     posZ.reserve(t_amount);
@@ -24,15 +16,7 @@ void Points::reserve(const size_t t_amount)
     colorB.reserve(t_amount);
 }
 
-/**
- * @brief Resize a given number of point.
- * 
- * @param t_amount The number of points to resize.
- * 
- * This function allocates memory for new points.
- */
-void Points::resize(const size_t t_amount)
-{
+void Points::resize(const size_t t_amount) {
     posX.resize(t_amount);
     posY.resize(t_amount);
     posZ.resize(t_amount);
@@ -46,11 +30,7 @@ void Points::resize(const size_t t_amount)
     colorB.resize(t_amount);
 }
 
-/**
- * @brief Clear all points in `Points`
- */
-void Points::clear() noexcept
-{
+void Points::clear() noexcept {
     posX.clear();
     posY.clear();
     posZ.clear();
@@ -64,19 +44,7 @@ void Points::clear() noexcept
     colorB.clear();
 }
 
-/**
- * @brief Add a point to the Points struct.
- *
- * @param t_x X coordinate of the point.
- * @param t_y Y coordinate of the point.
- * @param t_z Z coordinate of the point.
- * @return Index of the newly added point.
- *
- * This function appends the given coordinates to the internal SoA
- * storage (`posX`, `posY`, `posZ`) and returns the index of the new point.
-*/
-uint32_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexcept
-{
+uint32_t Points::addPoint(const float t_x, const float t_y, const float t_z) noexcept {
     posX.push_back(t_x);
     posY.push_back(t_y);
     posZ.push_back(t_z);
@@ -92,4 +60,4 @@ uint32_t Points::addPoint(const float t_x, const float t_y, const float t_z) noe
     return static_cast<uint32_t>(posX.size() - 1);
 }
 
-}
+} // namespace butter
