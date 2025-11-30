@@ -4,10 +4,9 @@
 #include <new> // std::bad_alloc
 
 /// @brief A custom STL-compatible allocator that aligns memory allocations to a specified byte boundary.
-/// 
+///
 /// Useful for SIMD operations or other scenarios requiring specific alignment.
-template <typename T, size_t Alignment>
-struct AlignedAllocator {
+template <typename T, size_t Alignment> struct AlignedAllocator {
     /// @brief Type of the objects being allocated.
     using value_type = T;
 
@@ -16,8 +15,7 @@ struct AlignedAllocator {
 
     /// @brief Converts from an allocator of another type with the same alignment.
     /// @tparam U Type of the other allocator.
-    template <typename U>
-    constexpr AlignedAllocator(const AlignedAllocator<U, Alignment>&) noexcept {}
+    template <typename U> constexpr AlignedAllocator(const AlignedAllocator<U, Alignment>&) noexcept {}
 
     /// @brief Allocates memory for n objects of type T, aligned to Alignment bytes.
     /// @param n Number of objects to allocate.
@@ -49,8 +47,7 @@ struct AlignedAllocator {
 
     /// @brief Rebind allocator to another type.
     /// @tparam U New type for rebind.
-    template <typename U>
-    struct rebind { using other = AlignedAllocator<U, Alignment>; };
+    template <typename U> struct rebind { using other = AlignedAllocator<U, Alignment>; };
 };
 
 /// @brief Equality comparison for allocators of potentially different types.
