@@ -1,7 +1,7 @@
 #include "field_drawer.h"
 
-#define MAX_FLOAT 999999999.9f
-#define MAX_INT 999999999
+constexpr float MAX_FLOAT = 1e9f;
+constexpr int MAX_INT = 4'000'000'000;
 
 namespace butter {
 
@@ -39,7 +39,15 @@ void FieldDrawer::drawComboField(const std::string &t_name, NodeField<int> &t_fi
     int index = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
 
+    // Get choices from metadata and clamp index safely
     const auto& choices = meta.choices.value_or({});
+    if (choices.empty()) {
+        return; // nothing to display
+    }
+    if (index < 0 || index >= choices.size()) {
+        index = 0;
+        t_field.setValue(index);
+    }
         
     const std::string comboId = std::string("##param_") + t_name;
     if (ImGui::BeginCombo(comboId.c_str(), choices[index].c_str())) {
