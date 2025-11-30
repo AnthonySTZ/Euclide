@@ -7,6 +7,20 @@ void NodeGraphRenderer::render() const {
     drawNodes();
 }
 
+std::shared_ptr<NodeItem> NodeGraphRenderer::getNodeAt(ImVec2 t_mousePosition) const {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return nullptr;
+
+    for (auto it = graph->drawNodesOrder.rbegin(); it != graph->drawNodesOrder.rend(); ++it) {
+        auto nodeItem = graph->nodes[*it];
+        if (nodeItem->isHovered()) {
+            return nodeItem;
+        }
+    }
+    return nullptr;
+}
+
 void NodeGraphRenderer::drawConnections() const {
     auto graph = m_graph.lock();
     if (!graph)
