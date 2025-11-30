@@ -9,8 +9,6 @@ add_library(core STATIC
     nodes/scene.cpp
     nodes/nodes_info.cpp
 
-    fields/node_field.cpp
-
     nodes/primitive/cube.cpp
     nodes/primitive/grid.cpp
     nodes/primitive/cylinder.cpp
