@@ -2,6 +2,6 @@
 
 namespace butter {
 
-bool Timer::s_enableTiming = true;
+bool Timer::ENABLE_TIMING = true;
 
 }
