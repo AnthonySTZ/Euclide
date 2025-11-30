@@ -17,6 +17,8 @@ class NodeGraph {
     NodeGraph(const std::shared_ptr<Scene> t_scene);
     ~NodeGraph() = default;
 
+    void addNode(const std::shared_ptr<Node>& t_node);
+
   public:
     std::vector<ConnectionItem> connections;
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> nodes;

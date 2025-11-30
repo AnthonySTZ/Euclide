@@ -21,6 +21,14 @@ NodeGraph::NodeGraph(const std::shared_ptr<Scene> t_scene) : m_scene(t_scene) {
     });
 }
 
+void NodeGraph::addNode(const std::shared_ptr<Node>& t_node) {
+    auto scene = m_scene.lock();
+    if (!scene)
+        return;
+
+    scene->addNode(t_node);
+}
+
 void NodeGraph::onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node) {
     ImGuiIO& io = ImGui::GetIO();
     auto [_, inserted] = nodes.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node, io.MousePos));

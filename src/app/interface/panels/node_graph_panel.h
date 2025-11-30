@@ -4,6 +4,7 @@
 
 #include "graph/node_graph_renderer.h"
 #include "graph/node_graph_input_handler.h"
+#include "graph/node_graph_menu.h"
 
 namespace butter {
 
@@ -20,6 +21,7 @@ class NodeGraphPanel : public Panel {
     std::shared_ptr<NodeGraph> m_graph;
     NodeGraphRenderer m_graphRenderer;
     NodeGraphInputHandler m_graphInputHandler;
+    NodeGraphMenu m_graphMenu;
 };
 
 } // namespace butter

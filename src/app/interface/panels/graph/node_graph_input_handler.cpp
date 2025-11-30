@@ -7,7 +7,8 @@ void NodeGraphInputHandler::pollEvents() {
 }
 
 void NodeGraphInputHandler::handleContextMenu() {
-    ImVec2 region = ImGui::GetContentRegionAvail();
+    ImVec2 regionAvail = ImGui::GetContentRegionAvail();
+    ImVec2 region = ImVec2(std::max(regionAvail.x, 100.0f), std::max(regionAvail.y, 100.0f));
     ImGui::InvisibleButton("##nodegraph_bg", region, ImGuiButtonFlags_None);
 
     // Right click inside graph area -> open menu
