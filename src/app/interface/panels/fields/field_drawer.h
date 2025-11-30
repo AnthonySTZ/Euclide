@@ -160,8 +160,9 @@ private:
     /// @param t_field Field storing the editable float3 value.
     void drawFloat3Field(const std::string& t_name, NodeField<float3>& t_field);
 
-    static constexpr float MAX_FLOAT = 3'999'999'999.9f;
-    static constexpr int MAX_INT = 4'000'000'000;
+private:
+    static constexpr float MAX_FLOAT = 3'999'999'999.9f; ///< Max float supported by slider
+    static constexpr int MAX_INT = 4'000'000'000; ///< Max int supported by slider
 };  
 
 }
