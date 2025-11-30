@@ -39,7 +39,7 @@ int NodeItem::isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const {
 	for (size_t i = 0; i < t_ioPositions.size(); ++i) {
 		const ImVec2 diff = t_ioPositions[i] - io.MousePos;
 		const float dist2 = diff.x * diff.x + diff.y * diff.y;
-		if (dist2 <= s_radius2) return i;
+		if (dist2 <= RADIUS_2) return i;
 	}
 
     return -1;
@@ -55,7 +55,7 @@ ImVec2 NodeItem::getInputIOPosition(uint32_t index) const
 	const float ioSpacing = m_size.x / (m_inputIOPositions.size() + 1);
     return ImVec2{
 		m_position.x + (index + 1) * ioSpacing,
-		m_position.y - s_spacing - s_radius
+		m_position.y - SPACING - RADIUS
 	};
 }
 
@@ -64,7 +64,7 @@ ImVec2 NodeItem::getOutputIOPosition(uint32_t index) const
 	const float ioSpacing = m_size.x / (m_outputIOPositions.size() + 1);
     return ImVec2{
 		m_position.x + (index + 1) * ioSpacing,
-		m_position.y + m_size.y + s_spacing + s_radius
+		m_position.y + m_size.y + SPACING + RADIUS
 	};
 }
 
@@ -84,15 +84,15 @@ void NodeItem::drawRect(const std::string& t_nodeName, const bool isRender) {
 
 void NodeItem::drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs) {
 
-	ImVec2 inputIOPos{m_position.x, m_position.y - s_spacing - s_radius}; 
-	ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + s_spacing + s_radius}; 
+	ImVec2 inputIOPos{m_position.x, m_position.y - SPACING - RADIUS}; 
+	ImVec2 outputIOPos{m_position.x, m_position.y + m_size.y + SPACING + RADIUS}; 
 	
 	m_inputIOPositions = drawIOsOnLine(t_numberOfInputs, inputIOPos);
 	m_outputIOPositions = drawIOsOnLine(t_numberOfOutputs, outputIOPos);
 
 }
 
-std::vector<ImVec2> NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) {
+std::vector<ImVec2> NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_linePosition) const {
 	std::vector<ImVec2> positions{};
 	if (t_numberOfIOs <= 0) return positions;
 
@@ -106,8 +106,8 @@ std::vector<ImVec2> NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_li
 			t_linePosition.y
 		};
 
-		drawList->AddCircleFilled(ioPos, s_radius, s_ioColor);
-		drawList->AddCircle(ioPos, s_radius, s_ioOutlineColor);
+		drawList->AddCircleFilled(ioPos, RADIUS, IO_COLOR);
+		drawList->AddCircle(ioPos, RADIUS, IO_OUTLINE_COLOR);
 
 		positions.push_back(ioPos);
 	}
