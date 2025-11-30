@@ -1,9 +1,17 @@
 #include "node_graph_panel.h"
 
-void butter::NodeGraphPanel::draw() {
+namespace butter {
+
+NodeGraphPanel::NodeGraphPanel(const std::shared_ptr<Scene> t_scene)
+    : m_graph(std::make_shared<NodeGraph>(std::move(t_scene))), m_graphRenderer(m_graph), m_graphInputHandler(m_graph) {
+}
+
+void NodeGraphPanel::draw() {
     beginTab("Node Graph", m_padding);
 
     m_graphRenderer.render();
 
     endTab();
 }
+
+} // namespace butter
