@@ -5,6 +5,9 @@
 
 namespace butter {
 
+/// @brief Forward declaration of Node to break circular dependency.
+class Node;
+
 /// @brief Represents a connection between two nodes.
 struct NodeConnection {
     /// @brief Index of the output slot on the source node.

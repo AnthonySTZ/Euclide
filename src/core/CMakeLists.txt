@@ -1,5 +1,4 @@
 add_library(core STATIC
-    utils/allocator_utils.cpp
     utils/timer.cpp
 
     geometry/mesh.cpp
