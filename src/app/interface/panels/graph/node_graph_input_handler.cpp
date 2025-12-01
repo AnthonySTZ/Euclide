@@ -66,7 +66,7 @@ void NodeGraphInputHandler::handleDragging() const {
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
     if (m_draggingNode.has_value()) {
         dragNodes(dragDelta);
-    } else {
+    } else if (m_isBoxSelecting) {
         m_graphRenderer->drawBoxSelection(m_boxStart, io.MousePos);
     }
 }
