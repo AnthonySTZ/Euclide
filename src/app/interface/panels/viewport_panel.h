@@ -10,9 +10,7 @@ namespace butter {
 
 class ViewportPanel : public Panel {
   public:
-    ViewportPanel(const std::weak_ptr<Scene> t_scene)
-        : m_viewport(std::make_shared<Viewport>(t_scene)), m_viewportRenderer(m_viewport),
-          m_viewportInputHandler(m_viewport) {}
+    ViewportPanel(const std::weak_ptr<Scene> t_scene);
     ~ViewportPanel() = default;
 
     void draw() override;
