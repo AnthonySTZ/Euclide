@@ -76,6 +76,20 @@ void NodeGraph::removeConnection(const size_t t_connectionIndex) {
     connections[t_connectionIndex].deleteConnection();
 }
 
+void NodeGraph::removeSelectedNodes() {
+    auto scene = m_scene.lock();
+    if (!scene)
+        return;
+
+    for (const uint32_t nodeId : m_selectedNodes) {
+        auto it = nodes.find(nodeId);
+        if (it == nodes.end())
+            continue;
+
+        scene->removeNode(it->second->node()->name());
+    }
+}
+
 void NodeGraph::clearSelection() {
     for (auto nodeId : m_selectedNodes) {
         if (auto node = getNode(nodeId).lock()) {

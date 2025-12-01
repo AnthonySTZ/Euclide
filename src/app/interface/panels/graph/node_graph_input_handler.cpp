@@ -150,6 +150,10 @@ void NodeGraphInputHandler::handleKeyInputs() {
         graph->renderSelectedNode();
     }
 
+    if (ImGui::IsKeyReleased(ImGuiKey_Delete) && m_isWindowHovered) {
+        graph->removeSelectedNodes();
+    }
+
     if (ImGui::IsKeyDown(ImGuiKey_Y) && m_isWindowHovered) {
         ImGuiIO& io = ImGui::GetIO();
         m_graphRenderer->addCuttingLine(io.MousePosPrev, io.MousePos);

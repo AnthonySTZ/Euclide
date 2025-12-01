@@ -47,6 +47,9 @@ class NodeGraph {
     /// @param t_connectionIndex Index of the connection to remove.
     void removeConnection(const size_t t_connectionIndex);
 
+    /// @brief Removes all selected nodes
+    void removeSelectedNodes();
+
     /// @brief Retrieves a node item by ID.
     /// @param t_nodeId Node ID to query.
     /// @return Weak pointer to the NodeItem, empty if not found.
