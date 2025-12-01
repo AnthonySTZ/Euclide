@@ -16,11 +16,19 @@ class NodeGraphInputHandler {
     void handleContextMenu();
     void handleMouseInputs();
 
+    [[nodiscard]] bool isDragging() const;
+
+    void handleDragging() const;
+
   private:
     std::weak_ptr<NodeGraph> m_graph;
     NodeGraphRenderer* m_graphRenderer = nullptr;
 
     bool m_mouseButtonLeftDown = false;
+    bool m_isMouseDrag = false;
+    std::weak_ptr<NodeItem> m_draggingNode = std::weak_ptr<NodeItem>();
+
+    static constexpr float DRAG_THRESHOLD = 0.01f;
 };
 
 } // namespace butter

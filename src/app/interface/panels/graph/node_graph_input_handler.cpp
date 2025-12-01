@@ -22,23 +22,37 @@ void NodeGraphInputHandler::handleContextMenu() {
 void NodeGraphInputHandler::handleMouseInputs() {
     const bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
-    ImVec2 mousePos = ImGui::GetMousePos();
-
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
         m_mouseButtonLeftDown = true;
-        if (const auto& hoveredNode = m_graphRenderer->getNodeAt(mousePos)) {
-            std::cout << "Clicked !\n";
-        }
-        // refreshHoveredNode();
+        m_draggingNode = m_graphRenderer->getNodeAt(ImGui::GetMousePos());
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-        // leftMouseReleased();
         m_mouseButtonLeftDown = false;
+        m_isMouseDrag = false;
     }
 
-    if (m_mouseButtonLeftDown) {
-        // leftMouseDown();
+    if (m_isMouseDrag) {
+        handleDragging();
+    } else if (!m_isMouseDrag && m_mouseButtonLeftDown) {
+        if (isDragging()) {
+            m_isMouseDrag = true;
+        }
+    }
+}
+
+bool NodeGraphInputHandler::isDragging() const {
+    ImVec2 dragDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left, DRAG_THRESHOLD);
+    return (dragDelta.x != 0 || dragDelta.y != 0);
+}
+
+void NodeGraphInputHandler::handleDragging() const {
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
+    if (auto node = m_draggingNode.lock()) {
+        node->moveBy(dragDelta);
+    } else {
+        // TODO: Box selection for example
     }
 }
 
