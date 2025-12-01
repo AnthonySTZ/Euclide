@@ -30,6 +30,7 @@ class NodeGraphInputHandler {
     bool m_mouseButtonLeftDown = false;
     bool m_isMouseDrag = false;
     std::optional<uint32_t> m_draggingNode = std::nullopt;
+    std::optional<IOClickedInfos> m_ioClicked = std::nullopt;
 
     static constexpr float DRAG_THRESHOLD = 0.01f;
 };

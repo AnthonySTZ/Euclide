@@ -18,12 +18,12 @@ void ConnectionItem::draw() {
     drawList->AddLine(m_start, m_end, COLOR, THICKNESS);
 }
 
-void ConnectionItem::setSource(const std::shared_ptr<NodeItem>& t_sourceNode, const uint32_t t_sourceIndex) noexcept {
+void ConnectionItem::setSource(const std::weak_ptr<NodeItem> t_sourceNode, const uint32_t t_sourceIndex) noexcept {
     m_sourceNode = t_sourceNode;
     m_sourceIndex = t_sourceIndex;
 }
 
-void ConnectionItem::setDestination(const std::shared_ptr<NodeItem>& t_destNode, const uint32_t t_destIndex) noexcept {
+void ConnectionItem::setDestination(const std::weak_ptr<NodeItem> t_destNode, const uint32_t t_destIndex) noexcept {
     m_destNode = t_destNode;
     m_destIndex = t_destIndex;
 }

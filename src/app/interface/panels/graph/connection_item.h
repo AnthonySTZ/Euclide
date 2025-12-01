@@ -14,14 +14,14 @@ class ConnectionItem {
     void draw();
 
     /// @brief Set the source node and its output index for this connection.
-    /// @param t_sourceNode Shared pointer to the source NodeItem.
+    /// @param t_sourceNode Weak pointer to the source NodeItem.
     /// @param t_sourceIndex Index of the output slot on the source node.
-    void setSource(const std::shared_ptr<NodeItem>& t_sourceNode, uint32_t t_sourceIndex) noexcept;
+    void setSource(const std::weak_ptr<NodeItem> t_sourceNode, uint32_t t_sourceIndex) noexcept;
 
     /// @brief Set the destination node and its input index for this connection.
-    /// @param t_destNode Shared pointer to the destination NodeItem.
+    /// @param t_destNode Weak pointer to the destination NodeItem.
     /// @param t_destIndex Index of the input slot on the destination node.
-    void setDestination(const std::shared_ptr<NodeItem>& t_destNode, uint32_t t_destIndex) noexcept;
+    void setDestination(const std::weak_ptr<NodeItem> t_destNode, uint32_t t_destIndex) noexcept;
 
     /// @brief Get the source node.
     [[nodiscard]] std::shared_ptr<NodeItem> sourceNode() const { return m_sourceNode.lock(); }

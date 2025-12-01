@@ -20,12 +20,17 @@ class NodeGraphRenderer {
     [[nodiscard]] std::optional<uint32_t> getNodeAt(ImVec2 t_mousePosition) const;
     [[nodiscard]] std::optional<IOClickedInfos> getNodeIOAt(ImVec2 t_mousePosition) const;
 
+    void startConnection(const IOClickedInfos& t_infos);
+    void endConnection();
+
   private:
     void drawNodes() const;
     void drawConnections() const;
 
   private:
     std::weak_ptr<NodeGraph> m_graph;
+
+    std::unique_ptr<ConnectionItem> m_currentConnection;
 };
 
 } // namespace butter
