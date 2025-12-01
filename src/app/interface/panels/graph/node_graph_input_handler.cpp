@@ -72,14 +72,19 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
 
     if (m_draggingNode.has_value() && !m_isMouseDrag) {
         const uint32_t id = m_draggingNode.value();
+        if (!ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+            graph->clearSelection();
+        }
         graph->addNodeToSelection(id, false);
-
         return;
     }
 
-    if (m_isMouseDrag && !m_draggingNode.has_value()) {
-        // Box Selection
+    if (!m_isMouseDrag) {
+        graph->clearSelection();
+        return;
     }
+
+    // TODO: Box Selection
 }
 
 } // namespace butter

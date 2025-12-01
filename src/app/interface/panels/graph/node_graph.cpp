@@ -47,6 +47,16 @@ void NodeGraph::addNodeToSelection(const uint32_t t_nodeId, const bool t_removeI
     onNodeSelected.notify(nodeItem->node());
 }
 
+void NodeGraph::clearSelection() {
+    for (auto nodeId : m_selectedNodes) {
+        if (auto node = getNode(nodeId).lock()) {
+            node->setSelected(false);
+        }
+    }
+    m_selectedNodes.clear();
+    onNodeSelected.notify(std::weak_ptr<Node>());
+}
+
 void NodeGraph::onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node) {
     ImGuiIO& io = ImGui::GetIO();
     auto [_, inserted] = nodes.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node, io.MousePos));

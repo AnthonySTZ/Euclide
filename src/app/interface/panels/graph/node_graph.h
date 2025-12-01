@@ -26,6 +26,7 @@ class NodeGraph {
         return it->second;
     }
     void addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected);
+    void clearSelection();
 
   public:
     std::vector<ConnectionItem> connections;
