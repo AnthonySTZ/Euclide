@@ -70,7 +70,9 @@ std::vector<uint32_t> NodeGraphInteraction::getNodesInRect(const std::weak_ptr<N
     std::vector<uint32_t> nodes;
     for (auto [id, nodeItem] : graph->nodes) {
         const ImVec2 nodePosition = nodeItem->position();
-        if (nodePosition.x > minX && nodePosition.x < maxX && nodePosition.y > minY && nodePosition.y < maxY) {
+        const ImVec2 nodeSize = nodeItem->size();
+        if (nodePosition.x + nodeSize.x > minX && nodePosition.x < maxX && nodePosition.y + nodeSize.y > minY &&
+            nodePosition.y < maxY) {
             nodes.push_back(id);
         }
     }

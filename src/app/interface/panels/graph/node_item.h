@@ -65,6 +65,10 @@ class NodeItem {
     /// @return Position of the node in UI coordinates.
     [[nodiscard]] inline ImVec2 position() const noexcept { return m_position; }
 
+    /// @brief Get the node size
+    /// @return Size of the node in UI coordinates.
+    [[nodiscard]] inline ImVec2 size() const noexcept { return m_size; }
+
   private:
     /// @brief Draw the node rectangle with proper colors.
     /// @param t_nodeName Name of the node.
