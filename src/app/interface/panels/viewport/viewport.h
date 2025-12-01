@@ -13,8 +13,10 @@ class Viewport {
     ~Viewport() = default;
 
     [[nodiscard]] inline std::shared_ptr<Camera> camera() const noexcept { return m_camera; }
-    [[nodiscard]] inline const RenderModel& renderModel() const noexcept { return m_renderModel; }
-    [[nodiscard]] inline const RenderModel& gridModel() const noexcept { return m_gridModel; }
+    [[nodiscard]] inline RenderModel& renderModel() noexcept { return m_renderModel; }
+    [[nodiscard]] inline RenderModel& gridModel() noexcept { return m_gridModel; }
+
+    void retargetCamera();
 
   private:
     std::weak_ptr<Scene> m_scene = std::weak_ptr<Scene>();

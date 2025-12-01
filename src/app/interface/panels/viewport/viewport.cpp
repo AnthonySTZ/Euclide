@@ -17,4 +17,15 @@ Viewport::Viewport(const std::weak_ptr<Scene> t_scene) : m_scene(t_scene), m_cam
     }
 }
 
+void Viewport::retargetCamera() {
+    auto scene = m_scene.lock();
+    if (!scene)
+        return;
+
+    if (const auto node = scene->renderNode()) {
+        float3 target = node->cook(0)->center();
+        m_camera->updateTarget(glm::vec3{target[0], target[1], target[2]});
+    }
+}
+
 } // namespace butter

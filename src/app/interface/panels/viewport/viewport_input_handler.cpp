@@ -6,6 +6,7 @@ void ViewportInputHandler::pollEvents() {
     m_isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     handleMouseInputs();
+    handleKeyInputs();
 }
 
 void ViewportInputHandler::handleMouseInputs() {
@@ -41,6 +42,23 @@ void ViewportInputHandler::handleMouseInputs() {
         ImGui::SetMouseCursor(ImGuiMouseSource_Pen);
         viewport->camera()->dolly(-dragDelta.y);
     }
+}
+
+void ViewportInputHandler::handleKeyInputs() {
+    auto viewport = m_viewport.lock();
+    if (!m_isWindowHovered || !viewport)
+        return;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_P))
+        viewport->renderModel().tooglePrimitives();
+    if (ImGui::IsKeyPressed(ImGuiKey_W))
+        viewport->renderModel().toogleWireframe();
+    if (ImGui::IsKeyPressed(ImGuiKey_V))
+        viewport->renderModel().tooglePoints();
+    if (ImGui::IsKeyPressed(ImGuiKey_G))
+        viewport->gridModel().toogleWireframe();
+    if (ImGui::IsKeyPressed(ImGuiKey_F))
+        viewport->retargetCamera();
 }
 
 } // namespace butter

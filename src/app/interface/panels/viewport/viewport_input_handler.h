@@ -15,6 +15,7 @@ class ViewportInputHandler {
 
   private:
     void handleMouseInputs();
+    void handleKeyInputs();
 
   private:
     std::weak_ptr<Viewport> m_viewport;
