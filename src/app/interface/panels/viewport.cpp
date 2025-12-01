@@ -139,6 +139,8 @@ void Viewport::drawInfos() {
     ImGuiIO& io = ImGui::GetIO();
     std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
     addInfos(fpsText);
+    addInfos("Points: " + std::to_string(m_renderModel.numOfPoints()));
+    addInfos("Primitives: " + std::to_string(m_renderModel.numOfPrims()));
     addInfos("P: Toogle Primitives");
     addInfos("W: Toogle Wireframe");
     addInfos("V: Toogle Points");

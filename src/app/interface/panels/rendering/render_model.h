@@ -48,6 +48,9 @@ class RenderModel {
     bool showWireframe = true;  ///< Whether edges should be drawn.
     bool showPoints = false;    ///< Whether points should be drawn.
 
+    [[nodiscard]] inline int numOfPoints() const noexcept { return m_numOfPoints; }
+    [[nodiscard]] inline int numOfPrims() const noexcept { return m_numOfPrims; }
+
   private:
     /// @brief Initialize OpenGL VAO, VBO, and EBOs.
     void initBuffers();
@@ -78,6 +81,8 @@ class RenderModel {
     size_t m_numOfPoints = 0;        ///< Total number of points.
     size_t m_numOfVertexIndices = 0; ///< Total number of triangle indices.
     size_t m_numOfEdgesIndices = 0;  ///< Total number of edge indices.
+
+    size_t m_numOfPrims = 0;
 };
 
 } // namespace butter
