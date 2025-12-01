@@ -11,7 +11,10 @@ ViewportRenderer::ViewportRenderer(const std::weak_ptr<Viewport> t_viewport)
 
 void ViewportRenderer::render() {
     checkForResize();
+
+    m_windowPosition = ImGui::GetCursorPos();
     draw();
+    drawInfos();
 }
 
 void ViewportRenderer::checkForResize() {
@@ -37,6 +40,33 @@ void ViewportRenderer::draw() {
 
     ImTextureID textureID = m_renderer->getRenderTexture();
     ImGui::Image(textureID, ImVec2((float)m_viewportWidth, (float)m_viewportHeight));
+}
+
+void ViewportRenderer::drawInfos() {
+    auto viewport = m_viewport.lock();
+    if (!viewport)
+        return;
+
+    m_infoOffset = INFO_POS;
+
+    ImGuiIO& io = ImGui::GetIO();
+    std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
+    addInfos(fpsText);
+    addInfos("Points: " + std::to_string(viewport->renderModel().numOfPoints()));
+    addInfos("Primitives: " + std::to_string(viewport->renderModel().numOfPrims()));
+    addInfos("P: Toogle Primitives");
+    addInfos("W: Toogle Wireframe");
+    addInfos("V: Toogle Points");
+    addInfos("G: Toogle Grid");
+}
+
+void ViewportRenderer::addInfos(const std::string& t_infos) {
+    ImDrawList* drawList = ImGui::GetForegroundDrawList();
+    if (!drawList)
+        return;
+
+    drawList->AddText(m_windowPosition + m_infoOffset, INFO_COLOR, t_infos.c_str());
+    m_infoOffset += INFO_PADDING;
 }
 
 } // namespace butter
