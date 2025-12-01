@@ -12,6 +12,9 @@ class NodeGraphMenu {
 
     void render();
 
+  public:
+    static constexpr std::string_view CONTEXT_MENU_NAME = "NodeGraphContextMenu";
+
   private:
     void beginStyle() const;
     void endStyle() const;

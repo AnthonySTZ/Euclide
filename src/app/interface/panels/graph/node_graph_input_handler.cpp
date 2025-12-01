@@ -1,5 +1,7 @@
 #include "node_graph_input_handler.h"
 
+#include "node_graph_menu.h"
+
 namespace butter {
 
 void NodeGraphInputHandler::pollEvents() {
@@ -15,12 +17,12 @@ void NodeGraphInputHandler::handleContextMenu() {
     // Right click inside graph area -> open menu
     if (ImGui::IsItemHovered() &&
         (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsKeyPressed(ImGuiKey_Tab))) {
-        ImGui::OpenPopup("NodeGraphContextMenu");
+        ImGui::OpenPopup(NodeGraphMenu::CONTEXT_MENU_NAME.data());
     }
 }
 
 void NodeGraphInputHandler::handleMouseInputs() {
-    if (ImGui::IsPopupOpen("NodeGraphContextMenu"))
+    if (ImGui::IsPopupOpen(NodeGraphMenu::CONTEXT_MENU_NAME.data()))
         return;
 
     const bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);

@@ -7,7 +7,7 @@ namespace butter {
 void NodeGraphMenu::render() {
     beginStyle();
 
-    if (ImGui::BeginPopup("NodeGraphContextMenu")) {
+    if (ImGui::BeginPopup(CONTEXT_MENU_NAME.data())) {
         const auto& menuItems = NodesInfo::getMenuItems();
 
         drawSearchBar();
