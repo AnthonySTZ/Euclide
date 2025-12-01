@@ -17,12 +17,8 @@ class Viewport {
     Viewport(std::weak_ptr<Scene> scene);
 
     /// @brief Access the camera controlling the viewport.
-    /// @return Reference to the camera object.
-    [[nodiscard]] const Camera& camera() const noexcept { return m_camera; }
-
-    /// @brief Mutable access to the viewport camera.
-    /// @return Reference to the camera allowing modifications.
-    [[nodiscard]] Camera& camera() noexcept { return m_camera; }
+    /// @return Shared pointer to the camera object.
+    [[nodiscard]] std::shared_ptr<Camera> camera() { return m_camera; }
 
     /// @brief Returns the render model used to draw the main scene.
     /// @return Reference to the main render model.
@@ -47,7 +43,7 @@ class Viewport {
     RenderModel m_gridModel;
 
     /// Camera used to view the viewport.
-    Camera m_camera;
+    std::shared_ptr<Camera> m_camera;
 };
 
 } // namespace butter
