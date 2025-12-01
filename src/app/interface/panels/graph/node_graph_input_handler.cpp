@@ -20,6 +20,9 @@ void NodeGraphInputHandler::handleContextMenu() {
 }
 
 void NodeGraphInputHandler::handleMouseInputs() {
+    if (ImGui::IsPopupOpen("NodeGraphContextMenu"))
+        return;
+
     const bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
