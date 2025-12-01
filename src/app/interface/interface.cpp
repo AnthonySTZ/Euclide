@@ -65,7 +65,7 @@ void Interface::addViewport() {
 }
 
 void Interface::addParameters() {
-    m_parameters = std::make_shared<Parameters>(m_nodeGraph->graph());
+    m_parameters = std::make_shared<ParametersPanel>(m_nodeGraph->graph());
     m_panels.push_back(m_parameters);
 }
 

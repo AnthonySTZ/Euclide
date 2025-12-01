@@ -1,28 +1,25 @@
-#include "parameters.h"
+#include "parameters_renderer.h"
 
 #include "interface/panels/fields/field_drawer.h"
 
 namespace euclide {
 
-Parameters::Parameters(const std::weak_ptr<NodeGraph> t_nodeGraph) : m_nodeGraph(t_nodeGraph) {
-    if (auto nodeGraph = m_nodeGraph.lock()) {
-        nodeGraph->onNodeSelected.subscribe([this](std::weak_ptr<Node> t_node) { m_node = t_node; });
-    }
+ParametersRenderer::ParametersRenderer(const std::weak_ptr<Parameters> t_parameters) : m_parameters(t_parameters) {
 }
 
-void Parameters::draw() {
-    beginTab("Parameters", m_padding);
-
+void ParametersRenderer::draw() {
     pushStyle();
     drawParameters();
     popStyle();
-
-    endTab();
 }
 
-void Parameters::drawParameters() {
+void ParametersRenderer::drawParameters() {
+    auto parameters = m_parameters.lock();
+    if (!parameters)
+        return;
+
     FieldDrawer drawer;
-    if (auto node = m_node.lock()) {
+    if (auto node = parameters->node().lock()) {
         drawTitleName(node->name());
 
         if (ImGui::BeginTable("params", 2)) {
@@ -50,14 +47,14 @@ void Parameters::drawParameters() {
     }
 }
 
-void Parameters::drawTitleName(const std::string& t_title) {
+void ParametersRenderer::drawTitleName(const std::string& t_title) {
     ImGui::Text("Name: ");
     ImGui::SameLine();
     ImGui::Text(t_title.c_str());
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + TITLE_SPACING);
 }
 
-void Parameters::pushStyle() {
+void ParametersRenderer::pushStyle() {
     ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(90, 90, 90, 255));
     ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, IM_COL32(70, 70, 70, 255));
     ImGui::PushStyleColor(ImGuiCol_FrameBgActive, IM_COL32(60, 60, 60, 255));
@@ -69,7 +66,7 @@ void Parameters::pushStyle() {
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);
 }
 
-void Parameters::popStyle() {
+void ParametersRenderer::popStyle() {
     ImGui::PopStyleColor(6);
     ImGui::PopStyleVar(1);
 }

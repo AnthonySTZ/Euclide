@@ -28,7 +28,11 @@ add_library(app_lib STATIC
     interface/panels/viewport/rendering/render_model.cpp
     interface/panels/viewport/rendering/camera.cpp
     
-    interface/panels/parameters.cpp
+    interface/panels/parameters_panel.cpp
+    interface/panels/parameters/parameters.cpp
+    interface/panels/parameters/parameters_renderer.cpp
+
+
     interface/panels/fields/field_drawer.cpp
     )
 
