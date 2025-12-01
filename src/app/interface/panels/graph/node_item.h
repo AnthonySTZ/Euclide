@@ -22,13 +22,18 @@ class NodeItem {
     /// @return True if hovered, false otherwise.
     [[nodiscard]] bool isHovered() const;
 
-    /// @brief Determine if any input slot is hovered by the mouse.
-    /// @return Index of hovered input slot, or -1 if none.
-    [[nodiscard]] int inputIOHovered() const;
+    /// @brief Returns the index of the input slot currently hovered by the mouse.
+    /// @return std::optional<uint32_t> containing the hovered input index, or std::nullopt if none.
+    [[nodiscard]] std::optional<uint32_t> inputIOHovered() const;
 
-    /// @brief Determine if any output slot is hovered by the mouse.
-    /// @return Index of hovered output slot, or -1 if none.
-    [[nodiscard]] int outputIOHovered() const;
+    /// @brief Returns the index of the output slot currently hovered by the mouse.
+    /// @return std::optional<uint32_t> containing the hovered output index, or std::nullopt if none.
+    [[nodiscard]] std::optional<uint32_t> outputIOHovered() const;
+
+    /// @brief Checks which IO slot (input or output) is currently hovered by the mouse.
+    /// @param t_ioPositions List of screen-space positions for each IO slot.
+    /// @return std::optional<uint32_t> containing the index of the hovered slot, or std::nullopt if no slot is hovered.
+    [[nodiscard]] std::optional<uint32_t> whichIOsHovered(const std::vector<ImVec2>& t_ioPositions) const;
 
     /// @brief Move the node by a delta in UI coordinates.
     /// @param t_delta Offset to apply to the node's position.
@@ -36,11 +41,11 @@ class NodeItem {
 
     /// @brief Set the selection state of the node.
     /// @param t_isSelected True if the node is selected.
-    void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
+    inline void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
 
     /// @brief Query if the node is currently selected.
     /// @return True if selected, false otherwise.
-    [[nodiscard]] bool isSelected() const noexcept { return m_isSelected; }
+    [[nodiscard]] inline bool isSelected() const noexcept { return m_isSelected; }
 
     /// @brief Get the position of a specific input slot.
     /// @param index Index of the input slot.
@@ -54,7 +59,11 @@ class NodeItem {
 
     /// @brief Get the underlying Node shared pointer.
     /// @return Shared pointer to the Node, may be nullptr if expired.
-    [[nodiscard]] std::shared_ptr<Node> node() const { return m_node.lock(); }
+    [[nodiscard]] inline std::shared_ptr<Node> node() const { return m_node.lock(); }
+
+    /// @brief Get the node position
+    /// @return Position of the node in UI coordinates.
+    [[nodiscard]] inline ImVec2 position() const noexcept { return m_position; }
 
   private:
     /// @brief Draw the node rectangle with proper colors.
@@ -66,11 +75,6 @@ class NodeItem {
     /// @param t_numberOfInputs Number of input slots.
     /// @param t_numberOfOutputs Number of output slots.
     void drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs);
-
-    /// @brief Determine which IO slot is hovered based on positions.
-    /// @param t_ioPositions Vector of IO positions to test against the mouse.
-    /// @return Index of hovered slot, or -1 if none.
-    [[nodiscard]] int isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const;
 
     /// @brief Compute positions of IO slots along a line.
     /// @param t_numberOfIOs Number of slots to place.

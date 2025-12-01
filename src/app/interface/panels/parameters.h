@@ -2,7 +2,7 @@
 
 #include "panel.h"
 
-#include "node_graph.h"
+#include "graph/node_graph.h"
 
 namespace butter {
 
@@ -14,7 +14,7 @@ class Parameters : public Panel {
   public:
     /// @brief Construct a Parameters panel attached to a NodeGraph.
     /// @param t_nodeGraph Weak pointer to the NodeGraph to observe node selection.
-    Parameters(const std::shared_ptr<NodeGraph>& t_nodeGraph);
+    Parameters(const std::weak_ptr<NodeGraph> t_nodeGraph);
 
     ~Parameters() = default;
 

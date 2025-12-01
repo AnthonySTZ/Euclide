@@ -21,6 +21,16 @@ template <typename T> class FixedQueue {
         m_data.push_back(value);
     }
 
+    /// @brief Emplace new element to the back of the queue.
+    ///        If the queue is full, the oldest element is removed.
+    /// @param value Element to add.
+    void emplace(T&& value) {
+        if (m_data.size() == m_maxSize) {
+            m_data.pop_front();
+        }
+        m_data.emplace_back(std::move(value));
+    }
+
     /// @brief Clear all elements from the queue.
     void clear() { m_data.clear(); }
 

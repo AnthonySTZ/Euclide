@@ -21,15 +21,15 @@ bool NodeItem::isHovered() const {
            io.MousePos.y <= nodeEnd.y;
 }
 
-int NodeItem::inputIOHovered() const {
-    return isIOsHovered(m_inputIOPositions);
+std::optional<uint32_t> NodeItem::inputIOHovered() const {
+    return whichIOsHovered(m_inputIOPositions);
 }
 
-int NodeItem::outputIOHovered() const {
-    return isIOsHovered(m_outputIOPositions);
+std::optional<uint32_t> NodeItem::outputIOHovered() const {
+    return whichIOsHovered(m_outputIOPositions);
 }
 
-int NodeItem::isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const {
+std::optional<uint32_t> NodeItem::whichIOsHovered(const std::vector<ImVec2>& t_ioPositions) const {
     ImGuiIO& io = ImGui::GetIO();
 
     for (size_t i = 0; i < t_ioPositions.size(); ++i) {
@@ -39,7 +39,7 @@ int NodeItem::isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const {
             return i;
     }
 
-    return -1;
+    return std::nullopt;
 }
 
 void NodeItem::moveBy(const ImVec2& t_delta) {
