@@ -1,6 +1,6 @@
 #include "node_graph.h"
 
-namespace butter {
+namespace euclide {
 
 NodeGraph::NodeGraph(const std::shared_ptr<Scene> t_scene) : m_scene(t_scene) {
     auto scene = m_scene.lock();
@@ -151,4 +151,4 @@ void NodeGraph::onConnectionRemoved(const uint32_t t_sourceId, const uint32_t t_
                       connections.end());
 }
 
-} // namespace butter
+} // namespace euclide

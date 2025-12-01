@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a single item in the node creation menu.
 struct NodeMenuItem {
@@ -25,4 +25,4 @@ struct NodesInfo {
     static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>>& getMenuItems();
 };
 
-} // namespace butter
+} // namespace euclide

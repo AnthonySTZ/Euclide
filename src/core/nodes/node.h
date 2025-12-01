@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace butter {
+namespace euclide {
 
 using FieldEntry = std::pair<std::string, std::shared_ptr<NodeFieldBase>>;
 
@@ -145,4 +145,4 @@ class Node : public std::enable_shared_from_this<Node> {
     std::vector<FieldEntry> m_fieldsOrder;
 };
 
-} // namespace butter
+} // namespace euclide

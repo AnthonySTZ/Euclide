@@ -2,7 +2,7 @@
 
 #include "interface/utils/string_utils.h"
 
-namespace butter {
+namespace euclide {
 
 void NodeGraphMenu::render() {
     beginStyle();
@@ -77,4 +77,4 @@ void NodeGraphMenu::drawItem(const NodeMenuItem& t_item) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

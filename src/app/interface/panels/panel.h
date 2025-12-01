@@ -2,7 +2,7 @@
 
 #include "interface/utils/imgui_utils.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Abstract base class for a UI panel using ImGui.
 ///
@@ -38,4 +38,4 @@ class Panel {
     static constexpr ImVec2 TAB_TITLE_TEXT_PADDING = {10.0f, 4.5f};             ///< Padding for the tab title text.
 };
 
-} // namespace butter
+} // namespace euclide

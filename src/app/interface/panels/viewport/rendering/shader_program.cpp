@@ -7,7 +7,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace butter {
+namespace euclide {
 
 ShaderProgram::ShaderProgram(const std::string& t_vertexFile, const std::string& t_fragmentFile) {
     const std::string vertCode = readFile(t_vertexFile);
@@ -80,4 +80,4 @@ const uint32_t ShaderProgram::createShader(const char* t_shaderSrc, GLenum t_typ
     return shader;
 }
 
-} // namespace butter
+} // namespace euclide

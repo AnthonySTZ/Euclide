@@ -3,7 +3,7 @@
 #include "viewport.h"
 #include "interface/utils/imgui_utils.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Handles all user inputs inside the Viewport panel.
 ///
@@ -51,4 +51,4 @@ class ViewportInputHandler {
     bool m_isRightMouseButtonClicked = false;  ///< True while RMB held
 };
 
-} // namespace butter
+} // namespace euclide

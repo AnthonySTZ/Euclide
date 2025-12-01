@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace butter {
+namespace euclide {
 
 Subdivide::Subdivide() : Node(1, 1, "Subdivide") {
     auto divisionsField = std::make_shared<NodeField<int>>(1);
@@ -159,4 +159,4 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

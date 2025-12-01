@@ -4,7 +4,7 @@
 #include "cutting_line.h"
 #include "interface/utils/fixed_queue.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Responsible for rendering nodes, connections, and temporary interactions in a NodeGraph.
 /// @details Handles drawing of nodes, their connections, cutting lines, and in-progress connections.
@@ -60,4 +60,4 @@ class NodeGraphRenderer {
     static constexpr float SELECTION_BOX_ROUNDING = 2.0f;
 };
 
-} // namespace butter
+} // namespace euclide

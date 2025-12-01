@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 #include "geometry/points.h"
 
-namespace butter {
+namespace euclide {
 
-TEST(Points, CreatePoints){
+TEST(Points, CreatePoints) {
     Points p;
     EXPECT_EQ(p.size(), 0);
 }
 
-TEST(Points, AddPoint){
+TEST(Points, AddPoint) {
     Points p;
     p.addPoint(5.0, 1.0, -3.0);
     EXPECT_EQ(p.size(), 1);
@@ -25,7 +25,7 @@ TEST(Points, AddPoint){
     EXPECT_EQ(p.colorB.size(), 1);
 }
 
-TEST(Points, AddPointGetIndex){
+TEST(Points, AddPointGetIndex) {
     Points p;
     size_t first_index = p.addPoint(5.0, 1.0, -3.0);
     size_t second_index = p.addPoint(5.0, 1.0, 8.0);
@@ -64,7 +64,7 @@ TEST(Points, ReserveDoesNotShrinkCapacity) {
     EXPECT_EQ(points.posX.capacity(), oldCap);
 }
 
-TEST(Points, ClearAllPoints){
+TEST(Points, ClearAllPoints) {
     Points p;
     p.addPoint(0.0, 0.0, 1.0);
     p.addPoint(0.0, 0.0, 1.0);
@@ -85,5 +85,5 @@ TEST(Points, ClearAllPoints){
     EXPECT_EQ(p.colorG.size(), 0);
     EXPECT_EQ(p.colorB.size(), 0);
 }
-    
-}
+
+} // namespace euclide

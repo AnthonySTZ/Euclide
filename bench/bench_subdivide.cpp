@@ -4,13 +4,11 @@
 #include "nodes/geometry/subdivide.h"
 
 static void BM_SubdivideCube8(benchmark::State& state) { // 17.2ms
-    butter::SubdivideSettings settings{
-        .divisions = 8
-    };
+    euclide::SubdivideSettings settings{.divisions = 8};
     for (auto _ : state) {
-        butter::Mesh mesh;
-        butter::Cube::createCube(mesh, {});
-        butter::Subdivide::subdivide(mesh, settings);
+        euclide::Mesh mesh;
+        euclide::Cube::createCube(mesh, {});
+        euclide::Subdivide::subdivide(mesh, settings);
     }
 }
 

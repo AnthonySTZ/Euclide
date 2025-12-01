@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "utils/hash.h"
 
-namespace butter {
+namespace euclide {
 
 float3 Mesh::center() const {
     float3 sumPos{0.0, 0.0, 0.0};
@@ -158,4 +158,4 @@ void Mesh::reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, co
     }
 }
 
-} // namespace butter
+} // namespace euclide

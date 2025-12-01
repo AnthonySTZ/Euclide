@@ -3,7 +3,7 @@
 #include "nodes/node.h"
 #include "fields/float3field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Transformation parameters for a mesh node.
 struct TransformSettings {
@@ -52,4 +52,4 @@ class Transform : public Node {
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 };
 
-} // namespace butter
+} // namespace euclide

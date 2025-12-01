@@ -2,7 +2,7 @@
 
 #include "nodes/node.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Node that merges two input meshes into a single output mesh.
 class Merge : public Node {
@@ -24,4 +24,4 @@ class Merge : public Node {
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 };
 
-} // namespace butter
+} // namespace euclide

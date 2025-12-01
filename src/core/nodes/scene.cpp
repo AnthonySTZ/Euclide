@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace butter {
+namespace euclide {
 
 void Scene::addNode(const std::shared_ptr<Node>& t_node) {
     const std::string nodeName = findName(t_node->name());
@@ -95,4 +95,4 @@ uint32_t Scene::findId() const {
     return id;
 }
 
-} // namespace butter
+} // namespace euclide

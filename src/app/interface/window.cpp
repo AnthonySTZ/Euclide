@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace butter {
+namespace euclide {
 
 Window::Window(uint32_t t_width, uint32_t t_height, const char* t_name) {
     if (t_width <= 0 || t_height <= 0) {
@@ -69,4 +69,4 @@ void Window::swapBuffers() {
     glfwSwapBuffers(m_window);
 }
 
-} // namespace butter
+} // namespace euclide

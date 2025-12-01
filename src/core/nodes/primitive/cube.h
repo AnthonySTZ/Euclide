@@ -3,7 +3,7 @@
 #include "nodes/node.h"
 #include "fields/float3field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Parameters to define a cube mesh.
 struct CubeSettings {
@@ -34,4 +34,4 @@ class Cube : public Node {
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 };
 
-} // namespace butter
+} // namespace euclide

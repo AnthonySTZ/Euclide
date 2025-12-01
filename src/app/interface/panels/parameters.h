@@ -4,7 +4,7 @@
 
 #include "graph/node_graph.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Panel displaying the parameters of the currently selected node.
 ///
@@ -42,4 +42,4 @@ class Parameters : public Panel {
     static constexpr float TITLE_SPACING = 20.0f; ///< Vertical spacing after node title.
 };
 
-} // namespace butter
+} // namespace euclide

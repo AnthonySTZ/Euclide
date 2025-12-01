@@ -4,7 +4,7 @@
 #include "fields/float3field.h"
 #include "fields/float2field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Parameters defining a cylinder mesh.
 struct CylinderSettings {
@@ -44,4 +44,4 @@ class Cylinder : public Node {
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 };
 
-} // namespace butter
+} // namespace euclide

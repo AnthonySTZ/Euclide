@@ -3,12 +3,12 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Node, RenameNode) {
     auto node = std::make_shared<CreatePointNode>();
     EXPECT_EQ(node->name(), "Point");
-    
+
     node->setName("NewNode");
     EXPECT_EQ(node->name(), "NewNode");
 }
@@ -66,17 +66,17 @@ TEST(Node, MultipleOutput) {
     auto point_node = std::make_shared<CreatePointNode>();
     auto second_node = std::make_shared<TestNode>();
     second_node->setInput(0, point_node);
-    
+
     auto first_result = second_node->cook(0);
     EXPECT_EQ(first_result->points.size(), 2);
     EXPECT_FLOAT_EQ(first_result->points.posX[0], 1.0f);
     EXPECT_FLOAT_EQ(first_result->points.posY[0], 2.0f);
     EXPECT_FLOAT_EQ(first_result->points.posZ[0], 3.0f);
-    
+
     EXPECT_FLOAT_EQ(first_result->points.posX[1], 1.0f);
     EXPECT_FLOAT_EQ(first_result->points.posY[1], 0.0f);
     EXPECT_FLOAT_EQ(first_result->points.posZ[1], 2.0f);
-    
+
     auto second_result = second_node->cook(1);
     return;
     EXPECT_EQ(second_result->points.size(), 2);
@@ -95,11 +95,11 @@ TEST(NodeConnectionTest, DeleteInputConnection) {
 
     // Set up input connection
     targetNode->setInput(0, sourceNode, 0);
-    
+
     // Verify connection exists
     ASSERT_EQ(targetNode->getInputConnection(0)->sourceNode.lock(), sourceNode);
     ASSERT_EQ(sourceNode->getOutputConnections(0).size(), 1);
-    
+
     // Delete input connection
     targetNode->deleteInputConnection(0);
 
@@ -115,9 +115,9 @@ TEST(Node, GetFieldByName) {
 
     auto posX = node->getField<NodeField<float>>("posX");
     EXPECT_EQ(posX->getValue(), 5.0);
-    
+
     posX->setValue(1.0);
-    
+
     auto new_posX = node->getField<NodeField<float>>("posX");
     EXPECT_EQ(posX->getValue(), 1.0);
 }
@@ -126,11 +126,11 @@ TEST(Node, DirtyIfFieldChanged) {
     auto point_node = std::make_shared<CreatePointNode>();
     auto second_node = std::make_shared<TestNode>();
     second_node->setInput(0, point_node);
-    
+
     auto first_result = second_node->cook(0);
     auto second_result = second_node->cook(0);
     EXPECT_TRUE(first_result == second_result);
-    
+
     point_node->getField<NodeField<float>>("posX")->setValue(8.0);
     auto third_result = second_node->cook(0);
     EXPECT_FALSE(first_result == third_result);
@@ -164,8 +164,8 @@ TEST(Node, TestCyclicConnection) {
     node_1->setInput(0, node_3); // 1 -> 2 -> 3 -> 1
 
     EXPECT_EQ(node_2->getInputConnection(0)->sourceNode.lock(), node_1);
-    EXPECT_EQ(node_3->getInputConnection(0)->sourceNode.lock(),  node_2);
+    EXPECT_EQ(node_3->getInputConnection(0)->sourceNode.lock(), node_2);
     EXPECT_EQ(node_1->getInputConnection(0), nullptr);
 }
 
-}
+} // namespace euclide

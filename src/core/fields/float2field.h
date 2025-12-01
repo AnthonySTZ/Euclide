@@ -2,7 +2,7 @@
 
 #include "node_field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Node field representing a 2-component floating-point vector (float2).
 ///        Inherits from NodeField<float2>.
@@ -23,4 +23,4 @@ class Float2Field : public NodeField<float2> {
     inline void setValue(const float t_x, const float t_y) { NodeField<float2>::setValue(float2{t_x, t_y}); }
 };
 
-} // namespace butter
+} // namespace euclide

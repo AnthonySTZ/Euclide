@@ -6,7 +6,7 @@
 #include "graph/node_graph_input_handler.h"
 #include "graph/node_graph_menu.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Panel for displaying and interacting with a NodeGraph.
 /// @details Combines the NodeGraph, renderer, input handler, and menu into a single UI panel.
@@ -33,4 +33,4 @@ class NodeGraphPanel : public Panel {
     NodeGraphMenu m_graphMenu;                 ///< Context menu for adding nodes.
 };
 
-} // namespace butter
+} // namespace euclide

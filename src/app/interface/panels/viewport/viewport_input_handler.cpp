@@ -1,6 +1,6 @@
 #include "viewport_input_handler.h"
 
-namespace butter {
+namespace euclide {
 
 void ViewportInputHandler::pollEvents() {
     m_isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
@@ -61,4 +61,4 @@ void ViewportInputHandler::handleKeyInputs() {
         viewport->retargetCamera();
 }
 
-} // namespace butter
+} // namespace euclide

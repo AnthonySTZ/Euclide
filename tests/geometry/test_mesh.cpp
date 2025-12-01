@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "geometry/mesh.h"
 
-namespace butter {
+namespace euclide {
 
-TEST(Mesh, CreateTriangle){
+TEST(Mesh, CreateTriangle) {
     Mesh mesh;
 
     uint32_t p0 = mesh.addPoint(1.0, 5.0, 2.0);
@@ -13,14 +13,14 @@ TEST(Mesh, CreateTriangle){
     EXPECT_EQ(mesh.points.size(), 3);
     EXPECT_EQ(mesh.primitives.size(), 0);
     EXPECT_EQ(mesh.vertices.size(), 0);
-    
+
     mesh.addPrimitive({p0, p1, p2});
-    
+
     EXPECT_EQ(mesh.primitives.size(), 1);
     EXPECT_EQ(mesh.vertices.size(), 3);
 }
 
-TEST(Mesh, GetMeshCenter){
+TEST(Mesh, GetMeshCenter) {
     Mesh mesh;
 
     mesh.addPoint(1.0, 5.0, 2.0);
@@ -30,9 +30,7 @@ TEST(Mesh, GetMeshCenter){
     mesh.addPoint(0.0, -5.0, 2.0);
     mesh.addPoint(-1.4, 9.0, -8.0);
 
-    float3 expected {
-        -2.9f, 3.58333f, -1.5f
-    };
+    float3 expected{-2.9f, 3.58333f, -1.5f};
 
     float3 center = mesh.center();
     float x = center[0];
@@ -44,7 +42,7 @@ TEST(Mesh, GetMeshCenter){
     EXPECT_NEAR(z, expected[2], 1e-2f);
 }
 
-TEST(Mesh, GetMeshCenterMoreThan8Points){
+TEST(Mesh, GetMeshCenterMoreThan8Points) {
     Mesh mesh;
 
     mesh.addPoint(1.0, 5.0, 2.0);
@@ -60,9 +58,7 @@ TEST(Mesh, GetMeshCenterMoreThan8Points){
     mesh.addPoint(0.0, -5.0, 2.0);
     mesh.addPoint(-1.4, 9.0, -8.0);
 
-    float3 expected {
-        -2.9f, 3.58333f, -1.5f
-    };
+    float3 expected{-2.9f, 3.58333f, -1.5f};
 
     float3 center = mesh.center();
     float x = center[0];
@@ -75,7 +71,6 @@ TEST(Mesh, GetMeshCenterMoreThan8Points){
 }
 
 TEST(Mesh, ComputeHalfEdge) {
-
     Mesh mesh;
     mesh.addPoint(0, 0, 0);
     mesh.addPoint(0, 0, 0);
@@ -87,7 +82,7 @@ TEST(Mesh, ComputeHalfEdge) {
     mesh.addPrimitive({0, 1, 2, 3});
     mesh.addPrimitive({1, 4, 5, 2});
 
-    // 0    -    1     -    4   
+    // 0    -    1     -    4
     // |    1    |     2    |
     // 3    -    2     -    5
 
@@ -106,7 +101,7 @@ TEST(Mesh, ComputeHalfEdge) {
     EXPECT_EQ(halfedges[1].prev, 0);
     EXPECT_EQ(halfedges[1].face, 0);
     EXPECT_EQ(halfedges[1].twin, 7);
-    
+
     EXPECT_EQ(halfedges[2].origin, 2);
     EXPECT_EQ(halfedges[2].next, 3);
     EXPECT_EQ(halfedges[2].prev, 1);
@@ -144,4 +139,4 @@ TEST(Mesh, ComputeHalfEdge) {
     EXPECT_EQ(halfedges[7].twin, 1);
 }
 
-}
+} // namespace euclide

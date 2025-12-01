@@ -2,7 +2,7 @@
 
 #include "node_graph_renderer.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Handles user input for a NodeGraph, including mouse clicks, drags, and keyboard shortcuts.
 /// @details This class does not perform rendering itself; it queries the NodeGraph state and interacts
@@ -68,4 +68,4 @@ class NodeGraphInputHandler {
     static constexpr float DRAG_THRESHOLD = 0.01f; ///< Minimum drag distance to initiate dragging.
 };
 
-} // namespace butter
+} // namespace euclide

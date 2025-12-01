@@ -3,12 +3,10 @@
 #include "nodes/primitive/grid.h"
 
 static void BM_Grid1000x1000(benchmark::State& state) { // 69ms
-    butter::GridSettings settings{
-        .divisions = {1000, 1000}
-    };
+    euclide::GridSettings settings{.divisions = {1000, 1000}};
     for (auto _ : state) {
-        butter::Mesh mesh;        
-        butter::Grid::createGrid(mesh, settings);
+        euclide::Mesh mesh;
+        euclide::Grid::createGrid(mesh, settings);
     }
 }
 

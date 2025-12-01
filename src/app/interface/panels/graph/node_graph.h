@@ -8,7 +8,7 @@
 #include <vector>
 #include <unordered_set>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Type of node input/output.
 enum class IOType { INPUT, OUTPUT };
@@ -100,4 +100,4 @@ class NodeGraph {
     std::weak_ptr<Scene> m_scene;                 ///< Weak pointer to the bound Scene.
 };
 
-} // namespace butter
+} // namespace euclide

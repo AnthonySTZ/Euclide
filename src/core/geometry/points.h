@@ -4,7 +4,7 @@
 #include <cstdint>
 #include "utils/allocator_utils.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Stores mesh points in a Structure-of-Arrays (SoA) format for SIMD-friendly access.
 struct Points {
@@ -38,4 +38,4 @@ struct Points {
     uint32_t addPoint(const float t_x, const float t_y, const float t_z) noexcept;
 };
 
-} // namespace butter
+} // namespace euclide

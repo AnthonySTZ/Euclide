@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Computes a simple combined hash from two 32-bit unsigned integers.
 ///
@@ -16,4 +16,4 @@ inline size_t hash(const uint32_t t_first, const uint32_t t_second) {
     return (static_cast<size_t>(t_first) << 32) ^ t_second;
 }
 
-} // namespace butter
+} // namespace euclide

@@ -3,15 +3,15 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Field, CreateDefaultNodeField) {
     NodeField<int> field{0};
 
     EXPECT_EQ(field.getValue(), 0);
-    
+
     field.setValue(5);
     EXPECT_EQ(field.getValue(), 5);
 }
 
-}
+} // namespace euclide

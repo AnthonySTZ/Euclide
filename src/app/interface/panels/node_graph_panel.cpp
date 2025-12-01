@@ -1,6 +1,6 @@
 #include "node_graph_panel.h"
 
-namespace butter {
+namespace euclide {
 
 NodeGraphPanel::NodeGraphPanel(const std::shared_ptr<Scene> t_scene)
     : m_graph(std::make_shared<NodeGraph>(std::move(t_scene))), m_graphRenderer(m_graph),
@@ -17,4 +17,4 @@ void NodeGraphPanel::draw() {
     endTab();
 }
 
-} // namespace butter
+} // namespace euclide

@@ -1,6 +1,6 @@
 #include "panel.h"
 
-namespace butter {
+namespace euclide {
 
 void Panel::beginTab(const char* t_name, ImVec2 t_padding, ImU32 t_bgCol) const {
     ImGuiWindowClass window_class;
@@ -34,4 +34,4 @@ void Panel::endTab() const {
     ImGui::End();
 }
 
-} // namespace butter
+} // namespace euclide

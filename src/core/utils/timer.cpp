@@ -1,6 +1,6 @@
 #include "timer.h"
 
-namespace butter {
+namespace euclide {
 
 bool Timer::ENABLE_TIMING = true;
 

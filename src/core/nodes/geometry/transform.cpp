@@ -7,7 +7,7 @@
 #include "utils/simd.h"
 #endif
 
-namespace butter {
+namespace euclide {
 
 Transform::Transform() : Node(1, 1, "Transform") {
     auto translateField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
@@ -177,4 +177,4 @@ void Transform::translateMesh(Mesh& t_mesh, const float3& t_translation) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

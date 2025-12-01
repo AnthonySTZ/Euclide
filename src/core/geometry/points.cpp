@@ -1,6 +1,6 @@
 #include "points.h"
 
-namespace butter {
+namespace euclide {
 
 void Points::reserve(const size_t t_amount) {
     posX.reserve(t_amount);
@@ -60,4 +60,4 @@ uint32_t Points::addPoint(const float t_x, const float t_y, const float t_z) noe
     return static_cast<uint32_t>(posX.size() - 1);
 }
 
-} // namespace butter
+} // namespace euclide

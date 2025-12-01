@@ -2,7 +2,7 @@
 
 #include "utils/timer.h"
 
-namespace butter {
+namespace euclide {
 
 Merge::Merge() : Node(2, 1, "Merge") {
 }
@@ -75,4 +75,4 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

@@ -4,10 +4,9 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Scene, AddNode) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     auto other_node = std::make_shared<CreatePointNode>();
@@ -19,7 +18,6 @@ TEST(Scene, AddNode) {
 }
 
 TEST(Scene, RenameNodeIfNameAlreadyTaken) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     node->setName("Test");
@@ -33,7 +31,6 @@ TEST(Scene, RenameNodeIfNameAlreadyTaken) {
 }
 
 TEST(Scene, GetNodeByName) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     auto other_node = std::make_shared<CreatePointNode>();
@@ -46,7 +43,6 @@ TEST(Scene, GetNodeByName) {
 }
 
 TEST(Scene, ShouldReturnNullptrIfNodeDoesNotExist) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     auto other_node = std::make_shared<CreatePointNode>();
@@ -58,7 +54,6 @@ TEST(Scene, ShouldReturnNullptrIfNodeDoesNotExist) {
 }
 
 TEST(Scene, RemoveNodeFromScene) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     auto other_node = std::make_shared<CreatePointNode>();
@@ -68,14 +63,13 @@ TEST(Scene, RemoveNodeFromScene) {
 
     EXPECT_EQ(scene.size(), 2);
     EXPECT_EQ(scene.node(node->name()), node);
-    
+
     scene.removeNode(node->name());
     EXPECT_EQ(scene.size(), 1);
     EXPECT_EQ(scene.node(node->name()), nullptr);
 }
 
 TEST(Scene, RemoveNothingIfNameDoesNotExist) {
-
     Scene scene;
     auto node = std::make_shared<CreatePointNode>();
     auto other_node = std::make_shared<CreatePointNode>();
@@ -104,4 +98,4 @@ TEST(Scene, RemoveNodeThatIsConnected) {
     EXPECT_EQ(other_node->getInputConnection(0), nullptr);
 }
 
-}
+} // namespace euclide

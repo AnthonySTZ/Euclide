@@ -5,7 +5,7 @@
 #include "interface/utils/imgui_utils.h"
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a visual node in the node editor UI.
 class NodeItem {
@@ -107,4 +107,4 @@ class NodeItem {
     static constexpr ImU32 IO_COLOR = IM_COL32(170, 170, 170, 255);         ///< IO slot color.
 };
 
-} // namespace butter
+} // namespace euclide

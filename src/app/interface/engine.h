@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Core application engine handling the main loop, window, and interface.
 class Engine {
@@ -46,4 +46,4 @@ class Engine {
     Interface m_interface;          ///< User interface.
 };
 
-} // namespace butter
+} // namespace euclide

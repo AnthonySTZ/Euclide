@@ -2,7 +2,7 @@
 
 #include "node_field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Node field representing a 3-component floating-point vector (float3).
 ///        Inherits from NodeField<float3>.
@@ -27,4 +27,4 @@ class Float3Field : public NodeField<float3> {
     }
 };
 
-} // namespace butter
+} // namespace euclide

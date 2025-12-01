@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Responsible for rendering a RenderModel using OpenGL, managing shaders, camera, and framebuffer.
 class Renderer {
@@ -84,4 +84,4 @@ class Renderer {
     static constexpr struct { float r, g, b, a; } BG_COLOR{0.3f, 0.3f, 0.3f, 1.0f}; ///< Default background color.
 };
 
-} // namespace butter
+} // namespace euclide

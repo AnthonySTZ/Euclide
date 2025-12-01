@@ -8,7 +8,7 @@
 #include "geometry/merge.h"
 #include "geometry/subdivide.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Static list of all node menu items categorized.
 static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> nodeMenuItems = {
@@ -29,4 +29,4 @@ const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>>& NodesInfo:
     return nodeMenuItems;
 }
 
-} // namespace butter
+} // namespace euclide

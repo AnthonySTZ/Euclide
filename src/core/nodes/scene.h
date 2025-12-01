@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <string>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a collection of nodes and manages their connections and execution.
 class Scene {
@@ -75,4 +75,4 @@ class Scene {
     std::weak_ptr<Node> m_currentRenderNode; ///< Currently active render node.
 };
 
-} // namespace butter
+} // namespace euclide

@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 
-namespace butter {
+namespace euclide {
 
 /// @brief A simple observer pattern implementation for event notifications.
 ///
@@ -45,4 +45,4 @@ template <typename... Args> class Observer {
     std::vector<std::pair<int, Callback>> m_observers; ///< List of subscribers.
 };
 
-} // namespace butter
+} // namespace euclide

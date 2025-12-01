@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Converts an angle from degrees to radians.
 ///
@@ -20,4 +20,4 @@ inline double degrees(const double t_radians) noexcept {
     return t_radians * 180.0 * M_1_PI;
 }
 
-} // namespace butter
+} // namespace euclide

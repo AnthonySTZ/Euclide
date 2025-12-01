@@ -1,4 +1,4 @@
-add_executable(ButterBench
+add_executable(EuclideBench
                 bench_main.cpp
 
                 bench_mesh.cpp
@@ -9,4 +9,4 @@ add_executable(ButterBench
                 bench_subdivide.cpp
                 )
 
-target_link_libraries(ButterBench PRIVATE core benchmark::benchmark)
+target_link_libraries(EuclideBench PRIVATE core benchmark::benchmark)

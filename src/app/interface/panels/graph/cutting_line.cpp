@@ -1,6 +1,6 @@
 #include "cutting_line.h"
 
-namespace butter {
+namespace euclide {
 
 void CuttingLine::draw() const noexcept {
     if (ImDrawList* drawList = ImGui::GetWindowDrawList()) {
@@ -8,4 +8,4 @@ void CuttingLine::draw() const noexcept {
     }
 }
 
-} // namespace butter
+} // namespace euclide

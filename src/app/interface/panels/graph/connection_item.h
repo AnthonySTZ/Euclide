@@ -3,7 +3,7 @@
 #include "node_item.h"
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a connection between two nodes in the node editor.
 class ConnectionItem {
@@ -58,4 +58,4 @@ class ConnectionItem {
     static constexpr float THICKNESS = 2.0f;                     ///< Thickness of the connection line
 };
 
-} // namespace butter
+} // namespace euclide

@@ -3,79 +3,67 @@
 #include "nodes/primitive/grid.h"
 
 static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.018 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {10, 10}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {10, 10}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }
 
 static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.642 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {50, 50}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {50, 50}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }
 
 static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 2.25 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {100, 100}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {100, 100}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }
 
 static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 8.33 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {200, 200}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {200, 200}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }
 
 static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 59.7 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {500, 500}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {500, 500}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }
 
 static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 260 ms
-    butter::Mesh mesh;
-    butter::GridSettings settings{
-        .divisions = {1000, 1000}
-    };
-    butter::Grid::createGrid(mesh, settings);
+    euclide::Mesh mesh;
+    euclide::GridSettings settings{.divisions = {1000, 1000}};
+    euclide::Grid::createGrid(mesh, settings);
 
     for (auto _ : state) {
-        std::vector<butter::HalfEdge> edges = mesh.computeHalfEdges();
+        std::vector<euclide::HalfEdge> edges = mesh.computeHalfEdges();
         benchmark::DoNotOptimize(edges);
     }
 }

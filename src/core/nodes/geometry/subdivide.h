@@ -2,7 +2,7 @@
 
 #include "nodes/node.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Settings for the Subdivide node.
 struct SubdivideSettings {
@@ -42,4 +42,4 @@ class Subdivide : public Node {
 /// @return True if the point is on a border; false otherwise.
 [[nodiscard]] size_t isOnBorder(const size_t t_idx, const std::vector<HalfEdge>& t_halfedges);
 
-} // namespace butter
+} // namespace euclide

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace butter {
+namespace euclide {
 
 Node::Node(const size_t t_nInputs, const size_t t_nOutputs, const std::string& t_name) {
     m_inputConnections.resize(t_nInputs, nullptr);
@@ -139,4 +139,4 @@ std::shared_ptr<Mesh> Node::cook(const size_t t_index) {
     return m_cachedMesh[t_index];
 }
 
-} // namespace butter
+} // namespace euclide

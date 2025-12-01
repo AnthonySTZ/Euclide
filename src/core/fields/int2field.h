@@ -2,7 +2,7 @@
 
 #include "node_field.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Node field representing a 2-component integer vector (int2).
 ///        Inherits from NodeField<int2>.
@@ -23,4 +23,4 @@ class Int2Field : public NodeField<int2> {
     inline void setValue(const int t_x, const int t_y) { NodeField<int2>::setValue(int2{t_x, t_y}); }
 };
 
-} // namespace butter
+} // namespace euclide

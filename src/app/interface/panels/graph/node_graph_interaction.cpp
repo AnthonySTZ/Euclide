@@ -1,6 +1,6 @@
 #include "node_graph_interaction.h"
 
-namespace butter {
+namespace euclide {
 
 std::optional<uint32_t> NodeGraphInteraction::getNodeAt(const std::weak_ptr<NodeGraph> t_graph,
                                                         const ImVec2& t_mousePosition) {
@@ -80,4 +80,4 @@ std::vector<uint32_t> NodeGraphInteraction::getNodesInRect(const std::weak_ptr<N
     return nodes;
 }
 
-} // namespace butter
+} // namespace euclide

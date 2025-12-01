@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a 3D camera with view and projection controls for a rendering system.
 ///
@@ -105,4 +105,4 @@ class Camera {
     float m_zoomSpeed = 0.01f;       ///< Speed factor for dolly/zoom
 };
 
-} // namespace butter
+} // namespace euclide

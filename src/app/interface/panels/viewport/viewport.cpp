@@ -2,7 +2,7 @@
 
 #include "nodes/primitive/grid.h"
 
-namespace butter {
+namespace euclide {
 
 Viewport::Viewport(const std::weak_ptr<Scene> t_scene) : m_scene(t_scene), m_camera(std::make_shared<Camera>()) {
     Mesh grid{};
@@ -28,4 +28,4 @@ void Viewport::retargetCamera() {
     }
 }
 
-} // namespace butter
+} // namespace euclide

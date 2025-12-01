@@ -3,7 +3,7 @@
 #include "node_graph_menu.h"
 #include "node_graph_interaction.h"
 
-namespace butter {
+namespace euclide {
 
 void NodeGraphInputHandler::pollEvents() {
     m_isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
@@ -167,4 +167,4 @@ void NodeGraphInputHandler::handleKeyInputs() {
     }
 }
 
-} // namespace butter
+} // namespace euclide

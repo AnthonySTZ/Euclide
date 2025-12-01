@@ -3,7 +3,7 @@
 #include "utils/types.h"
 #include <string>
 
-namespace butter {
+namespace euclide {
 
 template <typename T> class NodeField;
 
@@ -34,4 +34,4 @@ struct NodeFieldVisitor {
     virtual ~NodeFieldVisitor() = default;
 };
 
-} // namespace butter
+} // namespace euclide

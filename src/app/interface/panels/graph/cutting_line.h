@@ -2,7 +2,7 @@
 
 #include "interface/utils/imgui_utils.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a simple line to be drawn in the ImGui context.
 class CuttingLine {
@@ -24,4 +24,4 @@ class CuttingLine {
     static constexpr float THICKNESS = 1.5f;                   ///< Line thickness
 };
 
-} // namespace butter
+} // namespace euclide

@@ -1,6 +1,6 @@
 #include "node_graph_renderer.h"
 
-namespace butter {
+namespace euclide {
 
 void NodeGraphRenderer::render() const {
     drawConnections();
@@ -75,4 +75,4 @@ void NodeGraphRenderer::drawNodes() const {
     }
 }
 
-} // namespace butter
+} // namespace euclide

@@ -1,6 +1,6 @@
 #include "interface.h"
 
-namespace butter {
+namespace euclide {
 
 Interface::Interface(GLFWwindow* t_window, const std::shared_ptr<Scene>& t_scene) : m_scene(t_scene) {
     IMGUI_CHECKVERSION();
@@ -107,4 +107,4 @@ void Interface::clearFrame() const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-} // namespace butter
+} // namespace euclide

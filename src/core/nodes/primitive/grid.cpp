@@ -8,67 +8,46 @@
 #include "utils/simd.h"
 #endif
 
-namespace butter {
+namespace euclide {
 
-Grid::Grid()
-    : Node(0, 1, "Grid") 
-{
+Grid::Grid() : Node(0, 1, "Grid") {
     auto positionField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
-    positionField->setMetadata(NodeFieldMetadata{
-        displayName: "Position",
-        step: 0.02f
-    });
+    positionField->setMetadata(NodeFieldMetadata{displayName : "Position", step : 0.02f});
     addField("position", positionField);
-    
+
     auto sizeField = std::make_shared<Float2Field>(1.0, 1.0);
-    sizeField->setMetadata(NodeFieldMetadata{
-        displayName: "Size",
-        min: 0.0f,
-        step: 0.02f
-    });
+    sizeField->setMetadata(NodeFieldMetadata{displayName : "Size", min : 0.0f, step : 0.02f});
     addField("size", sizeField);
 
     auto divisionsField = std::make_shared<Int2Field>(1, 1);
-    divisionsField->setMetadata(NodeFieldMetadata{
-        displayName: "Divisions",
-        min: 1.0f,
-        step: 1.0f
-    });
+    divisionsField->setMetadata(NodeFieldMetadata{displayName : "Divisions", min : 1.0f, step : 1.0f});
     addField("divisions", divisionsField);
 
     auto orientationField = std::make_shared<NodeField<int>>(0);
     orientationField->setMetadata(NodeFieldMetadata{
-        displayName: "Orientation",
-        is_combo: true,
-        choices: std::move(std::vector<std::string>{"ZX Plane", "XY Plane", "YZ Plane"})
+        displayName : "Orientation",
+        is_combo : true,
+        choices : std::move(std::vector<std::string>{"ZX Plane", "XY Plane", "YZ Plane"})
     });
     addField("orientation", orientationField);
 }
 
-
-std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>> &t_inputs) const
-{
+std::shared_ptr<Mesh> Grid::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
     auto output = std::make_shared<Mesh>();
-    
+
     const float3 position = getField<Float3Field>("position")->getValue();
     const float2 size = getField<Float2Field>("size")->getValue();
     const int2 divisions = getField<Int2Field>("divisions")->getValue();
     const int orientation = getField<NodeField<int>>("orientation")->getValue();
 
-    const GridSettings settings{
-        position,
-        size,
-        divisions,
-        orientation
-    };
+    const GridSettings settings{position, size, divisions, orientation};
 
     createGrid(*output, settings);
 
     return output;
 }
 
-void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
-{
+void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
     const int rows = t_settings.divisions[0];
     const int columns = t_settings.divisions[1];
 
@@ -80,44 +59,36 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
     const float columnSpacing = size_cols / static_cast<float>(columns);
     const float rowSpacing = size_rows / static_cast<float>(rows);
 
-    float3 basePos{
-        t_settings.position[0],
-        t_settings.position[1],
-        t_settings.position[2]
-    };
+    float3 basePos{t_settings.position[0], t_settings.position[1], t_settings.position[2]};
 
-    float3 normal{
-        0.0f,
-        1.0f,
-        0.0f
-    };
+    float3 normal{0.0f, 1.0f, 0.0f};
 
     switch (t_settings.orientation) {
-        case GridOrientation::XY:
-            basePos[0] -= size_cols / 2;
-            basePos[1] -= size_rows / 2;
-            normal[1] = 0.0f;
-            normal[2] = 1.0f;
-            break;
-            case GridOrientation::YZ:
-            basePos[1] -= size_rows / 2;
-            basePos[2] -= size_cols / 2;
-            normal[1] = 0.0f;
-            normal[0] = 1.0f;
-            break;
-        case GridOrientation::ZX:
-            basePos[0] -= size_cols / 2;
-            basePos[2] -= size_rows / 2;
-            break;
+    case GridOrientation::XY:
+        basePos[0] -= size_cols / 2;
+        basePos[1] -= size_rows / 2;
+        normal[1] = 0.0f;
+        normal[2] = 1.0f;
+        break;
+    case GridOrientation::YZ:
+        basePos[1] -= size_rows / 2;
+        basePos[2] -= size_cols / 2;
+        normal[1] = 0.0f;
+        normal[0] = 1.0f;
+        break;
+    case GridOrientation::ZX:
+        basePos[0] -= size_cols / 2;
+        basePos[2] -= size_rows / 2;
+        break;
     }
 
     // Create Points
     std::vector<float, AlignedAllocator<float, 32>> posCols(columnsPoints);
-    for (size_t col = 0; col < columnsPoints; ++col){
+    for (size_t col = 0; col < columnsPoints; ++col) {
         posCols[col] = col * columnSpacing;
     }
     std::vector<float, AlignedAllocator<float, 32>> posRows(rowsPoints);
-    for (size_t row = 0; row < rowsPoints; ++row){
+    for (size_t row = 0; row < rowsPoints; ++row) {
         posRows[row] = row * rowSpacing;
     }
 
@@ -127,7 +98,7 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
     points.reserve(points.size() + rowsPoints * columnsPoints);
     points.resize(points.size() + rowsPoints * columnsPoints);
 
-    #ifdef USE_SIMD
+#ifdef USE_SIMD
     __m256 __normalX = _mm256_set1_ps(normal[0]);
     __m256 __normalY = _mm256_set1_ps(normal[1]);
     __m256 __normalZ = _mm256_set1_ps(normal[2]);
@@ -135,15 +106,14 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
     __m256 __colorR = _mm256_set1_ps(1.0f);
     __m256 __colorG = _mm256_set1_ps(1.0f);
     __m256 __colorB = _mm256_set1_ps(1.0f);
-    #endif
+#endif
 
     for (size_t row = 0; row < rowsPoints; ++row) {
         size_t col = 0;
 
-        #ifdef USE_SIMD
+#ifdef USE_SIMD
         __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
         for (; col + 8 <= columnsPoints; col += 8) {
-
             __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
 
             __m256 __posX = _mm256_set1_ps(basePos[0]);
@@ -151,18 +121,18 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
             __m256 __posZ = _mm256_set1_ps(basePos[2]);
 
             switch (t_settings.orientation) {
-                case GridOrientation::XY:
-                    __posX = _mm256_add_ps(__posX, __colOffsets);
-                    __posY = _mm256_add_ps(__posY, __rowOffsets);
-                    break;
-                case GridOrientation::YZ:
-                    __posY = _mm256_add_ps(__posY, __rowOffsets);
-                    __posZ = _mm256_add_ps(__posZ, __colOffsets);
-                    break;
-                case GridOrientation::ZX:
-                    __posX = _mm256_add_ps(__posX, __colOffsets);
-                    __posZ = _mm256_add_ps(__posZ, __rowOffsets);
-                    break;
+            case GridOrientation::XY:
+                __posX = _mm256_add_ps(__posX, __colOffsets);
+                __posY = _mm256_add_ps(__posY, __rowOffsets);
+                break;
+            case GridOrientation::YZ:
+                __posY = _mm256_add_ps(__posY, __rowOffsets);
+                __posZ = _mm256_add_ps(__posZ, __colOffsets);
+                break;
+            case GridOrientation::ZX:
+                __posX = _mm256_add_ps(__posX, __colOffsets);
+                __posZ = _mm256_add_ps(__posZ, __rowOffsets);
+                break;
             }
 
             _mm256_storeu_ps(&points.posX[pointIdx], __posX);
@@ -179,7 +149,7 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
 
             pointIdx += 8;
         }
-        #endif
+#endif
 
         const float rowOffset = posRows[row];
 
@@ -187,18 +157,18 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
             const float colOffset = posCols[col];
             float3 pos = basePos;
             switch (t_settings.orientation) {
-                case GridOrientation::XY:
-                    pos[0] += colOffset;
-                    pos[1] += rowOffset;
-                    break;
-                case GridOrientation::YZ:
-                    pos[1] += rowOffset;
-                    pos[2] += colOffset;
-                    break;
-                case GridOrientation::ZX:
-                    pos[0] += colOffset;
-                    pos[2] += rowOffset;
-                    break;
+            case GridOrientation::XY:
+                pos[0] += colOffset;
+                pos[1] += rowOffset;
+                break;
+            case GridOrientation::YZ:
+                pos[1] += rowOffset;
+                pos[2] += colOffset;
+                break;
+            case GridOrientation::ZX:
+                pos[0] += colOffset;
+                pos[2] += rowOffset;
+                break;
             }
 
             points.posX[pointIdx] = pos[0];
@@ -216,11 +186,11 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
         }
     }
 
-    // Create Vertices 
+    // Create Vertices
     const size_t numOfPrims = rows * columns;
     auto& vertices = t_mesh.vertices;
     vertices.resize(numOfPrims * 4);
-    
+
     uint32_t vertIdx = 0;
     for (uint32_t row = 0; row < rows; ++row) {
         float rowVal = row * columnsPoints;
@@ -233,22 +203,18 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings)
             vertices[vertIdx++] = Vertex{top_left + 1};
             vertices[vertIdx++] = Vertex{bottom_left + 1};
             vertices[vertIdx++] = Vertex{bottom_left};
-
         }
     }
 
     // Create Primitives
     auto& primitives = t_mesh.primitives;
     primitives.resize(numOfPrims);
-    
+
     uint32_t primVertIdx = 0;
     for (size_t i = 0; i < numOfPrims; ++i) {
-        primitives[i] = Primitive{
-            primVertIdx, 4
-        };
+        primitives[i] = Primitive{primVertIdx, 4};
         primVertIdx += 4;
     }
-    
 }
 
-}
+} // namespace euclide

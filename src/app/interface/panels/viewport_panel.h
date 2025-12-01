@@ -5,7 +5,7 @@
 #include "interface/panels/viewport/viewport_renderer.h"
 #include "interface/panels/viewport/viewport_input_handler.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief UI panel responsible for displaying and interacting with the scene viewport.
 ///
@@ -39,4 +39,4 @@ class ViewportPanel : public Panel {
     ViewportInputHandler m_viewportInputHandler;
 };
 
-} // namespace butter
+} // namespace euclide

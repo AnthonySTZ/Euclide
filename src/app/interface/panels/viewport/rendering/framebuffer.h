@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <glad/glad.h>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Encapsulates an OpenGL framebuffer with multisample support.
 class FrameBuffer {
@@ -72,4 +72,4 @@ class FrameBuffer {
     static constexpr uint32_t DEFAULT_HEIGHT = 900; ///< Default framebuffer height.
 };
 
-} // namespace butter
+} // namespace euclide

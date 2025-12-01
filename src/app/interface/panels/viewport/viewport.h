@@ -4,7 +4,7 @@
 #include "rendering/camera.h"
 #include "rendering/render_model.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a viewport used to visualize and interact with a scene.
 ///
@@ -46,4 +46,4 @@ class Viewport {
     std::shared_ptr<Camera> m_camera;
 };
 
-} // namespace butter
+} // namespace euclide

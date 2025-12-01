@@ -7,7 +7,7 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Grid, GeneratesCorrectPointCount) {
     auto grid = std::make_shared<Grid>();
@@ -18,8 +18,7 @@ TEST(Grid, GeneratesCorrectPointCount) {
     EXPECT_EQ(mesh->points.size(), 12);
 }
 
-TEST(Grid, GeneratesCorrectPrimitiveCount)
-{
+TEST(Grid, GeneratesCorrectPrimitiveCount) {
     auto grid = std::make_shared<Grid>();
 
     // 4×5 divisions → 20 quads
@@ -30,8 +29,7 @@ TEST(Grid, GeneratesCorrectPrimitiveCount)
     EXPECT_EQ(mesh->primitives.size(), 20);
 }
 
-TEST(Grid, CorrectSpacing)
-{
+TEST(Grid, CorrectSpacing) {
     auto grid = std::make_shared<Grid>();
 
     grid->getField<Float3Field>("position")->setValue(0, 0, 0);
@@ -52,7 +50,6 @@ TEST(Grid, CorrectSpacing)
 }
 
 TEST(Grid, Grid2x4CustomPositionAndSize) {
-
     auto grid = std::make_shared<Grid>();
 
     grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
@@ -63,21 +60,20 @@ TEST(Grid, Grid2x4CustomPositionAndSize) {
     auto mesh = grid->cook(0);
     EXPECT_EQ(mesh->points.size(), 15);
 
-    float expectedX[5] = { 8.0f, 9.0f, 10.0f, 11.0f, 12.0f };
-    float expectedZ[3] = { 17.0f, 20.0f, 23.0f };
+    float expectedX[5] = {8.0f, 9.0f, 10.0f, 11.0f, 12.0f};
+    float expectedZ[3] = {17.0f, 20.0f, 23.0f};
 
     for (size_t row = 0; row < 3; ++row) {
-        for (size_t col = 0; col < 5; ++col){
+        for (size_t col = 0; col < 5; ++col) {
             const size_t pointIndex = row * 5 + col;
             EXPECT_FLOAT_EQ(mesh->points.posX[pointIndex], expectedX[col]);
-            EXPECT_FLOAT_EQ(mesh->points.posY[pointIndex], 5.0f);  // center Y
+            EXPECT_FLOAT_EQ(mesh->points.posY[pointIndex], 5.0f); // center Y
             EXPECT_FLOAT_EQ(mesh->points.posZ[pointIndex], expectedZ[row]);
         }
     }
 }
 
 TEST(Grid, Grid2x3_XY) {
-
     auto grid = std::make_shared<Grid>();
 
     grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
@@ -88,8 +84,8 @@ TEST(Grid, Grid2x3_XY) {
     auto mesh = grid->cook(0);
     EXPECT_EQ(mesh->points.size(), 12);
 
-    float expectedX[4] = { 8.0f, 28.0f / 3.0f, 32.0f / 3.0f, 12.0f };
-    float expectedY[3] = { 2.0f, 5.0f, 8.0f};
+    float expectedX[4] = {8.0f, 28.0f / 3.0f, 32.0f / 3.0f, 12.0f};
+    float expectedY[3] = {2.0f, 5.0f, 8.0f};
 
     float expectedZ = 20.0f;
     for (size_t row = 0; row < 3; ++row) {
@@ -103,7 +99,6 @@ TEST(Grid, Grid2x3_XY) {
 }
 
 TEST(Grid, Grid2x3_YZ) {
-
     auto grid = std::make_shared<Grid>();
 
     grid->getField<Float3Field>("position")->setValue(10.0, 5.0, 20.0);
@@ -114,8 +109,8 @@ TEST(Grid, Grid2x3_YZ) {
     auto mesh = grid->cook(0);
     EXPECT_EQ(mesh->points.size(), 12);
 
-    float expectedZ[4] = { 18.0f, 58.0f / 3.0f, 62.0f / 3.0f, 22.0f };
-    float expectedY[3] = { 2.0f, 5.0f, 8.0f};
+    float expectedZ[4] = {18.0f, 58.0f / 3.0f, 62.0f / 3.0f, 22.0f};
+    float expectedY[3] = {2.0f, 5.0f, 8.0f};
 
     float expectedX = 10.0f;
     for (size_t row = 0; row < 3; ++row) {
@@ -128,8 +123,7 @@ TEST(Grid, Grid2x3_YZ) {
     }
 }
 
-TEST(GridTest, PrimitiveVerticesFor2x3Grid)
-{
+TEST(GridTest, PrimitiveVerticesFor2x3Grid) {
     auto grid = std::make_shared<Grid>();
 
     grid->getField<Float3Field>("position")->setValue(0.0f, 0.0f, 0.0f);
@@ -153,7 +147,6 @@ TEST(GridTest, PrimitiveVerticesFor2x3Grid)
     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(3), (std::vector<uint32_t>{4, 5, 9, 8}));
     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(4), (std::vector<uint32_t>{5, 6, 10, 9}));
     EXPECT_EQ(mesh->getPointIndicesOfPrimitive(5), (std::vector<uint32_t>{6, 7, 11, 10}));
-    
 }
 
-}
+} // namespace euclide

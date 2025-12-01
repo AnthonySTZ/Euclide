@@ -2,13 +2,9 @@
 
 #include "nodes/node.h"
 
-namespace butter {
+namespace euclide {
 
-enum GridOrientation{
-    ZX = 0,
-    XY = 1,
-    YZ = 2
-};
+enum GridOrientation { ZX = 0, XY = 1, YZ = 2 };
 
 struct GridSettings {
     float3 position;
@@ -17,16 +13,15 @@ struct GridSettings {
     int orientation = GridOrientation::ZX;
 };
 
-class Grid: public Node {
-    
-public:
+class Grid : public Node {
+  public:
     Grid();
 
     static void createGrid(Mesh& t_mesh, const GridSettings& t_settings);
 
-private:
-    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
+  private:
+    std::shared_ptr<Mesh> compute(const size_t t_index,
+                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 };
-        
-    
-}
+
+} // namespace euclide

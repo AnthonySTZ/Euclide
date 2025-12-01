@@ -1,6 +1,6 @@
 #include "cube.h"
 
-namespace butter {
+namespace euclide {
 
 Cube::Cube() : Node(0, 1, "Cube") {
     auto positionField = std::make_shared<Float3Field>(0.0, 0.0, 0.0);
@@ -112,4 +112,4 @@ void Cube::createCube(Mesh& t_mesh, const CubeSettings& t_settings) {
     t_mesh.addPrimitive({1, 5, 6, 2}); // -X
 }
 
-} // namespace butter
+} // namespace euclide

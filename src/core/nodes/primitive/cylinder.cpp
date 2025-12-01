@@ -6,7 +6,7 @@
 #include "utils/simd.h"
 #endif
 
-namespace butter {
+namespace euclide {
 
 float3 position = {0.0, 0.0, 0.0};
 float2 radius = {1.0, 1.0};
@@ -211,4 +211,4 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
     }
 }
 
-} // namespace butter
+} // namespace euclide

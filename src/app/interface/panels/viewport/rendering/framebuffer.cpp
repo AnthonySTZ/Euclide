@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace butter {
+namespace euclide {
 
 FrameBuffer::FrameBuffer() {
     initMultiSampledFBO();
@@ -162,4 +162,4 @@ void FrameBuffer::initRenderTexture() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-} // namespace butter
+} // namespace euclide

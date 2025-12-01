@@ -10,7 +10,7 @@
 #include <vector>
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Manages the GUI interface of the engine using ImGui.
 class Interface {
@@ -74,4 +74,4 @@ class Interface {
     static constexpr struct { float r, g, b, a; } BG_COLOR = {0.3f, 0.3f, 0.3f, 1.0f}; ///< Background color
 };
 
-} // namespace butter
+} // namespace euclide

@@ -2,7 +2,7 @@
 
 #include "interface/panels/fields/field_drawer.h"
 
-namespace butter {
+namespace euclide {
 
 Parameters::Parameters(const std::weak_ptr<NodeGraph> t_nodeGraph) : m_nodeGraph(t_nodeGraph) {
     if (auto nodeGraph = m_nodeGraph.lock()) {
@@ -74,4 +74,4 @@ void Parameters::popStyle() {
     ImGui::PopStyleVar(1);
 }
 
-} // namespace butter
+} // namespace euclide

@@ -1,6 +1,6 @@
 #include "viewport_panel.h"
 
-namespace butter {
+namespace euclide {
 
 ViewportPanel::ViewportPanel(const std::weak_ptr<Scene> t_scene)
     : m_viewport(std::make_shared<Viewport>(t_scene)), m_viewportRenderer(m_viewport),
@@ -16,4 +16,4 @@ void ViewportPanel::draw() {
     endTab();
 }
 
-} // namespace butter
+} // namespace euclide

@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a 3D mesh composed of points, vertices, and primitives.
 struct Mesh {
@@ -84,4 +84,4 @@ struct Mesh {
     float3 center() const;
 };
 
-} // namespace butter
+} // namespace euclide

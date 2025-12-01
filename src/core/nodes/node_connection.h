@@ -3,7 +3,7 @@
 #include "node.h"
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Forward declaration of Node to break circular dependency.
 class Node;
@@ -35,4 +35,4 @@ struct NodeConnection {
         : sourceIndex(t_sourceIndex), destIndex(t_destIndex), sourceNode(t_sourceNode), destNode(t_destNode) {}
 };
 
-} // namespace butter
+} // namespace euclide

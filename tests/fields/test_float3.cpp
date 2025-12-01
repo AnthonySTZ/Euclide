@@ -3,7 +3,7 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Float3Field, CreateFloat3Field) {
     Float3Field field{0.0, 2.0, 8.0};
@@ -24,4 +24,4 @@ TEST(Float3Field, SetValueByFloat) {
     EXPECT_EQ(value, expected);
 }
 
-}
+} // namespace euclide

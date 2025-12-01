@@ -3,7 +3,7 @@
 #include "viewport.h"
 #include "rendering/renderer.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Responsible for rendering a Viewport panel to an ImGui window.
 ///
@@ -58,4 +58,4 @@ class ViewportRenderer {
     static constexpr ImVec2 INFO_PADDING = ImVec2(0, 25);
 };
 
-} // namespace butter
+} // namespace euclide

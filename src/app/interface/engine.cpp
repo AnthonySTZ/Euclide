@@ -1,9 +1,9 @@
 #include "engine.h"
 
-namespace butter {
+namespace euclide {
 
 Engine::Engine(const uint32_t t_width, const uint32_t t_height, const char* t_windowName)
-    : m_scene(std::make_shared<butter::Scene>()), m_window(t_width, t_height, t_windowName),
+    : m_scene(std::make_shared<euclide::Scene>()), m_window(t_width, t_height, t_windowName),
       m_interface(m_window.getWindow(), m_scene) {
     // Set GLFW user pointer to allow static callback access to this instance
     glfwSetWindowUserPointer(m_window.getWindow(), this);
@@ -39,4 +39,4 @@ void Engine::resizeCallback(GLFWwindow* window, int width, int height) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

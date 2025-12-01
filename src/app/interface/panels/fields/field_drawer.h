@@ -3,7 +3,7 @@
 #include "fields/node_field.h"
 #include "interface/utils/imgui_utils.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Utility class to render `NodeField` objects in an ImGui-based UI.
 ///
@@ -156,4 +156,4 @@ class FieldDrawer : public NodeFieldVisitor {
     static constexpr int MAX_INT = 4'000'000'000;        ///< Max int supported by slider
 };
 
-} // namespace butter
+} // namespace euclide

@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 #include "nodes/geometry/merge.h"
 
-namespace butter {
+namespace euclide {
 
 TEST(Merge, TestMerge) {
-
     Mesh mesh1;
     uint32_t p0 = mesh1.addPoint({1.0, 0.0, 5.0});
     uint32_t p1 = mesh1.addPoint({-1.0, 9.0, -5.0});
@@ -32,4 +31,4 @@ TEST(Merge, TestMerge) {
     EXPECT_EQ(mesh1.getPointIndicesOfPrimitive(2), std::vector<uint32_t>({p6 + 3, p7 + 3, p8 + 3}));
 }
 
-}
+} // namespace euclide

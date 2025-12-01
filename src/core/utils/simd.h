@@ -2,7 +2,7 @@
 
 #include <immintrin.h>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Computes the horizontal sum of all 8 floats in a __m256 vector.
 ///
@@ -26,4 +26,4 @@ inline float _mm256_hsum_ps(const __m256& __A) {
     return _mm_cvtss_f32(sum_128);
 }
 
-} // namespace butter
+} // namespace euclide

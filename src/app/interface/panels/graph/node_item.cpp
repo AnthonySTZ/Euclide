@@ -1,6 +1,6 @@
 #include "node_item.h"
 
-namespace butter {
+namespace euclide {
 
 NodeItem::NodeItem(const std::shared_ptr<Node>& t_node, const ImVec2 t_position)
     : m_node(t_node), m_position(t_position) {
@@ -98,4 +98,4 @@ std::vector<ImVec2> NodeItem::drawIOsOnLine(const int t_numberOfIOs, ImVec2 t_li
     return positions;
 }
 
-} // namespace butter
+} // namespace euclide

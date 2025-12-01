@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a polygonal primitive in a mesh.
 struct Primitive {
@@ -11,4 +11,4 @@ struct Primitive {
     uint32_t numVertices = UINT32_MAX;   ///< Number of vertices that form this primitive.
 };
 
-} // namespace butter
+} // namespace euclide

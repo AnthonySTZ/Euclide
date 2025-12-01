@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Encapsulates an OpenGL shader program with vertex and fragment shaders.
 class ShaderProgram {
@@ -46,4 +46,4 @@ class ShaderProgram {
     uint32_t m_id; ///< OpenGL shader program ID.
 };
 
-} // namespace butter
+} // namespace euclide

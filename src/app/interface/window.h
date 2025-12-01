@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Wrapper class for managing a GLFW window and OpenGL context.
 class Window {
@@ -41,4 +41,4 @@ class Window {
     GLFWwindow* m_window; ///< Pointer to the GLFW window
 };
 
-} // namespace butter
+} // namespace euclide

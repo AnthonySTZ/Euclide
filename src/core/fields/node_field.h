@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Metadata for a node field, used for UI display and constraints.
 struct NodeFieldMetadata {
@@ -76,4 +76,4 @@ template <typename T> class NodeField : public NodeFieldBase {
     T m_value; ///< Current value of the field
 };
 
-} // namespace butter
+} // namespace euclide

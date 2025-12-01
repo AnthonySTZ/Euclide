@@ -1,6 +1,6 @@
 #include "viewport_renderer.h"
 
-namespace butter {
+namespace euclide {
 
 ViewportRenderer::ViewportRenderer(const std::weak_ptr<Viewport> t_viewport)
     : m_viewport(t_viewport), m_renderer(std::make_unique<Renderer>()) {
@@ -69,4 +69,4 @@ void ViewportRenderer::addInfos(const std::string& t_infos) {
     m_infoOffset += INFO_PADDING;
 }
 
-} // namespace butter
+} // namespace euclide

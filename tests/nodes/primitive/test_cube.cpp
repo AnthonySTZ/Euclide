@@ -3,7 +3,7 @@
 
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 TEST(Cube, TestCubeName) {
     auto cube = std::make_shared<Cube>();
@@ -32,4 +32,4 @@ TEST(Cube, CubeOutput) {
     ASSERT_EQ(result->primitives.size(), 6);
 }
 
-}
+} // namespace euclide

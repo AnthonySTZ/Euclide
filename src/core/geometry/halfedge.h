@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <algorithm>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Represents a half-edge in a half-edge mesh structure.
 struct HalfEdge {
@@ -63,4 +63,4 @@ inline void radixSortEdges(std::vector<Edge>& edges) {
     }
 }
 
-} // namespace butter
+} // namespace euclide

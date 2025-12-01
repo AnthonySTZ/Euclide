@@ -1,6 +1,6 @@
 #include "field_drawer.h"
 
-namespace butter {
+namespace euclide {
 
 void FieldDrawer::drawBoolField(const std::string& t_name, NodeField<bool>& t_field) {
     bool value = t_field.getValue();
@@ -110,4 +110,4 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3>& 
     }
 }
 
-} // namespace butter
+} // namespace euclide

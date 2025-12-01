@@ -4,7 +4,7 @@
 
 #include <numeric>
 
-namespace butter {
+namespace euclide {
 
 RenderModel::RenderModel() {
     initBuffers();
@@ -199,4 +199,4 @@ void RenderModel::drawEdges() const {
     glBindVertexArray(0);
 }
 
-} // namespace butter
+} // namespace euclide

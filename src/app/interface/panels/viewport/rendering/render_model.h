@@ -4,7 +4,7 @@
 #include "geometry/mesh.h"
 #include <memory>
 
-namespace butter {
+namespace euclide {
 
 /// @brief Structure representing a single vertex in the render model.
 struct RenderVertex {
@@ -85,4 +85,4 @@ class RenderModel {
     size_t m_numOfPrims = 0;
 };
 
-} // namespace butter
+} // namespace euclide

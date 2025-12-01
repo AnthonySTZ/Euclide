@@ -1,4 +1,4 @@
-add_executable(ButterTests 
+add_executable(EuclideTests 
                 main.cpp
                 geometry/test_points.cpp
                 geometry/test_mesh.cpp
@@ -18,6 +18,6 @@ add_executable(ButterTests
 
                 )
 
-target_link_libraries(ButterTests PRIVATE core gtest)
+target_link_libraries(EuclideTests PRIVATE core gtest)
 
-add_test(NAME ButterTests COMMAND ButterTests)
+add_test(NAME EuclideTests COMMAND EuclideTests)

@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-namespace butter {
+namespace euclide {
 
 /// @brief A simple timer for measuring code execution duration in milliseconds.
 ///
@@ -54,4 +54,4 @@ class Timer {
     bool m_stopped = false;                                                       ///< Flag to prevent multiple stops
 };
 
-} // namespace butter
+} // namespace euclide

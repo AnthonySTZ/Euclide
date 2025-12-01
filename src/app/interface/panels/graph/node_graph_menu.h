@@ -3,7 +3,7 @@
 #include "nodes/nodes_info.h"
 #include "node_graph.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Handles the context menu for the NodeGraph.
 /// @details Responsible for rendering the popup menu, search bar, and node creation items.
@@ -55,4 +55,4 @@ class NodeGraphMenu {
     static constexpr ImU32 SEARCH_BAR_COLOR = IM_COL32(50, 50, 50, 255); ///< Background color for the search bar.
 };
 
-} // namespace butter
+} // namespace euclide

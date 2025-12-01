@@ -2,7 +2,7 @@
 
 #include "node_graph.h"
 
-namespace butter {
+namespace euclide {
 
 /// @brief Provides helper functions for querying and interacting with a NodeGraph.
 /// @details This struct contains only static methods for determining which nodes, IO slots,
@@ -41,4 +41,4 @@ struct NodeGraphInteraction {
                                                               const ImVec2& t_startPos, const ImVec2& t_endPos);
 };
 
-} // namespace butter
+} // namespace euclide

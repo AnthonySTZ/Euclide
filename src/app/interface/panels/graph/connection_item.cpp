@@ -1,6 +1,6 @@
 #include "connection_item.h"
 
-namespace butter {
+namespace euclide {
 
 void ConnectionItem::draw() {
     ImGuiIO& io = ImGui::GetIO();
@@ -34,4 +34,4 @@ void ConnectionItem::deleteConnection() {
     }
 }
 
-} // namespace butter
+} // namespace euclide
