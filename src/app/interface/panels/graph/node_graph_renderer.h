@@ -56,7 +56,7 @@ class NodeGraphRenderer {
     std::unique_ptr<ConnectionItem> m_currentConnection; ///< Currently active connection being dragged.
     FixedQueue<CuttingLine> m_cuttingsLines{200};        ///< Temporary cutting lines for visual feedback.
 
-    static constexpr ImU32 SELECTION_BOX_COLOR = IM_COL32(0, 154, 255, 80);
+    static constexpr ImU32 SELECTION_BOX_COLOR = IM_COL32(0, 154, 255, 60);
     static constexpr float SELECTION_BOX_ROUNDING = 2.0f;
 };
 

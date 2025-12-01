@@ -89,7 +89,7 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
         if (!ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
             graph->clearSelection();
         }
-        graph->addNodeToSelection(id, false);
+        graph->addNodeToSelection(id, true);
         return;
     }
 
@@ -98,7 +98,16 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
         return;
     }
 
-    // TODO: Box Selection
+    if (m_isBoxSelecting) {
+        if (!ImGui::IsKeyDown(ImGuiKey_LeftShift)) {
+            graph->clearSelection();
+        }
+
+        const ImVec2 endBox = ImGui::GetMousePos();
+        for (const uint32_t nodeId : NodeGraphInteraction::getNodesInRect(m_graph, m_boxStart, endBox)) {
+            graph->addNodeToSelection(nodeId, false);
+        }
+    }
 }
 
 void NodeGraphInputHandler::dragNodes(const ImVec2& t_dragDelta) const {

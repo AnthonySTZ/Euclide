@@ -41,11 +41,11 @@ class NodeItem {
 
     /// @brief Set the selection state of the node.
     /// @param t_isSelected True if the node is selected.
-    void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
+    inline void setSelected(const bool t_isSelected) { m_isSelected = t_isSelected; }
 
     /// @brief Query if the node is currently selected.
     /// @return True if selected, false otherwise.
-    [[nodiscard]] bool isSelected() const noexcept { return m_isSelected; }
+    [[nodiscard]] inline bool isSelected() const noexcept { return m_isSelected; }
 
     /// @brief Get the position of a specific input slot.
     /// @param index Index of the input slot.
@@ -59,7 +59,11 @@ class NodeItem {
 
     /// @brief Get the underlying Node shared pointer.
     /// @return Shared pointer to the Node, may be nullptr if expired.
-    [[nodiscard]] std::shared_ptr<Node> node() const { return m_node.lock(); }
+    [[nodiscard]] inline std::shared_ptr<Node> node() const { return m_node.lock(); }
+
+    /// @brief Get the node position
+    /// @return Position of the node in UI coordinates.
+    [[nodiscard]] inline ImVec2 position() const noexcept { return m_position; }
 
   private:
     /// @brief Draw the node rectangle with proper colors.

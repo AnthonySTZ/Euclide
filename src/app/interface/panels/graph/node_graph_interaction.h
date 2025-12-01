@@ -31,6 +31,9 @@ struct NodeGraphInteraction {
     [[nodiscard]] static std::optional<size_t> getIntersectedConnectionIndex(const std::weak_ptr<NodeGraph> t_graph,
                                                                              const ImVec2& t_startPos,
                                                                              const ImVec2& t_endPos);
+
+    [[nodiscard]] static std::vector<uint32_t> getNodesInRect(const std::weak_ptr<NodeGraph> t_graph,
+                                                              const ImVec2& t_startPos, const ImVec2& t_endPos);
 };
 
 } // namespace butter

@@ -44,7 +44,7 @@ void NodeGraphRenderer::drawCuttingLines() const {
 }
 
 void NodeGraphRenderer::drawBoxSelection(const ImVec2& t_startPos, const ImVec2& t_endPos) const {
-    ImDrawList* drawlist = ImGui::GetWindowDrawList();
+    ImDrawList* drawlist = ImGui::GetForegroundDrawList();
     if (!drawlist)
         return;
 

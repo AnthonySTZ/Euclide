@@ -55,4 +55,27 @@ std::optional<size_t> NodeGraphInteraction::getIntersectedConnectionIndex(const 
     return std::nullopt;
 }
 
+std::vector<uint32_t> NodeGraphInteraction::getNodesInRect(const std::weak_ptr<NodeGraph> t_graph,
+                                                           const ImVec2& t_startPos, const ImVec2& t_endPos) {
+    auto graph = t_graph.lock();
+    if (!graph)
+        return {};
+
+    const float minX = std::min(t_startPos.x, t_endPos.x);
+    const float maxX = std::max(t_startPos.x, t_endPos.x);
+
+    const float minY = std::min(t_startPos.y, t_endPos.y);
+    const float maxY = std::max(t_startPos.y, t_endPos.y);
+
+    std::vector<uint32_t> nodes;
+    for (auto [id, nodeItem] : graph->nodes) {
+        const ImVec2 nodePosition = nodeItem->position();
+        if (nodePosition.x > minX && nodePosition.x < maxX && nodePosition.y > minY && nodePosition.y < maxY) {
+            nodes.push_back(id);
+        }
+    }
+
+    return nodes;
+}
+
 } // namespace butter
