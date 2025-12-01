@@ -45,7 +45,10 @@ class Viewport : public Panel {
     void checkForResize();
 
     /// @brief Draw overlay information such as FPS and keyboard shortcuts.
-    void drawInfos() const;
+    void drawInfos();
+
+    /// @brief Add new infos text;
+    void addInfos(const std::string& t_infos);
 
   private:
     std::weak_ptr<Scene> m_scene; ///< Scene associated with this viewport.
@@ -60,6 +63,11 @@ class Viewport : public Panel {
 
     ImVec2 m_padding{0, 0};           ///< Internal padding for the panel.
     std::shared_ptr<Camera> m_camera; ///< Camera used for the viewport.
+
+    const ImVec2 m_startInfoPos{10, 10};
+    ImVec2 m_infoOffset{10, 10};
+    static constexpr ImU32 INFO_COLOR = IM_COL32(255, 255, 255, 255);
+    static constexpr ImVec2 INFO_PADDING = ImVec2(0, 25);
 
     // Mouse interaction state
     bool m_isItemHovered = false;

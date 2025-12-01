@@ -135,16 +135,25 @@ void Viewport::checkForResize() {
     }
 }
 
-void Viewport::drawInfos() const {
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
+void Viewport::drawInfos() {
     ImGuiIO& io = ImGui::GetIO();
     std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
-    drawList->AddText(m_windowPosition + ImVec2(10, 10), IM_COL32(255, 255, 255, 255), fpsText.c_str());
+    addInfos(fpsText);
+    addInfos("P: Toogle Primitives");
+    addInfos("W: Toogle Wireframe");
+    addInfos("V: Toogle Points");
+    addInfos("G: Toogle Grid");
 
-    drawList->AddText(m_windowPosition + ImVec2(10, 35), IM_COL32(255, 255, 255, 255), "P: Toogle Primitives");
-    drawList->AddText(m_windowPosition + ImVec2(10, 60), IM_COL32(255, 255, 255, 255), "W: Toogle Wireframe");
-    drawList->AddText(m_windowPosition + ImVec2(10, 85), IM_COL32(255, 255, 255, 255), "V: Toogle Points");
-    drawList->AddText(m_windowPosition + ImVec2(10, 110), IM_COL32(255, 255, 255, 255), "G: Toogle Grid");
+    m_infoOffset = m_startInfoPos;
+}
+
+void Viewport::addInfos(const std::string& t_infos) {
+    ImDrawList* drawList = ImGui::GetForegroundDrawList();
+    if (!drawList)
+        return;
+
+    drawList->AddText(m_windowPosition + m_infoOffset, INFO_COLOR, t_infos.c_str());
+    m_infoOffset += INFO_PADDING;
 }
 
 } // namespace butter
