@@ -52,10 +52,8 @@ void NodeGraphInputHandler::handleMouseInputs() {
 
     if (m_isMouseDrag) {
         handleDragging();
-    } else if (!m_isMouseDrag && m_mouseButtonLeftDown) {
-        if (isDragging()) {
-            m_isMouseDrag = true;
-        }
+    } else if (m_mouseButtonLeftDown && isDragging()) {
+        m_isMouseDrag = true;
     }
 }
 
