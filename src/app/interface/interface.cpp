@@ -60,7 +60,7 @@ void Interface::addNodeGraph() {
 }
 
 void Interface::addViewport() {
-    m_viewport = std::make_shared<Viewport>(scene());
+    m_viewport = std::make_shared<ViewportPanel>(scene());
     m_panels.push_back(m_viewport);
 }
 
