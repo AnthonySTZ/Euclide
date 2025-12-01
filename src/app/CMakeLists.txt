@@ -18,12 +18,15 @@ add_library(app_lib STATIC
     interface/panels/graph/connection_item.cpp
     interface/panels/graph/cutting_line.cpp
     
-    interface/panels/viewport.cpp
-    interface/panels/rendering/renderer.cpp
-    interface/panels/rendering/framebuffer.cpp
-    interface/panels/rendering/shader_program.cpp
-    interface/panels/rendering/render_model.cpp
-    interface/panels/rendering/camera.cpp
+    interface/panels/viewport_panel.cpp
+    interface/panels/viewport/viewport.cpp
+    interface/panels/viewport/viewport_renderer.cpp
+    interface/panels/viewport/viewport_input_handler.cpp
+    interface/panels/viewport/rendering/renderer.cpp
+    interface/panels/viewport/rendering/framebuffer.cpp
+    interface/panels/viewport/rendering/shader_program.cpp
+    interface/panels/viewport/rendering/render_model.cpp
+    interface/panels/viewport/rendering/camera.cpp
     
     interface/panels/parameters.cpp
     interface/panels/fields/field_drawer.cpp
@@ -38,7 +41,7 @@ find_package(OpenGL REQUIRED)
 
 target_link_libraries(app_lib PUBLIC core imgui glfw OpenGL::GL glad glm)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/interface/panels/rendering/shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/interface/panels/viewport/rendering/shaders DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(app_exec main.cpp)
 target_link_libraries(app_exec
