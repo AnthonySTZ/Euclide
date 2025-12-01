@@ -66,16 +66,19 @@ void NodeGraphInputHandler::handleDragging() const {
 }
 
 void NodeGraphInputHandler::handleLeftMouseRelease() const {
-    if (m_isMouseDrag)
-        return;
-
     auto graph = m_graph.lock();
     if (!graph)
         return;
 
-    if (m_draggingNode.has_value()) {
+    if (m_draggingNode.has_value() && !m_isMouseDrag) {
         const uint32_t id = m_draggingNode.value();
         graph->addNodeToSelection(id, false);
+
+        return;
+    }
+
+    if (m_isMouseDrag && !m_draggingNode.has_value()) {
+        // Box Selection
     }
 }
 
