@@ -8,40 +8,6 @@ void NodeGraphRenderer::render() const {
     drawNodes();
 }
 
-std::optional<uint32_t> NodeGraphRenderer::getNodeAt(ImVec2 t_mousePosition) const {
-    auto graph = m_graph.lock();
-    if (!graph)
-        return std::nullopt;
-
-    for (auto it = graph->drawNodesOrder.rbegin(); it != graph->drawNodesOrder.rend(); ++it) {
-        auto nodeItem = graph->nodes[*it];
-        if (nodeItem->isHovered()) {
-            return *it;
-        }
-    }
-    return std::nullopt;
-}
-
-std::optional<IOInfos> NodeGraphRenderer::getNodeIOAt(ImVec2 t_mousePosition) const {
-    auto graph = m_graph.lock();
-    if (!graph)
-        return std::nullopt;
-
-    for (auto [id, nodeItem] : graph->nodes) {
-        std::optional<uint32_t> inputIndex = nodeItem->inputIOHovered();
-        if (inputIndex.has_value()) {
-            return IOInfos{id, IOType::INPUT, inputIndex.value()};
-        }
-
-        std::optional<uint32_t> outputIndex = nodeItem->outputIOHovered();
-        if (outputIndex.has_value()) {
-            return IOInfos{id, IOType::OUTPUT, outputIndex.value()};
-        }
-    }
-
-    return std::nullopt;
-}
-
 void NodeGraphRenderer::startConnection(const IOInfos& t_infos) {
     auto graph = m_graph.lock();
     if (!graph)
@@ -75,22 +41,6 @@ void NodeGraphRenderer::drawConnections() const {
 void NodeGraphRenderer::drawCuttingLines() const {
     for (auto& line : m_cuttingsLines)
         line.draw();
-}
-
-std::optional<size_t> NodeGraphRenderer::getIntersectedConnectionIndex(const ImVec2& t_startPos,
-                                                                       const ImVec2& t_endPos) const {
-    auto graph = m_graph.lock();
-    if (!graph)
-        return std::nullopt;
-
-    for (size_t i = 0; i < graph->connections.size(); ++i) {
-        const auto& connection = graph->connections[i];
-        if (lineIntersect(connection.sourcePosition(), connection.destinationPosition(), t_startPos, t_endPos)) {
-            return i;
-        }
-    }
-
-    return std::nullopt;
 }
 
 void NodeGraphRenderer::drawNodes() const {

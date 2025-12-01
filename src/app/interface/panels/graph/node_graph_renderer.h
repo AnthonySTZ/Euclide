@@ -12,8 +12,6 @@ class NodeGraphRenderer {
     NodeGraphRenderer(const std::weak_ptr<NodeGraph> t_nodeGraph) : m_graph(std::move(t_nodeGraph)){};
 
     void render() const;
-    [[nodiscard]] std::optional<uint32_t> getNodeAt(ImVec2 t_mousePosition) const;
-    [[nodiscard]] std::optional<IOInfos> getNodeIOAt(ImVec2 t_mousePosition) const;
 
     void startConnection(const IOInfos& t_infos);
     void endConnection();
@@ -22,9 +20,6 @@ class NodeGraphRenderer {
         m_cuttingsLines.emplace(CuttingLine{t_startPos, t_endPos});
     }
     inline void clearCuttingLines() { m_cuttingsLines.clear(); }
-
-    [[nodiscard]] std::optional<size_t> getIntersectedConnectionIndex(const ImVec2& t_startPos,
-                                                                      const ImVec2& t_endPos) const;
 
   private:
     void drawNodes() const;

@@ -1,6 +1,7 @@
 #include "node_graph_input_handler.h"
 
 #include "node_graph_menu.h"
+#include "node_graph_interaction.h"
 
 namespace butter {
 
@@ -31,11 +32,11 @@ void NodeGraphInputHandler::handleMouseInputs() {
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_isWindowHovered) {
         ImVec2 mousePos = ImGui::GetMousePos();
         m_mouseButtonLeftDown = true;
-        m_ioClicked = m_graphRenderer->getNodeIOAt(mousePos);
+        m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos);
         if (m_ioClicked.has_value()) {
             m_graphRenderer->startConnection(m_ioClicked.value());
         } else {
-            m_draggingNode = m_graphRenderer->getNodeAt(mousePos);
+            m_draggingNode = NodeGraphInteraction::getNodeAt(m_graph, mousePos);
         }
     }
 
@@ -79,7 +80,7 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
         return;
 
     if (m_ioClicked.has_value()) {
-        std::optional<IOInfos> ioReleased = m_graphRenderer->getNodeIOAt(ImGui::GetMousePos());
+        std::optional<IOInfos> ioReleased = NodeGraphInteraction::getNodeIOAt(m_graph, ImGui::GetMousePos());
         if (ioReleased.has_value()) {
             graph->addConnection(m_ioClicked.value(), ioReleased.value());
         }
@@ -138,7 +139,7 @@ void NodeGraphInputHandler::handleKeyInputs() {
         ImGuiIO& io = ImGui::GetIO();
         m_graphRenderer->addCuttingLine(io.MousePosPrev, io.MousePos);
         std::optional<uint32_t> connectionCut =
-            m_graphRenderer->getIntersectedConnectionIndex(io.MousePosPrev, io.MousePos);
+            NodeGraphInteraction::getIntersectedConnectionIndex(m_graph, io.MousePosPrev, io.MousePos);
         if (connectionCut.has_value()) {
             graph->removeConnection(connectionCut.value());
         }
