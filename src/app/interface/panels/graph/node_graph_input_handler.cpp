@@ -28,8 +28,14 @@ void NodeGraphInputHandler::handleMouseInputs() {
     const bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
+        ImVec2 mousePos = ImGui::GetMousePos();
         m_mouseButtonLeftDown = true;
-        m_draggingNode = m_graphRenderer->getNodeAt(ImGui::GetMousePos());
+        m_ioClicked = m_graphRenderer->getNodeIOAt(mousePos);
+        if (m_ioClicked.has_value()) {
+            m_graphRenderer->startConnection(m_ioClicked.value());
+        } else {
+            m_draggingNode = m_graphRenderer->getNodeAt(mousePos);
+        }
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
@@ -37,6 +43,9 @@ void NodeGraphInputHandler::handleMouseInputs() {
 
         m_mouseButtonLeftDown = false;
         m_isMouseDrag = false;
+        m_draggingNode = std::nullopt;
+        m_ioClicked = std::nullopt;
+        m_graphRenderer->endConnection();
     }
 
     if (m_isMouseDrag) {
@@ -67,6 +76,14 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
     auto graph = m_graph.lock();
     if (!graph)
         return;
+
+    if (m_ioClicked.has_value()) {
+        std::optional<IOInfos> ioReleased = m_graphRenderer->getNodeIOAt(ImGui::GetMousePos());
+        if (ioReleased.has_value()) {
+            graph->addConnection(m_ioClicked.value(), ioReleased.value());
+        }
+        return;
+    }
 
     if (m_draggingNode.has_value() && !m_isMouseDrag) {
         const uint32_t id = m_draggingNode.value();

@@ -47,6 +47,27 @@ void NodeGraph::addNodeToSelection(const uint32_t t_nodeId, const bool t_removeI
     onNodeSelected.notify(nodeItem->node());
 }
 
+void NodeGraph::addConnection(const IOInfos& t_first, const IOInfos& t_second) const {
+    if (t_first.type == t_second.type)
+        return;
+
+    auto it_first = nodes.find(t_first.nodeId);
+    if (it_first == nodes.end())
+        return;
+
+    auto it_second = nodes.find(t_second.nodeId);
+    if (it_second == nodes.end())
+        return;
+
+    if (auto scene = m_scene.lock()) {
+        if (t_first.type == IOType::INPUT) {
+            it_first->second->node()->setInput(t_first.index, it_second->second->node(), t_second.index);
+        } else {
+            it_second->second->node()->setInput(t_second.index, it_first->second->node(), t_first.index);
+        }
+    }
+}
+
 void NodeGraph::clearSelection() {
     for (auto nodeId : m_selectedNodes) {
         if (auto node = getNode(nodeId).lock()) {

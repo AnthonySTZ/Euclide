@@ -11,6 +11,14 @@
 
 namespace butter {
 
+enum class IOType { INPUT, OUTPUT };
+
+struct IOInfos {
+    uint32_t nodeId = 0;
+    IOType type = IOType::INPUT;
+    uint32_t index = 0;
+};
+
 class NodeGraph {
   public:
     Observer<std::weak_ptr<Node>> onNodeSelected;
@@ -28,6 +36,8 @@ class NodeGraph {
     [[nodiscard]] inline std::unordered_set<uint32_t> selectedNodes() const noexcept { return m_selectedNodes; }
     void addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected);
     void clearSelection();
+
+    void addConnection(const IOInfos& t_first, const IOInfos& t_second) const;
 
   public:
     std::vector<ConnectionItem> connections;
