@@ -16,6 +16,8 @@ class ViewportPanel : public Panel {
     void draw() override;
 
   private:
+    ImVec2 m_padding{0, 0};
+
     std::shared_ptr<Viewport> m_viewport;
     ViewportRenderer m_viewportRenderer;
     ViewportInputHandler m_viewportInputHandler;
