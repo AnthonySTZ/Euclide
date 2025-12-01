@@ -1,6 +1,6 @@
 #include "parameters_renderer.h"
 
-#include "interface/panels/fields/field_drawer.h"
+#include "interface/panels/parameters/fields/field_drawer.h"
 
 namespace euclide {
 
