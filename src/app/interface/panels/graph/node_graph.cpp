@@ -29,6 +29,19 @@ void NodeGraph::addNode(const std::shared_ptr<Node>& t_node) {
     scene->addNode(t_node);
 }
 
+void NodeGraph::addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected) {
+    if (t_removeIfAlreadySelected) {
+        if (m_selectedNodes.find(t_nodeId) != m_selectedNodes.end()) { // Remove Node Item if its already selected
+            m_selectedNodes.erase(t_nodeId);
+            nodes[t_nodeId]->setSelected(false);
+            return;
+        }
+    }
+
+    m_selectedNodes.insert(t_nodeId);
+    nodes[t_nodeId]->setSelected(true);
+}
+
 void NodeGraph::onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node) {
     ImGuiIO& io = ImGui::GetIO();
     auto [_, inserted] = nodes.try_emplace(t_nodeId, std::make_shared<NodeItem>(t_node, io.MousePos));

@@ -9,7 +9,7 @@ class NodeGraphRenderer {
     NodeGraphRenderer(const std::weak_ptr<NodeGraph> t_nodeGraph) : m_graph(std::move(t_nodeGraph)){};
 
     void render() const;
-    std::shared_ptr<NodeItem> getNodeAt(ImVec2 t_mousePosition) const;
+    [[nodiscard]] std::optional<uint32_t> getNodeAt(ImVec2 t_mousePosition) const;
 
   private:
     void drawNodes() const;

@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <unordered_set>
 
 namespace butter {
 
@@ -18,13 +19,18 @@ class NodeGraph {
     ~NodeGraph() = default;
 
     void addNode(const std::shared_ptr<Node>& t_node);
+    [[nodiscard]] inline std::weak_ptr<NodeItem> getNode(const uint32_t t_nodeId) const noexcept {
+        auto it = nodes.find(t_nodeId);
+        if (it == nodes.end())
+            return std::weak_ptr<NodeItem>();
+        return it->second;
+    }
+    void addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected);
 
   public:
     std::vector<ConnectionItem> connections;
     std::unordered_map<uint32_t, std::shared_ptr<NodeItem>> nodes;
     std::vector<uint32_t> drawNodesOrder{};
-
-    std::weak_ptr<Scene> m_scene;
 
   private:
     void onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node);
@@ -32,6 +38,10 @@ class NodeGraph {
     void onConnectionAdded(const uint32_t t_sourceId, const uint32_t t_sourceIndex, const uint32_t t_destId,
                            const uint32_t t_destIndex);
     void onConnectionRemoved(const uint32_t t_sourceId, const uint32_t t_destId, const uint32_t t_destIndex);
+
+  private:
+    std::unordered_set<uint32_t> m_selectedNodes;
+    std::weak_ptr<Scene> m_scene;
 };
 
 } // namespace butter

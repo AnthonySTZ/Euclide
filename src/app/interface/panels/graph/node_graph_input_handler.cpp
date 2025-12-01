@@ -28,6 +28,8 @@ void NodeGraphInputHandler::handleMouseInputs() {
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+        handleLeftMouseRelease();
+
         m_mouseButtonLeftDown = false;
         m_isMouseDrag = false;
     }
@@ -47,12 +49,33 @@ bool NodeGraphInputHandler::isDragging() const {
 }
 
 void NodeGraphInputHandler::handleDragging() const {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
-    if (auto node = m_draggingNode.lock()) {
-        node->moveBy(dragDelta);
+    if (m_draggingNode.has_value()) {
+        const uint32_t id = m_draggingNode.value();
+        if (auto node = graph->getNode(id).lock()) {
+            node->moveBy(dragDelta);
+        }
     } else {
         // TODO: Box selection for example
+    }
+}
+
+void NodeGraphInputHandler::handleLeftMouseRelease() const {
+    if (m_isMouseDrag)
+        return;
+
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    if (m_draggingNode.has_value()) {
+        const uint32_t id = m_draggingNode.value();
+        graph->addNodeToSelection(id, false);
     }
 }
 

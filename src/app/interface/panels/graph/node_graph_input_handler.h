@@ -19,6 +19,7 @@ class NodeGraphInputHandler {
     [[nodiscard]] bool isDragging() const;
 
     void handleDragging() const;
+    void handleLeftMouseRelease() const;
 
   private:
     std::weak_ptr<NodeGraph> m_graph;
@@ -26,7 +27,7 @@ class NodeGraphInputHandler {
 
     bool m_mouseButtonLeftDown = false;
     bool m_isMouseDrag = false;
-    std::weak_ptr<NodeItem> m_draggingNode = std::weak_ptr<NodeItem>();
+    std::optional<uint32_t> m_draggingNode = std::nullopt;
 
     static constexpr float DRAG_THRESHOLD = 0.01f;
 };
