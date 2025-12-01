@@ -77,6 +77,22 @@ void NodeGraphRenderer::drawCuttingLines() const {
         line.draw();
 }
 
+std::optional<size_t> NodeGraphRenderer::getIntersectedConnectionIndex(const ImVec2& t_startPos,
+                                                                       const ImVec2& t_endPos) const {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return std::nullopt;
+
+    for (size_t i = 0; i < graph->connections.size(); ++i) {
+        const auto& connection = graph->connections[i];
+        if (lineIntersect(connection.sourcePosition(), connection.destinationPosition(), t_startPos, t_endPos)) {
+            return i;
+        }
+    }
+
+    return std::nullopt;
+}
+
 void NodeGraphRenderer::drawNodes() const {
     auto graph = m_graph.lock();
     if (!graph)

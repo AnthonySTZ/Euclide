@@ -137,6 +137,11 @@ void NodeGraphInputHandler::handleKeyInputs() {
     if (ImGui::IsKeyDown(ImGuiKey_Y) && m_isWindowHovered) {
         ImGuiIO& io = ImGui::GetIO();
         m_graphRenderer->addCuttingLine(io.MousePosPrev, io.MousePos);
+        std::optional<uint32_t> connectionCut =
+            m_graphRenderer->getIntersectedConnectionIndex(io.MousePosPrev, io.MousePos);
+        if (connectionCut.has_value()) {
+            graph->removeConnection(connectionCut.value());
+        }
     } else if (ImGui::IsKeyReleased(ImGuiKey_Y)) {
         m_graphRenderer->clearCuttingLines();
     }

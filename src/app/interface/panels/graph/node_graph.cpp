@@ -69,6 +69,13 @@ void NodeGraph::addConnection(const IOInfos& t_first, const IOInfos& t_second) c
     }
 }
 
+void NodeGraph::removeConnection(const size_t t_connectionIndex) {
+    if (t_connectionIndex >= connections.size())
+        return;
+
+    connections[t_connectionIndex].deleteConnection();
+}
+
 void NodeGraph::clearSelection() {
     for (auto nodeId : m_selectedNodes) {
         if (auto node = getNode(nodeId).lock()) {

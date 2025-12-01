@@ -23,6 +23,9 @@ class NodeGraphRenderer {
     }
     inline void clearCuttingLines() { m_cuttingsLines.clear(); }
 
+    [[nodiscard]] std::optional<size_t> getIntersectedConnectionIndex(const ImVec2& t_startPos,
+                                                                      const ImVec2& t_endPos) const;
+
   private:
     void drawNodes() const;
     void drawConnections() const;

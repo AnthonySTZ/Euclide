@@ -28,6 +28,7 @@ class NodeGraph {
 
     void addNode(const std::shared_ptr<Node>& t_node);
     void addConnection(const IOInfos& t_first, const IOInfos& t_second) const;
+    void removeConnection(const size_t t_connectionIndex);
     [[nodiscard]] inline std::weak_ptr<NodeItem> getNode(const uint32_t t_nodeId) const noexcept {
         auto it = nodes.find(t_nodeId);
         if (it == nodes.end())
