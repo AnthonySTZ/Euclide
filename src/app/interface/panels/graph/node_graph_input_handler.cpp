@@ -49,17 +49,10 @@ bool NodeGraphInputHandler::isDragging() const {
 }
 
 void NodeGraphInputHandler::handleDragging() const {
-    auto graph = m_graph.lock();
-    if (!graph)
-        return;
-
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 dragDelta = io.MousePos - io.MousePosPrev;
     if (m_draggingNode.has_value()) {
-        const uint32_t id = m_draggingNode.value();
-        if (auto node = graph->getNode(id).lock()) {
-            node->moveBy(dragDelta);
-        }
+        dragNodes(dragDelta);
     } else {
         // TODO: Box selection for example
     }
@@ -85,6 +78,25 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
     }
 
     // TODO: Box Selection
+}
+
+void NodeGraphInputHandler::dragNodes(const ImVec2& t_dragDelta) const {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    const uint32_t id = m_draggingNode.value();
+    if (auto node = graph->getNode(id).lock()) {
+        if (!node->isSelected()) {
+            node->moveBy(t_dragDelta);
+            return;
+        }
+    }
+
+    for (auto nodeId : graph->selectedNodes()) {
+        if (auto node = graph->getNode(nodeId).lock())
+            node->moveBy(t_dragDelta);
+    }
 }
 
 } // namespace butter

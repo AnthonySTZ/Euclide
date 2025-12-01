@@ -21,6 +21,8 @@ class NodeGraphInputHandler {
     void handleDragging() const;
     void handleLeftMouseRelease() const;
 
+    void dragNodes(const ImVec2& t_dragDelta) const;
+
   private:
     std::weak_ptr<NodeGraph> m_graph;
     NodeGraphRenderer* m_graphRenderer = nullptr;

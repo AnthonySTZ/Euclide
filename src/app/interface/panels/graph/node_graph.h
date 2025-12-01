@@ -25,6 +25,7 @@ class NodeGraph {
             return std::weak_ptr<NodeItem>();
         return it->second;
     }
+    [[nodiscard]] inline std::unordered_set<uint32_t> selectedNodes() const noexcept { return m_selectedNodes; }
     void addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected);
     void clearSelection();
 
