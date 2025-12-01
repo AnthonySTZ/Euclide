@@ -22,13 +22,18 @@ class NodeItem {
     /// @return True if hovered, false otherwise.
     [[nodiscard]] bool isHovered() const;
 
-    /// @brief Determine if any input slot is hovered by the mouse.
-    /// @return Index of hovered input slot, or -1 if none.
-    [[nodiscard]] int inputIOHovered() const;
+    /// @brief Returns the index of the input slot currently hovered by the mouse.
+    /// @return std::optional<uint32_t> containing the hovered input index, or std::nullopt if none.
+    [[nodiscard]] std::optional<uint32_t> inputIOHovered() const;
 
-    /// @brief Determine if any output slot is hovered by the mouse.
-    /// @return Index of hovered output slot, or -1 if none.
-    [[nodiscard]] int outputIOHovered() const;
+    /// @brief Returns the index of the output slot currently hovered by the mouse.
+    /// @return std::optional<uint32_t> containing the hovered output index, or std::nullopt if none.
+    [[nodiscard]] std::optional<uint32_t> outputIOHovered() const;
+
+    /// @brief Checks which IO slot (input or output) is currently hovered by the mouse.
+    /// @param t_ioPositions List of screen-space positions for each IO slot.
+    /// @return std::optional<uint32_t> containing the index of the hovered slot, or std::nullopt if no slot is hovered.
+    [[nodiscard]] std::optional<uint32_t> whichIOsHovered(const std::vector<ImVec2>& t_ioPositions) const;
 
     /// @brief Move the node by a delta in UI coordinates.
     /// @param t_delta Offset to apply to the node's position.
@@ -66,11 +71,6 @@ class NodeItem {
     /// @param t_numberOfInputs Number of input slots.
     /// @param t_numberOfOutputs Number of output slots.
     void drawIOs(const int t_numberOfInputs, const int t_numberOfOutputs);
-
-    /// @brief Determine which IO slot is hovered based on positions.
-    /// @param t_ioPositions Vector of IO positions to test against the mouse.
-    /// @return Index of hovered slot, or -1 if none.
-    [[nodiscard]] int isIOsHovered(const std::vector<ImVec2>& t_ioPositions) const;
 
     /// @brief Compute positions of IO slots along a line.
     /// @param t_numberOfIOs Number of slots to place.

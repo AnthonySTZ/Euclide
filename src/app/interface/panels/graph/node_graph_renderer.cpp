@@ -21,6 +21,26 @@ std::optional<uint32_t> NodeGraphRenderer::getNodeAt(ImVec2 t_mousePosition) con
     return std::nullopt;
 }
 
+std::optional<IOClickedInfos> NodeGraphRenderer::getNodeIOAt(ImVec2 t_mousePosition) const {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return std::nullopt;
+
+    for (auto [id, nodeItem] : graph->nodes) {
+        std::optional<uint32_t> inputIndex = nodeItem->inputIOHovered();
+        if (inputIndex.has_value()) {
+            return IOClickedInfos{id, IOType::INPUT, inputIndex.value()};
+        }
+
+        std::optional<uint32_t> outputIndex = nodeItem->outputIOHovered();
+        if (outputIndex.has_value()) {
+            return IOClickedInfos{id, IOType::OUTPUT, outputIndex.value()};
+        }
+    }
+
+    return std::nullopt;
+}
+
 void NodeGraphRenderer::drawConnections() const {
     auto graph = m_graph.lock();
     if (!graph)
