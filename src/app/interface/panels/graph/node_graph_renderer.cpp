@@ -4,6 +4,7 @@ namespace butter {
 
 void NodeGraphRenderer::render() const {
     drawConnections();
+    drawCuttingLines();
     drawNodes();
 }
 
@@ -69,6 +70,11 @@ void NodeGraphRenderer::drawConnections() const {
 
     if (m_currentConnection)
         m_currentConnection->draw();
+}
+
+void NodeGraphRenderer::drawCuttingLines() const {
+    for (auto& line : m_cuttingsLines)
+        line.draw();
 }
 
 void NodeGraphRenderer::drawNodes() const {

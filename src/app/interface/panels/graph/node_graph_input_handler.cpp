@@ -133,6 +133,13 @@ void NodeGraphInputHandler::handleKeyInputs() {
     if (ImGui::IsKeyReleased(ImGuiKey_R) && m_isWindowHovered) {
         graph->renderSelectedNode();
     }
+
+    if (ImGui::IsKeyDown(ImGuiKey_Y) && m_isWindowHovered) {
+        ImGuiIO& io = ImGui::GetIO();
+        m_graphRenderer->addCuttingLine(io.MousePosPrev, io.MousePos);
+    } else if (ImGui::IsKeyReleased(ImGuiKey_Y)) {
+        m_graphRenderer->clearCuttingLines();
+    }
 }
 
 } // namespace butter
