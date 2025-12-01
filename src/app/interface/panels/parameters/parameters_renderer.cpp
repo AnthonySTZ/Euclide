@@ -18,32 +18,34 @@ void ParametersRenderer::drawParameters() {
     if (!parameters)
         return;
 
+    auto node = parameters->node().lock();
+    if (!node)
+        return;
+
     FieldDrawer drawer;
-    if (auto node = parameters->node().lock()) {
-        drawTitleName(node->name());
+    drawTitleName(node->name());
 
-        if (ImGui::BeginTable("params", 2)) {
-            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
-            ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+    if (ImGui::BeginTable("params", 2)) {
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
 
-            for (const auto& [name, field] : node->fields()) {
-                const NodeFieldMetadata& meta = field->metadata();
-                if (meta.hidden) {
-                    continue;
-                }
-                std::string displayName = meta.displayName.value_or(name);
-
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::TextUnformatted(displayName.c_str());
-
-                ImGui::TableSetColumnIndex(1);
-                ImGui::SetNextItemWidth(-1);
-                field->accept(name, drawer);
+        for (const auto& [name, field] : node->fields()) {
+            const NodeFieldMetadata& meta = field->metadata();
+            if (meta.hidden) {
+                continue;
             }
+            std::string displayName = meta.displayName.value_or(name);
 
-            ImGui::EndTable();
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted(displayName.c_str());
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetNextItemWidth(-1);
+            field->accept(name, drawer);
         }
+
+        ImGui::EndTable();
     }
 }
 
