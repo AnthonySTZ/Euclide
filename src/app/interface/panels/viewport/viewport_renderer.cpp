@@ -12,7 +12,7 @@ ViewportRenderer::ViewportRenderer(const std::weak_ptr<Viewport> t_viewport)
 void ViewportRenderer::render() {
     checkForResize();
 
-    m_windowPosition = ImGui::GetCursorPos();
+    m_windowPosition = ImGui::GetWindowPos();
     draw();
     drawInfos();
 }

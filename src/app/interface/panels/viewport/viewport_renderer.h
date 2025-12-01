@@ -51,9 +51,9 @@ class ViewportRenderer {
     uint32_t m_viewportHeight = 0; ///< Current viewport height.
 
     ImVec2 m_windowPosition{0, 0}; ///< Start position where info text is drawn.
-    ImVec2 m_infoOffset{10, 10};   ///< Vertical offset for each info line.
+    ImVec2 m_infoOffset{0, 0};     ///< Vertical offset for each info line.
 
-    static constexpr ImVec2 INFO_POS = ImVec2(10, 10);
+    static constexpr ImVec2 INFO_POS = ImVec2(10, 30);
     static constexpr ImU32 INFO_COLOR = IM_COL32(255, 255, 255, 255);
     static constexpr ImVec2 INFO_PADDING = ImVec2(0, 25);
 };
