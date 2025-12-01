@@ -44,6 +44,7 @@ void NodeGraph::addNodeToSelection(const uint32_t t_nodeId, const bool t_removeI
 
     m_selectedNodes.insert(t_nodeId);
     nodeItem->setSelected(true);
+    m_lastNodeSelected = nodeItem;
     onNodeSelected.notify(nodeItem->node());
 }
 
@@ -76,6 +77,17 @@ void NodeGraph::clearSelection() {
     }
     m_selectedNodes.clear();
     onNodeSelected.notify(std::weak_ptr<Node>());
+}
+
+void NodeGraph::renderSelectedNode() {
+    auto scene = m_scene.lock();
+    if (!scene)
+        return;
+    auto nodeItem = m_lastNodeSelected.lock();
+    if (!nodeItem)
+        return;
+
+    scene->cookNode(nodeItem->node(), 0);
 }
 
 void NodeGraph::onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node) {

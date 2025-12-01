@@ -15,6 +15,7 @@ class NodeGraphInputHandler {
   private:
     void handleContextMenu();
     void handleMouseInputs();
+    void handleKeyInputs();
 
     [[nodiscard]] bool isDragging() const;
 
@@ -26,6 +27,8 @@ class NodeGraphInputHandler {
   private:
     std::weak_ptr<NodeGraph> m_graph;
     NodeGraphRenderer* m_graphRenderer = nullptr;
+
+    bool m_isWindowHovered = false;
 
     bool m_mouseButtonLeftDown = false;
     bool m_isMouseDrag = false;

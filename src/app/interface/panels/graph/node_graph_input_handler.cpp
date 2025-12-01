@@ -5,8 +5,11 @@
 namespace butter {
 
 void NodeGraphInputHandler::pollEvents() {
+    m_isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
     handleContextMenu();
     handleMouseInputs();
+    handleKeyInputs();
 }
 
 void NodeGraphInputHandler::handleContextMenu() {
@@ -25,9 +28,7 @@ void NodeGraphInputHandler::handleMouseInputs() {
     if (ImGui::IsPopupOpen(NodeGraphMenu::CONTEXT_MENU_NAME.data()))
         return;
 
-    const bool isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && isWindowHovered) {
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_isWindowHovered) {
         ImVec2 mousePos = ImGui::GetMousePos();
         m_mouseButtonLeftDown = true;
         m_ioClicked = m_graphRenderer->getNodeIOAt(mousePos);
@@ -118,6 +119,19 @@ void NodeGraphInputHandler::dragNodes(const ImVec2& t_dragDelta) const {
     for (auto nodeId : graph->selectedNodes()) {
         if (auto node = graph->getNode(nodeId).lock())
             node->moveBy(t_dragDelta);
+    }
+}
+
+void NodeGraphInputHandler::handleKeyInputs() {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    if (ImGui::IsPopupOpen(NodeGraphMenu::CONTEXT_MENU_NAME.data()))
+        return;
+
+    if (ImGui::IsKeyReleased(ImGuiKey_R) && m_isWindowHovered) {
+        graph->renderSelectedNode();
     }
 }
 

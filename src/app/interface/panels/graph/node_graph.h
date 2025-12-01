@@ -27,6 +27,7 @@ class NodeGraph {
     ~NodeGraph() = default;
 
     void addNode(const std::shared_ptr<Node>& t_node);
+    void addConnection(const IOInfos& t_first, const IOInfos& t_second) const;
     [[nodiscard]] inline std::weak_ptr<NodeItem> getNode(const uint32_t t_nodeId) const noexcept {
         auto it = nodes.find(t_nodeId);
         if (it == nodes.end())
@@ -36,8 +37,7 @@ class NodeGraph {
     [[nodiscard]] inline std::unordered_set<uint32_t> selectedNodes() const noexcept { return m_selectedNodes; }
     void addNodeToSelection(const uint32_t t_nodeId, const bool t_removeIfAlreadySelected);
     void clearSelection();
-
-    void addConnection(const IOInfos& t_first, const IOInfos& t_second) const;
+    void renderSelectedNode();
 
   public:
     std::vector<ConnectionItem> connections;
@@ -53,6 +53,7 @@ class NodeGraph {
 
   private:
     std::unordered_set<uint32_t> m_selectedNodes;
+    std::weak_ptr<NodeItem> m_lastNodeSelected;
     std::weak_ptr<Scene> m_scene;
 };
 
