@@ -94,7 +94,7 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
         return;
     }
 
-    if (!m_isMouseDrag) {
+    if (!m_isMouseDrag && m_isWindowHovered) {
         graph->clearSelection();
         return;
     }
