@@ -32,6 +32,11 @@ struct NodeGraphInteraction {
                                                                              const ImVec2& t_startPos,
                                                                              const ImVec2& t_endPos);
 
+    /// @brief Returns Nodes IDs that are in a given bounding box.
+    /// @param t_graph Weak pointer to the NodeGraph to query.
+    /// @param t_startPos Starting point of the bounding box.
+    /// @param t_endPos Ending point of the bounding box.
+    /// @return Ids of the nodes inside the box.
     [[nodiscard]] static std::vector<uint32_t> getNodesInRect(const std::weak_ptr<NodeGraph> t_graph,
                                                               const ImVec2& t_startPos, const ImVec2& t_endPos);
 };
