@@ -37,17 +37,16 @@ void NodeGraphInputHandler::handleMouseInputs() {
             m_graphRenderer->startConnection(m_ioClicked.value());
         } else {
             m_draggingNode = NodeGraphInteraction::getNodeAt(m_graph, mousePos);
+            if (!m_draggingNode.has_value()) {
+                m_isBoxSelecting = true;
+                m_boxStart = mousePos;
+            }
         }
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
         handleLeftMouseRelease();
-
-        m_mouseButtonLeftDown = false;
-        m_isMouseDrag = false;
-        m_draggingNode = std::nullopt;
-        m_ioClicked = std::nullopt;
-        m_graphRenderer->endConnection();
+        resetMouseInteraction();
     }
 
     if (m_isMouseDrag) {
@@ -68,7 +67,7 @@ void NodeGraphInputHandler::handleDragging() const {
     if (m_draggingNode.has_value()) {
         dragNodes(dragDelta);
     } else {
-        // TODO: Box selection for example
+        m_graphRenderer->drawBoxSelection(m_boxStart, io.MousePos);
     }
 }
 
@@ -119,6 +118,15 @@ void NodeGraphInputHandler::dragNodes(const ImVec2& t_dragDelta) const {
         if (auto node = graph->getNode(nodeId).lock())
             node->moveBy(t_dragDelta);
     }
+}
+
+void NodeGraphInputHandler::resetMouseInteraction() {
+    m_mouseButtonLeftDown = false;
+    m_isBoxSelecting = false;
+    m_isMouseDrag = false;
+    m_draggingNode = std::nullopt;
+    m_ioClicked = std::nullopt;
+    m_graphRenderer->endConnection();
 }
 
 void NodeGraphInputHandler::handleKeyInputs() {

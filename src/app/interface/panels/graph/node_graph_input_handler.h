@@ -49,6 +49,9 @@ class NodeGraphInputHandler {
     /// @param t_dragDelta The movement vector to apply to nodes.
     void dragNodes(const ImVec2& t_dragDelta) const;
 
+    /// @brief Reset all mouse variables when mouse is released.
+    void resetMouseInteraction();
+
   private:
     std::weak_ptr<NodeGraph> m_graph;             ///< Weak pointer to the NodeGraph this handler operates on.
     NodeGraphRenderer* m_graphRenderer = nullptr; ///< Pointer to the renderer
@@ -57,6 +60,8 @@ class NodeGraphInputHandler {
 
     bool m_mouseButtonLeftDown = false;                    ///< True if the left mouse button is currently held.
     bool m_isMouseDrag = false;                            ///< True if the user is dragging nodes.
+    bool m_isBoxSelecting = false;                         ///< True if the user is box selecting.
+    ImVec2 m_boxStart{};                                   ///< Start position of the box selection.
     std::optional<uint32_t> m_draggingNode = std::nullopt; ///< ID of the node currently being dragged, if any.
     std::optional<IOInfos> m_ioClicked = std::nullopt;     ///< Information about an IO slot clicked for connections.
 

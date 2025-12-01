@@ -43,6 +43,26 @@ void NodeGraphRenderer::drawCuttingLines() const {
         line.draw();
 }
 
+void NodeGraphRenderer::drawBoxSelection(const ImVec2& t_startPos, const ImVec2& t_endPos) const {
+    ImDrawList* drawlist = ImGui::GetWindowDrawList();
+    if (!drawlist)
+        return;
+
+    ImVec2 start = t_startPos;
+    ImVec2 end = t_endPos;
+
+    if (t_startPos.x > t_endPos.x) {
+        start.x = t_endPos.x;
+        end.x = t_startPos.x;
+    }
+    if (t_startPos.y > t_endPos.y) {
+        start.y = t_endPos.y;
+        end.y = t_startPos.y;
+    }
+
+    drawlist->AddRectFilled(start, end, SELECTION_BOX_COLOR, SELECTION_BOX_ROUNDING);
+}
+
 void NodeGraphRenderer::drawNodes() const {
     auto graph = m_graph.lock();
     if (!graph)

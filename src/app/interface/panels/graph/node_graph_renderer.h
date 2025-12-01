@@ -35,6 +35,11 @@ class NodeGraphRenderer {
     /// @brief Clears all currently drawn cutting lines.
     inline void clearCuttingLines() { m_cuttingsLines.clear(); }
 
+    /// @brief Draw a box selection
+    /// @param t_startPos Start position of the box
+    /// @param t_endPos End position of the box
+    void drawBoxSelection(const ImVec2& t_startPos, const ImVec2& t_endPos) const;
+
   private:
     /// @brief Draws all nodes in the graph.
     void drawNodes() const;
@@ -50,6 +55,9 @@ class NodeGraphRenderer {
 
     std::unique_ptr<ConnectionItem> m_currentConnection; ///< Currently active connection being dragged.
     FixedQueue<CuttingLine> m_cuttingsLines{200};        ///< Temporary cutting lines for visual feedback.
+
+    static constexpr ImU32 SELECTION_BOX_COLOR = IM_COL32(0, 154, 255, 80);
+    static constexpr float SELECTION_BOX_ROUNDING = 2.0f;
 };
 
 } // namespace butter
