@@ -22,7 +22,6 @@ class ViewportPanel : public Panel {
     ViewportPanel(std::weak_ptr<Scene> scene);
 
     /// @brief Draw the viewport panel UI.
-    ///
     /// Handles user input → then renders the scene.
     void draw() override;
 
