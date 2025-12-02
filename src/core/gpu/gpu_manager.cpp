@@ -20,20 +20,22 @@ GPUManager::~GPUManager() {
 }
 
 void GPUManager::initVulkan() {
-    vk::ApplicationInfo AppInfo{
-        "Euclide",         // Application Name
-        1,                 // Application Version
-        nullptr,           // Engine Name or nullptr
-        0,                 // Engine Version
-        VK_API_VERSION_1_1 // Vulkan API version
-    };
+    VkApplicationInfo appInfo{}; // This struct is optional and store some informations about the app
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Euclide";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "Euclide";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    const std::vector<const char*> Layers = {"VK_LAYER_KHRONOS_validation"};
-    vk::InstanceCreateInfo InstanceCreateInfo(vk::InstanceCreateFlags(), // Flags
-                                              &AppInfo,                  // Application Info
-                                              Layers,                    // Layers
-                                              {});                       // Extensions
-    m_vkInstance = vk::createInstance(InstanceCreateInfo);
+    const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+    VkInstanceCreateInfo createInfo{}; // Not optional, store info to create the Vulkan Instance
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+    createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+    createInfo.ppEnabledLayerNames = validationLayers.data();
+
+    vkCreateInstance(&createInfo, nullptr, &m_vkInstance);
 }
 
 } // namespace euclide
