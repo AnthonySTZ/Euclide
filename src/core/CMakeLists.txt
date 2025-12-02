@@ -21,11 +21,17 @@ target_include_directories(core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(core PUBLIC)
+find_package(Vulkan REQUIRED)
+
+target_link_libraries(core PUBLIC Vulkan::Vulkan)
+
 
 option(USE_SIMD "Enable SIMD optimizations" OFF)
-
 if (USE_SIMD)
     target_compile_definitions(core PUBLIC USE_SIMD)
-    target_compile_options(core PUBLIC -march=native)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(core PUBLIC -march=native)
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(core PUBLIC /arch:AVX2) # or appropriate MSVC flag
+    endif()
 endif()
