@@ -7,13 +7,14 @@ namespace euclide {
 
 class GPUManager {
   public:
-    static inline GPUManager& getInstance() {
-        static GPUManager instance;
-        return instance;
-    }
+    /// @brief Get the global GPUManager instance to avoid recreating a VkInstance or pass it for all nodes,...
+    /// @return GPUManager global instance as a reference
+    static inline GPUManager& getInstance();
+
+    VkInstance vkInstance;
 
   private:
-    GPUManager(){};
+    GPUManager();
     ~GPUManager(){};
     GPUManager(const GPUManager&) = delete;
     GPUManager& operator=(const GPUManager&) = delete;

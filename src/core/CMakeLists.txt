@@ -1,4 +1,7 @@
 add_library(core STATIC
+
+    gpu/gpu_manager.cpp
+
     utils/timer.cpp
 
     geometry/mesh.cpp
