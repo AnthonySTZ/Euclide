@@ -9,7 +9,10 @@ namespace euclide {
 class GPUDevice {
   public:
     GPUDevice(VkInstance& t_vkInstance);
-    ~GPUDevice() = default;
+    ~GPUDevice();
+
+    /// @brief Destroy the logical device if exists
+    void destroy();
 
     /// @brief Returns the used physical device
     /// @return `VkPhysicalDevice` choosen based on its properties
@@ -32,6 +35,8 @@ class GPUDevice {
     [[nodiscard]] std::optional<uint32_t> findPhysicalQueueFamilies(const VkQueueFlagBits t_flags) const {
         return findQueueFamilies(m_physicalDevice, t_flags);
     }
+
+    void createComputeLogicalDevice();
 
   private:
     void pickPhysicalDevice();

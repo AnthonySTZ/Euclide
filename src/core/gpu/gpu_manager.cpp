@@ -13,6 +13,7 @@ GPUManager::GPUManager() {
 }
 
 GPUManager::~GPUManager() {
+    m_device->destroy();
     if (m_vkInstance != VK_NULL_HANDLE) {
         vkDestroyInstance(m_vkInstance, nullptr);
     }
