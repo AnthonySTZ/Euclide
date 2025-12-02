@@ -31,6 +31,9 @@ class NodeGraphInputHandler {
     /// @brief Handles all mouse input events including clicks, releases, and dragging.
     void handleMouseInputs();
 
+    /// @brief Handle Left Mouse clicked, if its on a node, io, ...
+    void handleLeftMouseClicked();
+
     /// @brief Handles keyboard input events related to node operations (e.g., cut connections, render selected node).
     void handleKeyInputs();
 

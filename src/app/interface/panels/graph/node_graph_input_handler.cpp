@@ -30,18 +30,7 @@ void NodeGraphInputHandler::handleMouseInputs() {
         return;
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_isWindowHovered) {
-        ImVec2 mousePos = ImGui::GetMousePos();
-        m_mouseButtonLeftDown = true;
-        m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos);
-        if (m_ioClicked.has_value()) {
-            m_graphRenderer->startConnection(m_ioClicked.value());
-        } else {
-            m_draggingNode = NodeGraphInteraction::getNodeAt(m_graph, mousePos);
-            if (!m_draggingNode.has_value()) {
-                m_isBoxSelecting = true;
-                m_boxStart = mousePos;
-            }
-        }
+        handleLeftMouseClicked();
     }
 
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
@@ -54,6 +43,24 @@ void NodeGraphInputHandler::handleMouseInputs() {
     } else if (m_mouseButtonLeftDown && isDragging()) {
         m_isMouseDrag = true;
     }
+}
+
+void NodeGraphInputHandler::handleLeftMouseClicked() {
+    ImVec2 mousePos = ImGui::GetMousePos();
+    m_mouseButtonLeftDown = true;
+
+    m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos);
+    if (m_ioClicked.has_value()) { // Check if user clicked on IO
+        m_graphRenderer->startConnection(m_ioClicked.value());
+        return;
+    }
+
+    m_draggingNode = NodeGraphInteraction::getNodeAt(m_graph, mousePos);
+    if (m_draggingNode.has_value()) // Check if user clicked on a Node
+        return;
+
+    m_isBoxSelecting = true;
+    m_boxStart = mousePos;
 }
 
 bool NodeGraphInputHandler::isDragging() const {
