@@ -60,6 +60,7 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
     // Base on paper: 'A Halfedge Refinement Rule for Parallel Catmull-Clark Subdivision'
     // `https://onrendering.com/data/papers/catmark/HalfedgeCatmullClark.pdf`
     for (size_t iteration = 0; iteration < t_settings.divisions; ++iteration) {
+        // TODO: Check multi threading, simd, etc..
         auto& points = t_mesh.points;
         const auto& primitives = t_mesh.primitives;
 
