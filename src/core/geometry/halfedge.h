@@ -63,4 +63,14 @@ inline void radixSortEdges(std::vector<Edge>& edges) {
     }
 }
 
+inline uint32_t getNumberOfEdgesFromHalfedges(const std::vector<HalfEdge>& t_halfedges) {
+    uint32_t numOfEdges = 0;
+    for (size_t h = 0; h < t_halfedges.size(); ++h) {
+        const HalfEdge& hd = t_halfedges[h];
+        if (hd.twin > h)
+            numOfEdges++;
+    }
+    return numOfEdges;
+}
+
 } // namespace euclide

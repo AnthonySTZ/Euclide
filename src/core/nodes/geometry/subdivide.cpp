@@ -64,37 +64,14 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         auto& points = t_mesh.points;
         const auto& primitives = t_mesh.primitives;
 
-        const std::vector<HalfEdge> halfEdges_d = t_mesh.computeHalfEdges();
-        size_t numOfEdges = 0;
-        for (size_t h = 0; h < halfEdges_d.size(); ++h) {
-            const HalfEdge& hd = halfEdges_d[h];
-            if (hd.twin > h)
-                numOfEdges++;
-        }
-        const size_t numOfPoints = points.size();
-        const size_t numOfPrims = primitives.size();
+        const std::vector<HalfEdge> halfedges_d = t_mesh.computeHalfEdges();
+        const uint32_t numOfEdges = getNumberOfEdgesFromHalfedges(halfedges_d);
+        const uint32_t numOfPoints = points.size();
+        const uint32_t numOfPrims = primitives.size();
 
         // Halfedge refinement
-        std::vector<HalfEdge> halfEdges_d1(halfEdges_d.size() * 4); // Next division
-        for (size_t h = 0; h < halfEdges_d.size(); ++h) {
-            const HalfEdge& hd = halfEdges_d[h];
-            const size_t newFaceId = 4 * h;
-
-            halfEdges_d1[newFaceId].next = newFaceId + 1;
-            halfEdges_d1[newFaceId + 1].next = newFaceId + 2;
-            halfEdges_d1[newFaceId + 2].next = newFaceId + 3;
-            halfEdges_d1[newFaceId + 3].next = newFaceId;
-
-            halfEdges_d1[newFaceId].origin = hd.origin;
-            halfEdges_d1[newFaceId + 1].origin = numOfPoints + numOfPrims + hd.edge;
-            halfEdges_d1[newFaceId + 2].origin = numOfPoints + hd.face;
-            halfEdges_d1[newFaceId + 3].origin = numOfPoints + numOfPrims + halfEdges_d[hd.prev].edge;
-
-            halfEdges_d1[newFaceId].face = h;
-            halfEdges_d1[newFaceId + 1].face = h;
-            halfEdges_d1[newFaceId + 2].face = h;
-            halfEdges_d1[newFaceId + 3].face = h;
-        }
+        std::vector<HalfEdge> halfedges_d1;
+        halfedgeRefinement(halfedges_d1, halfedges_d, numOfPoints, numOfPrims);
 
         // Face points
         Points points_d1{};
@@ -107,8 +84,8 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         std::fill(std::begin(points_d1.normalY), std::end(points_d1.normalY), 1.0);
         std::fill(std::begin(points_d1.normalZ), std::end(points_d1.normalZ), 0.0);
 
-        for (size_t h = 0; h < halfEdges_d.size(); ++h) {
-            const HalfEdge& hd = halfEdges_d[h];
+        for (size_t h = 0; h < halfedges_d.size(); ++h) {
+            const HalfEdge& hd = halfedges_d[h];
             const float factor = 1.0f / static_cast<float>(primitives[hd.face].numVertices);
             const uint32_t i = numOfPoints + hd.face;
             points_d1.posX[i] += points.posX[hd.origin] * factor;
@@ -117,12 +94,12 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         }
 
         // Smooth edge points
-        for (uint32_t h = 0; h < halfEdges_d.size(); ++h) {
-            const HalfEdge& hd = halfEdges_d[h];
+        for (uint32_t h = 0; h < halfedges_d.size(); ++h) {
+            const HalfEdge& hd = halfedges_d[h];
             const uint32_t i = numOfPoints + hd.face;
             const size_t j = numOfPoints + numOfPrims + hd.edge;
             if (hd.twin == HalfEdge::NO_TWIN) {
-                const uint32_t next = halfEdges_d[hd.next].origin;
+                const uint32_t next = halfedges_d[hd.next].origin;
                 points_d1.posX[j] = (points.posX[hd.origin] + points.posX[next]) * 0.5f;
                 points_d1.posY[j] = (points.posY[hd.origin] + points.posY[next]) * 0.5f;
                 points_d1.posZ[j] = (points.posZ[hd.origin] + points.posZ[next]) * 0.5f;
@@ -135,15 +112,15 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         }
 
         // Smooth vertex points
-        for (uint32_t h = 0; h < halfEdges_d.size(); ++h) {
-            const HalfEdge& hd = halfEdges_d[h];
-            if (isOnBorder(h, halfEdges_d)) {
+        for (uint32_t h = 0; h < halfedges_d.size(); ++h) {
+            const HalfEdge& hd = halfedges_d[h];
+            if (isOnBorder(h, halfedges_d)) {
                 points_d1.posX[hd.origin] = points.posX[hd.origin];
                 points_d1.posY[hd.origin] = points.posY[hd.origin];
                 points_d1.posZ[hd.origin] = points.posZ[hd.origin];
                 continue;
             }
-            const float n = static_cast<float>(valence(h, halfEdges_d));
+            const float n = static_cast<float>(valence(h, halfedges_d));
             const float factor = 1.0f / (n * n);
             const float n_3 = n - 3;
             const uint32_t i = numOfPoints + hd.face;
@@ -156,7 +133,31 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
                 (4.0f * points_d1.posZ[j] - points_d1.posZ[i] + n_3 * points.posZ[hd.origin]) * factor;
         }
 
-        t_mesh.reconstructFromHalfEdges(halfEdges_d1, points_d1);
+        t_mesh.reconstructFromHalfEdges(halfedges_d1, points_d1);
+    }
+}
+
+void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
+                                   const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
+    t_halfedges_d1.resize(t_halfedges_d.size() * 4); // Next division
+    for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
+        const HalfEdge& hd = t_halfedges_d[h];
+        const size_t newFaceId = 4 * h;
+
+        t_halfedges_d1[newFaceId].next = newFaceId + 1;
+        t_halfedges_d1[newFaceId + 1].next = newFaceId + 2;
+        t_halfedges_d1[newFaceId + 2].next = newFaceId + 3;
+        t_halfedges_d1[newFaceId + 3].next = newFaceId;
+
+        t_halfedges_d1[newFaceId].origin = hd.origin;
+        t_halfedges_d1[newFaceId + 1].origin = t_numOfPoints + t_numOfPrims + hd.edge;
+        t_halfedges_d1[newFaceId + 2].origin = t_numOfPoints + hd.face;
+        t_halfedges_d1[newFaceId + 3].origin = t_numOfPoints + t_numOfPrims + t_halfedges_d[hd.prev].edge;
+
+        t_halfedges_d1[newFaceId].face = h;
+        t_halfedges_d1[newFaceId + 1].face = h;
+        t_halfedges_d1[newFaceId + 2].face = h;
+        t_halfedges_d1[newFaceId + 3].face = h;
     }
 }
 

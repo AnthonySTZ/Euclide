@@ -28,6 +28,14 @@ class Subdivide : public Node {
     /// @return Shared pointer to the subdivided output mesh.
     std::shared_ptr<Mesh> compute(const size_t t_index,
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
+
+    /// @brief Compute Halfedge refinement for the next division
+    /// @param t_halfedges_d1 Next division halfedge vector (should be empty)
+    /// @param t_halfedges_d Current halfedge division
+    /// @param t_numOfPoints Current number of points
+    /// @param t_numOfPrims Current number of primitives
+    static void halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
+                                   const uint32_t t_numOfPoints, const uint32_t t_numOfPrims);
 };
 
 /// @brief Returns the valence (number of connected edges) of a point in a halfedge mesh.
