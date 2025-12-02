@@ -1,5 +1,6 @@
 add_library(core STATIC
 
+    gpu/gpu_device.cpp
     gpu/gpu_manager.cpp
 
     utils/timer.cpp

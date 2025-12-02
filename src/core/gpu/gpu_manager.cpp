@@ -1,7 +1,5 @@
 #include "gpu_manager.h"
 
-#include <iostream>
-
 namespace euclide {
 
 GPUManager& GPUManager::getInstance() {
@@ -11,7 +9,13 @@ GPUManager& GPUManager::getInstance() {
 
 GPUManager::GPUManager() {
     initVulkan();
-    pickPhysicalDevice();
+    m_device = std::make_unique<GPUDevice>(m_vkInstance);
+}
+
+GPUManager::~GPUManager() {
+    if (m_vkInstance != VK_NULL_HANDLE) {
+        vkDestroyInstance(m_vkInstance, nullptr);
+    }
 }
 
 void GPUManager::initVulkan() {
@@ -28,28 +32,7 @@ void GPUManager::initVulkan() {
                                               &AppInfo,                  // Application Info
                                               Layers,                    // Layers
                                               {});                       // Extensions
-    vkInstance = vk::createInstance(InstanceCreateInfo);
-}
-
-void GPUManager::pickPhysicalDevice() {
-    uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
-    if (deviceCount == 0) {
-        throw std::runtime_error("failed to find GPUs with Vulkan support!");
-    }
-
-    std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(vkInstance, &deviceCount, devices.data());
-
-    // TODO: Check which device to choose, for now I stick with the first one
-    physicalDevice = devices[0];
-
-    if (physicalDevice == VK_NULL_HANDLE) {
-        throw std::runtime_error("failed to find a suitable GPU!");
-    }
-
-    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
-    std::cout << "Current Physical Device used : " << physicalDeviceProperties.deviceName << '\n';
+    m_vkInstance = vk::createInstance(InstanceCreateInfo);
 }
 
 } // namespace euclide
