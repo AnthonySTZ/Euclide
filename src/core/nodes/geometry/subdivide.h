@@ -30,12 +30,22 @@ class Subdivide : public Node {
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 
     /// @brief Compute Halfedge refinement for the next division
-    /// @param t_halfedges_d1 Next division halfedge vector (should be empty)
+    /// @param t_halfedges_d1 Next division halfedge vector
     /// @param t_halfedges_d Current halfedge division
     /// @param t_numOfPoints Current number of points
     /// @param t_numOfPrims Current number of primitives
     static void halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
                                    const uint32_t t_numOfPoints, const uint32_t t_numOfPrims);
+
+    /// @brief Compute Face points which are the average pos of all points in each face
+    /// @param t_halfedges_d Current halfedge division
+    /// @param t_points_d1 Next division points
+    /// @param t_points_d Current division points
+    /// @param t_primitives_d Current division primitives
+    /// @param t_numOfPoints Current number of points
+    static void computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
+                                  const Points& t_points_d, const std::vector<Primitive>& t_primitives_d,
+                                  const uint32_t t_numOfPoints);
 };
 
 /// @brief Returns the valence (number of connected edges) of a point in a halfedge mesh.
