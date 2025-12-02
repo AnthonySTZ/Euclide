@@ -89,22 +89,7 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         computeFacePoints(halfedges_d, points_d1, points_d, primitives_d, numOfPoints);
 
         // Smooth edge points
-        for (uint32_t h = 0; h < halfedges_d.size(); ++h) {
-            const HalfEdge& hd = halfedges_d[h];
-            const uint32_t i = numOfPoints + hd.face;
-            const size_t j = numOfPoints + numOfPrims + hd.edge;
-            if (hd.twin == HalfEdge::NO_TWIN) {
-                const uint32_t next = halfedges_d[hd.next].origin;
-                points_d1.posX[j] = (points_d.posX[hd.origin] + points_d.posX[next]) * 0.5f;
-                points_d1.posY[j] = (points_d.posY[hd.origin] + points_d.posY[next]) * 0.5f;
-                points_d1.posZ[j] = (points_d.posZ[hd.origin] + points_d.posZ[next]) * 0.5f;
-                continue;
-            }
-
-            points_d1.posX[j] += (points_d.posX[hd.origin] + points_d1.posX[i]) * 0.25f;
-            points_d1.posY[j] += (points_d.posY[hd.origin] + points_d1.posY[i]) * 0.25f;
-            points_d1.posZ[j] += (points_d.posZ[hd.origin] + points_d1.posZ[i]) * 0.25f;
-        }
+        smoothEdgePoints(halfedges_d, points_d1, points_d, numOfPoints, numOfPrims);
 
         // Smooth vertex points
         for (uint32_t h = 0; h < halfedges_d.size(); ++h) {
@@ -165,6 +150,26 @@ void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Po
         t_points_d1.posX[i] += t_points_d.posX[hd.origin] * factor;
         t_points_d1.posY[i] += t_points_d.posY[hd.origin] * factor;
         t_points_d1.posZ[i] += t_points_d.posZ[hd.origin] * factor;
+    }
+}
+
+void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
+                                 const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
+    for (uint32_t h = 0; h < t_halfedges_d.size(); ++h) {
+        const HalfEdge& hd = t_halfedges_d[h];
+        const uint32_t i = t_numOfPoints + hd.face;
+        const size_t j = t_numOfPoints + t_numOfPrims + hd.edge;
+        if (hd.twin == HalfEdge::NO_TWIN) {
+            const uint32_t next = t_halfedges_d[hd.next].origin;
+            t_points_d1.posX[j] = (t_points_d.posX[hd.origin] + t_points_d.posX[next]) * 0.5f;
+            t_points_d1.posY[j] = (t_points_d.posY[hd.origin] + t_points_d.posY[next]) * 0.5f;
+            t_points_d1.posZ[j] = (t_points_d.posZ[hd.origin] + t_points_d.posZ[next]) * 0.5f;
+            continue;
+        }
+
+        t_points_d1.posX[j] += (t_points_d.posX[hd.origin] + t_points_d1.posX[i]) * 0.25f;
+        t_points_d1.posY[j] += (t_points_d.posY[hd.origin] + t_points_d1.posY[i]) * 0.25f;
+        t_points_d1.posZ[j] += (t_points_d.posZ[hd.origin] + t_points_d1.posZ[i]) * 0.25f;
     }
 }
 
