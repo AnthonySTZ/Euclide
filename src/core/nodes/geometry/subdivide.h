@@ -55,6 +55,15 @@ class Subdivide : public Node {
     /// @param t_numOfPrims Current number of prims
     static void smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
                                  const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims);
+
+    /// @brief Smooth vertex points
+    /// @param t_halfedges_d Current halfedge division
+    /// @param t_points_d1 Next division points
+    /// @param t_points_d Current division points
+    /// @param t_numOfPoints Current number of points
+    /// @param t_numOfPrims Current number of prims
+    static void smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
+                                   const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims);
 };
 
 /// @brief Returns the valence (number of connected edges) of a point in a halfedge mesh.

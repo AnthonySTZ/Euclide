@@ -92,26 +92,7 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         smoothEdgePoints(halfedges_d, points_d1, points_d, numOfPoints, numOfPrims);
 
         // Smooth vertex points
-        for (uint32_t h = 0; h < halfedges_d.size(); ++h) {
-            const HalfEdge& hd = halfedges_d[h];
-            if (isOnBorder(h, halfedges_d)) {
-                points_d1.posX[hd.origin] = points_d.posX[hd.origin];
-                points_d1.posY[hd.origin] = points_d.posY[hd.origin];
-                points_d1.posZ[hd.origin] = points_d.posZ[hd.origin];
-                continue;
-            }
-            const float n = static_cast<float>(valence(h, halfedges_d));
-            const float factor = 1.0f / (n * n);
-            const float n_3 = n - 3;
-            const uint32_t i = numOfPoints + hd.face;
-            const size_t j = numOfPoints + numOfPrims + hd.edge;
-            points_d1.posX[hd.origin] +=
-                (4.0f * points_d1.posX[j] - points_d1.posX[i] + n_3 * points_d.posX[hd.origin]) * factor;
-            points_d1.posY[hd.origin] +=
-                (4.0f * points_d1.posY[j] - points_d1.posY[i] + n_3 * points_d.posY[hd.origin]) * factor;
-            points_d1.posZ[hd.origin] +=
-                (4.0f * points_d1.posZ[j] - points_d1.posZ[i] + n_3 * points_d.posZ[hd.origin]) * factor;
-        }
+        smoothVertexPoints(halfedges_d, points_d1, points_d, numOfPoints, numOfPrims);
 
         t_mesh.reconstructFromHalfEdges(halfedges_d1, points_d1);
     }
@@ -170,6 +151,31 @@ void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Poi
         t_points_d1.posX[j] += (t_points_d.posX[hd.origin] + t_points_d1.posX[i]) * 0.25f;
         t_points_d1.posY[j] += (t_points_d.posY[hd.origin] + t_points_d1.posY[i]) * 0.25f;
         t_points_d1.posZ[j] += (t_points_d.posZ[hd.origin] + t_points_d1.posZ[i]) * 0.25f;
+    }
+}
+
+void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
+                                   const Points& t_points_d, const uint32_t t_numOfPoints,
+                                   const uint32_t t_numOfPrims) {
+    for (uint32_t h = 0; h < t_halfedges_d.size(); ++h) {
+        const HalfEdge& hd = t_halfedges_d[h];
+        if (isOnBorder(h, t_halfedges_d)) {
+            t_points_d1.posX[hd.origin] = t_points_d.posX[hd.origin];
+            t_points_d1.posY[hd.origin] = t_points_d.posY[hd.origin];
+            t_points_d1.posZ[hd.origin] = t_points_d.posZ[hd.origin];
+            continue;
+        }
+        const float n = static_cast<float>(valence(h, t_halfedges_d));
+        const float factor = 1.0f / (n * n);
+        const float n_3 = n - 3;
+        const uint32_t i = t_numOfPoints + hd.face;
+        const size_t j = t_numOfPoints + t_numOfPrims + hd.edge;
+        t_points_d1.posX[hd.origin] +=
+            (4.0f * t_points_d1.posX[j] - t_points_d1.posX[i] + n_3 * t_points_d.posX[hd.origin]) * factor;
+        t_points_d1.posY[hd.origin] +=
+            (4.0f * t_points_d1.posY[j] - t_points_d1.posY[i] + n_3 * t_points_d.posY[hd.origin]) * factor;
+        t_points_d1.posZ[hd.origin] +=
+            (4.0f * t_points_d1.posZ[j] - t_points_d1.posZ[i] + n_3 * t_points_d.posZ[hd.origin]) * factor;
     }
 }
 
