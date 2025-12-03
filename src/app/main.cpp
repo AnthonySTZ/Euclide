@@ -34,7 +34,18 @@ void testGpu() {
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
 
-        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv"};
+        std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBinding(2);
+        descriptorSetLayoutBinding[0].binding = 0;
+        descriptorSetLayoutBinding[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        descriptorSetLayoutBinding[0].descriptorCount = 1;
+        descriptorSetLayoutBinding[0].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        descriptorSetLayoutBinding[1].binding = 1;
+        descriptorSetLayoutBinding[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        descriptorSetLayoutBinding[1].descriptorCount = 1;
+        descriptorSetLayoutBinding[1].stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv", descriptorSetLayoutBinding};
     }
 }
 
