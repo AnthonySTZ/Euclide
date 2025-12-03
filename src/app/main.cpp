@@ -2,6 +2,7 @@
 
 #include "gpu/gpu_manager.h"
 #include "gpu/gpu_buffer.h"
+#include "gpu/gpu_pipeline.h"
 
 #include <numeric>
 
@@ -32,6 +33,8 @@ void testGpu() {
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
+
+        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv"};
     }
 }
 
