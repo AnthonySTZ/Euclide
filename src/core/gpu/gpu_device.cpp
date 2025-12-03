@@ -6,6 +6,7 @@ namespace euclide {
 
 GPUDevice::GPUDevice(VkInstance& t_vkInstance) : vkInstance(t_vkInstance) {
     pickPhysicalDevice();
+    createComputeLogicalDevice();
 }
 
 GPUDevice::~GPUDevice() {
@@ -62,6 +63,33 @@ void GPUDevice::createComputeLogicalDevice() {
     }
 }
 
+void GPUDevice::createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, VkMemoryPropertyFlags t_properties,
+                             VkBuffer& t_buffer, VkDeviceMemory& t_bufferMemory) const {
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = t_size;
+    bufferInfo.usage = t_usage;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &t_buffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create buffer!");
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(m_device, t_buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, t_properties);
+
+    if (vkAllocateMemory(m_device, &allocInfo, nullptr, &t_bufferMemory) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate buffer memory!");
+    }
+
+    vkBindBufferMemory(m_device, t_buffer, t_bufferMemory, 0);
+}
+
 void GPUDevice::pickPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
@@ -81,6 +109,18 @@ void GPUDevice::pickPhysicalDevice() {
 
     vkGetPhysicalDeviceProperties(m_physicalDevice, &m_physicalDeviceProperties);
     std::cout << "Current Physical Device used : " << m_physicalDeviceProperties.deviceName << '\n';
+}
+
+uint32_t GPUDevice::findMemoryType(uint32_t t_typeFilter, VkMemoryPropertyFlags t_properties) const {
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((t_typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & t_properties) == t_properties) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("failed to find suitable memory type!");
 }
 
 } // namespace euclide

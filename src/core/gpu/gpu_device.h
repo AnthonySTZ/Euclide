@@ -36,10 +36,22 @@ class GPUDevice {
         return findQueueFamilies(m_physicalDevice, t_flags);
     }
 
+    /// @brief Create logical device for compute shader only
     void createComputeLogicalDevice();
+
+    /// @brief Create buffer based on given parameters, allocate memory and bind it.
+    /// @param size
+    /// @param usage
+    /// @param properties
+    /// @param buffer
+    /// @param bufferMemory
+    void createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, VkMemoryPropertyFlags t_properties,
+                      VkBuffer& t_buffer, VkDeviceMemory& t_bufferMemory) const;
 
   private:
     void pickPhysicalDevice();
+
+    uint32_t findMemoryType(uint32_t t_typeFilter, VkMemoryPropertyFlags t_properties) const;
 
   private:
     VkInstance vkInstance = VK_NULL_HANDLE;
