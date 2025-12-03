@@ -17,6 +17,11 @@ int main() {
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
+
+        std::vector<float> numbers(10);
+        std::fill(numbers.begin(), numbers.end(), 1.0f);
+        testBuffer.map();
+        testBuffer.writeToBuffer(numbers.data()); // maybe (void*)numbers.data()
     }
 
     return 0;

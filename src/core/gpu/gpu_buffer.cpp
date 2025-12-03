@@ -29,6 +29,18 @@ void GPUBuffer::unmap() {
     }
 }
 
+void GPUBuffer::writeToBuffer(void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
+    assert(m_mapped && "Cannot copy to unmapped buffer");
+
+    if (t_size == VK_WHOLE_SIZE) {
+        memcpy(m_mapped, t_data, m_bufferSize);
+    } else {
+        char* memOffset = (char*)m_mapped;
+        memOffset += t_offset;
+        memcpy(memOffset, t_data, t_size);
+    }
+}
+
 VkDeviceSize GPUBuffer::getAlignment(VkDeviceSize t_instanceSize, VkDeviceSize t_minOffsetAlignment) {
     if (t_minOffsetAlignment > 0) {
         return (t_instanceSize + t_minOffsetAlignment - 1) & ~(t_minOffsetAlignment - 1);

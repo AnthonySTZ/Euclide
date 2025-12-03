@@ -20,6 +20,13 @@ class GPUBuffer {
     /// @brief Unmap current Buffer if mapped
     void unmap();
 
+    /// @brief Copies the specified data to the mapped buffer. Default value writes whole buffer range
+    /// @param data Pointer to the data to copy
+    /// @param size (Optional) Size of the data to copy. Pass VK_WHOLE_SIZE to flush the complete buffer
+    /// range.
+    /// @param offset (Optional) Byte offset from beginning of mapped region
+    void writeToBuffer(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
+
     /// @brief Returns the current buffer
     /// @return Current `VkBuffer`
     [[nodiscard]] VkBuffer buffer() const noexcept { return m_buffer; }
