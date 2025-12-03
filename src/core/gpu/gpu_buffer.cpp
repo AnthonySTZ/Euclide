@@ -17,6 +17,11 @@ GPUBuffer::~GPUBuffer() {
     vkFreeMemory(m_device.device(), m_memory, nullptr);
 }
 
+VkResult GPUBuffer::map(VkDeviceSize size, VkDeviceSize offset) {
+    assert(m_buffer && m_memory && "Called map on buffer before create");
+    return vkMapMemory(m_device.device(), m_memory, offset, size, 0, &m_mapped);
+}
+
 void GPUBuffer::unmap() {
     if (m_mapped) {
         vkUnmapMemory(m_device.device(), m_memory);

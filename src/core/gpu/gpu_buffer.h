@@ -11,6 +11,13 @@ class GPUBuffer {
               const VkDeviceSize t_minOffsetAlignment = 1);
     ~GPUBuffer();
 
+    /// @brief Map current buffer to the specified size and offset
+    /// @param size
+    /// @param offset
+    /// @return VK_SUCCESS if map has been successful
+    VkResult map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
+
+    /// @brief Unmap current Buffer if mapped
     void unmap();
 
   private:
