@@ -8,7 +8,7 @@ class GPUBuffer {
   public:
     GPUBuffer(GPUDevice& t_device, const VkDeviceSize t_instanceSize, const uint32_t t_instanceCount,
               const VkBufferUsageFlags t_usageFlags, const VkMemoryPropertyFlags t_memoryPropertyFlags,
-              const VkDeviceSize t_minOffsetAlignment);
+              const VkDeviceSize t_minOffsetAlignment = 1);
     ~GPUBuffer();
 
     void unmap();
