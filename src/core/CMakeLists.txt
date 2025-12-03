@@ -30,6 +30,27 @@ find_package(Vulkan REQUIRED)
 
 target_link_libraries(core PUBLIC Vulkan::Vulkan)
 
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/gpu/shaders")
+
+add_custom_command(
+    OUTPUT "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
+    COMMAND $ENV{VULKAN}/Bin/dxc
+            -T cs_6_0
+            -E Main
+            -spirv
+            -fvk-use-dx-layout
+            -fspv-target-env=vulkan1.1
+            -Fo "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
+            "${CMAKE_CURRENT_SOURCE_DIR}/gpu/shaders/square.hlsl"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/gpu/shaders/square.hlsl"
+    COMMENT "Building Shaders"
+)
+
+add_custom_target(ComputeShader
+    DEPENDS "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
+)
+
+add_dependencies(core ComputeShader)
 
 option(USE_SIMD "Enable SIMD optimizations" OFF)
 if (USE_SIMD)
