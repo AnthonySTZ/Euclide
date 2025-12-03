@@ -20,6 +20,10 @@ class GPUBuffer {
     /// @brief Unmap current Buffer if mapped
     void unmap();
 
+    /// @brief Returns the current buffer
+    /// @return Current `VkBuffer`
+    [[nodiscard]] VkBuffer buffer() const noexcept { return m_buffer; }
+
   private:
     /// @brief Returns the minimum instance size required to be compatible with devices minOffsetAlignment
     /// @param instanceSize The size of an instance
