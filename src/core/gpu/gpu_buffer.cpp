@@ -11,6 +11,19 @@ GPUBuffer::GPUBuffer(GPUDevice& t_device, const VkDeviceSize t_instanceSize, con
     m_device.createBuffer(m_bufferSize, t_usageFlags, t_memoryPropertyFlags, m_buffer, m_memory);
 }
 
+GPUBuffer::~GPUBuffer() {
+    unmap();
+    vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
+    vkFreeMemory(m_device.device(), m_memory, nullptr);
+}
+
+void GPUBuffer::unmap() {
+    if (m_mapped) {
+        vkUnmapMemory(m_device.device(), m_memory);
+        m_mapped = nullptr;
+    }
+}
+
 VkDeviceSize GPUBuffer::getAlignment(VkDeviceSize t_instanceSize, VkDeviceSize t_minOffsetAlignment) {
     if (t_minOffsetAlignment > 0) {
         return (t_instanceSize + t_minOffsetAlignment - 1) & ~(t_minOffsetAlignment - 1);

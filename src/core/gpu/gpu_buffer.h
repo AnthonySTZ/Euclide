@@ -9,7 +9,11 @@ class GPUBuffer {
     GPUBuffer(GPUDevice& t_device, const VkDeviceSize t_instanceSize, const uint32_t t_instanceCount,
               const VkBufferUsageFlags t_usageFlags, const VkMemoryPropertyFlags t_memoryPropertyFlags,
               const VkDeviceSize t_minOffsetAlignment);
+    ~GPUBuffer();
 
+    void unmap();
+
+  private:
     /// @brief Returns the minimum instance size required to be compatible with devices minOffsetAlignment
     /// @param instanceSize The size of an instance
     /// @param minOffsetAlignment The minimum required alignment, in bytes, for the offset member (eg
@@ -21,6 +25,7 @@ class GPUBuffer {
     GPUDevice& m_device;
     VkBuffer m_buffer = VK_NULL_HANDLE;
     VkDeviceMemory m_memory = VK_NULL_HANDLE;
+    void* m_mapped = nullptr;
 
     VkDeviceSize m_bufferSize;
     VkDeviceSize m_alignmentSize;
