@@ -5,15 +5,14 @@
 namespace euclide {
 
 GPUPipeline::GPUPipeline(GPUDevice& t_device, const std::string& t_shaderFile,
-                         const std::vector<VkDescriptorSetLayoutBinding>& t_descriptorSetLayoutBindings)
+                         const VkDescriptorSetLayout& t_descriptorSetLayout)
     : m_device(t_device) {
     createShaderModule(t_shaderFile, &m_shaderModule);
-    createDescriptorSetLayout(t_descriptorSetLayoutBindings);
+    createPipelineLayout(t_descriptorSetLayout);
     createPipeline();
 }
 
 GPUPipeline::~GPUPipeline() {
-    vkDestroyDescriptorSetLayout(m_device.device(), m_descriptorSetLayout, nullptr);
     vkDestroyShaderModule(m_device.device(), m_shaderModule, nullptr);
     vkDestroyPipelineLayout(m_device.device(), m_pipelineLayout, nullptr);
     vkDestroyPipelineCache(m_device.device(), m_pipelineCache, nullptr);
@@ -35,24 +34,11 @@ void GPUPipeline::createShaderModule(const std::string& t_shaderFile, VkShaderMo
     std::cout << shaderCode.size() << '\n';
 }
 
-void GPUPipeline::createDescriptorSetLayout(
-    const std::vector<VkDescriptorSetLayoutBinding>& t_descriptorSetLayoutBindings) {
-    VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
-    descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(t_descriptorSetLayoutBindings.size());
-    descriptorSetLayoutInfo.pBindings = t_descriptorSetLayoutBindings.data();
-
-    if (vkCreateDescriptorSetLayout(m_device.device(), &descriptorSetLayoutInfo, nullptr, &m_descriptorSetLayout) !=
-        VK_SUCCESS) {
-        throw std::runtime_error("failed to create descriptor set layout!");
-    }
-}
-
-void GPUPipeline::createPipeline() {
+void GPUPipeline::createPipelineLayout(const VkDescriptorSetLayout& t_descriptorSetLayout) {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = 1;
-    pipelineLayoutCreateInfo.pSetLayouts = &m_descriptorSetLayout;
+    pipelineLayoutCreateInfo.pSetLayouts = &t_descriptorSetLayout;
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
@@ -60,7 +46,9 @@ void GPUPipeline::createPipeline() {
         VK_SUCCESS) {
         throw std::runtime_error("Failed to create PipelineLayout!");
     }
+}
 
+void GPUPipeline::createPipeline() {
     VkPipelineCacheCreateInfo pipelineCacheCreateInfo{};
     pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 

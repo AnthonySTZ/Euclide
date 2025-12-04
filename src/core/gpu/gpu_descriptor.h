@@ -27,6 +27,10 @@ class GPUDescriptorSetLayout {
     GPUDescriptorSetLayout(GPUDevice& t_device,
                            const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding>& t_bindings);
     ~GPUDescriptorSetLayout();
+    GPUDescriptorSetLayout(const GPUDescriptorSetLayout&) = delete;
+    GPUDescriptorSetLayout& operator=(const GPUDescriptorSetLayout&) = delete;
+
+    [[nodiscard]] VkDescriptorSetLayout descriptorSetLayout() const noexcept { return m_descriptorSetLayout; }
 
   private:
     GPUDevice& m_device;
