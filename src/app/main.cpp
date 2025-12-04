@@ -58,6 +58,9 @@ void testGpu() {
         manager.getDevice().createCommandPool();
         VkCommandBuffer cmdBuffer = manager.getDevice().beginSingleTimeCommands();
 
+        vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout(), 0, 1, &descriptorSet, 0,
+                                nullptr);
+
         manager.getDevice().endSingleTimeCommands(cmdBuffer);
 
         descriptorPool->freeDescriptor(descriptorSet);

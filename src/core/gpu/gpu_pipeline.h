@@ -10,6 +10,8 @@ class GPUPipeline {
                 const VkDescriptorSetLayout& t_descriptorSetLayout);
     ~GPUPipeline();
 
+    [[nodiscard]] VkPipelineLayout layout() const noexcept { return m_pipelineLayout; }
+
     void bind(VkCommandBuffer t_commandBuffer) const;
 
   private:
