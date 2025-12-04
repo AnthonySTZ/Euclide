@@ -66,6 +66,8 @@ class GPUDevice {
     VkPhysicalDeviceProperties m_physicalDeviceProperties{};
 
     VkDevice m_device = VK_NULL_HANDLE;
+    VkQueue m_queue = VK_NULL_HANDLE;
+    VkFence m_fence = VK_NULL_HANDLE;
     VkCommandPool m_commandPool = VK_NULL_HANDLE;
 };
 

@@ -17,6 +17,9 @@ void GPUDevice::destroy() {
     if (m_commandPool != VK_NULL_HANDLE) {
         vkDestroyCommandPool(m_device, m_commandPool, nullptr);
     }
+    if (m_fence != VK_NULL_HANDLE) {
+        vkDestroyFence(m_device, m_fence, nullptr);
+    }
     if (m_device != VK_NULL_HANDLE) {
         vkDeviceWaitIdle(m_device);
         vkDestroyDevice(m_device, nullptr);
@@ -65,6 +68,12 @@ void GPUDevice::createComputeLogicalDevice() {
     if (vkCreateDevice(m_physicalDevice, &deviceCreateInfo, nullptr, &m_device) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create logical device!");
     }
+
+    vkGetDeviceQueue(m_device, familyIndex.value(), 0, &m_queue);
+
+    VkFenceCreateInfo fenceCreateInfo{};
+    fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    vkCreateFence(m_device, &fenceCreateInfo, nullptr, &m_fence);
 }
 
 void GPUDevice::createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, VkMemoryPropertyFlags t_properties,
@@ -143,6 +152,8 @@ void GPUDevice::endSingleTimeCommands(VkCommandBuffer t_commandBuffer) const {
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &t_commandBuffer;
+    vkQueueSubmit(m_queue, 1, &submitInfo, m_fence);
+    vkWaitForFences(m_device, 1, &m_fence, true, uint64_t(-1));
 
     vkFreeCommandBuffers(m_device, m_commandPool, 1, &t_commandBuffer);
 }
