@@ -7,7 +7,7 @@ namespace euclide {
 class GPUPipeline {
   public:
     GPUPipeline(GPUDevice& t_device, const std::string& t_shaderFile,
-                const VkDescriptorSetLayout& t_descriptorSetLayout);
+                const VkDescriptorSetLayout t_descriptorSetLayout);
     ~GPUPipeline();
 
     [[nodiscard]] VkPipelineLayout layout() const noexcept { return m_pipelineLayout; }
@@ -16,7 +16,7 @@ class GPUPipeline {
 
   private:
     void createShaderModule(const std::string& t_shaderFile, VkShaderModule* t_shaderModule);
-    void createPipelineLayout(const VkDescriptorSetLayout& t_descriptorSetLayout);
+    void createPipelineLayout(const VkDescriptorSetLayout t_descriptorSetLayout);
 
     void createPipeline();
 

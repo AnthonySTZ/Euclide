@@ -34,6 +34,8 @@ class GPUBuffer {
     /// @return Current `VkBuffer`
     [[nodiscard]] VkBuffer buffer() const noexcept { return m_buffer; }
 
+    [[nodiscard]] void* ptr() const noexcept { return m_mapped; }
+
   private:
     /// @brief Returns the minimum instance size required to be compatible with devices minOffsetAlignment
     /// @param instanceSize The size of an instance

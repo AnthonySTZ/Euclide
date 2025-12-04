@@ -14,14 +14,17 @@ GPUDevice::~GPUDevice() {
 }
 
 void GPUDevice::destroy() {
+    if (m_device != VK_NULL_HANDLE) {
+        vkDeviceWaitIdle(m_device);
+    }
     if (m_commandPool != VK_NULL_HANDLE) {
+        vkResetCommandPool(m_device, m_commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
         vkDestroyCommandPool(m_device, m_commandPool, nullptr);
     }
     if (m_fence != VK_NULL_HANDLE) {
         vkDestroyFence(m_device, m_fence, nullptr);
     }
     if (m_device != VK_NULL_HANDLE) {
-        vkDeviceWaitIdle(m_device);
         vkDestroyDevice(m_device, nullptr);
     }
 }
@@ -146,14 +149,20 @@ VkCommandBuffer GPUDevice::beginSingleTimeCommands() const {
 }
 
 void GPUDevice::endSingleTimeCommands(VkCommandBuffer t_commandBuffer) const {
-    vkEndCommandBuffer(t_commandBuffer);
+    if (vkEndCommandBuffer(t_commandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to record command buffer!");
+    }
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &t_commandBuffer;
-    vkQueueSubmit(m_queue, 1, &submitInfo, m_fence);
-    vkWaitForFences(m_device, 1, &m_fence, true, uint64_t(-1));
+    if (vkQueueSubmit(m_queue, 1, &submitInfo, m_fence) != VK_SUCCESS) {
+        throw std::runtime_error("failed to submit queue!");
+    }
+    if (vkWaitForFences(m_device, 1, &m_fence, true, uint64_t(-1)) != VK_SUCCESS) {
+        throw std::runtime_error("failed to wait for fence!");
+    }
 
     vkFreeCommandBuffers(m_device, m_commandPool, 1, &t_commandBuffer);
 }

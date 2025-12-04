@@ -11,8 +11,9 @@ void testGpu() {
     euclide::GPUManager& manager = euclide::GPUManager::getInstance();
 
     uint32_t vertexCount = 10;
-    VkDeviceSize bufferSize = sizeof(float) * vertexCount;
     uint32_t vertexSize = sizeof(float);
+    std::vector<float> numbers(vertexCount);
+    std::iota(numbers.begin(), numbers.end(), 1.0f);
     {
         euclide::GPUBuffer inBuffer{
             manager.getDevice(),
@@ -22,10 +23,9 @@ void testGpu() {
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
 
-        std::vector<float> numbers(10);
-        std::iota(numbers.begin(), numbers.end(), 1.0f);
         inBuffer.map();
-        inBuffer.writeToBuffer(numbers.data()); // maybe (void*)numbers.data()
+        inBuffer.writeToBuffer(numbers.data());
+        inBuffer.unmap();
 
         euclide::GPUBuffer outBuffer{
             manager.getDevice(),
@@ -45,7 +45,7 @@ void testGpu() {
 
         auto descriptorPool = euclide::GPUDescriptorPool::Builder(manager.getDevice())
                                   .addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2)
-                                  .setMaxSets(2)
+                                  .setMaxSets(1)
                                   .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
                                   .build();
 
@@ -68,6 +68,22 @@ void testGpu() {
         manager.getDevice().endSingleTimeCommands(cmdBuffer);
 
         descriptorPool->freeDescriptor(descriptorSet);
+
+        std::cout << "In buffer:\n";
+        inBuffer.map();
+        float* inBufferPtr = static_cast<float*>(inBuffer.ptr());
+        for (size_t i = 0; i < vertexCount; ++i) {
+            std::cout << inBufferPtr[i] << " ";
+        }
+        inBuffer.unmap();
+
+        std::cout << "\nOut buffer:\n";
+        outBuffer.map();
+        float* OutBufferPtr = static_cast<float*>(outBuffer.ptr());
+        for (size_t i = 0; i < vertexCount; ++i) {
+            std::cout << OutBufferPtr[i] << " ";
+        }
+        outBuffer.unmap();
     }
 }
 

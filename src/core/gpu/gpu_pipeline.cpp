@@ -5,7 +5,7 @@
 namespace euclide {
 
 GPUPipeline::GPUPipeline(GPUDevice& t_device, const std::string& t_shaderFile,
-                         const VkDescriptorSetLayout& t_descriptorSetLayout)
+                         const VkDescriptorSetLayout t_descriptorSetLayout)
     : m_device(t_device) {
     createShaderModule(t_shaderFile, &m_shaderModule);
     createPipelineLayout(t_descriptorSetLayout);
@@ -13,10 +13,18 @@ GPUPipeline::GPUPipeline(GPUDevice& t_device, const std::string& t_shaderFile,
 }
 
 GPUPipeline::~GPUPipeline() {
-    vkDestroyShaderModule(m_device.device(), m_shaderModule, nullptr);
-    vkDestroyPipelineLayout(m_device.device(), m_pipelineLayout, nullptr);
-    vkDestroyPipelineCache(m_device.device(), m_pipelineCache, nullptr);
-    vkDestroyPipeline(m_device.device(), m_pipeline, nullptr);
+    if (m_pipeline != VK_NULL_HANDLE) {
+        vkDestroyPipeline(m_device.device(), m_pipeline, nullptr);
+    }
+    if (m_pipelineCache != VK_NULL_HANDLE) {
+        vkDestroyPipelineCache(m_device.device(), m_pipelineCache, nullptr);
+    }
+    if (m_pipelineLayout != VK_NULL_HANDLE) {
+        vkDestroyPipelineLayout(m_device.device(), m_pipelineLayout, nullptr);
+    }
+    if (m_shaderModule != VK_NULL_HANDLE) {
+        vkDestroyShaderModule(m_device.device(), m_shaderModule, nullptr);
+    }
 }
 
 void GPUPipeline::bind(VkCommandBuffer t_commandBuffer) const {
@@ -38,7 +46,7 @@ void GPUPipeline::createShaderModule(const std::string& t_shaderFile, VkShaderMo
     std::cout << shaderCode.size() << '\n';
 }
 
-void GPUPipeline::createPipelineLayout(const VkDescriptorSetLayout& t_descriptorSetLayout) {
+void GPUPipeline::createPipelineLayout(const VkDescriptorSetLayout t_descriptorSetLayout) {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = 1;
