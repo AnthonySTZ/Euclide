@@ -81,4 +81,62 @@ GPUDescriptorPool::~GPUDescriptorPool() {
     vkDestroyDescriptorPool(m_device.device(), m_descriptorPool, nullptr);
 }
 
+bool GPUDescriptorPool::allocateDescriptor(const VkDescriptorSetLayout t_descriptorSetLayout,
+                                           VkDescriptorSet& t_descriptorSet) const {
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.descriptorPool = m_descriptorPool;
+    allocInfo.pSetLayouts = &t_descriptorSetLayout;
+    allocInfo.descriptorSetCount = 1;
+
+    if (vkAllocateDescriptorSets(m_device.device(), &allocInfo, &t_descriptorSet) != VK_SUCCESS) {
+        return false;
+    }
+    return true;
+}
+
+void GPUDescriptorPool::freeDescriptors(std::vector<VkDescriptorSet>& t_descriptors) const {
+    vkFreeDescriptorSets(m_device.device(), m_descriptorPool, static_cast<uint32_t>(t_descriptors.size()),
+                         t_descriptors.data());
+}
+
+void GPUDescriptorPool::freeDescriptor(VkDescriptorSet& t_descriptor) const {
+    vkFreeDescriptorSets(m_device.device(), m_descriptorPool, 1, &t_descriptor);
+}
+
+GPUDescriptorWriter& GPUDescriptorWriter::writeBuffer(uint32_t t_binding, VkDescriptorBufferInfo t_bufferInfo) {
+    assert(m_setLayout.m_bindings.count(t_binding) == 1 && "Layout does not contain specified binding");
+
+    auto& bindingDescription = m_setLayout.m_bindings[t_binding];
+    assert(bindingDescription.descriptorCount == 1 && "Binding single descriptor info, but binding expects multiple");
+
+    VkWriteDescriptorSet write{};
+    write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    write.descriptorType = bindingDescription.descriptorType;
+    write.dstBinding = t_binding;
+    write.pBufferInfo = &t_bufferInfo;
+    write.descriptorCount = 1;
+
+    m_writeDescriptorSets.push_back(write);
+    return *this;
+}
+
+bool GPUDescriptorWriter::build(VkDescriptorSet& t_set) {
+    bool success = m_pool.allocateDescriptor(m_setLayout.descriptorSetLayout(), t_set);
+    if (!success) {
+        return false;
+    }
+    overwrite(t_set);
+    return true;
+    ;
+}
+
+void GPUDescriptorWriter::overwrite(VkDescriptorSet& t_set) {
+    for (auto& write : m_writeDescriptorSets) {
+        write.dstSet = t_set;
+    }
+    vkUpdateDescriptorSets(m_pool.m_device.device(), m_writeDescriptorSets.size(), m_writeDescriptorSets.data(), 0,
+                           nullptr);
+}
+
 } // namespace euclide

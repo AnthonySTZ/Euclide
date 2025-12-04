@@ -15,6 +15,7 @@ GPUDevice::~GPUDevice() {
 
 void GPUDevice::destroy() {
     if (m_device != VK_NULL_HANDLE) {
+        vkDeviceWaitIdle(m_device);
         vkDestroyDevice(m_device, nullptr);
     }
 }

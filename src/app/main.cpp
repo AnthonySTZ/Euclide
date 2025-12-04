@@ -18,7 +18,7 @@ void testGpu() {
             manager.getDevice(),
             vertexSize,
             vertexCount,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
 
@@ -31,7 +31,7 @@ void testGpu() {
             manager.getDevice(),
             vertexSize,
             vertexCount,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
 
@@ -42,6 +42,20 @@ void testGpu() {
 
         euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv",
                                       descriptorsetLayout->descriptorSetLayout()};
+
+        auto descriptorPool = euclide::GPUDescriptorPool::Builder(manager.getDevice())
+                                  .addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2)
+                                  .setMaxSets(2)
+                                  .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
+                                  .build();
+
+        VkDescriptorSet descriptorSet{};
+
+        euclide::GPUDescriptorWriter(*descriptorsetLayout, *descriptorPool)
+            .writeBuffer(0, inBuffer.descriptorInfo())
+            .build(descriptorSet);
+
+        descriptorPool->freeDescriptor(descriptorSet);
     }
 }
 

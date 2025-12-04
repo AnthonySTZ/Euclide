@@ -27,6 +27,9 @@ class GPUBuffer {
     /// @param offset (Optional) Byte offset from beginning of mapped region
     void writeToBuffer(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
 
+    [[nodiscard]] VkDescriptorBufferInfo descriptorInfo(VkDeviceSize t_size = VK_WHOLE_SIZE,
+                                                        VkDeviceSize t_offset = 0) const;
+
     /// @brief Returns the current buffer
     /// @return Current `VkBuffer`
     [[nodiscard]] VkBuffer buffer() const noexcept { return m_buffer; }

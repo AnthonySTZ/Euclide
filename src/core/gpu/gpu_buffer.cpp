@@ -41,6 +41,14 @@ void GPUBuffer::writeToBuffer(void* t_data, VkDeviceSize t_size, VkDeviceSize t_
     }
 }
 
+VkDescriptorBufferInfo GPUBuffer::descriptorInfo(VkDeviceSize t_size, VkDeviceSize t_offset) const {
+    return VkDescriptorBufferInfo{
+        m_buffer,
+        t_offset,
+        t_size,
+    };
+}
+
 VkDeviceSize GPUBuffer::getAlignment(VkDeviceSize t_instanceSize, VkDeviceSize t_minOffsetAlignment) {
     if (t_minOffsetAlignment > 0) {
         return (t_instanceSize + t_minOffsetAlignment - 1) & ~(t_minOffsetAlignment - 1);

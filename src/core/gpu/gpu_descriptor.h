@@ -37,6 +37,8 @@ class GPUDescriptorSetLayout {
     std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> m_bindings;
 
     VkDescriptorSetLayout m_descriptorSetLayout;
+
+    friend class GPUDescriptorWriter;
 };
 
 class GPUDescriptorPool {
@@ -64,9 +66,33 @@ class GPUDescriptorPool {
     GPUDescriptorPool(const GPUDescriptorPool&) = delete;
     GPUDescriptorPool& operator=(const GPUDescriptorPool&) = delete;
 
+    bool allocateDescriptor(const VkDescriptorSetLayout t_descriptorSetLayout, VkDescriptorSet& t_descriptorSet) const;
+    void freeDescriptors(std::vector<VkDescriptorSet>& t_descriptors) const;
+    void freeDescriptor(VkDescriptorSet& t_descriptor) const;
+
   private:
     GPUDevice& m_device;
     VkDescriptorPool m_descriptorPool;
+
+    friend class GPUDescriptorWriter;
+};
+
+class GPUDescriptorWriter {
+  public:
+    GPUDescriptorWriter(GPUDescriptorSetLayout& t_descriptorSetLayout, GPUDescriptorPool& t_descriptorPool)
+        : m_setLayout(t_descriptorSetLayout), m_pool(t_descriptorPool) {}
+
+    [[nodiscard]] GPUDescriptorWriter& writeBuffer(uint32_t t_binding, VkDescriptorBufferInfo t_bufferInfo);
+
+    bool build(VkDescriptorSet& t_set);
+
+  private:
+    void overwrite(VkDescriptorSet& t_set);
+
+  private:
+    GPUDescriptorSetLayout& m_setLayout;
+    GPUDescriptorPool& m_pool;
+    std::vector<VkWriteDescriptorSet> m_writeDescriptorSets;
 };
 
 } // namespace euclide
