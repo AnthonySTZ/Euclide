@@ -53,13 +53,17 @@ void testGpu() {
 
         euclide::GPUDescriptorWriter(*descriptorsetLayout, *descriptorPool)
             .writeBuffer(0, inBuffer.descriptorInfo())
+            .writeBuffer(1, outBuffer.descriptorInfo())
             .build(descriptorSet);
 
         manager.getDevice().createCommandPool();
         VkCommandBuffer cmdBuffer = manager.getDevice().beginSingleTimeCommands();
 
+        pipeline.bind(cmdBuffer);
         vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout(), 0, 1, &descriptorSet, 0,
                                 nullptr);
+
+        vkCmdDispatch(cmdBuffer, vertexCount, 1, 1);
 
         manager.getDevice().endSingleTimeCommands(cmdBuffer);
 
