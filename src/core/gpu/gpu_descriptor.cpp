@@ -6,7 +6,7 @@ GPUDescriptorSetLayout::Builder& GPUDescriptorSetLayout::Builder::addBinding(uin
                                                                              VkDescriptorType t_descriptorType,
                                                                              VkShaderStageFlags t_stageFlags,
                                                                              uint32_t t_count) {
-    assert(m_bindings.find(t_binding) != m_bindings.end() && "Binding already in use");
+    assert(m_bindings.count(t_binding) == 0 && "Binding already in use");
     VkDescriptorSetLayoutBinding layoutBinding{};
     layoutBinding.binding = t_binding;
     layoutBinding.descriptorType = t_descriptorType;
@@ -14,6 +14,33 @@ GPUDescriptorSetLayout::Builder& GPUDescriptorSetLayout::Builder::addBinding(uin
     layoutBinding.stageFlags = t_stageFlags;
     m_bindings[t_binding] = layoutBinding;
     return *this;
+}
+
+std::unique_ptr<GPUDescriptorSetLayout> GPUDescriptorSetLayout::Builder::build() const {
+    return std::make_unique<GPUDescriptorSetLayout>(m_device, m_bindings);
+}
+
+GPUDescriptorSetLayout::GPUDescriptorSetLayout(
+    GPUDevice& t_device, const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding>& t_bindings)
+    : m_device(t_device), m_bindings(t_bindings) {
+    std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings;
+    for (auto const [_, binding] : m_bindings) {
+        descriptorSetLayoutBindings.push_back(binding);
+    }
+
+    VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+    descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(descriptorSetLayoutBindings.size());
+    descriptorSetLayoutInfo.pBindings = descriptorSetLayoutBindings.data();
+
+    if (vkCreateDescriptorSetLayout(m_device.device(), &descriptorSetLayoutInfo, nullptr, &m_descriptorSetLayout) !=
+        VK_SUCCESS) {
+        throw std::runtime_error("failed to create descriptor set layout!");
+    }
+}
+
+GPUDescriptorSetLayout::~GPUDescriptorSetLayout() {
+    vkDestroyDescriptorSetLayout(m_device.device(), m_descriptorSetLayout, nullptr);
 }
 
 } // namespace euclide

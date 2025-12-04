@@ -2,6 +2,7 @@
 
 #include "gpu/gpu_manager.h"
 #include "gpu/gpu_buffer.h"
+#include "gpu/gpu_descriptor.h"
 #include "gpu/gpu_pipeline.h"
 
 #include <numeric>
@@ -33,6 +34,11 @@ void testGpu() {
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
+
+        auto descriptorsetLayout = euclide::GPUDescriptorSetLayout::Builder(manager.getDevice())
+                                       .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .build();
 
         std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBinding(2);
         descriptorSetLayoutBinding[0].binding = 0;
