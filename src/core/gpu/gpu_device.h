@@ -9,7 +9,6 @@ namespace euclide {
 class GPUDevice {
   public:
     GPUDevice(VkInstance& t_vkInstance);
-    ~GPUDevice();
 
     /// @brief Destroy the logical device if exists
     void destroy();

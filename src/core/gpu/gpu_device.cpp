@@ -9,10 +9,6 @@ GPUDevice::GPUDevice(VkInstance& t_vkInstance) : vkInstance(t_vkInstance) {
     createComputeLogicalDevice();
 }
 
-GPUDevice::~GPUDevice() {
-    destroy();
-}
-
 void GPUDevice::destroy() {
     if (m_device != VK_NULL_HANDLE) {
         vkDeviceWaitIdle(m_device);
