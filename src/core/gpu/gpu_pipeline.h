@@ -10,6 +10,8 @@ class GPUPipeline {
                 const VkDescriptorSetLayout& t_descriptorSetLayout);
     ~GPUPipeline();
 
+    void bind(VkCommandBuffer t_commandBuffer) const;
+
   private:
     void createShaderModule(const std::string& t_shaderFile, VkShaderModule* t_shaderModule);
     void createPipelineLayout(const VkDescriptorSetLayout& t_descriptorSetLayout);

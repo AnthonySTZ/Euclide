@@ -19,6 +19,10 @@ GPUPipeline::~GPUPipeline() {
     vkDestroyPipeline(m_device.device(), m_pipeline, nullptr);
 }
 
+void GPUPipeline::bind(VkCommandBuffer t_commandBuffer) const {
+    vkCmdBindPipeline(t_commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_pipeline);
+}
+
 void GPUPipeline::createShaderModule(const std::string& t_shaderFile, VkShaderModule* t_shaderModule) {
     std::vector<char> shaderCode = readFile(t_shaderFile);
 
