@@ -14,6 +14,9 @@ GPUDevice::~GPUDevice() {
 }
 
 void GPUDevice::destroy() {
+    if (m_commandPool != VK_NULL_HANDLE) {
+        vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+    }
     if (m_device != VK_NULL_HANDLE) {
         vkDeviceWaitIdle(m_device);
         vkDestroyDevice(m_device, nullptr);
@@ -89,6 +92,59 @@ void GPUDevice::createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, Vk
     }
 
     vkBindBufferMemory(m_device, t_buffer, t_bufferMemory, 0);
+}
+
+void GPUDevice::createCommandPool() {
+    createCommandPool(&m_commandPool);
+}
+
+void GPUDevice::createCommandPool(VkCommandPool* t_commandPool) {
+    std::optional<uint32_t> queueFamilyIndices = findQueueFamilies(m_physicalDevice, VK_QUEUE_COMPUTE_BIT);
+    if (!queueFamilyIndices.has_value()) {
+        throw std::runtime_error("failed to find queue families!");
+    }
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.value();
+
+    if (vkCreateCommandPool(m_device, &poolInfo, nullptr, t_commandPool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create command pool!");
+    }
+}
+
+void GPUDevice::cleanupCommandPool() const {
+    vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+}
+
+VkCommandBuffer GPUDevice::beginSingleTimeCommands() const {
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = m_commandPool;
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(m_device, &allocInfo, &commandBuffer);
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+    return commandBuffer;
+}
+
+void GPUDevice::endSingleTimeCommands(VkCommandBuffer t_commandBuffer) const {
+    vkEndCommandBuffer(t_commandBuffer);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &t_commandBuffer;
+
+    vkFreeCommandBuffers(m_device, m_commandPool, 1, &t_commandBuffer);
 }
 
 void GPUDevice::pickPhysicalDevice() {

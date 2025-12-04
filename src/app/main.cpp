@@ -55,6 +55,11 @@ void testGpu() {
             .writeBuffer(0, inBuffer.descriptorInfo())
             .build(descriptorSet);
 
+        manager.getDevice().createCommandPool();
+        VkCommandBuffer cmdBuffer = manager.getDevice().beginSingleTimeCommands();
+
+        manager.getDevice().endSingleTimeCommands(cmdBuffer);
+
         descriptorPool->freeDescriptor(descriptorSet);
     }
 }

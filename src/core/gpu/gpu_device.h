@@ -48,6 +48,13 @@ class GPUDevice {
     void createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, VkMemoryPropertyFlags t_properties,
                       VkBuffer& t_buffer, VkDeviceMemory& t_bufferMemory) const;
 
+    void createCommandPool();
+    void createCommandPool(VkCommandPool* t_commandPool);
+    void cleanupCommandPool() const;
+
+    [[nodiscard]] VkCommandBuffer beginSingleTimeCommands() const;
+    void endSingleTimeCommands(VkCommandBuffer t_commandBuffer) const;
+
   private:
     void pickPhysicalDevice();
 
@@ -59,6 +66,7 @@ class GPUDevice {
     VkPhysicalDeviceProperties m_physicalDeviceProperties{};
 
     VkDevice m_device = VK_NULL_HANDLE;
+    VkCommandPool m_commandPool = VK_NULL_HANDLE;
 };
 
 } // namespace euclide
