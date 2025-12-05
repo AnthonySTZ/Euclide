@@ -7,6 +7,7 @@ namespace euclide {
 GPUDevice::GPUDevice(VkInstance& t_vkInstance) : vkInstance(t_vkInstance) {
     pickPhysicalDevice();
     createComputeLogicalDevice();
+    createCommandPool();
 }
 
 void GPUDevice::destroy() {

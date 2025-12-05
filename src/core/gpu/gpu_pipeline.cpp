@@ -5,10 +5,10 @@
 namespace euclide {
 
 GPUPipeline::GPUPipeline(GPUDevice& t_device, const std::string& t_shaderFile,
-                         const VkDescriptorSetLayout t_descriptorSetLayout)
-    : m_device(t_device) {
+                         GPUDescriptorSetLayout& t_descriptorSetLayout)
+    : m_device(t_device), m_descriptorSetLayout(t_descriptorSetLayout) {
     createShaderModule(t_shaderFile, &m_shaderModule);
-    createPipelineLayout(t_descriptorSetLayout);
+    createPipelineLayout();
     createPipeline();
 }
 
@@ -46,11 +46,11 @@ void GPUPipeline::createShaderModule(const std::string& t_shaderFile, VkShaderMo
     std::cout << shaderCode.size() << '\n';
 }
 
-void GPUPipeline::createPipelineLayout(const VkDescriptorSetLayout t_descriptorSetLayout) {
+void GPUPipeline::createPipelineLayout() {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = 1;
-    pipelineLayoutCreateInfo.pSetLayouts = &t_descriptorSetLayout;
+    pipelineLayoutCreateInfo.pSetLayouts = &m_descriptorSetLayout.descriptorSetLayout();
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 

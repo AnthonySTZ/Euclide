@@ -30,7 +30,7 @@ class GPUDescriptorSetLayout {
     GPUDescriptorSetLayout(const GPUDescriptorSetLayout&) = delete;
     GPUDescriptorSetLayout& operator=(const GPUDescriptorSetLayout&) = delete;
 
-    [[nodiscard]] VkDescriptorSetLayout descriptorSetLayout() const noexcept { return m_descriptorSetLayout; }
+    [[nodiscard]] VkDescriptorSetLayout& descriptorSetLayout() noexcept { return m_descriptorSetLayout; }
 
   private:
     GPUDevice& m_device;
@@ -82,7 +82,7 @@ class GPUDescriptorWriter {
     GPUDescriptorWriter(GPUDescriptorSetLayout& t_descriptorSetLayout, GPUDescriptorPool& t_descriptorPool)
         : m_setLayout(t_descriptorSetLayout), m_pool(t_descriptorPool) {}
 
-    [[nodiscard]] GPUDescriptorWriter& writeBuffer(uint32_t t_binding, VkDescriptorBufferInfo t_bufferInfo);
+    GPUDescriptorWriter& writeBuffer(uint32_t t_binding, VkDescriptorBufferInfo t_bufferInfo);
 
     bool build(VkDescriptorSet& t_set);
 

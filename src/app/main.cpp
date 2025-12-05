@@ -4,6 +4,7 @@
 #include "gpu/gpu_buffer.h"
 #include "gpu/gpu_descriptor.h"
 #include "gpu/gpu_pipeline.h"
+#include "gpu/gpu_compute_task.h"
 
 #include <numeric>
 
@@ -11,7 +12,6 @@ void testGpu() {
     euclide::GPUManager& manager = euclide::GPUManager::getInstance();
 
     uint32_t vertexCount = 10;
-    uint32_t vertexSize = sizeof(float);
     std::vector<float> numbers(vertexCount);
     std::iota(numbers.begin(), numbers.end(), 1.0f);
     {
@@ -27,34 +27,9 @@ void testGpu() {
                                        .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                        .build();
 
-        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv",
-                                      descriptorsetLayout->descriptorSetLayout()};
-
-        auto descriptorPool = euclide::GPUDescriptorPool::Builder(manager.getDevice())
-                                  .addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2)
-                                  .setMaxSets(1)
-                                  .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
-                                  .build();
-
-        VkDescriptorSet descriptorSet{};
-
-        euclide::GPUDescriptorWriter(*descriptorsetLayout, *descriptorPool)
-            .writeBuffer(0, inBuffer.descriptorInfo())
-            .writeBuffer(1, outBuffer.descriptorInfo())
-            .build(descriptorSet);
-
-        manager.getDevice().createCommandPool();
-        VkCommandBuffer cmdBuffer = manager.getDevice().beginSingleTimeCommands();
-
-        pipeline.bind(cmdBuffer);
-        vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline.layout(), 0, 1, &descriptorSet, 0,
-                                nullptr);
-
-        vkCmdDispatch(cmdBuffer, vertexCount, 1, 1);
-
-        manager.getDevice().endSingleTimeCommands(cmdBuffer);
-
-        descriptorPool->freeDescriptor(descriptorSet);
+        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv", *descriptorsetLayout};
+        euclide::GPUComputeTask task{manager.getDevice(), pipeline, {&inBuffer, &outBuffer}};
+        task.run(vertexCount);
 
         std::cout << "In buffer:\n";
         inBuffer.map();
