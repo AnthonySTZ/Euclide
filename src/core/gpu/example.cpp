@@ -7,27 +7,29 @@
 #include <numeric>
 #include <iostream>
 
+namespace euclide {
+
 void example() {
-    euclide::GPUManager& manager = euclide::GPUManager::getInstance();
+    GPUManager& manager = GPUManager::getInstance();
 
     uint32_t vertexCount = 10;
     std::vector<float> numbers(vertexCount);
     std::iota(numbers.begin(), numbers.end(), 1.0f);
     {
-        euclide::GPUBuffer inBuffer =
-            euclide::GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        GPUBuffer inBuffer =
+            GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
         inBuffer.write(numbers.data());
 
-        euclide::GPUBuffer outBuffer =
-            euclide::GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        GPUBuffer outBuffer =
+            GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 
-        auto descriptorsetLayout = euclide::GPUDescriptorSetLayout::Builder(manager.getDevice())
+        auto descriptorsetLayout = GPUDescriptorSetLayout::Builder(manager.getDevice())
                                        .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                        .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                        .build();
 
-        euclide::GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv", *descriptorsetLayout};
-        euclide::GPUComputeTask task{manager.getDevice(), pipeline, {&inBuffer, &outBuffer}};
+        GPUPipeline pipeline{manager.getDevice(), "gpu/shaders/square.spv", *descriptorsetLayout};
+        GPUComputeTask task{manager.getDevice(), pipeline, {&inBuffer, &outBuffer}};
         task.run(vertexCount);
 
         std::cout << "In buffer:\n";
@@ -43,3 +45,5 @@ void example() {
             std::cout << v << " ";
     }
 }
+
+} // namespace euclide
