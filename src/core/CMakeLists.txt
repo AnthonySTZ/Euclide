@@ -29,32 +29,41 @@ target_include_directories(core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# ------------- LINK VULKAN ------------- #
 find_package(Vulkan REQUIRED)
-
 target_link_libraries(core PUBLIC Vulkan::Vulkan)
 
+# ------------- COMPILE HSLS SHADERS ------------- #
+set(SHADERS
+    # subdivide...
+)
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/gpu/shaders")
+foreach(SHADER ${SHADERS})
+    set(SRC "${CMAKE_CURRENT_SOURCE_DIR}/gpu/shaders/${SHADER}.hlsl")
+    set(OUT "${CMAKE_BINARY_DIR}/gpu/shaders/${SHADER}.spv")
 
-add_custom_command(
-    OUTPUT "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
-    COMMAND $ENV{VULKAN}/Bin/dxc
-            -T cs_6_0
-            -E main
-            -spirv
-            -fvk-use-dx-layout
-            -fspv-target-env=vulkan1.1
-            -Fo "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
-            "${CMAKE_CURRENT_SOURCE_DIR}/gpu/shaders/square.hlsl"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/gpu/shaders/square.hlsl"
-    COMMENT "Building Shaders"
+    add_custom_command(
+        OUTPUT ${OUT}
+        COMMAND $ENV{VULKAN}/Bin/dxc
+                -T cs_6_0
+                -E main
+                -spirv
+                -fvk-use-dx-layout
+                -fspv-target-env=vulkan1.1
+                -Fo ${OUT}
+                ${SRC}
+        DEPENDS ${SRC}
+        COMMENT "Compiling shader ${SHADER}"
+    )
+
+    list(APPEND SPIRV_SHADERS ${OUT})
+endforeach()
+add_custom_target(Shaders ALL
+    DEPENDS ${SPIRV_SHADERS}
 )
+add_dependencies(core Shaders)
 
-add_custom_target(ComputeShader
-    DEPENDS "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
-)
-
-add_dependencies(core ComputeShader)
-
+# ------------- SIMD OPTION ------------- #
 option(USE_SIMD "Enable SIMD optimizations" OFF)
 if (USE_SIMD)
     target_compile_definitions(core PUBLIC USE_SIMD)
