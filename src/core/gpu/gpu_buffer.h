@@ -34,6 +34,8 @@ class GPUBuffer {
     /// @return Current `VkBuffer`
     [[nodiscard]] VkBuffer buffer() const noexcept { return m_buffer; }
 
+    [[nodiscard]] VkDeviceMemory memory() const noexcept { return m_memory; }
+
     [[nodiscard]] void* ptr() const noexcept { return m_mapped; }
 
   private:

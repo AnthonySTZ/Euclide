@@ -4,5 +4,5 @@
 [numthreads(1, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
-    OutBuffer[DTid.x] = DTid.x + InBuffer[DTid.x];
+    OutBuffer[DTid.x] = InBuffer[DTid.x] + InBuffer[DTid.x];
 }

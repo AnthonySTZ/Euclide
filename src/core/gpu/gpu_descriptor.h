@@ -93,6 +93,7 @@ class GPUDescriptorWriter {
     GPUDescriptorSetLayout& m_setLayout;
     GPUDescriptorPool& m_pool;
     std::vector<VkWriteDescriptorSet> m_writeDescriptorSets;
+    std::vector<VkDescriptorBufferInfo> m_bufferInfos;
 };
 
 } // namespace euclide

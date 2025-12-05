@@ -77,11 +77,17 @@ void GPUDevice::createComputeLogicalDevice() {
 
 void GPUDevice::createBuffer(VkDeviceSize t_size, VkBufferUsageFlags t_usage, VkMemoryPropertyFlags t_properties,
                              VkBuffer& t_buffer, VkDeviceMemory& t_bufferMemory) const {
+    std::optional<uint32_t> familyIndex = findPhysicalQueueFamilies(VK_QUEUE_COMPUTE_BIT);
+    if (!familyIndex.has_value()) {
+        throw std::runtime_error("failed to find queue family index with compute flag!");
+    }
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = t_size;
     bufferInfo.usage = t_usage;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    bufferInfo.queueFamilyIndexCount = 1;
+    bufferInfo.pQueueFamilyIndices = &familyIndex.value();
 
     if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &t_buffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to create buffer!");

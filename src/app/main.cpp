@@ -34,6 +34,10 @@ void testGpu() {
             VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         };
+        outBuffer.map();
+        std::fill(numbers.begin(), numbers.end(), 8.0f);
+        outBuffer.writeToBuffer(numbers.data());
+        outBuffer.unmap();
 
         auto descriptorsetLayout = euclide::GPUDescriptorSetLayout::Builder(manager.getDevice())
                                        .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)

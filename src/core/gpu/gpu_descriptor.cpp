@@ -110,11 +110,13 @@ GPUDescriptorWriter& GPUDescriptorWriter::writeBuffer(uint32_t t_binding, VkDesc
     auto& bindingDescription = m_setLayout.m_bindings[t_binding];
     assert(bindingDescription.descriptorCount == 1 && "Binding single descriptor info, but binding expects multiple");
 
+    m_bufferInfos.push_back(t_bufferInfo);
+
     VkWriteDescriptorSet write{};
     write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     write.descriptorType = bindingDescription.descriptorType;
     write.dstBinding = t_binding;
-    write.pBufferInfo = &t_bufferInfo;
+    write.pBufferInfo = &m_bufferInfos.back();
     write.descriptorCount = 1;
 
     m_writeDescriptorSets.push_back(write);
@@ -128,7 +130,6 @@ bool GPUDescriptorWriter::build(VkDescriptorSet& t_set) {
     }
     overwrite(t_set);
     return true;
-    ;
 }
 
 void GPUDescriptorWriter::overwrite(VkDescriptorSet& t_set) {
