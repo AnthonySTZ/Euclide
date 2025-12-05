@@ -11,6 +11,15 @@ class GPUBuffer {
               const VkDeviceSize t_minOffsetAlignment = 1);
     ~GPUBuffer();
 
+    template <typename T>
+    [[nodiscard]] inline static GPUBuffer create(GPUDevice& t_device, const uint32_t t_instanceCount,
+                                                 const VkBufferUsageFlags t_usageFlags,
+                                                 const VkDeviceSize t_minOffsetAlignment = 1) {
+        return GPUBuffer(t_device, sizeof(T), t_instanceCount, t_usageFlags,
+                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                         t_minOffsetAlignment);
+    }
+
     /// @brief Map current buffer to the specified size and offset
     /// @param size
     /// @param offset
@@ -26,6 +35,8 @@ class GPUBuffer {
     /// range.
     /// @param offset (Optional) Byte offset from beginning of mapped region
     void writeToBuffer(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
+
+    void write(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
 
     [[nodiscard]] VkDescriptorBufferInfo descriptorInfo(VkDeviceSize t_size = VK_WHOLE_SIZE,
                                                         VkDeviceSize t_offset = 0) const;

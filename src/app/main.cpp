@@ -15,29 +15,12 @@ void testGpu() {
     std::vector<float> numbers(vertexCount);
     std::iota(numbers.begin(), numbers.end(), 1.0f);
     {
-        euclide::GPUBuffer inBuffer{
-            manager.getDevice(),
-            vertexSize,
-            vertexCount,
-            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        };
+        euclide::GPUBuffer inBuffer =
+            euclide::GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        inBuffer.write(numbers.data());
 
-        inBuffer.map();
-        inBuffer.writeToBuffer(numbers.data());
-        inBuffer.unmap();
-
-        euclide::GPUBuffer outBuffer{
-            manager.getDevice(),
-            vertexSize,
-            vertexCount,
-            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        };
-        outBuffer.map();
-        std::fill(numbers.begin(), numbers.end(), 8.0f);
-        outBuffer.writeToBuffer(numbers.data());
-        outBuffer.unmap();
+        euclide::GPUBuffer outBuffer =
+            euclide::GPUBuffer::create<float>(manager.getDevice(), vertexCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 
         auto descriptorsetLayout = euclide::GPUDescriptorSetLayout::Builder(manager.getDevice())
                                        .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)

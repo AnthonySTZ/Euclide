@@ -41,6 +41,12 @@ void GPUBuffer::writeToBuffer(void* t_data, VkDeviceSize t_size, VkDeviceSize t_
     }
 }
 
+void GPUBuffer::write(void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
+    map(t_size, t_offset);
+    writeToBuffer(t_data);
+    unmap();
+}
+
 VkDescriptorBufferInfo GPUBuffer::descriptorInfo(VkDeviceSize t_size, VkDeviceSize t_offset) const {
     return VkDescriptorBufferInfo{
         m_buffer,
