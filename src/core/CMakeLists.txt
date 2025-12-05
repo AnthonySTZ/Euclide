@@ -38,7 +38,7 @@ add_custom_command(
     OUTPUT "${CMAKE_BINARY_DIR}/gpu/shaders/square.spv"
     COMMAND $ENV{VULKAN}/Bin/dxc
             -T cs_6_0
-            -E Main
+            -E main
             -spirv
             -fvk-use-dx-layout
             -fspv-target-env=vulkan1.1

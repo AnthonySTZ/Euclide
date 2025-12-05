@@ -2,7 +2,7 @@
 [[vk::binding(1, 0)]] RWStructuredBuffer<float> OutBuffer;
 
 [numthreads(1, 1, 1)]
-void Main(uint3 DTid : SV_DispatchThreadID)
+void main(uint3 DTid : SV_DispatchThreadID)
 {
-    OutBuffer[DTid.x] = InBuffer[DTid.x];
+    OutBuffer[DTid.x] = DTid.x + InBuffer[DTid.x];
 }

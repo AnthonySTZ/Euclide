@@ -71,7 +71,7 @@ void GPUPipeline::createPipeline() {
     VkPipelineShaderStageCreateInfo pipelineShaderStageCreateInfo{};
     pipelineShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     pipelineShaderStageCreateInfo.module = m_shaderModule;
-    pipelineShaderStageCreateInfo.pName = "Main";
+    pipelineShaderStageCreateInfo.pName = "main";
     pipelineShaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
 
     VkComputePipelineCreateInfo computePipelineCreateInfo{};
