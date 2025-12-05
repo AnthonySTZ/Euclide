@@ -49,6 +49,8 @@ class GPUBuffer {
 
     [[nodiscard]] void* ptr() const noexcept { return m_mapped; }
 
+    void read(void* t_data);
+
   private:
     /// @brief Returns the minimum instance size required to be compatible with devices minOffsetAlignment
     /// @param instanceSize The size of an instance

@@ -32,20 +32,16 @@ void testGpu() {
         task.run(vertexCount);
 
         std::cout << "In buffer:\n";
-        inBuffer.map();
-        float* inBufferPtr = static_cast<float*>(inBuffer.ptr());
-        for (size_t i = 0; i < vertexCount; ++i) {
-            std::cout << inBufferPtr[i] << " ";
-        }
-        inBuffer.unmap();
+        std::vector<float> inResults(vertexCount);
+        inBuffer.read(inResults.data());
+        for (auto v : inResults)
+            std::cout << v << " ";
 
         std::cout << "\nOut buffer:\n";
-        outBuffer.map();
-        float* OutBufferPtr = static_cast<float*>(outBuffer.ptr());
-        for (size_t i = 0; i < vertexCount; ++i) {
-            std::cout << OutBufferPtr[i] << " ";
-        }
-        outBuffer.unmap();
+        std::vector<float> outResults(vertexCount);
+        outBuffer.read(outResults.data());
+        for (auto v : outResults)
+            std::cout << v << " ";
     }
 }
 

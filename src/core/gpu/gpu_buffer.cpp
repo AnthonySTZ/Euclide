@@ -55,6 +55,12 @@ VkDescriptorBufferInfo GPUBuffer::descriptorInfo(VkDeviceSize t_size, VkDeviceSi
     };
 }
 
+void GPUBuffer::read(void* t_data) {
+    map();
+    memcpy(t_data, m_mapped, m_bufferSize);
+    unmap();
+}
+
 VkDeviceSize GPUBuffer::getAlignment(VkDeviceSize t_instanceSize, VkDeviceSize t_minOffsetAlignment) {
     if (t_minOffsetAlignment > 0) {
         return (t_instanceSize + t_minOffsetAlignment - 1) & ~(t_minOffsetAlignment - 1);
