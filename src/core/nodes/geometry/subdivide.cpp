@@ -100,6 +100,7 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
 
 void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
                                    const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
+#pragma omp parallel for
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const size_t newFaceId = 4 * h;
