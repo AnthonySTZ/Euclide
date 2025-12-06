@@ -21,5 +21,15 @@ static void BM_SubdivideCube9(benchmark::State& state) { // 715ms
     }
 }
 
-BENCHMARK(BM_SubdivideCube8)->Iterations(10)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_SubdivideCube9)->Iterations(10)->Unit(benchmark::kMillisecond);
+static void BM_SubdivideCube10(benchmark::State& state) { // 2949 ms
+    euclide::SubdivideSettings settings{.divisions = 10};
+    for (auto _ : state) {
+        euclide::Mesh mesh;
+        euclide::Cube::createCube(mesh, {});
+        euclide::Subdivide::subdivide(mesh, settings);
+    }
+}
+
+// BENCHMARK(BM_SubdivideCube8)->Iterations(10)->Unit(benchmark::kMillisecond);
+// BENCHMARK(BM_SubdivideCube9)->Iterations(10)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_SubdivideCube10)->Iterations(1)->Unit(benchmark::kMillisecond);
