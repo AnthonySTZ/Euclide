@@ -100,7 +100,6 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
 
 void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
                                    const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
-#pragma omp parallel for
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const size_t newFaceId = 4 * h;
@@ -125,7 +124,6 @@ void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const 
 void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
                                   const Points& t_points_d, const std::vector<Primitive>& t_primitives_d,
                                   const uint32_t t_numOfPoints) {
-#pragma omp parallel for
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const float factor = 1.0f / static_cast<float>(t_primitives_d[hd.face].numVertices);
@@ -138,7 +136,6 @@ void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Po
 
 void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
                                  const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
-#pragma omp parallel for
     for (uint32_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const uint32_t i = t_numOfPoints + hd.face;
@@ -181,7 +178,6 @@ void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, P
         }
     }
 
-#pragma omp parallel for
     for (uint32_t h = 0; h < edgeCount; ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const uint32_t origin = hd.origin;

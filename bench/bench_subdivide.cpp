@@ -3,7 +3,7 @@
 #include "nodes/primitive/cube.h"
 #include "nodes/geometry/subdivide.h"
 
-static void BM_SubdivideCube8(benchmark::State& state) { // 166ms
+static void BM_SubdivideCube8(benchmark::State& state) { // 194ms
     euclide::SubdivideSettings settings{.divisions = 8};
     for (auto _ : state) {
         euclide::Mesh mesh;
@@ -12,7 +12,7 @@ static void BM_SubdivideCube8(benchmark::State& state) { // 166ms
     }
 }
 
-static void BM_SubdivideCube9(benchmark::State& state) { // 673ms
+static void BM_SubdivideCube9(benchmark::State& state) { // 774ms
     euclide::SubdivideSettings settings{.divisions = 9};
     for (auto _ : state) {
         euclide::Mesh mesh;
