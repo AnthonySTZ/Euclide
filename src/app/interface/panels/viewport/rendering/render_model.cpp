@@ -75,11 +75,12 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     const Points& points = t_mesh.points;
 
     {
-        Timer timer{"Points"}; // 36ms 1000x1000 grid
+        Timer timer{"Points"}; // 36ms 1000x1000 grid -> 11ms with omp
         m_numOfPoints = points.size();
 
         std::vector<RenderVertex> vertices;
         vertices.resize(m_numOfPoints);
+#pragma omp parallel for
         for (size_t i = 0; i < m_numOfPoints; ++i) {
             vertices[i].position[0] = points.posX[i];
             vertices[i].position[1] = points.posY[i];
