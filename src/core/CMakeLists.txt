@@ -70,6 +70,14 @@ if (USE_SIMD)
     if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(core PUBLIC -march=native)
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        target_compile_options(core PUBLIC /arch:AVX2) # or appropriate MSVC flag
+        target_compile_options(core PUBLIC /arch:AVX2)
     endif()
+endif()
+
+# ---------------- OPENMP ----------------
+option(USE_OPENMP "Enable OpenMP multithreading" ON)
+
+if (USE_OPENMP)
+    find_package(OpenMP REQUIRED)
+    target_link_libraries(core PUBLIC OpenMP::OpenMP_CXX)
 endif()
