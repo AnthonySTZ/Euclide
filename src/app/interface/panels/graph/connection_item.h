@@ -23,6 +23,10 @@ class ConnectionItem {
     /// @param t_destIndex Index of the input slot on the destination node.
     void setDestination(const std::weak_ptr<NodeItem> t_destNode, uint32_t t_destIndex) noexcept;
 
+    inline void setSourcePosition(const ImVec2& t_position) noexcept { m_start = t_position; }
+    inline void setDestinationPosition(const ImVec2& t_position) noexcept { m_end = t_position; }
+    void setUnconnectedPosition(const ImVec2& t_position) noexcept;
+
     /// @brief Get the source node.
     [[nodiscard]] std::shared_ptr<NodeItem> sourceNode() const { return m_sourceNode.lock(); }
 

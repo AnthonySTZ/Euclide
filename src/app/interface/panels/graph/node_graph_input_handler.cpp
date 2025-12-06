@@ -43,6 +43,25 @@ void NodeGraphInputHandler::handleMouseInputs() {
     } else if (m_mouseButtonLeftDown && isDragging()) {
         m_isMouseDrag = true;
     }
+
+    if (m_currentConnection) {
+        repositionCurrentConnection();
+        m_currentConnection->draw();
+    }
+}
+
+void NodeGraphInputHandler::repositionCurrentConnection() {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    ImVec2 mousePos = ImGui::GetMousePos();
+    auto nearIO = NodeGraphInteraction::getNodeIOAt(graph, mousePos);
+    if (nearIO.has_value()) {
+        m_currentConnection->setUnconnectedPosition(nearIO.value().position);
+    } else {
+        m_currentConnection->setUnconnectedPosition(mousePos);
+    }
 }
 
 void NodeGraphInputHandler::handleLeftMouseClicked() {
@@ -51,7 +70,7 @@ void NodeGraphInputHandler::handleLeftMouseClicked() {
 
     m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos);
     if (m_ioClicked.has_value()) { // Check if user clicked on IO
-        m_graphRenderer->startConnection(m_ioClicked.value());
+        startConnection(m_ioClicked.value());
         return;
     }
 
@@ -76,6 +95,25 @@ void NodeGraphInputHandler::handleDragging() const {
     } else if (m_isBoxSelecting) {
         m_graphRenderer->drawBoxSelection(m_boxStart, io.MousePos);
     }
+}
+
+void NodeGraphInputHandler::startConnection(const IOInfos& t_infos) {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    ImVec2 mousePos = ImGui::GetMousePos();
+    m_currentConnection = std::make_unique<ConnectionItem>();
+    if (t_infos.type == IOType::INPUT) {
+        m_currentConnection->setDestination(graph->getNode(t_infos.nodeId), t_infos.index);
+    } else {
+        m_currentConnection->setSource(graph->getNode(t_infos.nodeId), t_infos.index);
+    }
+    m_currentConnection->setUnconnectedPosition(mousePos);
+}
+
+void NodeGraphInputHandler::endConnection() {
+    m_currentConnection = nullptr;
 }
 
 void NodeGraphInputHandler::handleLeftMouseRelease() const {
@@ -142,7 +180,7 @@ void NodeGraphInputHandler::resetMouseInteraction() {
     m_isMouseDrag = false;
     m_draggingNode = std::nullopt;
     m_ioClicked = std::nullopt;
-    m_graphRenderer->endConnection();
+    endConnection();
 }
 
 void NodeGraphInputHandler::handleKeyInputs() {

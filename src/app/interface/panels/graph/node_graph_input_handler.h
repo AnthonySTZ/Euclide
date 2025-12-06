@@ -31,6 +31,8 @@ class NodeGraphInputHandler {
     /// @brief Handles all mouse input events including clicks, releases, and dragging.
     void handleMouseInputs();
 
+    void repositionCurrentConnection();
+
     /// @brief Handle Left Mouse clicked, if its on a node, io, ...
     void handleLeftMouseClicked();
 
@@ -43,6 +45,10 @@ class NodeGraphInputHandler {
 
     /// @brief Updates node positions while dragging.
     void handleDragging() const;
+
+    void startConnection(const IOInfos& t_infos);
+
+    void endConnection();
 
     /// @brief Handles logic when the left mouse button is released.
     /// @details Handles connection creation, node selection, and clearing selections.
@@ -67,6 +73,7 @@ class NodeGraphInputHandler {
     ImVec2 m_boxStart{};                                   ///< Start position of the box selection.
     std::optional<uint32_t> m_draggingNode = std::nullopt; ///< ID of the node currently being dragged, if any.
     std::optional<IOInfos> m_ioClicked = std::nullopt;     ///< Information about an IO slot clicked for connections.
+    std::unique_ptr<ConnectionItem> m_currentConnection;   ///< Currently active connection being dragged.
 
     static constexpr float DRAG_THRESHOLD = 0.01f; ///< Minimum drag distance to initiate dragging.
 };

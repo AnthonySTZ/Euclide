@@ -26,12 +26,12 @@ std::optional<IOInfos> NodeGraphInteraction::getNodeIOAt(const std::weak_ptr<Nod
     for (auto [id, nodeItem] : graph->nodes) {
         std::optional<uint32_t> inputIndex = nodeItem->inputIOHovered();
         if (inputIndex.has_value()) {
-            return IOInfos{id, IOType::INPUT, inputIndex.value()};
+            return IOInfos{id, IOType::INPUT, inputIndex.value(), nodeItem->getInputIOPosition(inputIndex.value())};
         }
 
         std::optional<uint32_t> outputIndex = nodeItem->outputIOHovered();
         if (outputIndex.has_value()) {
-            return IOInfos{id, IOType::OUTPUT, outputIndex.value()};
+            return IOInfos{id, IOType::OUTPUT, outputIndex.value(), nodeItem->getOutputIOPosition(outputIndex.value())};
         }
     }
 

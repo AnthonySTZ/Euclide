@@ -18,13 +18,6 @@ class NodeGraphRenderer {
     /// @brief Renders all elements of the graph: nodes, connections, and cutting lines.
     void render() const;
 
-    /// @brief Begins a temporary connection (dragging a connection from a node slot).
-    /// @param t_infos Information about the node and IO slot where the connection starts.
-    void startConnection(const IOInfos& t_infos);
-
-    /// @brief Ends the temporary connection, discarding any in-progress connection.
-    void endConnection();
-
     /// @brief Adds a cutting line between two points.
     /// @param t_startPos Start position of the line.
     /// @param t_endPos End position of the line.
@@ -53,8 +46,7 @@ class NodeGraphRenderer {
   private:
     std::weak_ptr<NodeGraph> m_graph; ///< Weak pointer to the NodeGraph being rendered.
 
-    std::unique_ptr<ConnectionItem> m_currentConnection; ///< Currently active connection being dragged.
-    FixedQueue<CuttingLine> m_cuttingsLines{200};        ///< Temporary cutting lines for visual feedback.
+    FixedQueue<CuttingLine> m_cuttingsLines{200}; ///< Temporary cutting lines for visual feedback.
 
     static constexpr ImU32 SELECTION_BOX_COLOR = IM_COL32(0, 154, 255, 60);
     static constexpr float SELECTION_BOX_ROUNDING = 2.0f;
