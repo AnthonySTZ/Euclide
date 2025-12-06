@@ -60,7 +60,6 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
     // Base on paper: 'A Halfedge Refinement Rule for Parallel Catmull-Clark Subdivision'
     // `https://onrendering.com/data/papers/catmark/HalfedgeCatmullClark.pdf`
     for (size_t iteration = 0; iteration < t_settings.divisions; ++iteration) {
-        // TODO: Check multi threading, simd, etc..
         const auto& points_d = t_mesh.points;
         const auto& primitives_d = t_mesh.primitives;
 
@@ -100,25 +99,28 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
 
 void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const std::vector<HalfEdge>& t_halfedges_d,
                                    const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
+    HalfEdge* __restrict he_d1 = t_halfedges_d1.data();
+
 #pragma omp parallel for
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const size_t newFaceId = 4 * h;
 
-        t_halfedges_d1[newFaceId].next = newFaceId + 1;
-        t_halfedges_d1[newFaceId + 1].next = newFaceId + 2;
-        t_halfedges_d1[newFaceId + 2].next = newFaceId + 3;
-        t_halfedges_d1[newFaceId + 3].next = newFaceId;
+        he_d1[newFaceId].next = newFaceId + 1;
+        he_d1[newFaceId].origin = hd.origin;
+        he_d1[newFaceId].face = h;
 
-        t_halfedges_d1[newFaceId].origin = hd.origin;
-        t_halfedges_d1[newFaceId + 1].origin = t_numOfPoints + t_numOfPrims + hd.edge;
-        t_halfedges_d1[newFaceId + 2].origin = t_numOfPoints + hd.face;
-        t_halfedges_d1[newFaceId + 3].origin = t_numOfPoints + t_numOfPrims + t_halfedges_d[hd.prev].edge;
+        he_d1[newFaceId + 1].next = newFaceId + 2;
+        he_d1[newFaceId + 1].origin = t_numOfPoints + t_numOfPrims + hd.edge;
+        he_d1[newFaceId + 1].face = h;
 
-        t_halfedges_d1[newFaceId].face = h;
-        t_halfedges_d1[newFaceId + 1].face = h;
-        t_halfedges_d1[newFaceId + 2].face = h;
-        t_halfedges_d1[newFaceId + 3].face = h;
+        he_d1[newFaceId + 2].next = newFaceId + 3;
+        he_d1[newFaceId + 2].origin = t_numOfPoints + hd.face;
+        he_d1[newFaceId + 2].face = h;
+
+        he_d1[newFaceId + 3].origin = t_numOfPoints + t_numOfPrims + t_halfedges_d[hd.prev].edge;
+        he_d1[newFaceId + 3].next = newFaceId;
+        he_d1[newFaceId + 3].face = h;
     }
 }
 
