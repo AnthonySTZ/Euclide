@@ -21,7 +21,7 @@ static void BM_SubdivideCube9(benchmark::State& state) { // 715ms
     }
 }
 
-static void BM_SubdivideCube10(benchmark::State& state) { // 2949 ms
+static void BM_SubdivideCube10(benchmark::State& state) { // 2805 ms
     euclide::SubdivideSettings settings{.divisions = 10};
     for (auto _ : state) {
         euclide::Mesh mesh;

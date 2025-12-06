@@ -125,33 +125,49 @@ void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const 
 void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
                                   const Points& t_points_d, const std::vector<Primitive>& t_primitives_d,
                                   const uint32_t t_numOfPoints) {
+    float* __restrict x1 = t_points_d1.posX.data();
+    float* __restrict y1 = t_points_d1.posY.data();
+    float* __restrict z1 = t_points_d1.posZ.data();
+
+    const float* __restrict x0 = t_points_d.posX.data();
+    const float* __restrict y0 = t_points_d.posY.data();
+    const float* __restrict z0 = t_points_d.posZ.data();
+
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const float factor = 1.0f / static_cast<float>(t_primitives_d[hd.face].numVertices);
         const uint32_t i = t_numOfPoints + hd.face;
-        t_points_d1.posX[i] += t_points_d.posX[hd.origin] * factor;
-        t_points_d1.posY[i] += t_points_d.posY[hd.origin] * factor;
-        t_points_d1.posZ[i] += t_points_d.posZ[hd.origin] * factor;
+        x1[i] += x0[hd.origin] * factor;
+        y1[i] += y0[hd.origin] * factor;
+        z1[i] += z0[hd.origin] * factor;
     }
 }
 
 void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
                                  const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
+    float* __restrict x1 = t_points_d1.posX.data();
+    float* __restrict y1 = t_points_d1.posY.data();
+    float* __restrict z1 = t_points_d1.posZ.data();
+
+    const float* __restrict x0 = t_points_d.posX.data();
+    const float* __restrict y0 = t_points_d.posY.data();
+    const float* __restrict z0 = t_points_d.posZ.data();
+
     for (uint32_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const uint32_t i = t_numOfPoints + hd.face;
         const size_t j = t_numOfPoints + t_numOfPrims + hd.edge;
         if (hd.twin == HalfEdge::NO_TWIN) {
             const uint32_t next = t_halfedges_d[hd.next].origin;
-            t_points_d1.posX[j] = (t_points_d.posX[hd.origin] + t_points_d.posX[next]) * 0.5f;
-            t_points_d1.posY[j] = (t_points_d.posY[hd.origin] + t_points_d.posY[next]) * 0.5f;
-            t_points_d1.posZ[j] = (t_points_d.posZ[hd.origin] + t_points_d.posZ[next]) * 0.5f;
+            x1[j] = (x0[hd.origin] + x0[next]) * 0.5f;
+            y1[j] = (y0[hd.origin] + y0[next]) * 0.5f;
+            z1[j] = (z0[hd.origin] + z0[next]) * 0.5f;
             continue;
         }
 
-        t_points_d1.posX[j] += (t_points_d.posX[hd.origin] + t_points_d1.posX[i]) * 0.25f;
-        t_points_d1.posY[j] += (t_points_d.posY[hd.origin] + t_points_d1.posY[i]) * 0.25f;
-        t_points_d1.posZ[j] += (t_points_d.posZ[hd.origin] + t_points_d1.posZ[i]) * 0.25f;
+        x1[j] += (x0[hd.origin] + x1[i]) * 0.25f;
+        y1[j] += (y0[hd.origin] + y1[i]) * 0.25f;
+        z1[j] += (z0[hd.origin] + z1[i]) * 0.25f;
     }
 }
 
