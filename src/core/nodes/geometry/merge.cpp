@@ -26,12 +26,14 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
 void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
     auto& outputPoints = t_mesh.points;
     const size_t numPoints = outputPoints.size();
-    size_t pointIdx = numPoints;
 
     const auto& pointsToMerge = t_mesh_2.points;
     outputPoints.reserve(outputPoints.size() + pointsToMerge.size());
     outputPoints.resize(outputPoints.size() + pointsToMerge.size());
+
+#pragma omp parallel for
     for (size_t i = 0; i < pointsToMerge.size(); ++i) {
+        size_t pointIdx = numPoints + i;
         outputPoints.posX[pointIdx] = pointsToMerge.posX[i];
         outputPoints.posY[pointIdx] = pointsToMerge.posY[i];
         outputPoints.posZ[pointIdx] = pointsToMerge.posZ[i];
@@ -43,8 +45,6 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
         outputPoints.colorR[pointIdx] = pointsToMerge.colorR[i];
         outputPoints.colorG[pointIdx] = pointsToMerge.colorG[i];
         outputPoints.colorB[pointIdx] = pointsToMerge.colorB[i];
-
-        pointIdx++;
     }
 
     auto& outputVertices = t_mesh.vertices;
