@@ -19,6 +19,7 @@ add_library(core STATIC
     nodes/primitive/cube.cpp
     nodes/primitive/grid.cpp
     nodes/primitive/cylinder.cpp
+    nodes/primitive/quad_sphere.cpp
     
     nodes/geometry/transform.cpp
     nodes/geometry/merge.cpp
