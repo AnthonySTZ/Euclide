@@ -67,7 +67,7 @@ add_dependencies(core Shaders)
 if (MINGW)
     # High-performance stable flags for GCC MinGW
     target_compile_options(core PRIVATE 
-        -O3
+        -O2
         -march=native
         -mtune=native
         -ffast-math
