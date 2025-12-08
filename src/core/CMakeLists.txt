@@ -1,5 +1,4 @@
 add_library(core STATIC
-
     gpu/gpu_device.cpp
     gpu/gpu_buffer.cpp
     gpu/gpu_descriptor.cpp
@@ -63,6 +62,20 @@ add_custom_target(Shaders ALL
     DEPENDS ${SPIRV_SHADERS}
 )
 add_dependencies(core Shaders)
+
+# ---------------- GLOBAL OPTIMIZATION FLAGS ----------------
+if (MINGW)
+    # High-performance stable flags for GCC MinGW
+    target_compile_options(core PRIVATE 
+        -O3
+        -march=native
+        -mtune=native
+        -ffast-math
+        -funroll-loops
+        -fstrict-aliasing
+        -fmerge-all-constants
+    )
+endif()
 
 # ------------- SIMD OPTION ------------- #
 option(USE_SIMD "Enable SIMD optimizations" OFF)

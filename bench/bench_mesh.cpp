@@ -2,7 +2,7 @@
 
 #include "nodes/primitive/grid.h"
 
-static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.018 ms
+static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.002 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {10, 10}};
     euclide::Grid::createGrid(mesh, settings);
@@ -13,7 +13,7 @@ static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.018
     }
 }
 
-static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.642 ms
+static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.067 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {50, 50}};
     euclide::Grid::createGrid(mesh, settings);
@@ -24,7 +24,7 @@ static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.642
     }
 }
 
-static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 2.25 ms
+static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 0.283 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {100, 100}};
     euclide::Grid::createGrid(mesh, settings);
@@ -35,7 +35,7 @@ static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 2.2
     }
 }
 
-static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 8.33 ms
+static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 1.81 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {200, 200}};
     euclide::Grid::createGrid(mesh, settings);
@@ -46,7 +46,7 @@ static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 8.3
     }
 }
 
-static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 59.7 ms
+static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 13.9 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {500, 500}};
     euclide::Grid::createGrid(mesh, settings);
@@ -57,7 +57,7 @@ static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 59.
     }
 }
 
-static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 260 ms
+static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 60.2 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {1000, 1000}};
     euclide::Grid::createGrid(mesh, settings);

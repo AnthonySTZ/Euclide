@@ -3,7 +3,7 @@
 #include "nodes/primitive/grid.h"
 #include "nodes/geometry/merge.h"
 
-static void BM_MergeGrid1000x1000(benchmark::State& state) { // 212ms
+static void BM_MergeGrid1000x1000(benchmark::State& state) { // 87ms
     euclide::Mesh mesh_1;
     euclide::GridSettings settings{.divisions = {1000, 1000}};
     euclide::Grid::createGrid(mesh_1, settings);
