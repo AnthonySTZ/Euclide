@@ -25,6 +25,27 @@ std::shared_ptr<Mesh> CopyToPoints::compute(const size_t t_index,
 }
 
 void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
+    const auto points_to_copy = t_mesh.points;
+    auto& new_points = t_mesh.points;
+    const auto& points = t_points.points;
+
+    const size_t pointsSize = points_to_copy.size();
+    new_points.clear();
+    new_points.resize(pointsSize * points.size());
+
+    for (size_t i = 0; i < points.size(); ++i) {
+        const float offsetX = points.posX[i];
+        const float offsetY = points.posY[i];
+        const float offsetZ = points.posZ[i];
+
+        const size_t offsetIdx = i * pointsSize;
+        for (size_t j = 0; j < pointsSize; ++j) {
+            const size_t pointIdx = offsetIdx + j;
+            new_points.posX[pointIdx] = points_to_copy.posX[j] + offsetX;
+            new_points.posY[pointIdx] = points_to_copy.posY[j] + offsetY;
+            new_points.posZ[pointIdx] = points_to_copy.posZ[j] + offsetZ;
+        }
+    }
 }
 
 } // namespace euclide
