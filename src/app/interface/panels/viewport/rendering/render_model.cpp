@@ -75,7 +75,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     const Points& points = t_mesh.points;
 
     {
-        Timer timer{"Points"}; // 36ms 1000x1000 grid -> 11ms with omp
+        Timer timer{"Points"}; // 11.76 ms 1000x1000 grid -> 11ms with omp
         m_numOfPoints = points.size();
 
         std::vector<RenderVertex> vertices;
