@@ -19,6 +19,7 @@ void NodeGraphMenu::render() {
     } else {
         // Reset focus
         m_focusSearchBar = true;
+        m_searchText.clear();
     }
 
     endStyle();
