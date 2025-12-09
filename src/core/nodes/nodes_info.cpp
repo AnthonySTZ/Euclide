@@ -8,6 +8,7 @@
 #include "geometry/transform.h"
 #include "geometry/merge.h"
 #include "geometry/subdivide.h"
+#include "geometry/smooth_normals.h"
 
 namespace euclide {
 
@@ -25,6 +26,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Transform", []() { return std::make_shared<Transform>(); }},
          {"Merge", []() { return std::make_shared<Merge>(); }},
          {"Subdivide", []() { return std::make_shared<Subdivide>(); }},
+         {"SmoothNormals", []() { return std::make_shared<SmoothNormals>(); }},
      }}};
 
 const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>>& NodesInfo::getMenuItems() {

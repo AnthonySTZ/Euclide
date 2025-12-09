@@ -23,6 +23,7 @@ add_library(core STATIC
     nodes/geometry/transform.cpp
     nodes/geometry/merge.cpp
     nodes/geometry/subdivide.cpp
+    nodes/geometry/smooth_normals.cpp
 )
 
 target_include_directories(core
