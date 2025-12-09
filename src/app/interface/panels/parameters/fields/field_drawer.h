@@ -153,7 +153,7 @@ class FieldDrawer : public NodeFieldVisitor {
 
   private:
     static constexpr float MAX_FLOAT = 3'999'999'999.9f; ///< Max float supported by slider
-    static constexpr int MAX_INT = 4'000'000'000;        ///< Max int supported by slider
+    static constexpr int MAX_INT = 2'000'000'000;        ///< Max int supported by slider
 };
 
 } // namespace euclide
