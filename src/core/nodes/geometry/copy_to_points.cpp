@@ -44,6 +44,14 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
             new_points.posX[pointIdx] = points_to_copy.posX[j] + offsetX;
             new_points.posY[pointIdx] = points_to_copy.posY[j] + offsetY;
             new_points.posZ[pointIdx] = points_to_copy.posZ[j] + offsetZ;
+
+            new_points.normalX[pointIdx] = points_to_copy.normalX[j];
+            new_points.normalY[pointIdx] = points_to_copy.normalY[j];
+            new_points.normalZ[pointIdx] = points_to_copy.normalZ[j];
+
+            new_points.colorR[pointIdx] = points_to_copy.colorR[j];
+            new_points.colorG[pointIdx] = points_to_copy.colorG[j];
+            new_points.colorB[pointIdx] = points_to_copy.colorB[j];
         }
     }
 }
