@@ -62,9 +62,10 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
     vertices.resize(verticesSize + verticesSize * numOfDuplicates);
     for (size_t i = 1; i <= numOfDuplicates; ++i) {
         const size_t vertOffset = verticesSize * i;
+        const uint32_t pointOffset = pointsSize * i;
         for (size_t j = 0; j < verticesSize; ++j) {
             vertices[vertOffset + j] = vertices[j];
-            vertices[vertOffset + j].refPoint += pointsSize * i;
+            vertices[vertOffset + j].refPoint += pointOffset;
         }
     }
 
@@ -73,9 +74,10 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
     primitives.resize(primitivesSize + primitivesSize * numOfDuplicates);
     for (size_t i = 1; i <= numOfDuplicates; ++i) {
         const size_t primOffset = primitivesSize * i;
+        const uint32_t verticesOffset = verticesSize * i;
         for (size_t j = 0; j < primitivesSize; ++j) {
             primitives[primOffset + j] = primitives[j];
-            primitives[primOffset + j].verticesIndex += verticesSize * i;
+            primitives[primOffset + j].verticesIndex += verticesOffset;
         }
     }
 }
