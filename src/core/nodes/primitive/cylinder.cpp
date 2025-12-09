@@ -1,5 +1,7 @@
 #include "cylinder.h"
 
+#include "nodes/geometry/smooth_normals.h"
+
 #include <cmath>
 
 #ifdef USE_SIMD
@@ -209,6 +211,8 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
         primitives.emplace_back(
             Primitive{primVertIdx + t_settings.divisions, static_cast<uint32_t>(t_settings.divisions)});
     }
+
+    SmoothNormals::smoothNormals(t_mesh);
 }
 
 } // namespace euclide

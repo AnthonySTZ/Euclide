@@ -2,6 +2,7 @@
 
 #include "nodes/primitive/cube.h"
 #include "nodes/geometry/subdivide.h"
+#include "nodes/geometry/smooth_normals.h"
 
 namespace euclide {
 
@@ -49,6 +50,7 @@ std::shared_ptr<Mesh> QuadSphere::compute(const size_t t_index,
 void QuadSphere::createQuadSphere(Mesh& t_mesh, const QuadSphereSettings& t_settings) {
     Cube::createCube(t_mesh, CubeSettings{t_settings.position, t_settings.size});
     Subdivide::subdivide(t_mesh, SubdivideSettings{t_settings.divisions});
+    SmoothNormals::smoothNormals(t_mesh);
 }
 
 } // namespace euclide

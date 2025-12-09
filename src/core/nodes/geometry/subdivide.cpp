@@ -1,5 +1,7 @@
 #include "subdivide.h"
 
+#include "smooth_normals.h"
+
 #include <iostream>
 
 namespace euclide {
@@ -27,6 +29,7 @@ std::shared_ptr<Mesh> Subdivide::compute(const size_t t_index,
     const SubdivideSettings settings{.divisions = divisions};
 
     subdivide(*output, settings);
+    SmoothNormals::smoothNormals(*output);
 
     return output;
 }
@@ -77,9 +80,6 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         std::fill(std::begin(points_d1.colorR), std::end(points_d1.colorR), 1.0);
         std::fill(std::begin(points_d1.colorG), std::end(points_d1.colorG), 1.0);
         std::fill(std::begin(points_d1.colorB), std::end(points_d1.colorB), 1.0);
-        std::fill(std::begin(points_d1.normalX), std::end(points_d1.normalX), 0.0);
-        std::fill(std::begin(points_d1.normalY), std::end(points_d1.normalY), 1.0);
-        std::fill(std::begin(points_d1.normalZ), std::end(points_d1.normalZ), 0.0);
 
         // Halfedge refinement
         halfedgeRefinement(halfedges_d1, halfedges_d, numOfPoints, numOfPrims);
