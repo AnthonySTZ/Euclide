@@ -2,6 +2,12 @@
 
 #include "utils/timer.h"
 
+#define USE_SIMD
+
+#ifdef USE_SIMD
+#include "utils/simd.h"
+#endif
+
 namespace euclide {
 
 CopyToPoints::CopyToPoints() : Node(2, 1, "CopyToPoints") {
@@ -40,7 +46,37 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
         const float offsetZ = points.posZ[i];
 
         const size_t offsetIdx = i * pointsSize;
-        for (size_t j = 0; j < pointsSize; ++j) {
+        size_t j = 0;
+
+#ifdef USE_SIMD
+
+        if (pointsSize >= 8) {
+            __m256 __offsetX = _mm256_set1_ps(offsetX);
+            __m256 __offsetY = _mm256_set1_ps(offsetY);
+            __m256 __offsetZ = _mm256_set1_ps(offsetZ);
+            for (; j + 8 <= pointsSize; j += 8) {
+                const size_t pointIdx = offsetIdx + j;
+                __m256 __posX = _mm256_load_ps(&points_to_copy.posX[j]);
+                __m256 __posY = _mm256_load_ps(&points_to_copy.posY[j]);
+                __m256 __posZ = _mm256_load_ps(&points_to_copy.posZ[j]);
+
+                _mm256_storeu_ps(&new_points.posX[pointIdx], _mm256_add_ps(__posX, __offsetX));
+                _mm256_storeu_ps(&new_points.posY[pointIdx], _mm256_add_ps(__posY, __offsetY));
+                _mm256_storeu_ps(&new_points.posZ[pointIdx], _mm256_add_ps(__posZ, __offsetZ));
+
+                _mm256_storeu_ps(&new_points.normalX[pointIdx], _mm256_load_ps(&points_to_copy.normalX[j]));
+                _mm256_storeu_ps(&new_points.normalY[pointIdx], _mm256_load_ps(&points_to_copy.normalY[j]));
+                _mm256_storeu_ps(&new_points.normalZ[pointIdx], _mm256_load_ps(&points_to_copy.normalZ[j]));
+
+                _mm256_storeu_ps(&new_points.colorR[pointIdx], _mm256_load_ps(&points_to_copy.colorR[j]));
+                _mm256_storeu_ps(&new_points.colorG[pointIdx], _mm256_load_ps(&points_to_copy.colorG[j]));
+                _mm256_storeu_ps(&new_points.colorB[pointIdx], _mm256_load_ps(&points_to_copy.colorB[j]));
+            }
+        }
+
+#endif
+
+        for (; j < pointsSize; ++j) {
             const size_t pointIdx = offsetIdx + j;
             new_points.posX[pointIdx] = points_to_copy.posX[j] + offsetX;
             new_points.posY[pointIdx] = points_to_copy.posY[j] + offsetY;

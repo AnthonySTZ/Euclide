@@ -4,7 +4,7 @@
 #include "nodes/primitive/quad_sphere.h"
 #include "nodes/geometry/copy_to_points.h"
 
-static void BM_CopyToPoints(benchmark::State& state) { // 4756 ms
+static void BM_CopyToPoints(benchmark::State& state) { // 4679 ms
     euclide::Mesh mesh_1;
     euclide::GridSettings settings{.divisions = {20, 20}};
     euclide::Grid::createGrid(mesh_1, settings);
@@ -19,4 +19,4 @@ static void BM_CopyToPoints(benchmark::State& state) { // 4756 ms
     }
 }
 
-BENCHMARK(BM_CopyToPoints)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_CopyToPoints)->Iterations(5)->Unit(benchmark::kMillisecond);
