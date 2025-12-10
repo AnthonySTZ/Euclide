@@ -191,18 +191,21 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
     auto& vertices = t_mesh.vertices;
     vertices.resize(numOfPrims * 4);
 
-    uint32_t vertIdx = 0;
+#pragma omp parallel for
     for (uint32_t row = 0; row < rows; ++row) {
         float rowVal = row * columnsPoints;
+        const uint32_t vertIdxOffset = row * columns * 4;
 
         for (size_t column = 0; column < columns; ++column) {
             const uint32_t top_left = rowVal + column;
             const uint32_t bottom_left = top_left + columnsPoints;
 
-            vertices[vertIdx++] = Vertex{top_left};
-            vertices[vertIdx++] = Vertex{top_left + 1};
-            vertices[vertIdx++] = Vertex{bottom_left + 1};
-            vertices[vertIdx++] = Vertex{bottom_left};
+            const uint32_t vertIdx = vertIdxOffset + column * 4;
+
+            vertices[vertIdx] = Vertex{top_left};
+            vertices[vertIdx + 1] = Vertex{top_left + 1};
+            vertices[vertIdx + 2] = Vertex{bottom_left + 1};
+            vertices[vertIdx + 3] = Vertex{bottom_left};
         }
     }
 
