@@ -45,9 +45,7 @@ class NodeItemModel {
     std::weak_ptr<Node> m_node; ///< Associated data node.
     bool m_isSelected = false;  ///< Selection state.
 
-    ImVec2 m_position;                       ///< Node position in UI coordinates.
-    std::vector<ImVec2> m_inputIOPositions;  ///< Cached input slot positions.
-    std::vector<ImVec2> m_outputIOPositions; ///< Cached output slot positions.
+    ImVec2 m_position; ///< Node position in UI coordinates.
 
     ImVec2 m_size = ImVec2(100, 30);                             ///< Node rectangle size.
     ImU32 m_color = IM_COL32(100, 100, 100, 255);                ///< Base node color.
