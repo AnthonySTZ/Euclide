@@ -4,6 +4,8 @@
 #include "geometry/mesh.h"
 #include <memory>
 
+#include <glm/glm.hpp>
+
 namespace euclide {
 
 /// @brief Structure representing a single vertex in the render model.
@@ -29,6 +31,8 @@ class RenderModel {
     /// @brief Draw the mesh triangles.
     void draw() const;
 
+    inline void setEdgeColor(const glm::vec3 t_color) { m_edgeColor = t_color; }
+
     /// @brief Draw the mesh points as GL_POINTS.
     void drawPoints() const;
 
@@ -50,6 +54,7 @@ class RenderModel {
 
     [[nodiscard]] inline int numOfPoints() const noexcept { return m_numOfPoints; }
     [[nodiscard]] inline int numOfPrims() const noexcept { return m_numOfPrims; }
+    [[nodiscard]] inline glm::vec3 edgeColor() const noexcept { return m_edgeColor; }
 
   private:
     /// @brief Initialize OpenGL VAO, VBO, and EBOs.
@@ -83,6 +88,8 @@ class RenderModel {
     size_t m_numOfEdgesIndices = 0;  ///< Total number of edge indices.
 
     size_t m_numOfPrims = 0;
+
+    glm::vec3 m_edgeColor{0.0, 0.0, 0.0};
 };
 
 } // namespace euclide

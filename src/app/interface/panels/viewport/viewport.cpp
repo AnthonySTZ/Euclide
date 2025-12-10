@@ -11,6 +11,7 @@ Viewport::Viewport(const std::weak_ptr<Scene> t_scene) : m_scene(t_scene), m_cam
     m_gridModel.showPrimitives = false;
     m_gridModel.showPoints = false;
     m_gridModel.showWireframe = true;
+    m_gridModel.setEdgeColor(glm::vec3{0.5, 0.5, 0.5});
 
     if (auto scene = m_scene.lock()) {
         scene->onMeshUpdate.subscribe([this](std::shared_ptr<Mesh> t_mesh) { m_renderModel.updateWithMesh(*t_mesh); });

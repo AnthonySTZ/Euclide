@@ -35,6 +35,8 @@ class ShaderProgram {
     /// @param t_value Value of the matrix to bind.
     void bindUniform(const char* t_name, const glm::mat4x4& t_value);
 
+    void bindUniform(const char* t_name, const glm::vec3& t_value);
+
   private:
     /// @brief Compile a shader from source code.
     /// @param t_shaderSrc Shader source code as a C-string.

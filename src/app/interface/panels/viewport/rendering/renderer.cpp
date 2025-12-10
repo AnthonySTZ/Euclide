@@ -22,6 +22,7 @@ void Renderer::draw(const RenderModel& t_model) {
     if (t_model.showWireframe) {
         m_edgeShaderProgram.use();
         bindCameraUniforms(m_edgeShaderProgram);
+        m_edgeShaderProgram.bindUniform("edgeColor", t_model.edgeColor());
         t_model.drawEdges();
     }
 

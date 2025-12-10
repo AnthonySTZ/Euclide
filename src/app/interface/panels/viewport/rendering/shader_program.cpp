@@ -63,6 +63,11 @@ void ShaderProgram::bindUniform(const char* t_name, const glm::mat4x4& t_value) 
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(t_value));
 }
 
+void ShaderProgram::bindUniform(const char* t_name, const glm::vec3& t_value) {
+    GLuint location = glGetUniformLocation(m_id, t_name);
+    glUniform3fv(location, 1, glm::value_ptr(t_value));
+}
+
 const uint32_t ShaderProgram::createShader(const char* t_shaderSrc, GLenum t_type) {
     const uint32_t shader = glCreateShader(t_type);
     glShaderSource(shader, 1, &t_shaderSrc, 0);
