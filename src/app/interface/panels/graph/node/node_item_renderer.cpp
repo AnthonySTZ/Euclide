@@ -45,4 +45,55 @@ void NodeItemRenderer::drawRect(const std::shared_ptr<NodeItemModel>& t_nodeMode
     drawList->AddText(textPos, IM_COL32(255, 255, 255, 255), nodeName.c_str());
 }
 
+void NodeItemRenderer::drawIOs(const std::shared_ptr<NodeItemModel>& t_nodeModel) {
+    auto node = t_nodeModel->node();
+    if (!node)
+        return;
+
+    const ImVec2 position = t_nodeModel->m_position;
+    const float spacing = t_nodeModel->SPACING;
+    const float radius = t_nodeModel->RADIUS;
+    const float nodeWidth = t_nodeModel->m_size.x;
+    const ImU32 color = t_nodeModel->IO_COLOR;
+    const ImU32 outlineColor = t_nodeModel->IO_OUTLINE_COLOR;
+
+    ImVec2 inputIOPos{position.x, position.y - spacing - radius};
+    ImVec2 outputIOPos{position.x, position.y + t_nodeModel->m_size.y + spacing + radius};
+
+    m_inputIOPositions = computePointsPositionsOnLine(node->numInputs(), inputIOPos, nodeWidth);
+    m_outputIOPositions = computePointsPositionsOnLine(node->numOutputs(), outputIOPos, nodeWidth);
+
+    for (const ImVec2& ioPos : m_inputIOPositions) {
+        drawIO(ioPos, radius, color, outlineColor);
+    }
+    for (const ImVec2& ioPos : m_outputIOPositions) {
+        drawIO(ioPos, radius, color, outlineColor);
+    }
+}
+
+void NodeItemRenderer::drawIO(const ImVec2 t_position, const float t_ioRadius, const ImU32 t_color,
+                              const ImU32 t_outlineColor) {
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    if (!drawList)
+        return;
+
+    drawList->AddCircleFilled(t_position, t_ioRadius, t_color);
+    drawList->AddCircle(t_position, t_ioRadius, t_outlineColor);
+}
+
+std::vector<ImVec2> NodeItemRenderer::computePointsPositionsOnLine(const int t_numberOfPoints,
+                                                                   const ImVec2 t_linePosition,
+                                                                   const float t_lineWidth) {
+    std::vector<ImVec2> positions{};
+    if (t_numberOfPoints <= 0)
+        return positions;
+
+    positions.resize(t_numberOfPoints);
+    const float pointsSpacing = t_lineWidth / (t_numberOfPoints + 1);
+    for (size_t i = 0; i < t_numberOfPoints; ++i) {
+        positions[i] = ImVec2{t_linePosition.x + (i + 1) * pointsSpacing, t_linePosition.y};
+    }
+    return positions;
+}
+
 } // namespace euclide
