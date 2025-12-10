@@ -16,4 +16,21 @@ struct IOInfos {
     ImVec2 position{0, 0};       ///< Position the IO slot within the node.
 };
 
+class NodeItemInteraction {
+  public:
+    /// @brief Get the position of a specific input slot.
+    /// @param t_nodeItem Shared ptr of the node item.
+    /// @param t_index Index of the input slot.
+    /// @return Position of the input slot in UI coordinates.
+    [[nodiscard]] static ImVec2 getInputIOPosition(const std::shared_ptr<NodeItem> t_nodeItem, const uint32_t t_index);
+
+    /// @brief Get the position of a specific output slot.
+    /// @param t_nodeItem Shared ptr of the node item.
+    /// @param t_index Index of the output slot.
+    /// @return Position of the output slot in UI coordinates.
+    [[nodiscard]] static ImVec2 getOutputIOPosition(const std::shared_ptr<NodeItem> t_nodeItem, const uint32_t t_index);
+
+  private:
+};
+
 } // namespace euclide

@@ -27,6 +27,8 @@ class NodeItemRenderer {
 
     std::vector<ImVec2> m_inputIOPositions;  ///< Cached input slot positions.
     std::vector<ImVec2> m_outputIOPositions; ///< Cached output slot positions.
+
+    friend NodeItemInteraction;
 };
 
 } // namespace euclide

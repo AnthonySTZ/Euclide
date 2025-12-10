@@ -8,6 +8,7 @@
 namespace euclide {
 
 class NodeItemRenderer;
+class NodeItemInteraction;
 
 /// @brief Represents a visual node in the node editor UI.
 class NodeItemModel {
@@ -60,6 +61,7 @@ class NodeItemModel {
     static constexpr ImU32 IO_COLOR = IM_COL32(170, 170, 170, 255);         ///< IO slot color.
 
     friend NodeItemRenderer;
+    friend NodeItemInteraction;
 };
 
 } // namespace euclide

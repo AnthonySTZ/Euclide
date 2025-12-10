@@ -14,6 +14,7 @@ class NodeItem {
     void draw();
 
     [[nodiscard]] inline std::shared_ptr<NodeItemModel> model() noexcept { return m_model; }
+    [[nodiscard]] inline NodeItemRenderer& renderer() noexcept { return m_renderer; }
 
   private:
     std::shared_ptr<NodeItemModel> m_model;

@@ -4,10 +4,10 @@ namespace euclide {
 
 void ConnectionItem::draw() {
     if (const auto sourceNode = m_sourceNode.lock()) {
-        m_start = sourceNode->getOutputIOPosition(m_sourceIndex);
+        m_start = NodeItemInteraction::getOutputIOPosition(sourceNode, m_sourceIndex);
     }
     if (const auto destNode = m_destNode.lock()) {
-        m_end = destNode->getInputIOPosition(m_destIndex);
+        m_end = NodeItemInteraction::getInputIOPosition(destNode, m_destIndex);
     }
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -34,7 +34,7 @@ void ConnectionItem::setUnconnectedPosition(const ImVec2& t_position) noexcept {
 
 void ConnectionItem::deleteConnection() {
     if (auto destNode = m_destNode.lock()) {
-        destNode->node()->deleteInputConnection(m_destIndex);
+        destNode->model()->node()->deleteInputConnection(m_destIndex);
     }
 }
 
