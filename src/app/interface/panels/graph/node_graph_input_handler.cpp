@@ -162,15 +162,16 @@ void NodeGraphInputHandler::dragNodes(const ImVec2& t_dragDelta) const {
 
     const uint32_t id = m_draggingNode.value();
     if (auto node = graph->getNode(id).lock()) {
-        if (!node->isSelected()) {
-            node->moveBy(t_dragDelta);
+        auto model = node->model();
+        if (!model->isSelected()) {
+            model->moveBy(t_dragDelta);
             return;
         }
     }
 
     for (auto nodeId : graph->selectedNodes()) {
         if (auto node = graph->getNode(nodeId).lock())
-            node->moveBy(t_dragDelta);
+            node->model()->moveBy(t_dragDelta);
     }
 }
 
