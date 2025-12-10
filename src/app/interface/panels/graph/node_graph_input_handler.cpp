@@ -197,6 +197,10 @@ void NodeGraphInputHandler::handleKeyInputs() {
         graph->renderSelectedNode();
     }
 
+    if (ImGui::IsKeyReleased(ImGuiKey_F) && m_isWindowHovered) {
+        recenterGraph();
+    }
+
     if (ImGui::IsKeyReleased(ImGuiKey_Delete) && m_isWindowHovered) {
         graph->removeSelectedNodes();
     }
@@ -211,6 +215,32 @@ void NodeGraphInputHandler::handleKeyInputs() {
         }
     } else if (ImGui::IsKeyReleased(ImGuiKey_Y)) {
         m_graphRenderer->clearCuttingLines();
+    }
+}
+
+void NodeGraphInputHandler::recenterGraph() {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    std::vector<uint32_t> selectedNodes = NodeGraphInteraction::getSelectedNodes(m_graph);
+
+    if (selectedNodes.empty())
+        return;
+
+    ImVec2 center = graph->nodes[selectedNodes[0]]->model()->position();
+    for (size_t i = 1; i < selectedNodes.size(); ++i) {
+        auto model = graph->nodes[selectedNodes[i]]->model();
+        center += model->position() + model->size() * 0.5f;
+    }
+
+    const float factor = 1.0f / selectedNodes.size();
+    center *= factor;
+
+    ImVec2 centerWindow = ImGui::GetWindowPos() + ImGui::GetWindowSize() * 0.5f;
+    ImVec2 moveOffset = centerWindow - center;
+    for (auto& [_, nodeItem] : graph->nodes) {
+        nodeItem->model()->moveBy(moveOffset);
     }
 }
 

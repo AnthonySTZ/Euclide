@@ -75,4 +75,18 @@ std::vector<uint32_t> NodeGraphInteraction::getNodesInRect(const std::weak_ptr<N
     return nodes;
 }
 
+std::vector<uint32_t> NodeGraphInteraction::getSelectedNodes(const std::weak_ptr<NodeGraph> t_graph) {
+    auto graph = t_graph.lock();
+    if (!graph)
+        return {};
+
+    std::vector<uint32_t> selectedNodes;
+    for (auto& [id, nodeItem] : graph->nodes) {
+        if (nodeItem->model()->isSelected())
+            selectedNodes.push_back(id);
+    }
+
+    return selectedNodes;
+}
+
 } // namespace euclide

@@ -36,6 +36,12 @@ inline ImVec2 operator*(const ImVec2& lvec, const float& rval) {
     return ImVec2(lvec.x * rval, lvec.y * rval);
 }
 
+inline ImVec2& operator*=(ImVec2& lvec, const float& rval) {
+    lvec.x *= rval;
+    lvec.y *= rval;
+    return lvec;
+}
+
 inline ImVec4 operator*(const ImVec4& lvec, const float& rval) {
     return ImVec4(lvec.x * rval, lvec.y * rval, lvec.z * rval, lvec.w);
 }

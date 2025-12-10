@@ -40,6 +40,8 @@ class NodeGraphInputHandler {
     /// @brief Handles keyboard input events related to node operations (e.g., cut connections, render selected node).
     void handleKeyInputs();
 
+    void recenterGraph();
+
     /// @brief Determines whether the user is moving its cursor.
     /// @return True if dragging exceeds the threshold, false otherwise.
     [[nodiscard]] bool isDragging() const;

@@ -40,6 +40,8 @@ struct NodeGraphInteraction {
     /// @return Ids of the nodes inside the box.
     [[nodiscard]] static std::vector<uint32_t> getNodesInRect(const std::weak_ptr<NodeGraph> t_graph,
                                                               const ImVec2& t_startPos, const ImVec2& t_endPos);
+
+    [[nodiscard]] static std::vector<uint32_t> getSelectedNodes(const std::weak_ptr<NodeGraph> t_graph);
 };
 
 } // namespace euclide
