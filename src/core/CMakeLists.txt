@@ -25,6 +25,8 @@ add_library(core STATIC
     nodes/geometry/subdivide.cpp
     nodes/geometry/smooth_normals.cpp
     nodes/geometry/copy_to_points.cpp
+
+    nodes/utility/null.cpp
 )
 
 target_include_directories(core

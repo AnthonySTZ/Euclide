@@ -11,6 +11,8 @@
 #include "geometry/smooth_normals.h"
 #include "geometry/copy_to_points.h"
 
+#include "utility/null.h"
+
 namespace euclide {
 
 /// @brief Static list of all node menu items categorized.
@@ -29,6 +31,10 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Subdivide", []() { return std::make_shared<Subdivide>(); }},
          {"CopyToPoints", []() { return std::make_shared<CopyToPoints>(); }},
          {"SmoothNormals", []() { return std::make_shared<SmoothNormals>(); }},
+     }},
+    {"Utility",
+     {
+         {"Null", []() { return std::make_shared<Null>(); }},
      }}};
 
 const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>>& NodesInfo::getMenuItems() {
