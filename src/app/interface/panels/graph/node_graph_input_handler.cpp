@@ -68,8 +68,7 @@ void NodeGraphInputHandler::handleLeftMouseClicked() {
     ImVec2 mousePos = ImGui::GetMousePos();
     m_mouseButtonLeftDown = true;
 
-    m_ioClicked =
-        NodeGraphInteraction::getNodeIOAt(m_graph, mousePos, NodeItemRenderer::IO_RADIUS * NodeItemRenderer::IO_RADIUS);
+    m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos, IO_RADIUS);
     if (m_ioClicked.has_value()) { // Check if user clicked on IO
         startConnection(m_ioClicked.value());
         return;
