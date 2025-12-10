@@ -7,10 +7,10 @@ namespace euclide {
 /// @brief Used to render a nodeItem
 class NodeItemRenderer {
   public:
-    static void draw(const NodeItem& t_nodeItem);
+    NodeItemRenderer(const std::weak_ptr<NodeItemModel> t_model);
 
   private:
-    static void drawRect(const NodeItem& t_nodeItem);
+    std::weak_ptr<NodeItemModel> m_nodeModel;
 };
 
 } // namespace euclide
