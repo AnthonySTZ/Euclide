@@ -1,6 +1,7 @@
 #pragma once
 
 #include "node_graph.h"
+#include "interface/panels/graph/node/node_item_interaction.h"
 
 namespace euclide {
 

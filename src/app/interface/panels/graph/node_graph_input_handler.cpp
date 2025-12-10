@@ -56,7 +56,7 @@ void NodeGraphInputHandler::repositionCurrentConnection() {
         return;
 
     ImVec2 mousePos = ImGui::GetMousePos();
-    auto nearIO = NodeGraphInteraction::getNodeIOAt(graph, mousePos);
+    auto nearIO = NodeGraphInteraction::getNodeIOAt(graph, mousePos, BIG_IO_RADIUS);
     if (nearIO.has_value()) {
         m_currentConnection->setUnconnectedPosition(nearIO.value().position);
     } else {
@@ -68,7 +68,8 @@ void NodeGraphInputHandler::handleLeftMouseClicked() {
     ImVec2 mousePos = ImGui::GetMousePos();
     m_mouseButtonLeftDown = true;
 
-    m_ioClicked = NodeGraphInteraction::getNodeIOAt(m_graph, mousePos);
+    m_ioClicked =
+        NodeGraphInteraction::getNodeIOAt(m_graph, mousePos, NodeItemRenderer::IO_RADIUS * NodeItemRenderer::IO_RADIUS);
     if (m_ioClicked.has_value()) { // Check if user clicked on IO
         startConnection(m_ioClicked.value());
         return;
@@ -122,7 +123,8 @@ void NodeGraphInputHandler::handleLeftMouseRelease() const {
         return;
 
     if (m_ioClicked.has_value()) {
-        std::optional<IOInfos> ioReleased = NodeGraphInteraction::getNodeIOAt(m_graph, ImGui::GetMousePos());
+        std::optional<IOInfos> ioReleased =
+            NodeGraphInteraction::getNodeIOAt(m_graph, ImGui::GetMousePos(), BIG_IO_RADIUS);
         if (ioReleased.has_value()) {
             graph->addConnection(m_ioClicked.value(), ioReleased.value());
         }

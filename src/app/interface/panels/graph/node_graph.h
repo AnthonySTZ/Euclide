@@ -1,6 +1,7 @@
 #pragma once
 
 #include "interface/panels/graph/node/node_item.h"
+#include "interface/panels/graph/node/node_item_interaction.h"
 #include "connection_item.h"
 #include "nodes/scene.h"
 

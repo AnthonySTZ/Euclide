@@ -14,7 +14,10 @@ add_library(app_lib STATIC
     interface/panels/graph/node_graph_input_handler.cpp
     interface/panels/graph/node_graph_menu.cpp
 
-    interface/panels/graph/node_item.cpp
+    interface/panels/graph/node/node_item_interaction.cpp
+    interface/panels/graph/node/node_item_renderer.cpp
+    interface/panels/graph/node/node_item.cpp
+
     interface/panels/graph/connection_item.cpp
     interface/panels/graph/cutting_line.cpp
     

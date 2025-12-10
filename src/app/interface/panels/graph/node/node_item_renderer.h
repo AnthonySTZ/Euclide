@@ -1,6 +1,6 @@
 #pragma once
 
-#include "node_item.h"
+#include "node_item_model.h"
 
 namespace euclide {
 
@@ -21,6 +21,12 @@ class NodeItemRenderer {
 
     static std::vector<ImVec2> computePointsPositionsOnLine(const int t_numberOfPoints, const ImVec2 t_linePosition,
                                                             const float t_lineWidth);
+
+  public:
+    static constexpr float IO_RADIUS = 5.5f;                                ///< IO radius.
+    static constexpr float SPACING = 3.0f;                                  ///< Spacing between slots and node.
+    static constexpr ImU32 IO_OUTLINE_COLOR = IM_COL32(200, 200, 200, 255); ///< IO slot outline color.
+    static constexpr ImU32 IO_COLOR = IM_COL32(170, 170, 170, 255);         ///< IO slot color
 
   private:
     std::weak_ptr<NodeItemModel> m_nodeModel;

@@ -51,23 +51,19 @@ void NodeItemRenderer::drawIOs(const std::shared_ptr<NodeItemModel>& t_nodeModel
         return;
 
     const ImVec2 position = t_nodeModel->m_position;
-    const float spacing = t_nodeModel->SPACING;
-    const float radius = t_nodeModel->RADIUS;
     const float nodeWidth = t_nodeModel->m_size.x;
-    const ImU32 color = t_nodeModel->IO_COLOR;
-    const ImU32 outlineColor = t_nodeModel->IO_OUTLINE_COLOR;
 
-    ImVec2 inputIOPos{position.x, position.y - spacing - radius};
-    ImVec2 outputIOPos{position.x, position.y + t_nodeModel->m_size.y + spacing + radius};
+    ImVec2 inputIOPos{position.x, position.y - SPACING - IO_RADIUS};
+    ImVec2 outputIOPos{position.x, position.y + t_nodeModel->m_size.y + SPACING + IO_RADIUS};
 
     m_inputIOPositions = computePointsPositionsOnLine(node->numInputs(), inputIOPos, nodeWidth);
     m_outputIOPositions = computePointsPositionsOnLine(node->numOutputs(), outputIOPos, nodeWidth);
 
     for (const ImVec2& ioPos : m_inputIOPositions) {
-        drawIO(ioPos, radius, color, outlineColor);
+        drawIO(ioPos, IO_RADIUS, IO_COLOR, IO_OUTLINE_COLOR);
     }
     for (const ImVec2& ioPos : m_outputIOPositions) {
-        drawIO(ioPos, radius, color, outlineColor);
+        drawIO(ioPos, IO_RADIUS, IO_COLOR, IO_OUTLINE_COLOR);
     }
 }
 

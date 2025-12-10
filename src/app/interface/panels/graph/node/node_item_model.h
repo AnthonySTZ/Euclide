@@ -52,13 +52,7 @@ class NodeItemModel {
     ImU32 m_color = IM_COL32(100, 100, 100, 255);                ///< Base node color.
     ImU32 m_renderColor = IM_COL32(146, 63, 80, 255);            ///< Active render color.
     ImU32 m_outlineColor = IM_COL32(200, 200, 200, 255);         ///< Rectangle outline color.
-    ImU32 m_selectedOutlineColor = IM_COL32(255, 178, 102, 255); ///< Outline color when selected.
-
-    static constexpr float RADIUS = 5.5f;                                   ///< Corner rounding radius.
-    static constexpr float RADIUS_2 = RADIUS * RADIUS;                      ///< Precomputed squared radius.
-    static constexpr float SPACING = 3.0f;                                  ///< Spacing between slots and node.
-    static constexpr ImU32 IO_OUTLINE_COLOR = IM_COL32(200, 200, 200, 255); ///< IO slot outline color.
-    static constexpr ImU32 IO_COLOR = IM_COL32(170, 170, 170, 255);         ///< IO slot color.
+    ImU32 m_selectedOutlineColor = IM_COL32(255, 178, 102, 255); ///< Outline color when selected..
 
     friend NodeItemRenderer;
     friend NodeItemInteraction;

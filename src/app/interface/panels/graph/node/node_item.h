@@ -1,8 +1,6 @@
 #pragma once
 
-#include "node_item_model.h"
 #include "node_item_renderer.h"
-#include "node_item_interaction.h"
 
 namespace euclide {
 
