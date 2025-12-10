@@ -33,6 +33,13 @@ void NodeGraphInputHandler::handleMouseInputs() {
         handleLeftMouseClicked();
     }
 
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle) && m_isWindowHovered) {
+        m_mouseButtonMiddleDown = true;
+    }
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle)) {
+        m_mouseButtonMiddleDown = false;
+    }
+
     if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
         handleLeftMouseRelease();
         resetMouseInteraction();
@@ -40,13 +47,17 @@ void NodeGraphInputHandler::handleMouseInputs() {
 
     if (m_isMouseDrag) {
         handleDragging();
-    } else if (m_mouseButtonLeftDown && isDragging()) {
+    } else if (m_mouseButtonLeftDown && isDragging(ImGuiMouseButton_Left)) {
         m_isMouseDrag = true;
     }
 
     if (m_currentConnection) {
         repositionCurrentConnection();
         m_currentConnection->draw();
+    }
+
+    if (m_mouseButtonMiddleDown) {
+        dragAllNodes();
     }
 }
 
@@ -82,8 +93,8 @@ void NodeGraphInputHandler::handleLeftMouseClicked() {
     m_boxStart = mousePos;
 }
 
-bool NodeGraphInputHandler::isDragging() const {
-    ImVec2 dragDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left, DRAG_THRESHOLD);
+bool NodeGraphInputHandler::isDragging(const ImGuiMouseButton t_mouseBtn) const {
+    ImVec2 dragDelta = ImGui::GetMouseDragDelta(t_mouseBtn, DRAG_THRESHOLD);
     return (dragDelta.x != 0 || dragDelta.y != 0);
 }
 
@@ -241,6 +252,18 @@ void NodeGraphInputHandler::recenterGraph() {
     ImVec2 moveOffset = centerWindow - center;
     for (auto& [_, nodeItem] : graph->nodes) {
         nodeItem->model()->moveBy(moveOffset);
+    }
+}
+
+void NodeGraphInputHandler::dragAllNodes() {
+    auto graph = m_graph.lock();
+    if (!graph)
+        return;
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    for (auto& [_, nodeItem] : graph->nodes) {
+        nodeItem->model()->moveBy(io.MouseDelta);
     }
 }
 

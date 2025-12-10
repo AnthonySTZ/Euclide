@@ -42,9 +42,11 @@ class NodeGraphInputHandler {
 
     void recenterGraph();
 
+    void dragAllNodes();
+
     /// @brief Determines whether the user is moving its cursor.
     /// @return True if dragging exceeds the threshold, false otherwise.
-    [[nodiscard]] bool isDragging() const;
+    [[nodiscard]] bool isDragging(const ImGuiMouseButton t_mouseBtn) const;
 
     /// @brief Updates node positions while dragging.
     void handleDragging() const;
@@ -71,6 +73,7 @@ class NodeGraphInputHandler {
     bool m_isWindowHovered = false; ///< True if the node graph window is hovered by the mouse.
 
     bool m_mouseButtonLeftDown = false;                    ///< True if the left mouse button is currently held.
+    bool m_mouseButtonMiddleDown = false;                  ///< True if the middle mouse button is currently held.
     bool m_isMouseDrag = false;                            ///< True if the user is dragging nodes.
     bool m_isBoxSelecting = false;                         ///< True if the user is box selecting.
     ImVec2 m_boxStart{};                                   ///< Start position of the box selection.
