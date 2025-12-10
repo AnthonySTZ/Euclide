@@ -76,8 +76,8 @@ class NodeGraphInputHandler {
     std::optional<IOInfos> m_ioClicked = std::nullopt;     ///< Information about an IO slot clicked for connections.
     std::unique_ptr<ConnectionItem> m_currentConnection;   ///< Currently active connection being dragged.
 
-    static constexpr float DRAG_THRESHOLD = 0.01f;      ///< Minimum drag distance to initiate dragging.
-    static constexpr float BIG_IO_RADIUS = 8.0f * 8.0f; ///< Minimum drag distance to initiate dragging.
+    static constexpr float DRAG_THRESHOLD = 0.01f;        ///< Minimum drag distance to initiate dragging.
+    static constexpr float BIG_IO_RADIUS = 16.0f * 16.0f; ///< Minimum drag distance to initiate dragging.
 };
 
 } // namespace euclide
