@@ -1,6 +1,6 @@
 #pragma once
 
-#include "node_item.h"
+#include "interface/panels/graph/node/node_item.h"
 #include <memory>
 
 namespace euclide {

@@ -2,6 +2,7 @@
 
 #include "node_item_model.h"
 #include "node_item_renderer.h"
+#include "node_item_interaction.h"
 
 namespace euclide {
 
@@ -11,6 +12,8 @@ class NodeItem {
     ~NodeItem() = default;
 
     void draw();
+
+    [[nodiscard]] inline std::shared_ptr<NodeItemModel> model() noexcept { return m_model; }
 
   private:
     std::shared_ptr<NodeItemModel> m_model;

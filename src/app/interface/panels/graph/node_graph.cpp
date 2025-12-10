@@ -37,15 +37,15 @@ void NodeGraph::addNodeToSelection(const uint32_t t_nodeId, const bool t_removeI
     if (t_removeIfAlreadySelected) {
         if (m_selectedNodes.find(t_nodeId) != m_selectedNodes.end()) { // Remove Node Item if its already selected
             m_selectedNodes.erase(t_nodeId);
-            nodeItem->setSelected(false);
+            nodeItem->model()->setSelected(false);
             return;
         }
     }
 
     m_selectedNodes.insert(t_nodeId);
-    nodeItem->setSelected(true);
+    nodeItem->model()->setSelected(true);
     m_lastNodeSelected = nodeItem;
-    onNodeSelected.notify(nodeItem->node());
+    onNodeSelected.notify(nodeItem->model()->node());
 }
 
 void NodeGraph::addConnection(const IOInfos& t_first, const IOInfos& t_second) const {
@@ -62,9 +62,11 @@ void NodeGraph::addConnection(const IOInfos& t_first, const IOInfos& t_second) c
 
     if (auto scene = m_scene.lock()) {
         if (t_first.type == IOType::INPUT) {
-            it_first->second->node()->setInput(t_first.index, it_second->second->node(), t_second.index);
+            auto model = it_first->second->model();
+            model->node()->setInput(t_first.index, it_second->second->model()->node(), t_second.index);
         } else {
-            it_second->second->node()->setInput(t_second.index, it_first->second->node(), t_first.index);
+            auto model = it_second->second->model();
+            model->node()->setInput(t_second.index, it_first->second->model()->node(), t_first.index);
         }
     }
 }
@@ -86,14 +88,15 @@ void NodeGraph::removeSelectedNodes() {
         if (it == nodes.end())
             continue;
 
-        scene->removeNode(it->second->node()->name());
+        auto model = it->second->model();
+        scene->removeNode(model->node()->name());
     }
 }
 
 void NodeGraph::clearSelection() {
     for (auto nodeId : m_selectedNodes) {
         if (auto node = getNode(nodeId).lock()) {
-            node->setSelected(false);
+            node->model()->setSelected(false);
         }
     }
     m_selectedNodes.clear();
@@ -108,7 +111,7 @@ void NodeGraph::renderSelectedNode() {
     if (!nodeItem)
         return;
 
-    scene->cookNode(nodeItem->node(), 0);
+    scene->cookNode(nodeItem->model()->node(), 0);
 }
 
 void NodeGraph::onNodeAdded(const uint32_t t_nodeId, const std::shared_ptr<Node> t_node) {
