@@ -20,8 +20,8 @@ struct NodeGraphInteraction {
     /// @param t_graph Weak pointer to the NodeGraph to query.
     /// @param t_mousePosition Mouse position in graph coordinates.
     /// @return IOInfos struct with node ID, IO type, and index, or std::nullopt if none is hovered.
-    [[nodiscard]] static std::optional<IOInfos> getNodeIOAt(const std::weak_ptr<NodeGraph> t_graph,
-                                                            const ImVec2& t_mousePosition);
+    [[nodiscard]] static std::optional<IOInfos>
+    getNodeIOAt(const std::weak_ptr<NodeGraph> t_graph, const ImVec2& t_mousePosition, const float t_thresholdRadius);
 
     /// @brief Returns the index of the first connection intersected by a line segment.
     /// @param t_graph Weak pointer to the NodeGraph to query.

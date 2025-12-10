@@ -16,8 +16,7 @@ struct IOInfos {
     ImVec2 position{0, 0};       ///< Position the IO slot within the node.
 };
 
-class NodeItemInteraction {
-  public:
+struct NodeItemInteraction {
     /// @brief Get the position of a specific input slot.
     /// @param t_nodeItem Shared ptr of the node item.
     /// @param t_index Index of the input slot.
@@ -30,7 +29,10 @@ class NodeItemInteraction {
     /// @return Position of the output slot in UI coordinates.
     [[nodiscard]] static ImVec2 getOutputIOPosition(const std::shared_ptr<NodeItem> t_nodeItem, const uint32_t t_index);
 
-  private:
+    [[nodiscard]] static bool isNodeHovered(const std::shared_ptr<NodeItem> t_nodeItem);
+
+    [[nodiscard]] static std::optional<IOInfos> getIOAt(const std::shared_ptr<NodeItem> t_nodeItem,
+                                                        const ImVec2 t_position, const float t_thresholdRadius);
 };
 
 } // namespace euclide

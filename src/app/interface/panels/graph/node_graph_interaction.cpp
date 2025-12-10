@@ -10,7 +10,7 @@ std::optional<uint32_t> NodeGraphInteraction::getNodeAt(const std::weak_ptr<Node
 
     for (auto it = graph->drawNodesOrder.rbegin(); it != graph->drawNodesOrder.rend(); ++it) {
         auto nodeItem = graph->nodes[*it];
-        if (nodeItem->isHovered()) {
+        if (NodeItemInteraction::isNodeHovered(nodeItem)) {
             return *it;
         }
     }
@@ -18,21 +18,15 @@ std::optional<uint32_t> NodeGraphInteraction::getNodeAt(const std::weak_ptr<Node
 }
 
 std::optional<IOInfos> NodeGraphInteraction::getNodeIOAt(const std::weak_ptr<NodeGraph> t_graph,
-                                                         const ImVec2& t_mousePosition) {
+                                                         const ImVec2& t_mousePosition, const float t_thresholdRadius) {
     auto graph = t_graph.lock();
     if (!graph)
         return std::nullopt;
 
-    for (auto [id, nodeItem] : graph->nodes) {
-        std::optional<uint32_t> inputIndex = nodeItem->inputIOHovered();
-        if (inputIndex.has_value()) {
-            return IOInfos{id, IOType::INPUT, inputIndex.value(), nodeItem->getInputIOPosition(inputIndex.value())};
-        }
-
-        std::optional<uint32_t> outputIndex = nodeItem->outputIOHovered();
-        if (outputIndex.has_value()) {
-            return IOInfos{id, IOType::OUTPUT, outputIndex.value(), nodeItem->getOutputIOPosition(outputIndex.value())};
-        }
+    for (auto [_, nodeItem] : graph->nodes) {
+        std::optional<IOInfos> io = NodeItemInteraction::getIOAt(nodeItem, t_mousePosition, t_thresholdRadius);
+        if (io.has_value())
+            return io;
     }
 
     return std::nullopt;
