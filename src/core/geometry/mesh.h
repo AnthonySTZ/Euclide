@@ -4,6 +4,7 @@
 #include "vertex.h"
 #include "primitive.h"
 #include "halfedge.h"
+#include "attributes.h"
 #include "utils/types.h"
 
 #include <vector>
@@ -14,6 +15,10 @@ struct Mesh {
     Points points;                     ///< Mesh vertex positions.
     std::vector<Vertex> vertices;      ///< Vertices referencing points.
     std::vector<Primitive> primitives; ///< Faces (polygons) of the mesh.
+    AttributeSet pointAttribs;
+    AttributeSet vertexAttribs;
+    AttributeSet primAttribs;
+    AttributeSet detailAttribs;
 
     /// @brief Add a point to the mesh.
     /// @param t_x X-coordinate.
