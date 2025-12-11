@@ -6,7 +6,8 @@
 /// @brief A custom STL-compatible allocator that aligns memory allocations to a specified byte boundary.
 ///
 /// Useful for SIMD operations or other scenarios requiring specific alignment.
-template <typename T, size_t Alignment> struct AlignedAllocator {
+template <typename T, size_t Alignment>
+struct AlignedAllocator {
     /// @brief Type of the objects being allocated.
     using value_type = T;
 
@@ -15,13 +16,14 @@ template <typename T, size_t Alignment> struct AlignedAllocator {
 
     /// @brief Converts from an allocator of another type with the same alignment.
     /// @tparam U Type of the other allocator.
-    template <typename U> constexpr AlignedAllocator(const AlignedAllocator<U, Alignment>&) noexcept {}
+    template <typename U>
+    constexpr AlignedAllocator(const AlignedAllocator<U, Alignment>&) noexcept {}
 
     /// @brief Allocates memory for n objects of type T, aligned to Alignment bytes.
     /// @param n Number of objects to allocate.
     /// @return Pointer to the aligned memory block.
     /// @throws std::bad_alloc if allocation fails.
-    T* allocate(size_t n) {
+    static T* allocate(size_t n) {
         void* ptr = nullptr;
 #ifdef _WIN32
         ptr = _aligned_malloc(n * sizeof(T), Alignment);
@@ -37,7 +39,17 @@ template <typename T, size_t Alignment> struct AlignedAllocator {
     /// @brief Deallocates memory previously allocated with allocate.
     /// @param p Pointer to the memory block to free.
     /// @param n Number of objects (unused, required by STL interface).
-    void deallocate(T* p, size_t) noexcept {
+    static void deallocate(T* p, size_t) noexcept {
+#ifdef _WIN32
+        _aligned_free(p);
+#else
+        free(p);
+#endif
+    }
+
+    /// @brief Deallocates memory previously allocated with allocate.
+    /// @param p Pointer to the memory block to free.
+    static void deallocate(T* p) noexcept {
 #ifdef _WIN32
         _aligned_free(p);
 #else
@@ -47,7 +59,10 @@ template <typename T, size_t Alignment> struct AlignedAllocator {
 
     /// @brief Rebind allocator to another type.
     /// @tparam U New type for rebind.
-    template <typename U> struct rebind { using other = AlignedAllocator<U, Alignment>; };
+    template <typename U>
+    struct rebind {
+        using other = AlignedAllocator<U, Alignment>;
+    };
 };
 
 /// @brief Equality comparison for allocators of potentially different types.
