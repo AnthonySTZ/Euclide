@@ -10,7 +10,7 @@ namespace euclide {
 
 enum class AttributeType {
     ATTR_TYPE_FLOAT,
-    ATTR_TYPE_FLOAT3,
+    ATTR_TYPE_STRING,
 };
 
 struct Attribute {
@@ -19,7 +19,7 @@ struct Attribute {
     AttributeType type; //< The attribute type that will be used to determine the type* of the data_ptr
     void* data[4]; //< Generic pointers, max 4 so it can handle vec4 at max for SoA and for mat3/4 it will use an AoS
 
-    virtual ~Attribute() = default;
+    ~Attribute();
     [[nodiscard]] inline AttributeType getType() const noexcept { return type; }
     [[nodiscard]] inline int getAttrSize() const noexcept { return attrSize; }
 };
