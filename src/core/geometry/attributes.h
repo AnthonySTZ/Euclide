@@ -37,17 +37,24 @@ struct AttributeSet {
         return it == map.end() ? nullptr : attributes[it->second].get();
     }
 
-    inline Attribute* findOrCreate(const std::string& t_name, int t_size, AttributeType t_type) {
+    inline Attribute* findOrCreate(const std::string& t_name, const int t_attrSize, const AttributeType t_type) {
         auto it = map.find(t_name);
         if (it != map.end())
             return attributes[it->second].get();
 
         size_t attrIndex = attributes.size();
         map.emplace(t_name, attrIndex);
-        attributes.emplace_back(std::make_unique<Attribute>(t_name, t_size, t_type));
+        attributes.emplace_back(std::make_unique<Attribute>(t_name, t_attrSize, t_type));
         auto* attr = attributes[attrIndex].get();
         attr->resize(size);
         return attr;
+    }
+
+    inline void resize(const size_t t_size) {
+        for (auto& attr : attributes) {
+            attr->resize(t_size);
+        }
+        size = t_size;
     }
 };
 

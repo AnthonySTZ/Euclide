@@ -27,13 +27,13 @@ void Attribute::resize(const size_t t_size) {
             float* oldPtr = static_cast<float*>(data[i]);
             float* newPtr = floatAlloc::allocate(t_size);
 
-            if (data[i]) {
+            if (oldPtr) {
                 size_t toCopy = std::min(size, t_size);
                 memcpy(newPtr, oldPtr, toCopy * sizeof(float));
             }
 
             if (t_size > size)
-                memset(newPtr + size, 0, (t_size - size) * sizeof(float));
+                memset(newPtr + size, 0, (t_size - size) * sizeof(float)); // Init new created float to 0.0f
 
             if (oldPtr)
                 floatAlloc::deallocate(oldPtr);
