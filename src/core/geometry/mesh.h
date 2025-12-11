@@ -12,7 +12,6 @@
 namespace euclide {
 /// @brief Represents a 3D mesh composed of points, vertices, and primitives.
 struct Mesh {
-    Points points;                     ///< Mesh vertex positions.
     std::vector<Vertex> vertices;      ///< Vertices referencing points.
     std::vector<Primitive> primitives; ///< Faces (polygons) of the mesh.
     AttributeSet pointAttribs;
