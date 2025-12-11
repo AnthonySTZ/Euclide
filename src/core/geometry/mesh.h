@@ -9,7 +9,6 @@
 #include <vector>
 
 namespace euclide {
-
 /// @brief Represents a 3D mesh composed of points, vertices, and primitives.
 struct Mesh {
     Points points;                     ///< Mesh vertex positions.
