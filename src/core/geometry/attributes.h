@@ -13,9 +13,9 @@ enum class AttributeType {
 };
 
 struct AttributeBase {
-    std::string name;
-    int tupleSize;
-    AttributeType type;
+    std::string name;   //< The attribute name
+    int attrSize;       //< The attribute tuple size, i.e float = 1, float3 = 3
+    AttributeType type; //< The attribute type that will be used to determine the type* of the data_ptr
 
     virtual ~AttributeBase() = default;
     [[nodiscard]] inline AttributeType getType() const noexcept { return type; }
