@@ -13,8 +13,8 @@ add_executable(EuclideTests
                 # nodes/geometry/test_transform.cpp
                 # nodes/geometry/test_merge.cpp
                 
-                # fields/test_field.cpp
-                # fields/test_float3.cpp
+                fields/test_field.cpp
+                fields/test_float3.cpp
 
                 )
 
