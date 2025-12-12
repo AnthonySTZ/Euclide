@@ -92,20 +92,22 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
         posRows[row] = row * rowSpacing;
     }
 
-    auto& points = t_mesh.points;
     size_t pointIdx = 0;
+    t_mesh.pointAttribs.resize(rowsPoints * columnsPoints);
+    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
-    points.reserve(points.size() + rowsPoints * columnsPoints);
-    points.resize(points.size() + rowsPoints * columnsPoints);
+    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* normalX = normals->component<float>(0);
+    float* normalY = normals->component<float>(1);
+    float* normalZ = normals->component<float>(2);
 
 #ifdef USE_SIMD
     __m256 __normalX = _mm256_set1_ps(normal[0]);
     __m256 __normalY = _mm256_set1_ps(normal[1]);
     __m256 __normalZ = _mm256_set1_ps(normal[2]);
-
-    __m256 __colorR = _mm256_set1_ps(1.0f);
-    __m256 __colorG = _mm256_set1_ps(1.0f);
-    __m256 __colorB = _mm256_set1_ps(1.0f);
 #endif
 
     for (size_t row = 0; row < rowsPoints; ++row) {
@@ -135,17 +137,13 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
                 break;
             }
 
-            _mm256_storeu_ps(&points.posX[pointIdx], __posX);
-            _mm256_storeu_ps(&points.posY[pointIdx], __posY);
-            _mm256_storeu_ps(&points.posZ[pointIdx], __posZ);
+            _mm256_storeu_ps(&posX[pointIdx], __posX);
+            _mm256_storeu_ps(&posY[pointIdx], __posY);
+            _mm256_storeu_ps(&posZ[pointIdx], __posZ);
 
-            _mm256_storeu_ps(&points.normalX[pointIdx], __normalX);
-            _mm256_storeu_ps(&points.normalY[pointIdx], __normalY);
-            _mm256_storeu_ps(&points.normalZ[pointIdx], __normalZ);
-
-            _mm256_storeu_ps(&points.colorR[pointIdx], __colorR);
-            _mm256_storeu_ps(&points.colorG[pointIdx], __colorG);
-            _mm256_storeu_ps(&points.colorB[pointIdx], __colorB);
+            _mm256_storeu_ps(&normalX[pointIdx], __normalX);
+            _mm256_storeu_ps(&normalY[pointIdx], __normalY);
+            _mm256_storeu_ps(&normalZ[pointIdx], __normalZ);
 
             pointIdx += 8;
         }
@@ -171,17 +169,14 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
                 break;
             }
 
-            points.posX[pointIdx] = pos[0];
-            points.posY[pointIdx] = pos[1];
-            points.posZ[pointIdx] = pos[2];
+            posX[pointIdx] = pos[0];
+            posY[pointIdx] = pos[1];
+            posZ[pointIdx] = pos[2];
 
-            points.normalX[pointIdx] = normal[0];
-            points.normalY[pointIdx] = normal[1];
-            points.normalZ[pointIdx] = normal[2];
+            normalX[pointIdx] = normal[0];
+            normalY[pointIdx] = normal[1];
+            normalZ[pointIdx] = normal[2];
 
-            points.colorR[pointIdx] = 1.0f;
-            points.colorG[pointIdx] = 1.0f;
-            points.colorB[pointIdx] = 1.0f;
             pointIdx++;
         }
     }
