@@ -55,33 +55,38 @@ void Transform::transform(Mesh& t_mesh, const TransformSettings& t_settings) {
 }
 
 void Transform::scaleMesh(Mesh& t_mesh, const float3& t_scale) {
-    auto& points = t_mesh.points;
+    const size_t numPoints = t_mesh.pointAttribs.size();
+
+    auto positions = t_mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
     size_t i = 0;
 #ifdef USE_SIMD
-    if (points.size() >= 8) {
+    if (numPoints >= 8) {
         __m256 __scaleX = _mm256_set1_ps(t_scale[0]);
         __m256 __scaleY = _mm256_set1_ps(t_scale[1]);
         __m256 __scaleZ = _mm256_set1_ps(t_scale[2]);
-        for (; i + 8 <= points.size(); i += 8) {
-            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
-            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
-            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+        for (; i + 8 <= numPoints; i += 8) {
+            __m256 __posX = _mm256_load_ps(&pointsPosX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&pointsPosY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&pointsPosZ[i]); // 8 posZ
 
             __m256 __posXp = _mm256_mul_ps(__posX, __scaleX);
             __m256 __posYp = _mm256_mul_ps(__posY, __scaleY);
             __m256 __posZp = _mm256_mul_ps(__posZ, __scaleZ);
 
-            _mm256_store_ps(&points.posX[i], __posXp);
-            _mm256_store_ps(&points.posY[i], __posYp);
-            _mm256_store_ps(&points.posZ[i], __posZp);
+            _mm256_store_ps(&pointsPosX[i], __posXp);
+            _mm256_store_ps(&pointsPosY[i], __posYp);
+            _mm256_store_ps(&pointsPosZ[i], __posZp);
         }
     }
 #endif
-    for (; i < points.size(); ++i) {
-        points.posX[i] *= t_scale[0];
-        points.posY[i] *= t_scale[1];
-        points.posZ[i] *= t_scale[2];
+    for (; i < t_mesh.pointAttribs.size(); ++i) {
+        pointsPosX[i] *= t_scale[0];
+        pointsPosY[i] *= t_scale[1];
+        pointsPosZ[i] *= t_scale[2];
     }
 }
 
@@ -104,11 +109,15 @@ void Transform::rotateMesh(Mesh& t_mesh, const float3& t_rotation) {
 
     const float row_2[3] = {-sinY, cosY * sinX, cosX * cosY};
 
-    auto& points = t_mesh.points;
+    const size_t numPoints = t_mesh.pointAttribs.size();
+    auto positions = t_mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
     size_t i = 0;
 #ifdef USE_SIMD
-    if (points.size() >= 8) {
+    if (numPoints >= 8) {
         __m256 __row_00 = _mm256_set1_ps(row_0[0]);
         __m256 __row_01 = _mm256_set1_ps(row_0[1]);
         __m256 __row_02 = _mm256_set1_ps(row_0[2]);
@@ -118,10 +127,10 @@ void Transform::rotateMesh(Mesh& t_mesh, const float3& t_rotation) {
         __m256 __row_20 = _mm256_set1_ps(row_2[0]);
         __m256 __row_21 = _mm256_set1_ps(row_2[1]);
         __m256 __row_22 = _mm256_set1_ps(row_2[2]);
-        for (; i + 8 <= points.size(); i += 8) {
-            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
-            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
-            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+        for (; i + 8 <= numPoints; i += 8) {
+            __m256 __posX = _mm256_load_ps(&pointsPosX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&pointsPosY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&pointsPosZ[i]); // 8 posZ
 
             __m256 __posXp =
                 _mm256_fmadd_ps(__posZ, __row_02, _mm256_fmadd_ps(__posY, __row_01, _mm256_mul_ps(__posX, __row_00)));
@@ -130,50 +139,55 @@ void Transform::rotateMesh(Mesh& t_mesh, const float3& t_rotation) {
             __m256 __posZp =
                 _mm256_fmadd_ps(__posZ, __row_22, _mm256_fmadd_ps(__posY, __row_21, _mm256_mul_ps(__posX, __row_20)));
 
-            _mm256_store_ps(&points.posX[i], __posXp);
-            _mm256_store_ps(&points.posY[i], __posYp);
-            _mm256_store_ps(&points.posZ[i], __posZp);
+            _mm256_store_ps(&pointsPosX[i], __posXp);
+            _mm256_store_ps(&pointsPosY[i], __posYp);
+            _mm256_store_ps(&pointsPosZ[i], __posZp);
         }
     }
 #endif
-    for (; i < points.size(); ++i) {
-        const float posX = points.posX[i];
-        const float posY = points.posY[i];
-        const float posZ = points.posZ[i];
-        points.posX[i] = posX * row_0[0] + posY * row_0[1] + posZ * row_0[2];
-        points.posY[i] = posX * row_1[0] + posY * row_1[1] + posZ * row_1[2];
-        points.posZ[i] = posX * row_2[0] + posY * row_2[1] + posZ * row_2[2];
+    for (; i < t_mesh.pointAttribs.size(); ++i) {
+        const float posX = pointsPosX[i];
+        const float posY = pointsPosY[i];
+        const float posZ = pointsPosZ[i];
+        pointsPosX[i] = posX * row_0[0] + posY * row_0[1] + posZ * row_0[2];
+        pointsPosY[i] = posX * row_1[0] + posY * row_1[1] + posZ * row_1[2];
+        pointsPosZ[i] = posX * row_2[0] + posY * row_2[1] + posZ * row_2[2];
     }
 }
 
 void Transform::translateMesh(Mesh& t_mesh, const float3& t_translation) {
-    auto& points = t_mesh.points;
+    const size_t numPoints = t_mesh.pointAttribs.size();
+
+    auto positions = t_mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
     size_t i = 0;
 #ifdef USE_SIMD
-    if (points.size() >= 8) {
+    if (numPoints >= 8) {
         __m256 __translateX = _mm256_set1_ps(t_translation[0]);
         __m256 __translateY = _mm256_set1_ps(t_translation[1]);
         __m256 __translateZ = _mm256_set1_ps(t_translation[2]);
-        for (; i + 8 <= points.size(); i += 8) {
-            __m256 __posX = _mm256_load_ps(&points.posX[i]); // 8 posX
-            __m256 __posY = _mm256_load_ps(&points.posY[i]); // 8 posY
-            __m256 __posZ = _mm256_load_ps(&points.posZ[i]); // 8 posZ
+        for (; i + 8 <= numPoints; i += 8) {
+            __m256 __posX = _mm256_load_ps(&pointsPosX[i]); // 8 posX
+            __m256 __posY = _mm256_load_ps(&pointsPosY[i]); // 8 posY
+            __m256 __posZ = _mm256_load_ps(&pointsPosZ[i]); // 8 posZ
 
             __m256 __posXp = _mm256_add_ps(__posX, __translateX);
             __m256 __posYp = _mm256_add_ps(__posY, __translateY);
             __m256 __posZp = _mm256_add_ps(__posZ, __translateZ);
 
-            _mm256_store_ps(&points.posX[i], __posXp);
-            _mm256_store_ps(&points.posY[i], __posYp);
-            _mm256_store_ps(&points.posZ[i], __posZp);
+            _mm256_store_ps(&pointsPosX[i], __posXp);
+            _mm256_store_ps(&pointsPosY[i], __posYp);
+            _mm256_store_ps(&pointsPosZ[i], __posZp);
         }
     }
 #endif
-    for (; i < points.size(); ++i) {
-        points.posX[i] += t_translation[0];
-        points.posY[i] += t_translation[1];
-        points.posZ[i] += t_translation[2];
+    for (; i < t_mesh.pointAttribs.size(); ++i) {
+        pointsPosX[i] += t_translation[0];
+        pointsPosY[i] += t_translation[1];
+        pointsPosZ[i] += t_translation[2];
     }
 }
 
