@@ -12,30 +12,34 @@ namespace euclide {
 
 class Attribute {
   public:
-    Attribute(const std::string& t_name, const int t_attrSize, const AttributeType t_attrType);
+    Attribute(const std::string& t_name);
     Attribute() = default;
 
     virtual ~Attribute() = default;
 
     [[nodiscard]] inline std::string name() const noexcept { return m_name; }
-    [[nodiscard]] inline AttributeType type() const noexcept { return m_type; }
-    [[nodiscard]] inline int attrSize() const noexcept { return m_attrSize; }
     [[nodiscard]] inline size_t size() const noexcept { return m_size; }
 
+    [[nodiscard]] virtual AttributeType type() const noexcept = 0;
+    [[nodiscard]] virtual int attrSize() const noexcept = 0;
+    [[nodiscard]] virtual size_t elementSize() const noexcept = 0;
+
   private:
-    std::string m_name;   //< The attribute name
-    int m_attrSize;       //< The attribute size, i.e float = 1, float3 = 3
-    AttributeType m_type; //< The attribute type that will be used to determine the type* of the data_ptr
+    std::string m_name; //< The attribute name
     size_t m_size = 0;
 };
 
 template <typename T, size_t COMPONENTS>
 class TypedAttribute : public Attribute {
   public:
-    TypedAttribute(const std::string& t_name) : Attribute(t_name, COMPONENTS, AttributeTypeOf<T>::value) {}
+    TypedAttribute(const std::string& t_name) : Attribute(t_name) {}
+
+    AttributeType type() const noexcept override { return AttributeTypeOf<T>::value; }
+    int attrSize() const noexcept override { return COMPONENTS; }
+    size_t elementSize() const noexcept override { return sizeof(T); }
 
   private:
-    T* data[COMPONENTS];
+    std::array<T*, COMPONENTS> data{};
 };
 
 // class Attribute {
