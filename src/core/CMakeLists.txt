@@ -12,22 +12,22 @@ add_library(core STATIC
     geometry/attributes.cpp
     geometry/points.cpp
 
-    nodes/node.cpp
-    nodes/scene.cpp
-    nodes/nodes_info.cpp
+    # nodes/node.cpp
+    # nodes/scene.cpp
+    # nodes/nodes_info.cpp
 
-    nodes/primitive/cube.cpp
-    nodes/primitive/grid.cpp
-    nodes/primitive/cylinder.cpp
-    nodes/primitive/quad_sphere.cpp
+    # nodes/primitive/cube.cpp
+    # nodes/primitive/grid.cpp
+    # nodes/primitive/cylinder.cpp
+    # nodes/primitive/quad_sphere.cpp
     
-    nodes/geometry/transform.cpp
-    nodes/geometry/merge.cpp
-    nodes/geometry/subdivide.cpp
-    nodes/geometry/smooth_normals.cpp
-    nodes/geometry/copy_to_points.cpp
+    # nodes/geometry/transform.cpp
+    # nodes/geometry/merge.cpp
+    # nodes/geometry/subdivide.cpp
+    # nodes/geometry/smooth_normals.cpp
+    # nodes/geometry/copy_to_points.cpp
 
-    nodes/utility/null.cpp
+    # nodes/utility/null.cpp
 )
 
 target_include_directories(core

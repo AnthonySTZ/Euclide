@@ -69,11 +69,12 @@ class AttributeSet {
     Attribute* findOrCreate(const std::string& t_name, const int t_attrSize, const AttributeType t_type);
 
     void resize(const size_t t_size);
+    [[nodiscard]] inline size_t size() const noexcept { return m_size; }
 
-  public:
-    size_t size = 0;
-    std::vector<std::unique_ptr<Attribute>> attributes;
-    std::unordered_map<std::string, int> map;
+  private:
+    size_t m_size = 0;
+    std::vector<std::unique_ptr<Attribute>> m_attributes;
+    std::unordered_map<std::string, int> m_map;
 
   private:
     void copy(const AttributeSet& t_other);

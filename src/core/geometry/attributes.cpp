@@ -100,8 +100,8 @@ AttributeSet& AttributeSet::operator=(const AttributeSet& t_other) {
     if (this == &t_other)
         return *this;
 
-    attributes.clear();
-    map.clear();
+    m_attributes.clear();
+    m_map.clear();
 
     copy(t_other);
 
@@ -109,37 +109,37 @@ AttributeSet& AttributeSet::operator=(const AttributeSet& t_other) {
 }
 
 Attribute* AttributeSet::find(const std::string& t_name) {
-    auto it = map.find(t_name);
-    return it == map.end() ? nullptr : attributes[it->second].get();
+    auto it = m_map.find(t_name);
+    return it == m_map.end() ? nullptr : m_attributes[it->second].get();
 }
 
 Attribute* AttributeSet::findOrCreate(const std::string& t_name, const int t_attrSize, const AttributeType t_type) {
-    auto it = map.find(t_name);
-    if (it != map.end())
-        return attributes[it->second].get();
+    auto it = m_map.find(t_name);
+    if (it != m_map.end())
+        return m_attributes[it->second].get();
 
-    size_t attrIndex = attributes.size();
-    map.emplace(t_name, attrIndex);
-    attributes.emplace_back(std::make_unique<Attribute>(t_name, t_attrSize, t_type));
-    auto* attr = attributes[attrIndex].get();
-    attr->resize(size);
+    size_t attrIndex = m_attributes.size();
+    m_map.emplace(t_name, attrIndex);
+    m_attributes.emplace_back(std::make_unique<Attribute>(t_name, t_attrSize, t_type));
+    auto* attr = m_attributes[attrIndex].get();
+    attr->resize(m_size);
     return attr;
 }
 
 void AttributeSet::resize(const size_t t_size) {
-    for (auto& attr : attributes) {
+    for (auto& attr : m_attributes) {
         attr->resize(t_size);
     }
-    size = t_size;
+    m_size = t_size;
 }
 
 void AttributeSet::copy(const AttributeSet& t_other) {
-    attributes.reserve(t_other.attributes.size());
-    for (auto& attr : t_other.attributes)
-        attributes.push_back(attr->clone());
+    m_attributes.reserve(t_other.m_attributes.size());
+    for (auto& attr : t_other.m_attributes)
+        m_attributes.push_back(attr->clone());
 
-    map = t_other.map;
-    size = t_other.size;
+    m_map = t_other.m_map;
+    m_size = t_other.m_size;
 }
 
 } // namespace euclide

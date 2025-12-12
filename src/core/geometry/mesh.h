@@ -12,7 +12,6 @@
 namespace euclide {
 /// @brief Represents a 3D mesh composed of points, vertices, and primitives.
 struct Mesh {
-    Points points;
     std::vector<Vertex> vertices;      ///< Vertices referencing points.
     std::vector<Primitive> primitives; ///< Faces (polygons) of the mesh.
     AttributeSet pointAttribs;
@@ -26,15 +25,24 @@ struct Mesh {
     /// @param t_z Z-coordinate.
     /// @return Index of the new point.
     inline uint32_t addPoint(const float t_x, const float t_y, const float t_z) {
-        return points.addPoint(t_x, t_y, t_z);
+        uint32_t index = pointAttribs.size();
+        pointAttribs.resize(index + 1);
+        Attribute* positions = pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+        float* posDataX = positions->component<float>(0);
+        float* posDataY = positions->component<float>(0);
+        float* posDataZ = positions->component<float>(0);
+
+        posDataX[index] = t_x;
+        posDataY[index] = t_y;
+        posDataZ[index] = t_z;
+
+        return index;
     }
 
     /// @brief Add a point to the mesh.
     /// @param t_position Position vector of the point.
     /// @return Index of the new point.
-    inline uint32_t addPoint(const float3 t_position) {
-        return points.addPoint(t_position[0], t_position[1], t_position[2]);
-    }
+    inline uint32_t addPoint(const float3 t_position) { return addPoint(t_position[0], t_position[1], t_position[2]); }
 
     /// @brief Add a vertex referencing an existing point.
     /// @param t_pointIndex Index of the point this vertex references.
@@ -76,16 +84,16 @@ struct Mesh {
 
     /// @brief Compute half-edges for the mesh.
     /// @return Vector of half-edge structures representing the mesh connectivity.
-    std::vector<HalfEdge> computeHalfEdges() const;
+    std::vector<HalfEdge> computeHalfEdges() const { return std::vector<HalfEdge>(); };
 
     /// @brief Reconstruct the mesh from a set of half-edges and points.
     /// @param t_halfedges Half-edges describing the mesh.
     /// @param t_points Points for the mesh.
-    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points);
+    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points){};
 
     /// @brief Compute the geometric center of the mesh points.
     /// @return Center position as float3.
-    float3 center() const;
+    float3 center() const { return {}; };
 };
 
 } // namespace euclide

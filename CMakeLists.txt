@@ -11,7 +11,7 @@ add_subdirectory(third_party/imgui)
 add_subdirectory(third_party/glm)
 
 add_subdirectory(src/core)
-add_subdirectory(src/app)
+# add_subdirectory(src/app)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 
@@ -23,8 +23,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt")
 endif()
 
 # --- Optional benchmarks
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/benchmark/CMakeLists.txt")
-    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
-    add_subdirectory(third_party/benchmark)
-    add_subdirectory(bench)
-endif()
+# if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/benchmark/CMakeLists.txt")
+#     set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+#     add_subdirectory(third_party/benchmark)
+#     add_subdirectory(bench)
+# endif()
