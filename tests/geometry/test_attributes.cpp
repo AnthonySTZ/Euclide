@@ -73,4 +73,17 @@ TEST(AttributeSets, findAttribute) {
     EXPECT_EQ(attrSet.find("P"), attribute);
 }
 
+TEST(AttributeSets, findMultipleAttributes) {
+    AttributeSet attrSet{};
+
+    EXPECT_EQ(attrSet.find("P"), nullptr);
+    EXPECT_EQ(attrSet.find("Cd"), nullptr);
+
+    auto attributeP = attrSet.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto attributeCd = attrSet.findOrCreate("Cd", 3, AttributeType::ATTR_TYPE_FLOAT);
+
+    EXPECT_EQ(attrSet.find("P"), attributeP);
+    EXPECT_EQ(attrSet.find("Cd"), attributeCd);
+}
+
 } // namespace euclide
