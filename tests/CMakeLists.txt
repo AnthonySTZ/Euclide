@@ -7,7 +7,7 @@ add_executable(EuclideTests
                 nodes/test_scene.cpp
                 
                 nodes/primitive/test_cube.cpp
-                # nodes/primitive/test_grid.cpp
+                nodes/primitive/test_grid.cpp
                 # nodes/primitive/test_cylinder.cpp
                 
                 # nodes/geometry/test_transform.cpp

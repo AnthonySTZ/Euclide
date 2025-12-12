@@ -15,7 +15,7 @@ TEST(Grid, GeneratesCorrectPointCount) {
     grid->getField<Int2Field>("divisions")->setValue(2, 3);
 
     auto mesh = grid->cook(0);
-    EXPECT_EQ(mesh->points.size(), 12);
+    EXPECT_EQ(mesh->pointAttribs.size(), 12);
 }
 
 TEST(Grid, GeneratesCorrectPrimitiveCount) {
@@ -42,11 +42,15 @@ TEST(Grid, CorrectSpacing) {
     // x: -2, 0, +2
     // z: -2, 0, +2
 
-    ASSERT_EQ(mesh->points.size(), 9);
+    ASSERT_EQ(mesh->pointAttribs.size(), 9);
+    auto positions = mesh->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
-    EXPECT_FLOAT_EQ(mesh->points.posX[0], -2);
-    EXPECT_FLOAT_EQ(mesh->points.posX[1], 0);
-    EXPECT_FLOAT_EQ(mesh->points.posX[2], 2);
+    EXPECT_FLOAT_EQ(posX[0], -2);
+    EXPECT_FLOAT_EQ(posX[1], 0);
+    EXPECT_FLOAT_EQ(posX[2], 2);
 }
 
 TEST(Grid, Grid2x4CustomPositionAndSize) {
@@ -58,7 +62,11 @@ TEST(Grid, Grid2x4CustomPositionAndSize) {
     grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::ZX);
 
     auto mesh = grid->cook(0);
-    EXPECT_EQ(mesh->points.size(), 15);
+    EXPECT_EQ(mesh->pointAttribs.size(), 15);
+    auto positions = mesh->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
     float expectedX[5] = {8.0f, 9.0f, 10.0f, 11.0f, 12.0f};
     float expectedZ[3] = {17.0f, 20.0f, 23.0f};
@@ -66,9 +74,9 @@ TEST(Grid, Grid2x4CustomPositionAndSize) {
     for (size_t row = 0; row < 3; ++row) {
         for (size_t col = 0; col < 5; ++col) {
             const size_t pointIndex = row * 5 + col;
-            EXPECT_FLOAT_EQ(mesh->points.posX[pointIndex], expectedX[col]);
-            EXPECT_FLOAT_EQ(mesh->points.posY[pointIndex], 5.0f); // center Y
-            EXPECT_FLOAT_EQ(mesh->points.posZ[pointIndex], expectedZ[row]);
+            EXPECT_FLOAT_EQ(posX[pointIndex], expectedX[col]);
+            EXPECT_FLOAT_EQ(posY[pointIndex], 5.0f); // center Y
+            EXPECT_FLOAT_EQ(posZ[pointIndex], expectedZ[row]);
         }
     }
 }
@@ -82,7 +90,11 @@ TEST(Grid, Grid2x3_XY) {
     grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::XY);
 
     auto mesh = grid->cook(0);
-    EXPECT_EQ(mesh->points.size(), 12);
+    EXPECT_EQ(mesh->pointAttribs.size(), 12);
+    auto positions = mesh->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
     float expectedX[4] = {8.0f, 28.0f / 3.0f, 32.0f / 3.0f, 12.0f};
     float expectedY[3] = {2.0f, 5.0f, 8.0f};
@@ -91,9 +103,9 @@ TEST(Grid, Grid2x3_XY) {
     for (size_t row = 0; row < 3; ++row) {
         for (size_t col = 0; col < 4; ++col) {
             const size_t idx = row * 4 + col;
-            EXPECT_FLOAT_EQ(mesh->points.posX[idx], expectedX[col]);
-            EXPECT_FLOAT_EQ(mesh->points.posY[idx], expectedY[row]);
-            EXPECT_FLOAT_EQ(mesh->points.posZ[idx], expectedZ);
+            EXPECT_FLOAT_EQ(posX[idx], expectedX[col]);
+            EXPECT_FLOAT_EQ(posY[idx], expectedY[row]);
+            EXPECT_FLOAT_EQ(posZ[idx], expectedZ);
         }
     }
 }
@@ -107,7 +119,11 @@ TEST(Grid, Grid2x3_YZ) {
     grid->getField<NodeField<int>>("orientation")->setValue(GridOrientation::YZ);
 
     auto mesh = grid->cook(0);
-    EXPECT_EQ(mesh->points.size(), 12);
+    EXPECT_EQ(mesh->pointAttribs.size(), 12);
+    auto positions = mesh->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
     float expectedZ[4] = {18.0f, 58.0f / 3.0f, 62.0f / 3.0f, 22.0f};
     float expectedY[3] = {2.0f, 5.0f, 8.0f};
@@ -116,9 +132,9 @@ TEST(Grid, Grid2x3_YZ) {
     for (size_t row = 0; row < 3; ++row) {
         for (size_t col = 0; col < 4; ++col) {
             const size_t idx = row * 4 + col;
-            EXPECT_FLOAT_EQ(mesh->points.posX[idx], expectedX);
-            EXPECT_FLOAT_EQ(mesh->points.posY[idx], expectedY[row]);
-            EXPECT_FLOAT_EQ(mesh->points.posZ[idx], expectedZ[col]);
+            EXPECT_FLOAT_EQ(posX[idx], expectedX);
+            EXPECT_FLOAT_EQ(posY[idx], expectedY[row]);
+            EXPECT_FLOAT_EQ(posZ[idx], expectedZ[col]);
         }
     }
 }
