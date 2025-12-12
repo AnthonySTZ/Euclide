@@ -25,4 +25,30 @@ TEST(Attributes, ResizeFloat) {
     }
 }
 
+TEST(Attributes, CopyFloats) {
+    Attribute attr{"P", 3, AttributeType::ATTR_TYPE_FLOAT};
+
+    attr.resize(5);
+    float* dataX = static_cast<float*>(attr.data[0]);
+    float* dataY = static_cast<float*>(attr.data[1]);
+    float* dataZ = static_cast<float*>(attr.data[2]);
+    dataX[1] = 8.0f;
+    dataY[2] = 3.5f;
+    dataZ[3] = -2.0f;
+
+    Attribute attrCopy = attr;
+    EXPECT_EQ(attrCopy.name, attr.name);
+    EXPECT_EQ(attrCopy.attrSize, attr.attrSize);
+    EXPECT_EQ(attrCopy.getType(), attr.getType());
+
+    for (size_t component = 0; component < 3; ++component) {
+        float* compData = static_cast<float*>(attr.data[component]);
+        float* compDataCopy = static_cast<float*>(attrCopy.data[component]);
+        EXPECT_FALSE(compData == compDataCopy); // Should not POINT to same datas
+        for (size_t i = 0; i < 5; ++i) {
+            EXPECT_EQ(compData[i], compDataCopy[i]); // Still stores same VALUES
+        }
+    }
+}
+
 } // namespace euclide
