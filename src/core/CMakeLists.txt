@@ -15,7 +15,7 @@ add_library(core STATIC
     nodes/scene.cpp
     # nodes/nodes_info.cpp
 
-    # nodes/primitive/cube.cpp
+    nodes/primitive/cube.cpp
     # nodes/primitive/grid.cpp
     # nodes/primitive/cylinder.cpp
     # nodes/primitive/quad_sphere.cpp

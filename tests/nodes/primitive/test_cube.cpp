@@ -18,16 +18,20 @@ TEST(Cube, CubeOutput) {
     cube->getField<Float3Field>("size")->setValue(2.0f, 2.0f, 2.0f);
 
     auto result = cube->cook(0);
+    auto positions = result->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
     // Check points
-    ASSERT_EQ(result->points.size(), 8);
-    EXPECT_FLOAT_EQ(result->points.posX[0], 1.0f);
-    EXPECT_FLOAT_EQ(result->points.posY[0], 1.0f);
-    EXPECT_FLOAT_EQ(result->points.posZ[0], -1.0f);
+    ASSERT_EQ(result->pointAttribs.size(), 8);
+    EXPECT_FLOAT_EQ(posX[0], 1.0f);
+    EXPECT_FLOAT_EQ(posY[0], 1.0f);
+    EXPECT_FLOAT_EQ(posZ[0], -1.0f);
 
-    EXPECT_FLOAT_EQ(result->points.posX[6], -1.0f);
-    EXPECT_FLOAT_EQ(result->points.posY[6], -1.0f);
-    EXPECT_FLOAT_EQ(result->points.posZ[6], 1.0f);
+    EXPECT_FLOAT_EQ(posX[6], -1.0f);
+    EXPECT_FLOAT_EQ(posY[6], -1.0f);
+    EXPECT_FLOAT_EQ(posZ[6], 1.0f);
 
     ASSERT_EQ(result->primitives.size(), 6);
 }

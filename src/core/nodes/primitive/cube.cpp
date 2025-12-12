@@ -33,8 +33,17 @@ void Cube::createCube(Mesh& t_mesh, const CubeSettings& t_settings) {
     size[1] *= 0.5;
     size[2] *= 0.5;
 
-    auto& points = t_mesh.points;
-    points.resize(8);
+    t_mesh.pointAttribs.resize(8);
+
+    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* points_posX = positions->component<float>(0);
+    float* points_posY = positions->component<float>(1);
+    float* points_posZ = positions->component<float>(2);
+
+    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* points_normalX = normals->component<float>(0);
+    float* points_normalY = normals->component<float>(1);
+    float* points_normalZ = normals->component<float>(2);
 
     const float posX = size[0] + position[0];
     const float invPosX = -size[0] + position[0];
@@ -46,60 +55,56 @@ void Cube::createCube(Mesh& t_mesh, const CubeSettings& t_settings) {
     constexpr float one_third = 1.0f / 3.0f;
 
     /* Top Face */
-    points.posX[0] = posX;
-    points.posX[1] = invPosX;
-    points.posX[2] = invPosX;
-    points.posX[3] = posX;
-    points.posX[4] = posX;
-    points.posX[5] = invPosX;
-    points.posX[6] = invPosX;
-    points.posX[7] = posX;
-    points.normalX[0] = one_third;
-    points.normalX[1] = -one_third;
-    points.normalX[2] = -one_third;
-    points.normalX[3] = one_third;
-    points.normalX[4] = one_third;
-    points.normalX[5] = -one_third;
-    points.normalX[6] = -one_third;
-    points.normalX[7] = one_third;
+    points_posX[0] = posX;
+    points_posX[1] = invPosX;
+    points_posX[2] = invPosX;
+    points_posX[3] = posX;
+    points_posX[4] = posX;
+    points_posX[5] = invPosX;
+    points_posX[6] = invPosX;
+    points_posX[7] = posX;
+    points_normalX[0] = one_third;
+    points_normalX[1] = -one_third;
+    points_normalX[2] = -one_third;
+    points_normalX[3] = one_third;
+    points_normalX[4] = one_third;
+    points_normalX[5] = -one_third;
+    points_normalX[6] = -one_third;
+    points_normalX[7] = one_third;
 
-    points.posY[0] = posY;
-    points.posY[1] = posY;
-    points.posY[2] = posY;
-    points.posY[3] = posY;
-    points.posY[4] = invPosY;
-    points.posY[5] = invPosY;
-    points.posY[6] = invPosY;
-    points.posY[7] = invPosY;
-    points.normalY[0] = one_third;
-    points.normalY[1] = one_third;
-    points.normalY[2] = one_third;
-    points.normalY[3] = one_third;
-    points.normalY[4] = -one_third;
-    points.normalY[5] = -one_third;
-    points.normalY[6] = -one_third;
-    points.normalY[7] = -one_third;
+    points_posY[0] = posY;
+    points_posY[1] = posY;
+    points_posY[2] = posY;
+    points_posY[3] = posY;
+    points_posY[4] = invPosY;
+    points_posY[5] = invPosY;
+    points_posY[6] = invPosY;
+    points_posY[7] = invPosY;
+    points_normalY[0] = one_third;
+    points_normalY[1] = one_third;
+    points_normalY[2] = one_third;
+    points_normalY[3] = one_third;
+    points_normalY[4] = -one_third;
+    points_normalY[5] = -one_third;
+    points_normalY[6] = -one_third;
+    points_normalY[7] = -one_third;
 
-    points.posZ[0] = invPosZ;
-    points.posZ[1] = invPosZ;
-    points.posZ[2] = posZ;
-    points.posZ[3] = posZ;
-    points.posZ[4] = invPosZ;
-    points.posZ[5] = invPosZ;
-    points.posZ[6] = posZ;
-    points.posZ[7] = posZ;
-    points.normalZ[0] = -one_third;
-    points.normalZ[1] = -one_third;
-    points.normalZ[2] = one_third;
-    points.normalZ[3] = one_third;
-    points.normalZ[4] = -one_third;
-    points.normalZ[5] = -one_third;
-    points.normalZ[6] = one_third;
-    points.normalZ[7] = one_third;
-
-    std::fill(std::begin(points.colorR), std::end(points.colorR), 1.0);
-    std::fill(std::begin(points.colorG), std::end(points.colorG), 1.0);
-    std::fill(std::begin(points.colorB), std::end(points.colorB), 1.0);
+    points_posZ[0] = invPosZ;
+    points_posZ[1] = invPosZ;
+    points_posZ[2] = posZ;
+    points_posZ[3] = posZ;
+    points_posZ[4] = invPosZ;
+    points_posZ[5] = invPosZ;
+    points_posZ[6] = posZ;
+    points_posZ[7] = posZ;
+    points_normalZ[0] = -one_third;
+    points_normalZ[1] = -one_third;
+    points_normalZ[2] = one_third;
+    points_normalZ[3] = one_third;
+    points_normalZ[4] = -one_third;
+    points_normalZ[5] = -one_third;
+    points_normalZ[6] = one_third;
+    points_normalZ[7] = one_third;
 
     /* Clockwise order */
     t_mesh.addPrimitive({0, 1, 2, 3}); // +Y
