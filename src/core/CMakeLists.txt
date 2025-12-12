@@ -9,7 +9,7 @@ add_library(core STATIC
     utils/timer.cpp
 
     geometry/mesh.cpp
-    geometry/attributes.cpp
+    geometry/attribute_set.cpp
 
     nodes/node.cpp
     nodes/scene.cpp
