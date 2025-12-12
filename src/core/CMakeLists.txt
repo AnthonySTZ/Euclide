@@ -10,9 +10,8 @@ add_library(core STATIC
 
     geometry/mesh.cpp
     geometry/attributes.cpp
-    geometry/points.cpp
 
-    # nodes/node.cpp
+    nodes/node.cpp
     # nodes/scene.cpp
     # nodes/nodes_info.cpp
 

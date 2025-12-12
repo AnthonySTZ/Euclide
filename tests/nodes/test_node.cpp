@@ -17,10 +17,15 @@ TEST(Node, CookSingleNode) {
     auto node = std::make_shared<CreatePointNode>();
 
     auto result = node->cook(0);
-    ASSERT_EQ(result->points.size(), 1);
-    EXPECT_FLOAT_EQ(result->points.posX[0], 1.0f);
-    EXPECT_FLOAT_EQ(result->points.posY[0], 2.0f);
-    EXPECT_FLOAT_EQ(result->points.posZ[0], 3.0f);
+    auto positions = result->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
+
+    ASSERT_EQ(result->pointAttribs.size(), 1);
+    EXPECT_FLOAT_EQ(posX[0], 1.0f);
+    EXPECT_FLOAT_EQ(posY[0], 2.0f);
+    EXPECT_FLOAT_EQ(posZ[0], 3.0f);
 }
 
 TEST(Node, CookTwoConnectedNodes) {
@@ -29,15 +34,19 @@ TEST(Node, CookTwoConnectedNodes) {
 
     second_node->setInput(0, point_node);
     auto result = second_node->cook(0);
+    auto positions = result->pointAttribs.find("P");
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
-    ASSERT_EQ(result->points.size(), 2);
-    EXPECT_FLOAT_EQ(result->points.posX[0], 1.0f);
-    EXPECT_FLOAT_EQ(result->points.posY[0], 2.0f);
-    EXPECT_FLOAT_EQ(result->points.posZ[0], 3.0f);
+    ASSERT_EQ(result->pointAttribs.size(), 2);
+    EXPECT_FLOAT_EQ(posX[0], 1.0f);
+    EXPECT_FLOAT_EQ(posY[0], 2.0f);
+    EXPECT_FLOAT_EQ(posZ[0], 3.0f);
 
-    EXPECT_FLOAT_EQ(result->points.posX[1], 1.0f);
-    EXPECT_FLOAT_EQ(result->points.posY[1], 0.0f);
-    EXPECT_FLOAT_EQ(result->points.posZ[1], 2.0f);
+    EXPECT_FLOAT_EQ(posX[1], 1.0f);
+    EXPECT_FLOAT_EQ(posY[1], 0.0f);
+    EXPECT_FLOAT_EQ(posZ[1], 2.0f);
 }
 
 TEST(Node, CookOutOfBoundsOutput) {
@@ -68,25 +77,34 @@ TEST(Node, MultipleOutput) {
     second_node->setInput(0, point_node);
 
     auto first_result = second_node->cook(0);
-    EXPECT_EQ(first_result->points.size(), 2);
-    EXPECT_FLOAT_EQ(first_result->points.posX[0], 1.0f);
-    EXPECT_FLOAT_EQ(first_result->points.posY[0], 2.0f);
-    EXPECT_FLOAT_EQ(first_result->points.posZ[0], 3.0f);
+    auto first_positions = first_result->pointAttribs.find("P");
+    float* first_posX = first_positions->component<float>(0);
+    float* first_posY = first_positions->component<float>(1);
+    float* first_posZ = first_positions->component<float>(2);
 
-    EXPECT_FLOAT_EQ(first_result->points.posX[1], 1.0f);
-    EXPECT_FLOAT_EQ(first_result->points.posY[1], 0.0f);
-    EXPECT_FLOAT_EQ(first_result->points.posZ[1], 2.0f);
+    EXPECT_EQ(first_result->pointAttribs.size(), 2);
+    EXPECT_FLOAT_EQ(first_posX[0], 1.0f);
+    EXPECT_FLOAT_EQ(first_posY[0], 2.0f);
+    EXPECT_FLOAT_EQ(first_posZ[0], 3.0f);
+
+    EXPECT_FLOAT_EQ(first_posX[1], 1.0f);
+    EXPECT_FLOAT_EQ(first_posY[1], 0.0f);
+    EXPECT_FLOAT_EQ(first_posZ[1], 2.0f);
 
     auto second_result = second_node->cook(1);
-    return;
-    EXPECT_EQ(second_result->points.size(), 2);
-    EXPECT_FLOAT_EQ(second_result->points.posX[0], 1.0f);
-    EXPECT_FLOAT_EQ(second_result->points.posY[0], 2.0f);
-    EXPECT_FLOAT_EQ(second_result->points.posZ[0], 3.0f);
+    auto second_positions = second_result->pointAttribs.find("P");
+    float* second_posX = second_positions->component<float>(0);
+    float* second_posY = second_positions->component<float>(1);
+    float* second_posZ = second_positions->component<float>(2);
 
-    EXPECT_FLOAT_EQ(second_result->points.posX[1], -8.0f);
-    EXPECT_FLOAT_EQ(second_result->points.posY[1], 10.0f);
-    EXPECT_FLOAT_EQ(second_result->points.posZ[1], 20.0f);
+    EXPECT_EQ(second_result->pointAttribs.size(), 2);
+    EXPECT_FLOAT_EQ(second_posX[0], 1.0f);
+    EXPECT_FLOAT_EQ(second_posY[0], 2.0f);
+    EXPECT_FLOAT_EQ(second_posZ[0], 3.0f);
+
+    EXPECT_FLOAT_EQ(second_posX[1], -8.0f);
+    EXPECT_FLOAT_EQ(second_posY[1], 10.0f);
+    EXPECT_FLOAT_EQ(second_posZ[1], 20.0f);
 }
 
 TEST(NodeConnectionTest, DeleteInputConnection) {

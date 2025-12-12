@@ -13,7 +13,7 @@ class CreatePointNode : public Node {
     std::shared_ptr<Mesh> compute(const size_t t_index,
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override {
         auto output = std::make_shared<Mesh>();
-        output->points.addPoint(1.0, 2.0, 3.0); // predictable creation
+        output->addPoint(1.0, 2.0, 3.0); // predictable creation
         return output;
     }
 };
@@ -30,9 +30,9 @@ class TestNode : public Node {
         auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
         if (t_index == 0) {
-            output->points.addPoint(1.0, 0.0, 2.0); // predictable modification
+            output->addPoint(1.0, 0.0, 2.0); // predictable modification
         } else if (t_index == 1) {
-            output->points.addPoint(-8.0, 10.0, 20.0); // predictable modification
+            output->addPoint(-8.0, 10.0, 20.0); // predictable modification
         }
 
         return output;

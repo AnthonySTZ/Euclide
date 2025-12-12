@@ -3,7 +3,7 @@ add_executable(EuclideTests
                 geometry/test_attributes.cpp
                 geometry/test_mesh.cpp
                 
-                # nodes/test_node.cpp
+                nodes/test_node.cpp
                 # nodes/test_scene.cpp
                 
                 # nodes/primitive/test_cube.cpp

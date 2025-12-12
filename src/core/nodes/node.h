@@ -96,7 +96,8 @@ class Node : public std::enable_shared_from_this<Node> {
     /// @tparam T Expected field type.
     /// @param t_fieldName Name of the field.
     /// @return Shared pointer to the field of type T, or nullptr if not found.
-    template <typename T> [[nodiscard]] std::shared_ptr<T> getField(const std::string& t_fieldName) const {
+    template <typename T>
+    [[nodiscard]] std::shared_ptr<T> getField(const std::string& t_fieldName) const {
         auto it = m_fields.find(t_fieldName);
         if (it == m_fields.end())
             return nullptr;
@@ -133,7 +134,7 @@ class Node : public std::enable_shared_from_this<Node> {
     std::vector<std::shared_ptr<NodeConnection>> m_inputConnections;
     std::vector<std::vector<std::shared_ptr<NodeConnection>>> m_outputConnections;
 
-    bool m_isDirty;
+    std::vector<char> m_isDirty;
     std::vector<std::shared_ptr<Mesh>> m_cachedMesh;
 
     uint32_t m_id = 0;
