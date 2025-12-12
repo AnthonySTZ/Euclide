@@ -62,4 +62,15 @@ TEST(AttributeSets, findOrCreateAttribute) {
     EXPECT_EQ(attribute->getType(), AttributeType::ATTR_TYPE_FLOAT);
 }
 
+TEST(AttributeSets, findAttribute) {
+    AttributeSet attrSet{};
+
+    EXPECT_EQ(attrSet.find("P"), nullptr);
+
+    auto attribute = attrSet.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    EXPECT_FALSE(attribute == nullptr);
+
+    EXPECT_EQ(attrSet.find("P"), attribute);
+}
+
 } // namespace euclide
