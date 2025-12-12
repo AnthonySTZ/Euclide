@@ -1,6 +1,6 @@
 #include "cylinder.h"
 
-#include "nodes/geometry/smooth_normals.h"
+// #include "nodes/geometry/smooth_normals.h"
 
 #include <cmath>
 
@@ -68,12 +68,17 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
     const float heightOffset = t_settings.height * 0.5f;
 
     float3 position = t_settings.position;
-    auto& points = t_mesh.points;
+    t_mesh.pointAttribs.resize(t_settings.divisions * 2);
 
-    points.resize(t_settings.divisions * 2);
-    std::fill(points.colorR.begin(), points.colorR.end(), 1.0);
-    std::fill(points.colorG.begin(), points.colorG.end(), 1.0);
-    std::fill(points.colorB.begin(), points.colorB.end(), 1.0);
+    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
+
+    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    float* pointsNormalX = normals->component<float>(0);
+    float* pointsNormalY = normals->component<float>(1);
+    float* pointsNormalZ = normals->component<float>(2);
 
     // Top
     std::vector<float, AlignedAllocator<float, 32>> cosAngles(t_settings.divisions);
@@ -98,12 +103,12 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
             __m256 __cos = _mm256_load_ps(&cosAngles[div]);
             __m256 __sin = _mm256_load_ps(&sinAngles[div]);
 
-            _mm256_store_ps(&points.posX[div], _mm256_fmadd_ps(__cos, __radiusTop, __translateX));
-            _mm256_store_ps(&points.posY[div], _mm256_add_ps(__height, __translateY));
-            _mm256_store_ps(&points.posZ[div], _mm256_fmadd_ps(__sin, __radiusTop, __translateZ));
+            _mm256_store_ps(&pointsPosX[div], _mm256_fmadd_ps(__cos, __radiusTop, __translateX));
+            _mm256_store_ps(&pointsPosY[div], _mm256_add_ps(__height, __translateY));
+            _mm256_store_ps(&pointsPosZ[div], _mm256_fmadd_ps(__sin, __radiusTop, __translateZ));
 
-            _mm256_store_ps(&points.normalX[div], __cos);
-            _mm256_store_ps(&points.normalZ[div], __sin);
+            _mm256_store_ps(&pointsNormalX[div], __cos);
+            _mm256_store_ps(&pointsNormalZ[div], __sin);
         }
     }
 #endif
@@ -116,12 +121,12 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
         float posY = heightOffset + position[1];
         float posZ = sinAngle * radiusTop + position[2];
 
-        points.posX[div] = posX;
-        points.posY[div] = posY;
-        points.posZ[div] = posZ;
+        pointsPosX[div] = posX;
+        pointsPosY[div] = posY;
+        pointsPosZ[div] = posZ;
 
-        points.normalX[div] = cosAngle;
-        points.normalZ[div] = sinAngle;
+        pointsNormalX[div] = cosAngle;
+        pointsNormalZ[div] = sinAngle;
     }
 
     div = 0;
@@ -138,14 +143,14 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
             __m256 __cos = _mm256_load_ps(&cosAngles[div]);
             __m256 __sin = _mm256_load_ps(&sinAngles[div]);
 
-            _mm256_storeu_ps(&points.posX[div + t_settings.divisions],
+            _mm256_storeu_ps(&pointsPosX[div + t_settings.divisions],
                              _mm256_fmadd_ps(__cos, __radiusBottom, __translateX));
-            _mm256_storeu_ps(&points.posY[div + t_settings.divisions], _mm256_add_ps(__height, __translateY));
-            _mm256_storeu_ps(&points.posZ[div + t_settings.divisions],
+            _mm256_storeu_ps(&pointsPosY[div + t_settings.divisions], _mm256_add_ps(__height, __translateY));
+            _mm256_storeu_ps(&pointsPosZ[div + t_settings.divisions],
                              _mm256_fmadd_ps(__sin, __radiusBottom, __translateZ));
 
-            _mm256_storeu_ps(&points.normalX[div + t_settings.divisions], __cos);
-            _mm256_storeu_ps(&points.normalZ[div + t_settings.divisions], __sin);
+            _mm256_storeu_ps(&pointsNormalX[div + t_settings.divisions], __cos);
+            _mm256_storeu_ps(&pointsNormalZ[div + t_settings.divisions], __sin);
         }
     }
 #endif
@@ -160,13 +165,13 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
         float posY = -heightOffset + position[1];
         float posZ = sinAngle * radiusBottom + position[2];
 
-        points.posX[idx] = posX;
-        points.posY[idx] = posY;
-        points.posZ[idx] = posZ;
+        pointsPosX[idx] = posX;
+        pointsPosY[idx] = posY;
+        pointsPosZ[idx] = posZ;
 
-        points.normalX[idx] = points.normalX[div];
-        points.normalY[idx] = points.normalY[div];
-        points.normalZ[idx] = points.normalZ[div];
+        pointsNormalX[idx] = pointsNormalX[div];
+        pointsNormalY[idx] = pointsNormalY[div];
+        pointsNormalZ[idx] = pointsNormalZ[div];
     }
 
     auto& vertices = t_mesh.vertices;
@@ -212,7 +217,7 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
             Primitive{primVertIdx + t_settings.divisions, static_cast<uint32_t>(t_settings.divisions)});
     }
 
-    SmoothNormals::smoothNormals(t_mesh);
+    // SmoothNormals::smoothNormals(t_mesh);
 }
 
 } // namespace euclide

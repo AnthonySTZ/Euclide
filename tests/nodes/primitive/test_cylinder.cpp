@@ -16,7 +16,12 @@ TEST(Cylinder, CylinderNotCapped) {
 
     Cylinder::createCylinder(mesh, settings);
 
-    EXPECT_EQ(mesh.points.size(), 12);
+    EXPECT_EQ(mesh.pointAttribs.size(), 12);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
+
     EXPECT_EQ(mesh.primitives.size(), 6);
 
     const float posX[12] = {6.0, 3.5, -1.5, -4.0, -1.5, 3.5, 1.5, 1.25, 0.75, 0.5, 0.75, 1.25};
@@ -24,9 +29,9 @@ TEST(Cylinder, CylinderNotCapped) {
     const float posZ[12] = {0.5, 4.83013,  4.83013,  0.5, -3.83013,  -3.83013,
                             0.5, 0.933013, 0.933013, 0.5, 0.0669873, 0.0669873};
     for (size_t i = 0; i < 12; ++i) {
-        EXPECT_NEAR(mesh.points.posX[i], posX[i], 1e-4f);
-        EXPECT_NEAR(mesh.points.posY[i], posY[i], 1e-4f);
-        EXPECT_NEAR(mesh.points.posZ[i], posZ[i], 1e-4f);
+        EXPECT_NEAR(pointsPosX[i], posX[i], 1e-4f);
+        EXPECT_NEAR(pointsPosY[i], posY[i], 1e-4f);
+        EXPECT_NEAR(pointsPosZ[i], posZ[i], 1e-4f);
     }
 
     std::vector<std::vector<uint32_t>> prim = {{0, 1, 7, 6},  {1, 2, 8, 7},   {2, 3, 9, 8},
@@ -49,7 +54,11 @@ TEST(Cylinder, CylinderCapped) {
 
     Cylinder::createCylinder(mesh, settings);
 
-    EXPECT_EQ(mesh.points.size(), 12);
+    EXPECT_EQ(mesh.pointAttribs.size(), 12);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
     EXPECT_EQ(mesh.primitives.size(), 8);
 
     const float posX[12] = {6.0, 3.5, -1.5, -4.0, -1.5, 3.5, 1.5, 1.25, 0.75, 0.5, 0.75, 1.25};
@@ -57,9 +66,9 @@ TEST(Cylinder, CylinderCapped) {
     const float posZ[12] = {0.5, 4.83013,  4.83013,  0.5, -3.83013,  -3.83013,
                             0.5, 0.933013, 0.933013, 0.5, 0.0669873, 0.0669873};
     for (size_t i = 0; i < 12; ++i) {
-        EXPECT_NEAR(mesh.points.posX[i], posX[i], 1e-4f);
-        EXPECT_NEAR(mesh.points.posY[i], posY[i], 1e-4f);
-        EXPECT_NEAR(mesh.points.posZ[i], posZ[i], 1e-4f);
+        EXPECT_NEAR(pointsPosX[i], posX[i], 1e-4f);
+        EXPECT_NEAR(pointsPosY[i], posY[i], 1e-4f);
+        EXPECT_NEAR(pointsPosZ[i], posZ[i], 1e-4f);
     }
 
     std::vector<std::vector<uint32_t>> prim = {
