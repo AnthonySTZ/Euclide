@@ -1,6 +1,5 @@
 #pragma once
 
-#include "points.h"
 #include "vertex.h"
 #include "primitive.h"
 #include "halfedge.h"
@@ -89,7 +88,7 @@ struct Mesh {
     /// @brief Reconstruct the mesh from a set of half-edges and points.
     /// @param t_halfedges Half-edges describing the mesh.
     /// @param t_points Points for the mesh.
-    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points);
+    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const AttributeSet& t_pointAttribs);
 
     /// @brief Compute the geometric center of the mesh points.
     /// @return Center position as float3.
