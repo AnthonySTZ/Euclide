@@ -2,8 +2,6 @@
 
 #include "utils/timer.h"
 
-#define USE_SIMD
-
 #ifdef USE_SIMD
 #include "utils/simd.h"
 #endif
@@ -63,71 +61,71 @@ float3 Mesh::center() {
     return sumPos;
 }
 
-// std::vector<HalfEdge> Mesh::computeHalfEdges() const {
-//     size_t totalHalfEdges = 0;
-//     for (const auto& prim : primitives) {
-//         if (prim.numVertices > 2) {
-//             totalHalfEdges += prim.numVertices;
-//         }
-//     }
-//     std::vector<HalfEdge> halfEdges(totalHalfEdges);
+std::vector<HalfEdge> Mesh::computeHalfEdges() const {
+    size_t totalHalfEdges = 0;
+    for (const auto& prim : primitives) {
+        if (prim.numVertices > 2) {
+            totalHalfEdges += prim.numVertices;
+        }
+    }
+    std::vector<HalfEdge> halfEdges(totalHalfEdges);
 
-//     std::vector<Edge> edges(totalHalfEdges);
+    std::vector<Edge> edges(totalHalfEdges);
 
-//     uint32_t halfEdgeIdx = 0;
-//     for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
-//         const Primitive& prim = primitives[primIdx];
-//         if (prim.numVertices <= 2)
-//             continue;
+    uint32_t halfEdgeIdx = 0;
+    for (uint32_t primIdx = 0; primIdx < primitives.size(); ++primIdx) {
+        const Primitive& prim = primitives[primIdx];
+        if (prim.numVertices <= 2)
+            continue;
 
-//         const uint32_t base = prim.verticesIndex;
-//         const uint32_t count = prim.numVertices;
+        const uint32_t base = prim.verticesIndex;
+        const uint32_t count = prim.numVertices;
 
-//         for (size_t i = 0; i < count; ++i) {
-//             const uint32_t origin = vertices[base + i].refPoint;
-//             const uint32_t next = vertices[base + (i + 1) % count].refPoint;
+        for (size_t i = 0; i < count; ++i) {
+            const uint32_t origin = vertices[base + i].refPoint;
+            const uint32_t next = vertices[base + (i + 1) % count].refPoint;
 
-//             edges[halfEdgeIdx] = Edge{hash(std::min(origin, next), std::max(origin, next)), halfEdgeIdx};
+            edges[halfEdgeIdx] = Edge{hash(std::min(origin, next), std::max(origin, next)), halfEdgeIdx};
 
-//             halfEdges[halfEdgeIdx++] = HalfEdge{
-//                 .next =
-//                     (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before
-//                 .prev = (i == 0) ? halfEdgeIdx + count - 2 : halfEdgeIdx - 2,
-//                 .origin = origin,
-//                 .face = primIdx,
-//             };
-//         }
-//     }
+            halfEdges[halfEdgeIdx++] = HalfEdge{
+                .next =
+                    (i + 1 < count) ? halfEdgeIdx : halfEdgeIdx - count, // halfEdgeIdx + 1 but it incremented before
+                .prev = (i == 0) ? halfEdgeIdx + count - 2 : halfEdgeIdx - 2,
+                .origin = origin,
+                .face = primIdx,
+            };
+        }
+    }
 
-//     if (totalHalfEdges > 10000) {
-//         radixSortEdges(edges);
-//     } else {
-//         std::sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) { return a.key < b.key; });
-//     }
+    if (totalHalfEdges > 10000) {
+        radixSortEdges(edges);
+    } else {
+        std::sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) { return a.key < b.key; });
+    }
 
-//     size_t edgeIdx = 0;
-//     for (size_t i = 0; i + 1 < edges.size(); ++i) {
-//         const auto& a = edges[i];
-//         const auto& b = edges[i + 1];
-//         auto& halfedge_1 = halfEdges[a.idx];
-//         auto& halfedge_2 = halfEdges[b.idx];
-//         halfedge_1.edge = edgeIdx;
-//         edgeIdx++;
-//         halfedge_2.edge = edgeIdx;
-//         if (a.key != b.key)
-//             continue;
+    size_t edgeIdx = 0;
+    for (size_t i = 0; i + 1 < edges.size(); ++i) {
+        const auto& a = edges[i];
+        const auto& b = edges[i + 1];
+        auto& halfedge_1 = halfEdges[a.idx];
+        auto& halfedge_2 = halfEdges[b.idx];
+        halfedge_1.edge = edgeIdx;
+        edgeIdx++;
+        halfedge_2.edge = edgeIdx;
+        if (a.key != b.key)
+            continue;
 
-//         if (halfedge_1.origin == halfEdges[halfedge_2.next].origin &&
-//             halfedge_2.origin == halfEdges[halfedge_1.next].origin) {
-//             halfedge_1.twin = b.idx;
-//             halfedge_2.twin = a.idx;
-//             halfedge_2.edge = halfedge_1.edge;
-//             i++;
-//         }
-//     }
+        if (halfedge_1.origin == halfEdges[halfedge_2.next].origin &&
+            halfedge_2.origin == halfEdges[halfedge_1.next].origin) {
+            halfedge_1.twin = b.idx;
+            halfedge_2.twin = a.idx;
+            halfedge_2.edge = halfedge_1.edge;
+            i++;
+        }
+    }
 
-//     return halfEdges;
-// }
+    return halfEdges;
+}
 
 // void Mesh::reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points) {
 //     points = t_points;

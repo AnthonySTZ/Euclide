@@ -84,12 +84,12 @@ struct Mesh {
 
     /// @brief Compute half-edges for the mesh.
     /// @return Vector of half-edge structures representing the mesh connectivity.
-    std::vector<HalfEdge> computeHalfEdges() const { return std::vector<HalfEdge>(); };
+    std::vector<HalfEdge> computeHalfEdges() const;
 
     /// @brief Reconstruct the mesh from a set of half-edges and points.
     /// @param t_halfedges Half-edges describing the mesh.
     /// @param t_points Points for the mesh.
-    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points){};
+    void reconstructFromHalfEdges(const std::vector<HalfEdge>& t_halfedges, const Points& t_points);
 
     /// @brief Compute the geometric center of the mesh points.
     /// @return Center position as float3.
