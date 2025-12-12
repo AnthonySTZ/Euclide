@@ -15,7 +15,7 @@ struct Mesh {
     std::vector<Primitive> primitives; ///< Faces (polygons) of the mesh.
     AttributeSet pointAttribs;
     AttributeSet vertexAttribs;
-    AttributeSet primAttribs;
+    AttributeSet primAttribs; // TODO: resize it when add new prims, same for vertex
     AttributeSet detailAttribs;
 
     /// @brief Add a point to the mesh.
