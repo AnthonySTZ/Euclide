@@ -12,7 +12,7 @@ add_library(core STATIC
     geometry/attributes.cpp
 
     nodes/node.cpp
-    # nodes/scene.cpp
+    nodes/scene.cpp
     # nodes/nodes_info.cpp
 
     # nodes/primitive/cube.cpp
