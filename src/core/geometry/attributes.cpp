@@ -18,7 +18,7 @@ Attribute& Attribute::operator=(const Attribute& t_other) {
 }
 
 Attribute::Attribute(const std::string& t_name, const int t_attrSize, const AttributeType t_attrType)
-    : name(t_name), attrSize(t_attrSize), type(t_attrType) {
+    : m_name(t_name), m_attrSize(t_attrSize), m_type(t_attrType) {
 }
 
 Attribute::~Attribute() {
@@ -26,29 +26,29 @@ Attribute::~Attribute() {
 }
 
 void Attribute::resize(const size_t t_size) {
-    switch (type) {
+    switch (m_type) {
     case AttributeType::ATTR_TYPE_FLOAT: {
-        for (size_t i = 0; i < attrSize; ++i) {
-            float* oldPtr = static_cast<float*>(data[i]);
+        for (size_t i = 0; i < m_attrSize; ++i) {
+            float* oldPtr = static_cast<float*>(m_data[i]);
             float* newPtr = floatAlloc::allocate(t_size);
 
             if (oldPtr) {
-                size_t toCopy = std::min(size, t_size);
+                size_t toCopy = std::min(m_size, t_size);
                 memcpy(newPtr, oldPtr, toCopy * sizeof(float));
             }
 
-            if (t_size > size)
-                memset(newPtr + size, 0, (t_size - size) * sizeof(float)); // Init new created float to 0.0f
+            if (t_size > m_size)
+                memset(newPtr + m_size, 0, (t_size - m_size) * sizeof(float)); // Init new created float to 0.0f
 
             if (oldPtr)
                 floatAlloc::deallocate(oldPtr);
 
-            data[i] = newPtr;
+            m_data[i] = newPtr;
         }
     } break;
     }
 
-    size = t_size;
+    m_size = t_size;
 }
 
 std::unique_ptr<Attribute> Attribute::clone() const {
@@ -56,37 +56,37 @@ std::unique_ptr<Attribute> Attribute::clone() const {
 }
 
 void Attribute::free() {
-    switch (type) {
+    switch (m_type) {
     case AttributeType::ATTR_TYPE_FLOAT: {
         for (size_t i = 0; i < MAX_ATTRIBUTE_SIZE; ++i)
-            if (data[i])
-                floatAlloc::deallocate((float*)data[i], 0);
+            if (m_data[i])
+                floatAlloc::deallocate(static_cast<float*>(m_data[i]), 0);
     } break;
     case AttributeType::ATTR_TYPE_STRING: {
         for (size_t i = 0; i < MAX_ATTRIBUTE_SIZE; ++i) {
-            std::string* arr = static_cast<std::string*>(data[0]);
+            std::string* arr = static_cast<std::string*>(m_data[0]);
             if (arr)
                 delete[] arr;
         }
     } break;
     }
 
-    size = 0;
+    m_size = 0;
 }
 
 void Attribute::copy(const Attribute& t_other) {
     free();
 
-    name = t_other.name;
-    attrSize = t_other.attrSize;
-    type = t_other.type;
+    m_name = t_other.m_name;
+    m_attrSize = t_other.m_attrSize;
+    m_type = t_other.m_type;
 
-    resize(t_other.size);
+    resize(t_other.m_size);
 
-    switch (type) {
+    switch (m_type) {
     case AttributeType::ATTR_TYPE_FLOAT: {
-        for (size_t c = 0; c < attrSize; ++c) {
-            memcpy(data[c], t_other.data[c], sizeof(float) * size);
+        for (size_t c = 0; c < m_attrSize; ++c) {
+            memcpy(m_data[c], t_other.m_data[c], sizeof(float) * m_size);
         }
     }
     }

@@ -27,21 +27,30 @@ class Attribute {
     Attribute(const Attribute& t_other);
     Attribute& operator=(const Attribute& t_other);
 
-    [[nodiscard]] inline AttributeType getType() const noexcept { return type; }
-    [[nodiscard]] inline int getAttrSize() const noexcept { return attrSize; }
+    [[nodiscard]] inline std::string name() const noexcept { return m_name; }
+    [[nodiscard]] inline AttributeType type() const noexcept { return m_type; }
+    [[nodiscard]] inline int attrSize() const noexcept { return m_attrSize; }
+    [[nodiscard]] inline size_t size() const noexcept { return m_size; }
+
+    template <typename T>
+    [[nodiscard]] inline T* component(const int t_componentIndex) {
+        if (t_componentIndex >= m_attrSize)
+            return nullptr;
+        return static_cast<T*>(m_data[t_componentIndex]);
+    }
 
     void resize(const size_t t_size);
 
     std::unique_ptr<Attribute> clone() const;
 
-  public:
-    std::string name;   //< The attribute name
-    int attrSize;       //< The attribute size, i.e float = 1, float3 = 3
-    AttributeType type; //< The attribute type that will be used to determine the type* of the data_ptr
+  private:
+    std::string m_name;   //< The attribute name
+    int m_attrSize;       //< The attribute size, i.e float = 1, float3 = 3
+    AttributeType m_type; //< The attribute type that will be used to determine the type* of the data_ptr
     std::array<void*, MAX_ATTRIBUTE_SIZE>
-        data{}; //< Generic pointers, max 4 so it can handle vec4 at max for SoA and for mat3/4 it
-                // will use an AoS
-    size_t size = 0;
+        m_data{}; //< Generic pointers, max 4 so it can handle vec4 at max for SoA and for mat3/4 it
+                  // will use an AoS
+    size_t m_size = 0;
 
   private:
     void free();
