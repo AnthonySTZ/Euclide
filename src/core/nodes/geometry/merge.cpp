@@ -24,15 +24,22 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
 }
 
 void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
-    auto& outputPoints = t_mesh.points;
-    const size_t numPoints = outputPoints.size();
+    AttributeSet& pointAttribs = t_mesh.pointAttribs;
+    AttributeSet& otherPointAttribs = t_mesh_2.pointAttribs;
 
-    const auto& pointsToMerge = t_mesh_2.points;
-    outputPoints.reserve(outputPoints.size() + pointsToMerge.size());
-    outputPoints.resize(outputPoints.size() + pointsToMerge.size());
+    const size_t numPoints = pointAttribs.size();
+    const size_t numPointsToMerge = otherPointAttribs.size();
+
+    pointAttribs.resize(numPoints + numPointsToMerge);
+    t_mesh.primAttribs.resize(numPoints + numPointsToMerge);
+    t_mesh.vertexAttribs.resize(numPoints + numPointsToMerge);
 
 #pragma omp parallel for
-    for (size_t i = 0; i < pointsToMerge.size(); ++i) {
+    for (size_t attrIdx = 0; attrIdx < pointAttribs.count(); ++attrIdx) {
+        auto attribute = pointAttribs.get(attrIdx);
+    }
+
+    for (size_t i = 0; i < numPointsToMerge; ++i) {
         size_t pointIdx = numPoints + i;
         outputPoints.posX[pointIdx] = pointsToMerge.posX[i];
         outputPoints.posY[pointIdx] = pointsToMerge.posY[i];

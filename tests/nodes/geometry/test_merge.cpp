@@ -23,7 +23,7 @@ TEST(Merge, TestMerge) {
 
     Merge::merge(mesh1, mesh2);
 
-    EXPECT_EQ(mesh1.points.size(), 9);
+    EXPECT_EQ(mesh1.pointAttribs.size(), 9);
     EXPECT_EQ(mesh1.primitives.size(), 3);
 
     EXPECT_EQ(mesh1.getPointIndicesOfPrimitive(0), std::vector<uint32_t>({p0, p1, p2}));
