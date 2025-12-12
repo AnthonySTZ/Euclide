@@ -44,11 +44,8 @@ class Attribute {
     void copy(const Attribute& t_other);
 };
 
-struct AttributeSet {
-    size_t size = 0;
-    std::vector<std::unique_ptr<Attribute>> attributes;
-    std::unordered_map<std::string, int> map;
-
+class AttributeSet {
+  public:
     AttributeSet() = default;
     ~AttributeSet() = default;
 
@@ -59,6 +56,11 @@ struct AttributeSet {
     Attribute* findOrCreate(const std::string& t_name, const int t_attrSize, const AttributeType t_type);
 
     void resize(const size_t t_size);
+
+  public:
+    size_t size = 0;
+    std::vector<std::unique_ptr<Attribute>> attributes;
+    std::unordered_map<std::string, int> map;
 
   private:
     void copy(const AttributeSet& t_other);
