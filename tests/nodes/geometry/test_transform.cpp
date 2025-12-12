@@ -14,17 +14,22 @@ TEST(Transform, TestTranslation) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], 2.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], -5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], 7.5, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], 4.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], -2.5, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], 2.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], -5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], 7.5, 1e-4f);
 
-    EXPECT_NEAR(mesh.points.posX[p2], 1.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p2], 5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p2], 2.5, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p1], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], 4.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], -2.5, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p2], 1.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p2], 5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p2], 2.5, 1e-4f);
 }
 
 TEST(Transform, TestScale) {
@@ -38,17 +43,22 @@ TEST(Transform, TestScale) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], 1.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], 12.5, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], -1.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], -45.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], -12.5, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], 1.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], 12.5, 1e-4f);
 
-    EXPECT_NEAR(mesh.points.posX[p2], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p2], -50.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p1], -1.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], -45.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], -12.5, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p2], -50.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p2], 0.0, 1e-4f);
 }
 
 TEST(Transform, TestRotationAroundYAxis) {
@@ -62,17 +72,22 @@ TEST(Transform, TestRotationAroundYAxis) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], 5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], -1.0, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], -5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], 9.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], 1.0, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], 5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], -1.0, 1e-4f);
 
-    EXPECT_NEAR(mesh.points.posX[p2], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p2], 10.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p1], -5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], 9.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], 1.0, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p2], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p2], 10.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p2], 0.0, 1e-4f);
 }
 
 TEST(Transform, TestRotationAroundXAxis) {
@@ -85,13 +100,18 @@ TEST(Transform, TestRotationAroundXAxis) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], -2.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], 1.0, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], 5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], -4.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], -3.0, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], -2.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], 1.0, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p1], 5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], -4.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], -3.0, 1e-4f);
 }
 
 TEST(Transform, TestRotationAroundZAxis) {
@@ -104,13 +124,18 @@ TEST(Transform, TestRotationAroundZAxis) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], -1.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], 0.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], 2.0, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], 3.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], 5.0, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], 4.0, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], -1.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], 0.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], 2.0, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p1], 3.0, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], 5.0, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], 4.0, 1e-4f);
 }
 
 TEST(Transform, TestRotationCombined) {
@@ -123,13 +148,18 @@ TEST(Transform, TestRotationCombined) {
 
     Transform::transform(mesh, settings);
 
-    EXPECT_NEAR(mesh.points.posX[p0], -2.18341, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p0], -0.296704, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p0], 0.380406, 1e-4f);
+    auto positions = mesh.pointAttribs.find("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
-    EXPECT_NEAR(mesh.points.posX[p1], -3.62471, 1e-4f);
-    EXPECT_NEAR(mesh.points.posY[p1], 4.19612, 1e-4f);
-    EXPECT_NEAR(mesh.points.posZ[p1], -4.38794, 1e-4f);
+    EXPECT_NEAR(pointsPosX[p0], -2.18341, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p0], -0.296704, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p0], 0.380406, 1e-4f);
+
+    EXPECT_NEAR(pointsPosX[p1], -3.62471, 1e-4f);
+    EXPECT_NEAR(pointsPosY[p1], 4.19612, 1e-4f);
+    EXPECT_NEAR(pointsPosZ[p1], -4.38794, 1e-4f);
 }
 
 } // namespace euclide

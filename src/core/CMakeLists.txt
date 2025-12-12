@@ -20,7 +20,7 @@ add_library(core STATIC
     nodes/primitive/cylinder.cpp
     # nodes/primitive/quad_sphere.cpp
     
-    # nodes/geometry/transform.cpp
+    nodes/geometry/transform.cpp
     # nodes/geometry/merge.cpp
     # nodes/geometry/subdivide.cpp
     # nodes/geometry/smooth_normals.cpp
