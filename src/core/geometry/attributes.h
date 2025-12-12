@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <array>
 #include "utils/allocator_utils.h"
 
 namespace euclide {
@@ -14,6 +15,8 @@ enum class AttributeType {
 };
 
 class Attribute {
+    using floatAlloc = AlignedAllocator<float, 32>;
+
     static constexpr int MAX_ATTRIBUTE_SIZE = 4;
 
   public:
@@ -32,11 +35,12 @@ class Attribute {
     std::unique_ptr<Attribute> clone() const;
 
   public:
-    std::string name;               //< The attribute name
-    int attrSize;                   //< The attribute size, i.e float = 1, float3 = 3
-    AttributeType type;             //< The attribute type that will be used to determine the type* of the data_ptr
-    void* data[MAX_ATTRIBUTE_SIZE]; //< Generic pointers, max 4 so it can handle vec4 at max for SoA and for mat3/4 it
-                                    // will use an AoS
+    std::string name;   //< The attribute name
+    int attrSize;       //< The attribute size, i.e float = 1, float3 = 3
+    AttributeType type; //< The attribute type that will be used to determine the type* of the data_ptr
+    std::array<void*, MAX_ATTRIBUTE_SIZE>
+        data{}; //< Generic pointers, max 4 so it can handle vec4 at max for SoA and for mat3/4 it
+                // will use an AoS
     size_t size = 0;
 
   private:

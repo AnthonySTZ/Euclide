@@ -28,7 +28,6 @@ Attribute::~Attribute() {
 void Attribute::resize(const size_t t_size) {
     switch (type) {
     case AttributeType::ATTR_TYPE_FLOAT: {
-        using floatAlloc = AlignedAllocator<float, 32>;
         for (size_t i = 0; i < attrSize; ++i) {
             float* oldPtr = static_cast<float*>(data[i]);
             float* newPtr = floatAlloc::allocate(t_size);
@@ -58,17 +57,18 @@ std::unique_ptr<Attribute> Attribute::clone() const {
 
 void Attribute::free() {
     switch (type) {
-    case AttributeType::ATTR_TYPE_FLOAT:
-        using floatAlloc = AlignedAllocator<float, 32>;
+    case AttributeType::ATTR_TYPE_FLOAT: {
         for (size_t i = 0; i < MAX_ATTRIBUTE_SIZE; ++i)
             if (data[i])
                 floatAlloc::deallocate((float*)data[i], 0);
-        break;
-    case AttributeType::ATTR_TYPE_STRING:
-        std::string* arr = static_cast<std::string*>(data[0]);
-        if (arr)
-            delete[] arr;
-        break;
+    } break;
+    case AttributeType::ATTR_TYPE_STRING: {
+        for (size_t i = 0; i < MAX_ATTRIBUTE_SIZE; ++i) {
+            std::string* arr = static_cast<std::string*>(data[0]);
+            if (arr)
+                delete[] arr;
+        }
+    } break;
     }
 
     size = 0;
