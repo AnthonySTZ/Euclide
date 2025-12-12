@@ -9,6 +9,7 @@ add_library(core STATIC
     utils/timer.cpp
 
     geometry/mesh.cpp
+    geometry/attributes.cpp
     geometry/points.cpp
 
     nodes/node.cpp

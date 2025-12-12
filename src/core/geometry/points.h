@@ -11,7 +11,9 @@ struct Points {
     Points() = default;
     ~Points() = default;
 
-    std::vector<float, AlignedAllocator<float, 32>> posX, posY, posZ; ///< Point positions.
+    std::vector<float, AlignedAllocator<float, 32>> posX, posY, posZ;          ///< Point positions.
+    std::vector<float, AlignedAllocator<float, 32>> normalX, normalY, normalZ; ///< Point positions.
+    std::vector<float, AlignedAllocator<float, 32>> colorR, colorG, colorB;    ///< Point positions.
 
     /// @brief Reserve memory for the specified number of points.
     /// @param t_amount Number of points to reserve space for.
