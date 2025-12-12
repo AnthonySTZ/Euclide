@@ -2,6 +2,8 @@
 
 #include "utils/timer.h"
 
+#define USE_SIMD
+
 #ifdef USE_SIMD
 #include "utils/simd.h"
 #endif
@@ -11,50 +13,55 @@
 
 namespace euclide {
 
-// float3 Mesh::center() const {
-//     float3 sumPos{0.0, 0.0, 0.0};
-//     const size_t numPoints = points.size();
-//     if (numPoints == 0)
-//         return sumPos;
+float3 Mesh::center() {
+    float3 sumPos{0.0, 0.0, 0.0};
+    auto positions = pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    const size_t numPoints = positions->size();
+    if (numPoints == 0)
+        return sumPos;
 
-//     size_t i = 0;
+    size_t i = 0;
 
-// #ifdef USE_SIMD
-//     if (numPoints >= 8) {
-//         __m256 __sumX = _mm256_setzero_ps();
-//         __m256 __sumY = _mm256_setzero_ps();
-//         __m256 __sumZ = _mm256_setzero_ps();
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
 
-//         for (; i + 8 <= numPoints; i += 8) {
-//             __m256 __posX = _mm256_load_ps(&points.posX[i]);
-//             __m256 __posY = _mm256_load_ps(&points.posY[i]);
-//             __m256 __posZ = _mm256_load_ps(&points.posZ[i]);
+#ifdef USE_SIMD
+    if (numPoints >= 8) {
+        __m256 __sumX = _mm256_setzero_ps();
+        __m256 __sumY = _mm256_setzero_ps();
+        __m256 __sumZ = _mm256_setzero_ps();
 
-//             __sumX = _mm256_add_ps(__sumX, __posX);
-//             __sumY = _mm256_add_ps(__sumY, __posY);
-//             __sumZ = _mm256_add_ps(__sumZ, __posZ);
-//         }
+        for (; i + 8 <= numPoints; i += 8) {
+            __m256 __posX = _mm256_load_ps(&posX[i]);
+            __m256 __posY = _mm256_load_ps(&posY[i]);
+            __m256 __posZ = _mm256_load_ps(&posZ[i]);
 
-//         sumPos[0] = _mm256_hsum_ps(__sumX);
-//         sumPos[1] = _mm256_hsum_ps(__sumY);
-//         sumPos[2] = _mm256_hsum_ps(__sumZ);
-//     }
-// #endif
+            __sumX = _mm256_add_ps(__sumX, __posX);
+            __sumY = _mm256_add_ps(__sumY, __posY);
+            __sumZ = _mm256_add_ps(__sumZ, __posZ);
+        }
 
-//     for (; i < numPoints; ++i) {
-//         sumPos[0] += points.posX[i];
-//         sumPos[1] += points.posY[i];
-//         sumPos[2] += points.posZ[i];
-//     }
+        sumPos[0] = _mm256_hsum_ps(__sumX);
+        sumPos[1] = _mm256_hsum_ps(__sumY);
+        sumPos[2] = _mm256_hsum_ps(__sumZ);
+    }
+#endif
 
-//     const float divisor = static_cast<float>(numPoints);
+    for (; i < numPoints; ++i) {
+        sumPos[0] += posX[i];
+        sumPos[1] += posY[i];
+        sumPos[2] += posZ[i];
+    }
 
-//     sumPos[0] /= divisor;
-//     sumPos[1] /= divisor;
-//     sumPos[2] /= divisor;
+    const float factor = 1.0f / static_cast<float>(numPoints);
 
-//     return sumPos;
-// }
+    sumPos[0] *= factor;
+    sumPos[1] *= factor;
+    sumPos[2] *= factor;
+
+    return sumPos;
+}
 
 // std::vector<HalfEdge> Mesh::computeHalfEdges() const {
 //     size_t totalHalfEdges = 0;

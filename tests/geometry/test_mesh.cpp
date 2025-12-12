@@ -14,33 +14,52 @@ TEST(Mesh, CreateTriangle) {
     EXPECT_EQ(mesh.primitives.size(), 0);
     EXPECT_EQ(mesh.vertices.size(), 0);
 
+    auto positions = mesh.pointAttribs.find("P");
+    EXPECT_FALSE(positions == nullptr);
+
+    float* posX = positions->component<float>(0);
+    float* posY = positions->component<float>(1);
+    float* posZ = positions->component<float>(2);
+
+    EXPECT_NEAR(posX[0], 1.0, 1e-2f);
+    EXPECT_NEAR(posY[0], 5.0, 1e-2f);
+    EXPECT_NEAR(posZ[0], 2.0, 1e-2f);
+
+    EXPECT_NEAR(posX[1], 2.0, 1e-2f);
+    EXPECT_NEAR(posY[1], 5.0, 1e-2f);
+    EXPECT_NEAR(posZ[1], -8.0, 1e-2f);
+
+    EXPECT_NEAR(posX[2], -1.0, 1e-2f);
+    EXPECT_NEAR(posY[2], 5.0, 1e-2f);
+    EXPECT_NEAR(posZ[2], 2.0, 1e-2f);
+
     mesh.addPrimitive({p0, p1, p2});
 
     EXPECT_EQ(mesh.primitives.size(), 1);
     EXPECT_EQ(mesh.vertices.size(), 3);
 }
 
-// TEST(Mesh, GetMeshCenter) {
-//     Mesh mesh;
+TEST(Mesh, GetMeshCenter) {
+    Mesh mesh;
 
-//     mesh.addPoint(1.0, 5.0, 2.0);
-//     mesh.addPoint(2.0, 5.0, -8.0);
-//     mesh.addPoint(-1.0, 5.0, 2.0);
-//     mesh.addPoint(-18.0, 2.5, 1.0);
-//     mesh.addPoint(0.0, -5.0, 2.0);
-//     mesh.addPoint(-1.4, 9.0, -8.0);
+    mesh.addPoint(1.0, 5.0, 2.0);
+    mesh.addPoint(2.0, 5.0, -8.0);
+    mesh.addPoint(-1.0, 5.0, 2.0);
+    mesh.addPoint(-18.0, 2.5, 1.0);
+    mesh.addPoint(0.0, -5.0, 2.0);
+    mesh.addPoint(-1.4, 9.0, -8.0);
 
-//     float3 expected{-2.9f, 3.58333f, -1.5f};
+    float3 expected{-2.9f, 3.58333f, -1.5f};
 
-//     float3 center = mesh.center();
-//     float x = center[0];
-//     float y = center[1];
-//     float z = center[2];
+    float3 center = mesh.center();
+    float x = center[0];
+    float y = center[1];
+    float z = center[2];
 
-//     EXPECT_NEAR(x, expected[0], 1e-2f);
-//     EXPECT_NEAR(y, expected[1], 1e-2f);
-//     EXPECT_NEAR(z, expected[2], 1e-2f);
-// }
+    EXPECT_NEAR(x, expected[0], 1e-2f);
+    EXPECT_NEAR(y, expected[1], 1e-2f);
+    EXPECT_NEAR(z, expected[2], 1e-2f);
+}
 
 // TEST(Mesh, GetMeshCenterMoreThan8Points) {
 //     Mesh mesh;

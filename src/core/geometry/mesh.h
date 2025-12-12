@@ -29,8 +29,8 @@ struct Mesh {
         pointAttribs.resize(index + 1);
         Attribute* positions = pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
         float* posDataX = positions->component<float>(0);
-        float* posDataY = positions->component<float>(0);
-        float* posDataZ = positions->component<float>(0);
+        float* posDataY = positions->component<float>(1);
+        float* posDataZ = positions->component<float>(2);
 
         posDataX[index] = t_x;
         posDataY[index] = t_y;
@@ -93,7 +93,7 @@ struct Mesh {
 
     /// @brief Compute the geometric center of the mesh points.
     /// @return Center position as float3.
-    float3 center() const { return {}; };
+    float3 center();
 };
 
 } // namespace euclide
