@@ -32,6 +32,16 @@ class Attribute {
     [[nodiscard]] virtual void* componentRaw(const size_t t_index) = 0;
     [[nodiscard]] virtual const void* componentRaw(const size_t t_index) const = 0;
 
+    template <typename T>
+    [[nodiscard]] inline T* component(const size_t t_index) {
+        return static_cast<T*>(componentRaw(t_index));
+    }
+
+    template <typename T>
+    [[nodiscard]] inline const T* component(const size_t t_index) const {
+        return static_cast<T*>(componentRaw(t_index));
+    }
+
     virtual void resize(const size_t t_newSize) = 0;
 
   protected:
@@ -51,13 +61,16 @@ class TypedAttribute : public Attribute {
     TypedAttribute<T, COMPONENTS>& operator=(const TypedAttribute& t_other);
 
     void free() override;
-    std::unique_ptr<Attribute> clone() override { return std::make_unique<TypedAttribute<T, COMPONENTS>>(*this); }
+    inline std::unique_ptr<Attribute> clone() override {
+        return std::make_unique<TypedAttribute<T, COMPONENTS>>(*this);
+    }
 
-    AttributeType type() const noexcept override { return AttributeTypeOf<T>::value; }
-    int attrSize() const noexcept override { return COMPONENTS; }
-    size_t elementSize() const noexcept override { return sizeof(T); }
-    void* componentRaw(const size_t t_index) override { return m_data[t_index]; }
-    const void* componentRaw(const size_t t_index) const override { return m_data[t_index]; }
+    inline AttributeType type() const noexcept override { return AttributeTypeOf<T>::value; }
+    inline int attrSize() const noexcept override { return COMPONENTS; }
+    inline size_t elementSize() const noexcept override { return sizeof(T); }
+
+    inline void* componentRaw(const size_t t_index) override { return m_data[t_index]; }
+    inline const void* componentRaw(const size_t t_index) const override { return m_data[t_index]; }
 
     void resize(const size_t t_newSize) override;
 

@@ -18,7 +18,7 @@ TEST(Attributes, ResizeFloat) {
 
     EXPECT_EQ(attr.size(), 5);
     for (size_t c = 0; c < 3; ++c) {
-        float* compData = static_cast<float*>(attr.componentRaw(c));
+        float* compData = attr.component<float>(c);
         for (size_t i = 0; i < 5; ++i) {
             EXPECT_EQ(compData[i], 0.0f);
         }
@@ -29,9 +29,9 @@ TEST(Attributes, CopyFloats) {
     TypedAttribute<float, 3> attr{"P"};
 
     attr.resize(5);
-    float* dataX = static_cast<float*>(attr.componentRaw(0));
-    float* dataY = static_cast<float*>(attr.componentRaw(1));
-    float* dataZ = static_cast<float*>(attr.componentRaw(2));
+    float* dataX = attr.component<float>(0);
+    float* dataY = attr.component<float>(1);
+    float* dataZ = attr.component<float>(2);
     dataX[1] = 8.0f;
     dataY[2] = 3.5f;
     dataZ[3] = -2.0f;
@@ -42,8 +42,8 @@ TEST(Attributes, CopyFloats) {
     EXPECT_EQ(attrCopy.type(), attr.type());
 
     for (size_t c = 0; c < 3; ++c) {
-        float* compData = static_cast<float*>(attr.componentRaw(c));
-        float* compDataCopy = static_cast<float*>(attrCopy.componentRaw(c));
+        float* compData = attr.component<float>(c);
+        float* compDataCopy = attrCopy.component<float>(c);
         EXPECT_FALSE(compData == compDataCopy); // Should not POINT to same datas
         for (size_t i = 0; i < 5; ++i) {
             EXPECT_EQ(compData[i], compDataCopy[i]); // Still stores same VALUES
