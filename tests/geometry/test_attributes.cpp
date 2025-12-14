@@ -51,6 +51,18 @@ TEST(Attributes, CopyFloats) {
     }
 }
 
+TEST(Attributes, Compatibility) {
+    TypedAttribute<float, 3> attrP{"P"};
+    TypedAttribute<float, 3> attrN{"N"};
+
+    TypedAttribute<float, 2> attrT{"T"};
+    TypedAttribute<int, 2> attrI{"I"};
+
+    EXPECT_TRUE(attrP.isCompatibleWith(attrN));
+    EXPECT_FALSE(attrP.isCompatibleWith(attrT));
+    EXPECT_FALSE(attrT.isCompatibleWith(attrI));
+}
+
 TEST(AttributeSets, findOrCreateAttribute) {
     AttributeSet attrSet{};
 

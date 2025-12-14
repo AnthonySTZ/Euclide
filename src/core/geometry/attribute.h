@@ -32,6 +32,10 @@ class Attribute {
     [[nodiscard]] virtual void* componentRaw(const size_t t_index) = 0;
     [[nodiscard]] virtual const void* componentRaw(const size_t t_index) const = 0;
 
+    [[nodiscard]] inline bool isCompatibleWith(const Attribute& t_other) {
+        return type() == t_other.type() && attrSize() == t_other.attrSize();
+    }
+
     template <typename T>
     [[nodiscard]] inline T* component(const size_t t_index) {
         return static_cast<T*>(componentRaw(t_index));

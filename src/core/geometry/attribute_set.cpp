@@ -1,5 +1,7 @@
 #include "attribute_set.h"
 
+#include <utility>
+
 namespace euclide {
 
 AttributeSet::AttributeSet(const AttributeSet& t_other) {
@@ -18,16 +20,24 @@ AttributeSet& AttributeSet::operator=(const AttributeSet& t_other) {
     return *this;
 }
 
-Attribute* AttributeSet::find(const std::string& t_name) {
+const Attribute* AttributeSet::find(const std::string& t_name) const {
     auto it = m_map.find(t_name);
     return it == m_map.end() ? nullptr : m_attributes[it->second].get();
 }
 
-Attribute* AttributeSet::get(const size_t t_index) {
-    if (t_index >= m_attributes.size())
+Attribute* AttributeSet::find(const std::string& t_name) {
+    return const_cast<Attribute*>(std::as_const(*this).find(t_name));
+}
+
+const Attribute* AttributeSet::get(size_t index) const {
+    if (index >= m_attributes.size())
         return nullptr;
 
-    return m_attributes[t_index].get();
+    return m_attributes[index].get();
+}
+
+Attribute* AttributeSet::get(size_t index) {
+    return const_cast<Attribute*>(std::as_const(*this).get(index));
 }
 
 void AttributeSet::resize(const size_t t_size) {

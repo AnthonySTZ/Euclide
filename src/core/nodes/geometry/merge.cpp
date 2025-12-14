@@ -25,7 +25,7 @@ std::shared_ptr<Mesh> Merge::compute(const size_t t_index, const std::vector<std
 
 void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
     AttributeSet& pointAttribs = t_mesh.pointAttribs;
-    AttributeSet& otherPointAttribs = t_mesh_2.pointAttribs;
+    const AttributeSet& otherPointAttribs = t_mesh_2.pointAttribs;
 
     const size_t numPoints = pointAttribs.size();
     const size_t numPointsToMerge = otherPointAttribs.size();
@@ -36,7 +36,11 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
 
 #pragma omp parallel for
     for (size_t attrIdx = 0; attrIdx < pointAttribs.count(); ++attrIdx) {
-        auto attribute = pointAttribs.get(attrIdx);
+        Attribute* attribute = pointAttribs.get(attrIdx);
+        const Attribute* otherAttribute = otherPointAttribs.find(attribute->name());
+        if (otherAttribute == nullptr || !attribute->isCompatibleWith(*otherAttribute)) {
+            continue;
+        }
     }
 
     for (size_t i = 0; i < numPointsToMerge; ++i) {

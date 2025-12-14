@@ -12,6 +12,7 @@ class AttributeSet {
     AttributeSet(const AttributeSet& t_other);
     AttributeSet& operator=(const AttributeSet& t_other);
 
+    [[nodiscard]] const Attribute* find(const std::string& t_name) const;
     [[nodiscard]] Attribute* find(const std::string& t_name);
 
     template <typename T, size_t COMPONENTS>
@@ -28,6 +29,7 @@ class AttributeSet {
         return attr;
     }
 
+    [[nodiscard]] const Attribute* get(const size_t t_index) const;
     [[nodiscard]] Attribute* get(const size_t t_index);
 
     void resize(const size_t t_size);
