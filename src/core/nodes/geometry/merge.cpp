@@ -27,35 +27,21 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
     AttributeSet& pointAttribs = t_mesh.pointAttribs;
     const AttributeSet& otherPointAttribs = t_mesh_2.pointAttribs;
 
-    const size_t numPoints = pointAttribs.size();
+    const size_t oldSize = pointAttribs.size();
     const size_t numPointsToMerge = otherPointAttribs.size();
 
-    pointAttribs.resize(numPoints + numPointsToMerge);
-    t_mesh.primAttribs.resize(numPoints + numPointsToMerge);
-    t_mesh.vertexAttribs.resize(numPoints + numPointsToMerge);
+    pointAttribs.resize(oldSize + numPointsToMerge);
+    t_mesh.primAttribs.resize(oldSize + numPointsToMerge);
+    t_mesh.vertexAttribs.resize(oldSize + numPointsToMerge);
 
 #pragma omp parallel for
     for (size_t attrIdx = 0; attrIdx < pointAttribs.count(); ++attrIdx) {
         Attribute* attribute = pointAttribs.get(attrIdx);
         const Attribute* otherAttribute = otherPointAttribs.find(attribute->name());
-        if (otherAttribute == nullptr || !attribute->isCompatibleWith(*otherAttribute)) {
+        if (otherAttribute == nullptr) {
             continue;
         }
-    }
-
-    for (size_t i = 0; i < numPointsToMerge; ++i) {
-        size_t pointIdx = numPoints + i;
-        outputPoints.posX[pointIdx] = pointsToMerge.posX[i];
-        outputPoints.posY[pointIdx] = pointsToMerge.posY[i];
-        outputPoints.posZ[pointIdx] = pointsToMerge.posZ[i];
-
-        outputPoints.normalX[pointIdx] = pointsToMerge.normalX[i];
-        outputPoints.normalY[pointIdx] = pointsToMerge.normalY[i];
-        outputPoints.normalZ[pointIdx] = pointsToMerge.normalZ[i];
-
-        outputPoints.colorR[pointIdx] = pointsToMerge.colorR[i];
-        outputPoints.colorG[pointIdx] = pointsToMerge.colorG[i];
-        outputPoints.colorB[pointIdx] = pointsToMerge.colorB[i];
+        attribute->copyAt(*otherAttribute, oldSize);
     }
 
     auto& outputVertices = t_mesh.vertices;
@@ -67,7 +53,7 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
     outputVertices.resize(outputVertices.size() + verticesToMerge.size());
     for (size_t i = 0; i < verticesToMerge.size(); ++i) {
         Vertex vert = verticesToMerge[i];
-        vert.refPoint += numPoints;
+        vert.refPoint += oldSize;
         outputVertices[vertexIdx] = vert;
         vertexIdx++;
     }

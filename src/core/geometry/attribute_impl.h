@@ -72,4 +72,18 @@ inline void TypedAttribute<T, COMPONENTS>::resize(const size_t t_newSize) {
     m_size = t_newSize;
 }
 
+template <typename T, size_t COMPONENTS>
+inline void TypedAttribute<T, COMPONENTS>::copyAt(const Attribute& t_other, const size_t t_index) {
+    if (!isCompatibleWith(t_other)) {
+        return;
+    }
+
+    auto& otherTyped = static_cast<const TypedAttribute<T, COMPONENTS>&>(t_other);
+    if constexpr (std::is_same_v<T, float>) {
+        for (size_t c = 0; c < COMPONENTS; ++c) {
+            std::memcpy(m_data[c] + t_index, otherTyped.m_data[c], (otherTyped.size() * sizeof(T)));
+        }
+    }
+}
+
 } // namespace euclide

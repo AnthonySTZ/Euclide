@@ -21,7 +21,7 @@ add_library(core STATIC
     # nodes/primitive/quad_sphere.cpp
     
     nodes/geometry/transform.cpp
-    # nodes/geometry/merge.cpp
+    nodes/geometry/merge.cpp
     # nodes/geometry/subdivide.cpp
     # nodes/geometry/smooth_normals.cpp
     # nodes/geometry/copy_to_points.cpp

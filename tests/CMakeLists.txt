@@ -11,7 +11,7 @@ add_executable(EuclideTests
                 nodes/primitive/test_cylinder.cpp
                 
                 nodes/geometry/test_transform.cpp
-                # nodes/geometry/test_merge.cpp
+                nodes/geometry/test_merge.cpp
                 
                 fields/test_field.cpp
                 fields/test_float3.cpp
