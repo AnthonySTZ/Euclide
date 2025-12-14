@@ -93,7 +93,8 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
     }
 
     size_t pointIdx = 0;
-    t_mesh.pointAttribs.resize(rowsPoints * columnsPoints);
+    const size_t totalPoints = rowsPoints * columnsPoints;
+    t_mesh.pointAttribs.resize(totalPoints);
     auto positions = t_mesh.pointAttribs.findOrCreate<float, 3>("P");
     float* posX = positions->component<float>(0);
     float* posY = positions->component<float>(1);
@@ -104,11 +105,12 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
     float* normalY = normals->component<float>(1);
     float* normalZ = normals->component<float>(2);
 
-#ifdef USE_SIMD
-    __m256 __normalX = _mm256_set1_ps(normal[0]);
-    __m256 __normalY = _mm256_set1_ps(normal[1]);
-    __m256 __normalZ = _mm256_set1_ps(normal[2]);
-#endif
+#pragma omp parallel for
+    for (size_t i = 0; i < totalPoints; ++i) {
+        normalX[i] = normal[0];
+        normalY[i] = normal[1];
+        normalZ[i] = normal[2];
+    }
 
     for (size_t row = 0; row < rowsPoints; ++row) {
         size_t col = 0;
@@ -141,10 +143,6 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
             _mm256_storeu_ps(&posY[pointIdx], __posY);
             _mm256_storeu_ps(&posZ[pointIdx], __posZ);
 
-            _mm256_storeu_ps(&normalX[pointIdx], __normalX);
-            _mm256_storeu_ps(&normalY[pointIdx], __normalY);
-            _mm256_storeu_ps(&normalZ[pointIdx], __normalZ);
-
             pointIdx += 8;
         }
 #endif
@@ -172,10 +170,6 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
             posX[pointIdx] = pos[0];
             posY[pointIdx] = pos[1];
             posZ[pointIdx] = pos[2];
-
-            normalX[pointIdx] = normal[0];
-            normalY[pointIdx] = normal[1];
-            normalZ[pointIdx] = normal[2];
 
             pointIdx++;
         }
