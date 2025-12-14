@@ -32,3 +32,26 @@ inline std::string readFile(const std::string& t_filepath) {
 
     return std::string(buffer.begin(), buffer.end());
 }
+
+inline std::string thousandSeparator(const int t_number) {
+    std::string result = "";
+    const std::string num = std::to_string(t_number);
+
+    int count = 0;
+    for (int i = num.size() - 1; i >= 0; i--) {
+        count++;
+        result.push_back(num[i]);
+
+        if (count == 3) {
+            result.push_back('\'');
+            count = 0;
+        }
+    }
+
+    std::reverse(result.begin(), result.end());
+    if (result.size() % 4 == 0) {
+        result.erase(result.begin());
+    }
+
+    return result;
+}

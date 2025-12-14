@@ -1,5 +1,7 @@
 #include "viewport_renderer.h"
 
+#include "interface/utils/string_utils.h"
+
 namespace euclide {
 
 ViewportRenderer::ViewportRenderer(const std::weak_ptr<Viewport> t_viewport)
@@ -50,10 +52,10 @@ void ViewportRenderer::drawInfos() {
     m_infoOffset = INFO_POS;
 
     ImGuiIO& io = ImGui::GetIO();
-    std::string fpsText = "Fps: " + std::to_string(static_cast<int>(io.Framerate));
+    std::string fpsText = "Fps: " + thousandSeparator(static_cast<int>(io.Framerate));
     addInfos(fpsText);
-    addInfos("Points: " + std::to_string(viewport->renderModel().numOfPoints()));
-    addInfos("Primitives: " + std::to_string(viewport->renderModel().numOfPrims()));
+    addInfos("Points: " + thousandSeparator(viewport->renderModel().numOfPoints()));
+    addInfos("Primitives: " + thousandSeparator(viewport->renderModel().numOfPrims()));
     addInfos("P: Toogle Primitives");
     addInfos("W: Toogle Wireframe");
     addInfos("V: Toogle Points");
