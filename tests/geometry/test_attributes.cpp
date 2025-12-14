@@ -62,28 +62,28 @@ TEST(AttributeSets, findOrCreateAttribute) {
     EXPECT_EQ(attribute->type(), AttributeType::ATTR_TYPE_FLOAT);
 }
 
-// TEST(AttributeSets, findAttribute) {
-//     AttributeSet attrSet{};
+TEST(AttributeSets, findAttribute) {
+    AttributeSet attrSet{};
 
-//     EXPECT_EQ(attrSet.find("P"), nullptr);
+    EXPECT_EQ(attrSet.find("P"), nullptr);
 
-//     auto attribute = attrSet.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
-//     EXPECT_FALSE(attribute == nullptr);
+    auto attribute = attrSet.findOrCreate<float, 3>("P");
+    EXPECT_FALSE(attribute == nullptr);
 
-//     EXPECT_EQ(attrSet.find("P"), attribute);
-// }
+    EXPECT_EQ(attrSet.find("P"), attribute);
+}
 
-// TEST(AttributeSets, findMultipleAttributes) {
-//     AttributeSet attrSet{};
+TEST(AttributeSets, findMultipleAttributes) {
+    AttributeSet attrSet{};
 
-//     EXPECT_EQ(attrSet.find("P"), nullptr);
-//     EXPECT_EQ(attrSet.find("Cd"), nullptr);
+    EXPECT_EQ(attrSet.find("P"), nullptr);
+    EXPECT_EQ(attrSet.find("Cd"), nullptr);
 
-//     auto attributeP = attrSet.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
-//     auto attributeCd = attrSet.findOrCreate("Cd", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto attributeP = attrSet.findOrCreate<float, 3>("P");
+    auto attributeCd = attrSet.findOrCreate<float, 3>("Cd");
 
-//     EXPECT_EQ(attrSet.find("P"), attributeP);
-//     EXPECT_EQ(attrSet.find("Cd"), attributeCd);
-// }
+    EXPECT_EQ(attrSet.find("P"), attributeP);
+    EXPECT_EQ(attrSet.find("Cd"), attributeCd);
+}
 
 } // namespace euclide
