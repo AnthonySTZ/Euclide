@@ -2,6 +2,8 @@
 
 #include "attribute.h"
 
+#include <cstring>
+
 namespace euclide {
 
 template <typename T, size_t COMPONENTS>

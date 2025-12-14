@@ -13,7 +13,7 @@ namespace euclide {
 
 float3 Mesh::center() {
     float3 sumPos{0.0, 0.0, 0.0};
-    auto positions = pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto positions = pointAttribs.findOrCreate<float, 3>("P");
     const size_t numPoints = positions->size();
     if (numPoints == 0)
         return sumPos;

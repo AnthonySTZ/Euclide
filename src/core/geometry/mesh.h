@@ -26,7 +26,7 @@ struct Mesh {
     inline uint32_t addPoint(const float t_x, const float t_y, const float t_z) {
         uint32_t index = pointAttribs.size();
         pointAttribs.resize(index + 1);
-        Attribute* positions = pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+        Attribute* positions = pointAttribs.findOrCreate<float, 3>("P");
         float* posDataX = positions->component<float>(0);
         float* posDataY = positions->component<float>(1);
         float* posDataZ = positions->component<float>(2);
