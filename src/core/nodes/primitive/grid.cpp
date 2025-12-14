@@ -92,7 +92,6 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
         posRows[row] = row * rowSpacing;
     }
 
-    size_t pointIdx = 0;
     const size_t totalPoints = rowsPoints * columnsPoints;
     t_mesh.pointAttribs.resize(totalPoints);
     auto positions = t_mesh.pointAttribs.findOrCreate<float, 3>("P");
@@ -112,17 +111,28 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
         normalZ[i] = normal[2];
     }
 
+#ifdef USE_SIMD
+    __m256 __basePosX = _mm256_set1_ps(basePos[0]);
+    __m256 __basePosY = _mm256_set1_ps(basePos[1]);
+    __m256 __basePosZ = _mm256_set1_ps(basePos[2]);
+#endif
+
+#pragma omp parallel for
     for (size_t row = 0; row < rowsPoints; ++row) {
         size_t col = 0;
+        size_t pointIdx = row * columnsPoints;
+
+        const float rowOffset = posRows[row];
 
 #ifdef USE_SIMD
-        __m256 __rowOffsets = _mm256_set1_ps(posRows[row]);
+        __m256 __rowOffsets = _mm256_set1_ps(rowOffset);
+
         for (; col + 8 <= columnsPoints; col += 8) {
             __m256 __colOffsets = _mm256_load_ps(&posCols[col]);
 
-            __m256 __posX = _mm256_set1_ps(basePos[0]);
-            __m256 __posY = _mm256_set1_ps(basePos[1]);
-            __m256 __posZ = _mm256_set1_ps(basePos[2]);
+            __m256 __posX = __basePosX;
+            __m256 __posY = __basePosY;
+            __m256 __posZ = __basePosZ;
 
             switch (t_settings.orientation) {
             case GridOrientation::XY:
@@ -146,8 +156,6 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
             pointIdx += 8;
         }
 #endif
-
-        const float rowOffset = posRows[row];
 
         for (; col < columnsPoints; ++col) {
             const float colOffset = posCols[col];
@@ -203,9 +211,9 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
     primitives.resize(numOfPrims);
 
     uint32_t primVertIdx = 0;
-    for (size_t i = 0; i < numOfPrims; ++i) {
-        primitives[i] = Primitive{primVertIdx, 4};
-        primVertIdx += 4;
+#pragma omp parallel for
+    for (uint32_t i = 0; i < numOfPrims; ++i) {
+        primitives[i] = Primitive{i * 4, 4};
     }
 }
 
