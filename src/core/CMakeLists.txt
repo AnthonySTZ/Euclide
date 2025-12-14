@@ -11,8 +11,8 @@ add_library(core STATIC
     geometry/attribute_set.cpp
     geometry/mesh.cpp
 
-    # nodes/node.cpp
-    # nodes/scene.cpp
+    nodes/node.cpp
+    nodes/scene.cpp
     # nodes/nodes_info.cpp
 
     # nodes/primitive/cube.cpp
