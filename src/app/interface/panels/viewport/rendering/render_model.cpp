@@ -72,27 +72,42 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 
     m_numOfPrims = t_mesh.primitives.size();
     glBindVertexArray(m_vao);
-    const Points& points = t_mesh.points;
+    const auto& pointsAttribs = t_mesh.pointAttribs;
+    const size_t m_numOfPoints = pointsAttribs.size();
+    const auto positions = pointsAttribs.find("P");
+    const auto normals = pointsAttribs.find("N");
+    const auto colors = pointsAttribs.find("Cd");
+
+    const float* points_posX = positions->component<float>(0);
+    const float* points_posY = positions->component<float>(1);
+    const float* points_posZ = positions->component<float>(2);
+
+    const float* points_normalX = normals->component<float>(0);
+    const float* points_normalY = normals->component<float>(1);
+    const float* points_normalZ = normals->component<float>(2);
+
+    const float* points_colorR = colors->component<float>(0);
+    const float* points_colorG = colors->component<float>(1);
+    const float* points_colorB = colors->component<float>(2);
 
     {
         Timer timer{"Points"}; // 11.76 ms 1000x1000 grid -> 11ms with omp
-        m_numOfPoints = points.size();
 
         std::vector<RenderVertex> vertices;
         vertices.resize(m_numOfPoints);
 #pragma omp parallel for
         for (size_t i = 0; i < m_numOfPoints; ++i) {
-            vertices[i].position[0] = points.posX[i];
-            vertices[i].position[1] = points.posY[i];
-            vertices[i].position[2] = points.posZ[i];
+            vertices[i].position[0] = points_posX[i];
+            vertices[i].position[1] = points_posY[i];
+            vertices[i].position[2] = points_posZ[i];
 
-            vertices[i].color[0] = points.colorR[i];
-            vertices[i].color[1] = points.colorG[i];
-            vertices[i].color[2] = points.colorB[i];
+            vertices[i].color[0] = points_colorR[i];
+            vertices[i].color[1] = points_colorG[i];
+            vertices[i].color[2] = points_colorB[i];
 
-            vertices[i].normal[0] = points.normalX[i];
-            vertices[i].normal[1] = points.normalY[i];
-            vertices[i].normal[2] = points.normalZ[i];
+            vertices[i].normal[0] = points_normalX[i];
+            vertices[i].normal[1] = points_normalY[i];
+            vertices[i].normal[2] = points_normalZ[i];
         }
 
         bindVBO(vertices);
@@ -152,7 +167,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
-}
+} // namespace euclide
 
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
