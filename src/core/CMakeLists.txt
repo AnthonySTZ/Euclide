@@ -15,12 +15,12 @@ add_library(core STATIC
     nodes/scene.cpp
     # nodes/nodes_info.cpp
 
-    # nodes/primitive/cube.cpp
-    # nodes/primitive/grid.cpp
-    # nodes/primitive/cylinder.cpp
+    nodes/primitive/cube.cpp
+    nodes/primitive/grid.cpp
+    nodes/primitive/cylinder.cpp
     # nodes/primitive/quad_sphere.cpp
     
-    # nodes/geometry/transform.cpp
+    nodes/geometry/transform.cpp
     # nodes/geometry/merge.cpp
     # nodes/geometry/subdivide.cpp
     # nodes/geometry/smooth_normals.cpp

@@ -35,12 +35,12 @@ void Cube::createCube(Mesh& t_mesh, const CubeSettings& t_settings) {
 
     t_mesh.pointAttribs.resize(8);
 
-    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto positions = t_mesh.pointAttribs.findOrCreate<float, 3>("P");
     float* points_posX = positions->component<float>(0);
     float* points_posY = positions->component<float>(1);
     float* points_posZ = positions->component<float>(2);
 
-    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto normals = t_mesh.pointAttribs.findOrCreate<float, 3>("N");
     float* points_normalX = normals->component<float>(0);
     float* points_normalY = normals->component<float>(1);
     float* points_normalZ = normals->component<float>(2);

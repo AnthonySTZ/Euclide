@@ -70,12 +70,12 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
     float3 position = t_settings.position;
     t_mesh.pointAttribs.resize(t_settings.divisions * 2);
 
-    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto positions = t_mesh.pointAttribs.findOrCreate<float, 3>("P");
     float* pointsPosX = positions->component<float>(0);
     float* pointsPosY = positions->component<float>(1);
     float* pointsPosZ = positions->component<float>(2);
 
-    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto normals = t_mesh.pointAttribs.findOrCreate<float, 3>("N");
     float* pointsNormalX = normals->component<float>(0);
     float* pointsNormalY = normals->component<float>(1);
     float* pointsNormalZ = normals->component<float>(2);

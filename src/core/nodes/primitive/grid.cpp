@@ -94,12 +94,12 @@ void Grid::createGrid(Mesh& t_mesh, const GridSettings& t_settings) {
 
     size_t pointIdx = 0;
     t_mesh.pointAttribs.resize(rowsPoints * columnsPoints);
-    auto positions = t_mesh.pointAttribs.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto positions = t_mesh.pointAttribs.findOrCreate<float, 3>("P");
     float* posX = positions->component<float>(0);
     float* posY = positions->component<float>(1);
     float* posZ = positions->component<float>(2);
 
-    auto normals = t_mesh.pointAttribs.findOrCreate("N", 3, AttributeType::ATTR_TYPE_FLOAT);
+    auto normals = t_mesh.pointAttribs.findOrCreate<float, 3>("N");
     float* normalX = normals->component<float>(0);
     float* normalY = normals->component<float>(1);
     float* normalZ = normals->component<float>(2);
