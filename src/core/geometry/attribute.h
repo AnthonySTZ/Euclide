@@ -45,7 +45,7 @@ class Attribute {
 
     template <typename T>
     [[nodiscard]] inline const T* component(const size_t t_index) const {
-        return static_cast<T*>(componentRaw(t_index));
+        return static_cast<const T*>(componentRaw(t_index));
     }
 
     virtual void resize(const size_t t_newSize) = 0;
