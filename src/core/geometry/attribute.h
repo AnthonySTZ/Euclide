@@ -36,7 +36,8 @@ class Attribute {
         return type() == t_other.type() && attrSize() == t_other.attrSize();
     }
 
-    virtual void copyAt(const Attribute& t_other, const size_t t_index) = 0;
+    virtual void copyAt(const Attribute& t_other, const size_t t_index, const size_t t_numElements) = 0;
+    inline void copyAt(const Attribute& t_other, const size_t t_index) { copyAt(t_other, t_index, t_other.size()); }
 
     template <typename T>
     [[nodiscard]] inline T* component(const size_t t_index) {
@@ -79,7 +80,8 @@ class TypedAttribute : public Attribute {
     inline const void* componentRaw(const size_t t_index) const override { return m_data[t_index]; }
 
     void resize(const size_t t_newSize) override;
-    void copyAt(const Attribute& t_other, const size_t t_index) override;
+
+    void copyAt(const Attribute& t_other, const size_t t_index, const size_t t_numElements) override;
 
   private:
     void copyFrom(const TypedAttribute<T, COMPONENTS>& t_other);

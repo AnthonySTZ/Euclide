@@ -36,6 +36,11 @@ class AttributeSet {
     [[nodiscard]] inline size_t size() const noexcept { return m_size; }
     [[nodiscard]] inline size_t count() const noexcept { return m_attributes.size(); }
 
+    inline void clear() {
+        m_map.clear();
+        m_attributes.clear();
+    }
+
   private:
     size_t m_size = 0;
     std::vector<std::unique_ptr<Attribute>> m_attributes;

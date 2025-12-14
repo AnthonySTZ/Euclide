@@ -29,19 +29,40 @@ std::shared_ptr<Mesh> CopyToPoints::compute(const size_t t_index,
 }
 
 void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
-    const auto points_to_copy = t_mesh.points;
-    auto& new_points = t_mesh.points;
-    const auto& points = t_points.points;
+    const auto pointsToCopy = t_mesh.pointAttribs;
+    auto& newPoints = t_mesh.pointAttribs;
+    const auto& points = t_points.pointAttribs;
     const size_t numOfDuplicates = points.size();
+    if (numOfDuplicates == 0) {
+        return;
+    }
 
-    const size_t pointsSize = points_to_copy.size();
-    new_points.clear();
-    new_points.resize(pointsSize * numOfDuplicates);
+    const size_t pointsSize = pointsToCopy.size();
+    if (pointsSize == 0) {
+        return;
+    }
+
+    auto newPointsPositions = newPoints.findOrCreate<float, 3>("P");
+    newPoints.resize(pointsSize * numOfDuplicates);
+
+    const auto pointsPositions = points.find("P");
+    const float* pointsPosX = pointsPositions->component<float>(0);
+    const float* pointsPosY = pointsPositions->component<float>(1);
+    const float* pointsPosZ = pointsPositions->component<float>(2);
+
+    const auto pointsToCopyPositions = pointsToCopy.find("P");
+    const float* pointsToCopyPosX = pointsToCopyPositions->component<float>(0);
+    const float* pointsToCopyPosY = pointsToCopyPositions->component<float>(1);
+    const float* pointsToCopyPosZ = pointsToCopyPositions->component<float>(2);
+
+    float* newPointsPosX = newPointsPositions->component<float>(0);
+    float* newPointsPosY = newPointsPositions->component<float>(1);
+    float* newPointsPosZ = newPointsPositions->component<float>(2);
 
     for (size_t i = 0; i < numOfDuplicates; ++i) {
-        const float offsetX = points.posX[i];
-        const float offsetY = points.posY[i];
-        const float offsetZ = points.posZ[i];
+        const float offsetX = pointsPosX[i];
+        const float offsetY = pointsPosY[i];
+        const float offsetZ = pointsPosZ[i];
 
         const size_t offsetIdx = i * pointsSize;
         size_t j = 0;
@@ -54,21 +75,13 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
             __m256 __offsetZ = _mm256_set1_ps(offsetZ);
             for (; j + 8 <= pointsSize; j += 8) {
                 const size_t pointIdx = offsetIdx + j;
-                __m256 __posX = _mm256_load_ps(&points_to_copy.posX[j]);
-                __m256 __posY = _mm256_load_ps(&points_to_copy.posY[j]);
-                __m256 __posZ = _mm256_load_ps(&points_to_copy.posZ[j]);
+                __m256 __posX = _mm256_load_ps(&pointsToCopyPosX[j]);
+                __m256 __posY = _mm256_load_ps(&pointsToCopyPosY[j]);
+                __m256 __posZ = _mm256_load_ps(&pointsToCopyPosZ[j]);
 
-                _mm256_storeu_ps(&new_points.posX[pointIdx], _mm256_add_ps(__posX, __offsetX));
-                _mm256_storeu_ps(&new_points.posY[pointIdx], _mm256_add_ps(__posY, __offsetY));
-                _mm256_storeu_ps(&new_points.posZ[pointIdx], _mm256_add_ps(__posZ, __offsetZ));
-
-                _mm256_storeu_ps(&new_points.normalX[pointIdx], _mm256_load_ps(&points_to_copy.normalX[j]));
-                _mm256_storeu_ps(&new_points.normalY[pointIdx], _mm256_load_ps(&points_to_copy.normalY[j]));
-                _mm256_storeu_ps(&new_points.normalZ[pointIdx], _mm256_load_ps(&points_to_copy.normalZ[j]));
-
-                _mm256_storeu_ps(&new_points.colorR[pointIdx], _mm256_load_ps(&points_to_copy.colorR[j]));
-                _mm256_storeu_ps(&new_points.colorG[pointIdx], _mm256_load_ps(&points_to_copy.colorG[j]));
-                _mm256_storeu_ps(&new_points.colorB[pointIdx], _mm256_load_ps(&points_to_copy.colorB[j]));
+                _mm256_storeu_ps(&newPointsPosX[pointIdx], _mm256_add_ps(__posX, __offsetX));
+                _mm256_storeu_ps(&newPointsPosY[pointIdx], _mm256_add_ps(__posY, __offsetY));
+                _mm256_storeu_ps(&newPointsPosZ[pointIdx], _mm256_add_ps(__posZ, __offsetZ));
             }
         }
 
@@ -76,20 +89,24 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
 
         for (; j < pointsSize; ++j) {
             const size_t pointIdx = offsetIdx + j;
-            new_points.posX[pointIdx] = points_to_copy.posX[j] + offsetX;
-            new_points.posY[pointIdx] = points_to_copy.posY[j] + offsetY;
-            new_points.posZ[pointIdx] = points_to_copy.posZ[j] + offsetZ;
-
-            new_points.normalX[pointIdx] = points_to_copy.normalX[j];
-            new_points.normalY[pointIdx] = points_to_copy.normalY[j];
-            new_points.normalZ[pointIdx] = points_to_copy.normalZ[j];
-
-            new_points.colorR[pointIdx] = points_to_copy.colorR[j];
-            new_points.colorG[pointIdx] = points_to_copy.colorG[j];
-            new_points.colorB[pointIdx] = points_to_copy.colorB[j];
+            newPointsPosX[pointIdx] = pointsToCopyPosX[j] + offsetX;
+            newPointsPosY[pointIdx] = pointsToCopyPosY[j] + offsetY;
+            newPointsPosZ[pointIdx] = pointsToCopyPosZ[j] + offsetZ;
         }
     }
 
+    // Copy other attributes
+    for (size_t attrIdx = 0; attrIdx < pointsToCopy.count(); ++attrIdx) {
+        auto attributeToCopy = pointsToCopy.get(attrIdx);
+        if (attributeToCopy->name() == "P")
+            continue;
+        auto newAttribute = newPoints.find(attributeToCopy->name());
+        for (size_t i = 0; i < numOfDuplicates; ++i) {
+            newAttribute->copyAt(*pointsToCopy.get(attrIdx), pointsSize * i, pointsSize);
+        }
+    }
+
+    // ----- Copy vertices and prims ----- //
     auto& vertices = t_mesh.vertices;
     const size_t verticesSize = vertices.size();
 
