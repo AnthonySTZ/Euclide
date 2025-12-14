@@ -3,7 +3,7 @@
 #include "vertex.h"
 #include "primitive.h"
 #include "halfedge.h"
-#include "attributes.h"
+#include "attribute_set.h"
 #include "utils/types.h"
 
 #include <vector>

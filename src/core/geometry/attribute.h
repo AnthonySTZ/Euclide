@@ -12,10 +12,11 @@ namespace euclide {
 
 class Attribute {
   public:
-    Attribute(const std::string& t_name);
+    Attribute(const std::string& t_name) : m_name(t_name) {}
     Attribute() = default;
 
     virtual ~Attribute() = default;
+    virtual void free() = 0;
 
     [[nodiscard]] inline std::string name() const noexcept { return m_name; }
     [[nodiscard]] inline size_t size() const noexcept { return m_size; }
@@ -24,6 +25,11 @@ class Attribute {
     [[nodiscard]] virtual int attrSize() const noexcept = 0;
     [[nodiscard]] virtual size_t elementSize() const noexcept = 0;
 
+    [[nodiscard]] virtual void* componentRaw(const size_t t_index) = 0;
+    [[nodiscard]] virtual const void* componentRaw(const size_t t_index) const = 0;
+
+    virtual void resize(const size_t t_newSize) = 0;
+
   private:
     std::string m_name; //< The attribute name
     size_t m_size = 0;
@@ -31,12 +37,21 @@ class Attribute {
 
 template <typename T, size_t COMPONENTS>
 class TypedAttribute : public Attribute {
+    using alloc = AlignedAllocator<T, 32>;
+
   public:
     TypedAttribute(const std::string& t_name) : Attribute(t_name) {}
+    ~TypedAttribute();
+
+    void free() override;
 
     AttributeType type() const noexcept override { return AttributeTypeOf<T>::value; }
     int attrSize() const noexcept override { return COMPONENTS; }
     size_t elementSize() const noexcept override { return sizeof(T); }
+    void* componentRaw(const size_t t_index) override { return m_data[t_index]; }
+    const void* componentRaw(const size_t t_index) const override { return m_data[t_index]; }
+
+    void resize(const size_t t_newSize) override;
 
   private:
     std::array<T*, COMPONENTS> data{};
@@ -86,3 +101,5 @@ class TypedAttribute : public Attribute {
 // };
 
 } // namespace euclide
+
+#include "attribute_impl.h"
