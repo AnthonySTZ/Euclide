@@ -107,6 +107,7 @@ void CopyToPoints::copyToPoints(Mesh& t_mesh, const Mesh& t_points) {
     }
 
     // ----- Copy vertices and prims ----- //
+    // TODO: copy vertex attribs and prim attribs
     auto& vertices = t_mesh.vertices;
     const size_t verticesSize = vertices.size();
 

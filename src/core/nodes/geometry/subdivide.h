@@ -44,8 +44,8 @@ class Subdivide : public Node {
     /// @param t_points_d Current division points
     /// @param t_primitives_d Current division primitives
     /// @param t_numOfPoints Current number of points
-    inline static void computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                         const Points& t_points_d, const std::vector<Primitive>& t_primitives_d,
+    inline static void computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                         const AttributeSet& t_points_d, const std::vector<Primitive>& t_primitives_d,
                                          const uint32_t t_numOfPoints);
 
     /// @brief Smooth edge points
@@ -54,8 +54,8 @@ class Subdivide : public Node {
     /// @param t_points_d Current division points
     /// @param t_numOfPoints Current number of points
     /// @param t_numOfPrims Current number of prims
-    inline static void smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                        const Points& t_points_d, const uint32_t t_numOfPoints,
+    inline static void smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                        const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
                                         const uint32_t t_numOfPrims);
 
     /// @brief Smooth vertex points
@@ -64,8 +64,8 @@ class Subdivide : public Node {
     /// @param t_points_d Current division points
     /// @param t_numOfPoints Current number of points
     /// @param t_numOfPrims Current number of prims
-    inline static void smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                          const Points& t_points_d, const uint32_t t_numOfPoints,
+    inline static void smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                          const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
                                           const uint32_t t_numOfPrims);
 };
 

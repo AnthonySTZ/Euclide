@@ -63,7 +63,7 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
     // Base on paper: 'A Halfedge Refinement Rule for Parallel Catmull-Clark Subdivision'
     // `https://onrendering.com/data/papers/catmark/HalfedgeCatmullClark.pdf`
     for (size_t iteration = 0; iteration < t_settings.divisions; ++iteration) {
-        const auto& points_d = t_mesh.points;
+        const auto& points_d = t_mesh.pointAttribs;
         const auto& primitives_d = t_mesh.primitives;
 
         const std::vector<HalfEdge> halfedges_d = t_mesh.computeHalfEdges();
@@ -75,11 +75,8 @@ void Subdivide::subdivide(Mesh& t_mesh, const SubdivideSettings& t_settings) {
         std::vector<HalfEdge> halfedges_d1(halfedges_d.size() * 4);
 
         // Init new Points
-        Points points_d1{};
+        AttributeSet points_d1{};
         points_d1.resize(numOfPoints + numOfPrims + numOfEdges);
-        std::fill(std::begin(points_d1.colorR), std::end(points_d1.colorR), 1.0);
-        std::fill(std::begin(points_d1.colorG), std::end(points_d1.colorG), 1.0);
-        std::fill(std::begin(points_d1.colorB), std::end(points_d1.colorB), 1.0);
 
         // Halfedge refinement
         halfedgeRefinement(halfedges_d1, halfedges_d, numOfPoints, numOfPrims);
@@ -124,36 +121,43 @@ void Subdivide::halfedgeRefinement(std::vector<HalfEdge>& t_halfedges_d1, const 
     }
 }
 
-void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                  const Points& t_points_d, const std::vector<Primitive>& t_primitives_d,
+void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                  const AttributeSet& t_points_d, const std::vector<Primitive>& t_primitives_d,
                                   const uint32_t t_numOfPoints) {
-    float* __restrict x1 = t_points_d1.posX.data();
-    float* __restrict y1 = t_points_d1.posY.data();
-    float* __restrict z1 = t_points_d1.posZ.data();
+    const auto pointsD_Positions = t_points_d.find("P");
+    auto pointsD1_Positions = t_points_d1.find("P");
 
-    const float* __restrict x0 = t_points_d.posX.data();
-    const float* __restrict y0 = t_points_d.posY.data();
-    const float* __restrict z0 = t_points_d.posZ.data();
+    float* pointsD1PosX = pointsD1_Positions->component<float>(0);
+    float* pointsD1PosY = pointsD1_Positions->component<float>(1);
+    float* pointsD1PosZ = pointsD1_Positions->component<float>(2);
+
+    const float* pointsDPosX = pointsD_Positions->component<float>(0);
+    const float* pointsDPosY = pointsD_Positions->component<float>(1);
+    const float* pointsDPosZ = pointsD_Positions->component<float>(2);
 
     for (size_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
         const float factor = 1.0f / static_cast<float>(t_primitives_d[hd.face].numVertices);
         const uint32_t i = t_numOfPoints + hd.face;
-        x1[i] += x0[hd.origin] * factor;
-        y1[i] += y0[hd.origin] * factor;
-        z1[i] += z0[hd.origin] * factor;
+        pointsD1PosX[i] += pointsDPosX[hd.origin] * factor;
+        pointsD1PosY[i] += pointsDPosY[hd.origin] * factor;
+        pointsD1PosZ[i] += pointsDPosZ[hd.origin] * factor;
     }
 }
 
-void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                 const Points& t_points_d, const uint32_t t_numOfPoints, const uint32_t t_numOfPrims) {
-    float* __restrict x1 = t_points_d1.posX.data();
-    float* __restrict y1 = t_points_d1.posY.data();
-    float* __restrict z1 = t_points_d1.posZ.data();
+void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                 const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
+                                 const uint32_t t_numOfPrims) {
+    const auto pointsD_Positions = t_points_d.find("P");
+    auto pointsD1_Positions = t_points_d1.find("P");
 
-    const float* __restrict x0 = t_points_d.posX.data();
-    const float* __restrict y0 = t_points_d.posY.data();
-    const float* __restrict z0 = t_points_d.posZ.data();
+    float* pointsD1PosX = pointsD1_Positions->component<float>(0);
+    float* pointsD1PosY = pointsD1_Positions->component<float>(1);
+    float* pointsD1PosZ = pointsD1_Positions->component<float>(2);
+
+    const float* pointsDPosX = pointsD_Positions->component<float>(0);
+    const float* pointsDPosY = pointsD_Positions->component<float>(1);
+    const float* pointsDPosZ = pointsD_Positions->component<float>(2);
 
     for (uint32_t h = 0; h < t_halfedges_d.size(); ++h) {
         const HalfEdge& hd = t_halfedges_d[h];
@@ -161,28 +165,31 @@ void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Poi
         const size_t j = t_numOfPoints + t_numOfPrims + hd.edge;
         if (hd.twin == HalfEdge::NO_TWIN) {
             const uint32_t next = t_halfedges_d[hd.next].origin;
-            x1[j] = (x0[hd.origin] + x0[next]) * 0.5f;
-            y1[j] = (y0[hd.origin] + y0[next]) * 0.5f;
-            z1[j] = (z0[hd.origin] + z0[next]) * 0.5f;
+            pointsD1PosX[j] = (pointsDPosX[hd.origin] + pointsDPosX[next]) * 0.5f;
+            pointsD1PosY[j] = (pointsDPosY[hd.origin] + pointsDPosY[next]) * 0.5f;
+            pointsD1PosZ[j] = (pointsDPosZ[hd.origin] + pointsDPosZ[next]) * 0.5f;
             continue;
         }
 
-        x1[j] += (x0[hd.origin] + x1[i]) * 0.25f;
-        y1[j] += (y0[hd.origin] + y1[i]) * 0.25f;
-        z1[j] += (z0[hd.origin] + z1[i]) * 0.25f;
+        pointsD1PosX[j] += (pointsDPosX[hd.origin] + pointsD1PosX[i]) * 0.25f;
+        pointsD1PosY[j] += (pointsDPosY[hd.origin] + pointsD1PosY[i]) * 0.25f;
+        pointsD1PosZ[j] += (pointsDPosZ[hd.origin] + pointsD1PosZ[i]) * 0.25f;
     }
 }
 
-void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, Points& t_points_d1,
-                                   const Points& t_points_d, const uint32_t t_numOfPoints,
+void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, AttributeSet& t_points_d1,
+                                   const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
                                    const uint32_t t_numOfPrims) {
-    float* __restrict x1 = t_points_d1.posX.data();
-    float* __restrict y1 = t_points_d1.posY.data();
-    float* __restrict z1 = t_points_d1.posZ.data();
+    const auto pointsD_Positions = t_points_d.find("P");
+    auto pointsD1_Positions = t_points_d1.find("P");
 
-    const float* __restrict x0 = t_points_d.posX.data();
-    const float* __restrict y0 = t_points_d.posY.data();
-    const float* __restrict z0 = t_points_d.posZ.data();
+    float* pointsD1PosX = pointsD1_Positions->component<float>(0);
+    float* pointsD1PosY = pointsD1_Positions->component<float>(1);
+    float* pointsD1PosZ = pointsD1_Positions->component<float>(2);
+
+    const float* pointsDPosX = pointsD_Positions->component<float>(0);
+    const float* pointsDPosY = pointsD_Positions->component<float>(1);
+    const float* pointsDPosZ = pointsD_Positions->component<float>(2);
 
     const uint32_t edgeCount = static_cast<uint32_t>(t_halfedges_d.size());
 
@@ -202,9 +209,9 @@ void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, P
         const uint32_t origin = hd.origin;
 
         if (onBorder[h]) {
-            x1[origin] = x0[origin];
-            y1[origin] = y0[origin];
-            z1[origin] = z0[origin];
+            pointsD1PosX[origin] = pointsDPosX[origin];
+            pointsD1PosY[origin] = pointsDPosY[origin];
+            pointsD1PosZ[origin] = pointsDPosZ[origin];
             continue;
         }
         const float n = static_cast<float>(valences[h]);
@@ -213,9 +220,9 @@ void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, P
         const float n_3 = n - 3;
         const uint32_t i = t_numOfPoints + hd.face;
         const size_t j = t_numOfPoints + t_numOfPrims + hd.edge;
-        x1[origin] += (4.0f * x1[j] - x1[i] + n_3 * x0[origin]) * factor;
-        y1[origin] += (4.0f * y1[j] - y1[i] + n_3 * y0[origin]) * factor;
-        z1[origin] += (4.0f * z1[j] - z1[i] + n_3 * z0[origin]) * factor;
+        pointsD1PosX[origin] += (4.0f * pointsD1PosX[j] - pointsD1PosX[i] + n_3 * pointsDPosX[origin]) * factor;
+        pointsD1PosY[origin] += (4.0f * pointsD1PosY[j] - pointsD1PosY[i] + n_3 * pointsDPosY[origin]) * factor;
+        pointsD1PosZ[origin] += (4.0f * pointsD1PosZ[j] - pointsD1PosZ[i] + n_3 * pointsDPosZ[origin]) * factor;
     }
 }
 
