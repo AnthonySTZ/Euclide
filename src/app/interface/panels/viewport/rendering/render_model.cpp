@@ -73,7 +73,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     m_numOfPrims = t_mesh.primitives.size();
     glBindVertexArray(m_vao);
     const auto& pointsAttribs = t_mesh.pointAttribs;
-    const size_t m_numOfPoints = pointsAttribs.size();
+    m_numOfPoints = pointsAttribs.size();
     const auto positions = pointsAttribs.find("P");
     const auto normals = pointsAttribs.find("N");
     const auto colors = pointsAttribs.find("Cd");
