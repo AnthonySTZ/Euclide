@@ -6,9 +6,9 @@ add_executable(EuclideBench
                 bench_grid.cpp
                 bench_cylinder.cpp
 
-                bench_subdivide.cpp
+                # bench_subdivide.cpp
                 bench_merge.cpp
-                bench_copy_to_points.cpp
+                # bench_copy_to_points.cpp
                 )
 
 target_link_libraries(EuclideBench PRIVATE core benchmark::benchmark)
