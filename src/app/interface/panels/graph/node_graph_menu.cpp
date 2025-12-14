@@ -53,10 +53,11 @@ void NodeGraphMenu::drawItems(const std::string& t_menu, const std::vector<NodeM
     if (m_searchText.empty()) {
         // Draw Nodes with categories
         if (ImGui::BeginMenu(t_menu.c_str())) {
-            for (const auto& item : t_items) {
-                drawItem(item);
+            for (size_t i = 0; i < t_items.size(); ++i) {
+                drawItem(t_items[i]);
+                if (i + 1 < t_items.size())
+                    ImGui::Separator();
             }
-            ImGui::Separator();
             ImGui::EndMenu();
         }
         return;
