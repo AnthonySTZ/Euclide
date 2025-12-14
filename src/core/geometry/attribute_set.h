@@ -13,7 +13,21 @@ class AttributeSet {
     AttributeSet& operator=(const AttributeSet& t_other);
 
     [[nodiscard]] Attribute* find(const std::string& t_name);
-    Attribute* findOrCreate(const std::string& t_name, const int t_attrSize, const AttributeType t_type);
+
+    template <typename T, size_t COMPONENTS>
+    Attribute* findOrCreate(const std::string& t_name) {
+        auto it = m_map.find(t_name);
+        if (it != m_map.end())
+            return m_attributes[it->second].get();
+
+        size_t attrIndex = m_attributes.size();
+        m_map.emplace(t_name, attrIndex);
+        m_attributes.emplace_back(std::make_unique<TypedAttribute<T, COMPONENTS>>(t_name));
+        auto* attr = m_attributes[attrIndex].get();
+        attr->resize(m_size);
+        return attr;
+    }
+
     [[nodiscard]] Attribute* get(const size_t t_index);
 
     void resize(const size_t t_size);

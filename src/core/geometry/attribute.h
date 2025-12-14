@@ -15,8 +15,12 @@ class Attribute {
     Attribute(const std::string& t_name) : m_name(t_name) {}
     Attribute() = default;
 
+    Attribute(const Attribute&) = default;
+    Attribute& operator=(const Attribute&) = default;
+
     virtual ~Attribute() = default;
     virtual void free() = 0;
+    virtual std::unique_ptr<Attribute> clone() = 0;
 
     [[nodiscard]] inline std::string name() const noexcept { return m_name; }
     [[nodiscard]] inline size_t size() const noexcept { return m_size; }
@@ -30,7 +34,7 @@ class Attribute {
 
     virtual void resize(const size_t t_newSize) = 0;
 
-  private:
+  protected:
     std::string m_name; //< The attribute name
     size_t m_size = 0;
 };
@@ -43,7 +47,11 @@ class TypedAttribute : public Attribute {
     TypedAttribute(const std::string& t_name) : Attribute(t_name) {}
     ~TypedAttribute();
 
+    TypedAttribute(const TypedAttribute& t_other);
+    TypedAttribute<T, COMPONENTS>& operator=(const TypedAttribute& t_other);
+
     void free() override;
+    std::unique_ptr<Attribute> clone() override { return std::make_unique<TypedAttribute<T, COMPONENTS>>(*this); }
 
     AttributeType type() const noexcept override { return AttributeTypeOf<T>::value; }
     int attrSize() const noexcept override { return COMPONENTS; }
@@ -54,7 +62,10 @@ class TypedAttribute : public Attribute {
     void resize(const size_t t_newSize) override;
 
   private:
-    std::array<T*, COMPONENTS> data{};
+    void copyFrom(const TypedAttribute<T, COMPONENTS>& t_other);
+
+  private:
+    std::array<T*, COMPONENTS> m_data{};
 };
 
 // class Attribute {
