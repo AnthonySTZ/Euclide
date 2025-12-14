@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "geometry/attribute.h"
+#include "geometry/attribute_set.h"
 
 namespace euclide {
 
@@ -51,16 +51,16 @@ TEST(Attributes, CopyFloats) {
     }
 }
 
-// TEST(AttributeSets, findOrCreateAttribute) {
-//     AttributeSet attrSet{};
+TEST(AttributeSets, findOrCreateAttribute) {
+    AttributeSet attrSet{};
 
-//     auto attribute = attrSet.findOrCreate("P", 3, AttributeType::ATTR_TYPE_FLOAT);
-//     EXPECT_FALSE(attribute == nullptr);
+    auto attribute = attrSet.findOrCreate<float, 3>("P");
+    EXPECT_FALSE(attribute == nullptr);
 
-//     EXPECT_EQ(attribute->name(), "P");
-//     EXPECT_EQ(attribute->attrSize(), 3);
-//     EXPECT_EQ(attribute->type(), AttributeType::ATTR_TYPE_FLOAT);
-// }
+    EXPECT_EQ(attribute->name(), "P");
+    EXPECT_EQ(attribute->attrSize(), 3);
+    EXPECT_EQ(attribute->type(), AttributeType::ATTR_TYPE_FLOAT);
+}
 
 // TEST(AttributeSets, findAttribute) {
 //     AttributeSet attrSet{};
