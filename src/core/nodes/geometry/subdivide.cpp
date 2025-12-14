@@ -125,7 +125,7 @@ void Subdivide::computeFacePoints(const std::vector<HalfEdge>& t_halfedges_d, At
                                   const AttributeSet& t_points_d, const std::vector<Primitive>& t_primitives_d,
                                   const uint32_t t_numOfPoints) {
     const auto pointsD_Positions = t_points_d.find("P");
-    auto pointsD1_Positions = t_points_d1.find("P");
+    auto pointsD1_Positions = t_points_d1.findOrCreate<float, 3>("P");
 
     float* pointsD1PosX = pointsD1_Positions->component<float>(0);
     float* pointsD1PosY = pointsD1_Positions->component<float>(1);
@@ -149,7 +149,7 @@ void Subdivide::smoothEdgePoints(const std::vector<HalfEdge>& t_halfedges_d, Att
                                  const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
                                  const uint32_t t_numOfPrims) {
     const auto pointsD_Positions = t_points_d.find("P");
-    auto pointsD1_Positions = t_points_d1.find("P");
+    auto pointsD1_Positions = t_points_d1.findOrCreate<float, 3>("P");
 
     float* pointsD1PosX = pointsD1_Positions->component<float>(0);
     float* pointsD1PosY = pointsD1_Positions->component<float>(1);
@@ -181,7 +181,7 @@ void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, A
                                    const AttributeSet& t_points_d, const uint32_t t_numOfPoints,
                                    const uint32_t t_numOfPrims) {
     const auto pointsD_Positions = t_points_d.find("P");
-    auto pointsD1_Positions = t_points_d1.find("P");
+    auto pointsD1_Positions = t_points_d1.findOrCreate<float, 3>("P");
 
     float* pointsD1PosX = pointsD1_Positions->component<float>(0);
     float* pointsD1PosY = pointsD1_Positions->component<float>(1);

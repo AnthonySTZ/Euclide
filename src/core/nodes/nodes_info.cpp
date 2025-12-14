@@ -3,12 +3,12 @@
 #include "primitive/cube.h"
 #include "primitive/grid.h"
 #include "primitive/cylinder.h"
-// #include "primitive/quad_sphere.h"
+#include "primitive/quad_sphere.h"
 
 #include "geometry/transform.h"
 #include "geometry/merge.h"
-// #include "geometry/subdivide.h"
-// #include "geometry/smooth_normals.h"
+#include "geometry/subdivide.h"
+#include "geometry/smooth_normals.h"
 #include "geometry/copy_to_points.h"
 
 #include "utility/null.h"
@@ -22,15 +22,15 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Cube", []() { return std::make_shared<Cube>(); }},
          {"Grid", []() { return std::make_shared<Grid>(); }},
          {"Cylinder", []() { return std::make_shared<Cylinder>(); }},
-         //  {"QuadSphere", []() { return std::make_shared<QuadSphere>(); }},
+         {"QuadSphere", []() { return std::make_shared<QuadSphere>(); }},
      }},
     {"Geometry",
      {
          {"Transform", []() { return std::make_shared<Transform>(); }},
          {"Merge", []() { return std::make_shared<Merge>(); }},
-         //  {"Subdivide", []() { return std::make_shared<Subdivide>(); }},
+         {"Subdivide", []() { return std::make_shared<Subdivide>(); }},
          {"CopyToPoints", []() { return std::make_shared<CopyToPoints>(); }},
-         //  {"SmoothNormals", []() { return std::make_shared<SmoothNormals>(); }},
+         {"SmoothNormals", []() { return std::make_shared<SmoothNormals>(); }},
      }},
     {"Utility",
      {

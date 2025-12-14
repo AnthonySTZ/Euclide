@@ -19,12 +19,21 @@ std::shared_ptr<Mesh> SmoothNormals::compute(const size_t t_index,
 }
 
 void SmoothNormals::smoothNormals(Mesh& t_mesh) {
-    auto& points = t_mesh.points;
+    auto& pointAttribs = t_mesh.pointAttribs;
+    if (pointAttribs.size() == 0)
+        return;
     auto& prims = t_mesh.primitives;
     auto& vertices = t_mesh.vertices;
-    std::fill(points.normalX.begin(), points.normalX.end(), 0.0);
-    std::fill(points.normalY.begin(), points.normalY.end(), 0.0);
-    std::fill(points.normalZ.begin(), points.normalZ.end(), 0.0);
+
+    auto normals = pointAttribs.findOrCreate<float, 3>("N");
+    float* pointsNormalX = normals->component<float>(0);
+    float* pointsNormalY = normals->component<float>(1);
+    float* pointsNormalZ = normals->component<float>(2);
+
+    auto positions = pointAttribs.findOrCreate<float, 3>("P");
+    float* pointsPosX = positions->component<float>(0);
+    float* pointsPosY = positions->component<float>(1);
+    float* pointsPosZ = positions->component<float>(2);
 
     for (const auto& prim : prims) {
         if (prim.numVertices <= 2)
@@ -36,17 +45,17 @@ void SmoothNormals::smoothNormals(Mesh& t_mesh) {
         const uint32_t pointIdx_2 = vertices[vertIdx + 1].refPoint;
         const uint32_t pointIdx_3 = vertices[vertIdx + 2].refPoint;
 
-        const float posX_1 = points.posX[pointIdx_1];
-        const float posY_1 = points.posY[pointIdx_1];
-        const float posZ_1 = points.posZ[pointIdx_1];
+        const float posX_1 = pointsPosX[pointIdx_1];
+        const float posY_1 = pointsPosY[pointIdx_1];
+        const float posZ_1 = pointsPosZ[pointIdx_1];
 
-        const float dirX_1 = points.posX[pointIdx_2] - posX_1;
-        const float dirY_1 = points.posY[pointIdx_2] - posY_1;
-        const float dirZ_1 = points.posZ[pointIdx_2] - posZ_1;
+        const float dirX_1 = pointsPosX[pointIdx_2] - posX_1;
+        const float dirY_1 = pointsPosY[pointIdx_2] - posY_1;
+        const float dirZ_1 = pointsPosZ[pointIdx_2] - posZ_1;
 
-        const float dirX_2 = points.posX[pointIdx_3] - posX_1;
-        const float dirY_2 = points.posY[pointIdx_3] - posY_1;
-        const float dirZ_2 = points.posZ[pointIdx_3] - posZ_1;
+        const float dirX_2 = pointsPosX[pointIdx_3] - posX_1;
+        const float dirY_2 = pointsPosY[pointIdx_3] - posY_1;
+        const float dirZ_2 = pointsPosZ[pointIdx_3] - posZ_1;
 
         const float primNormalX = (dirY_1 * dirZ_2) - (dirZ_1 * dirY_2);
         const float primNormalY = (dirZ_1 * dirX_2) - (dirX_1 * dirZ_2);
@@ -54,22 +63,22 @@ void SmoothNormals::smoothNormals(Mesh& t_mesh) {
 
         for (size_t i = vertIdx; i < vertIdx + prim.numVertices; ++i) {
             const uint32_t pointIdx = vertices[i].refPoint;
-            points.normalX[pointIdx] += primNormalX;
-            points.normalY[pointIdx] += primNormalY;
-            points.normalZ[pointIdx] += primNormalZ;
+            pointsNormalX[pointIdx] += primNormalX;
+            pointsNormalY[pointIdx] += primNormalY;
+            pointsNormalZ[pointIdx] += primNormalZ;
         }
     }
 
-    for (size_t i = 0; i < points.size(); ++i) {
-        const float normalX = points.normalX[i];
-        const float normalY = points.normalY[i];
-        const float normalZ = points.normalZ[i];
+    for (size_t i = 0; i < pointAttribs.size(); ++i) {
+        const float normalX = pointsNormalX[i];
+        const float normalY = pointsNormalY[i];
+        const float normalZ = pointsNormalZ[i];
         const float length = std::sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
         if (length != 0) {
             const float factor = 1.0f / length;
-            points.normalX[i] = normalX * factor;
-            points.normalY[i] = normalY * factor;
-            points.normalZ[i] = normalZ * factor;
+            pointsNormalX[i] = normalX * factor;
+            pointsNormalY[i] = normalY * factor;
+            pointsNormalZ[i] = normalZ * factor;
         }
     }
 }
