@@ -13,7 +13,7 @@ static void BM_HalfedgeConstructionGrid10x10(benchmark::State& state) { // 0.002
     }
 }
 
-static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.067 ms
+static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.059 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {50, 50}};
     euclide::Grid::createGrid(mesh, settings);
@@ -24,7 +24,7 @@ static void BM_HalfedgeConstructionGrid50x50(benchmark::State& state) { // 0.067
     }
 }
 
-static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 0.283 ms
+static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 0.395 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {100, 100}};
     euclide::Grid::createGrid(mesh, settings);
@@ -35,7 +35,7 @@ static void BM_HalfedgeConstructionGrid100x100(benchmark::State& state) { // 0.2
     }
 }
 
-static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 1.81 ms
+static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 1.60 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {200, 200}};
     euclide::Grid::createGrid(mesh, settings);
@@ -46,7 +46,7 @@ static void BM_HalfedgeConstructionGrid200x200(benchmark::State& state) { // 1.8
     }
 }
 
-static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 13.9 ms
+static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 12.5 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {500, 500}};
     euclide::Grid::createGrid(mesh, settings);
@@ -57,7 +57,7 @@ static void BM_HalfedgeConstructionGrid500x500(benchmark::State& state) { // 13.
     }
 }
 
-static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 60.2 ms
+static void BM_HalfedgeConstructionGrid1000x1000(benchmark::State& state) { // 57.9 ms
     euclide::Mesh mesh;
     euclide::GridSettings settings{.divisions = {1000, 1000}};
     euclide::Grid::createGrid(mesh, settings);
