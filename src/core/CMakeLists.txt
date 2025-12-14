@@ -13,7 +13,7 @@ add_library(core STATIC
 
     nodes/node.cpp
     nodes/scene.cpp
-    # nodes/nodes_info.cpp
+    nodes/nodes_info.cpp
 
     nodes/primitive/cube.cpp
     nodes/primitive/grid.cpp
@@ -26,7 +26,7 @@ add_library(core STATIC
     # nodes/geometry/smooth_normals.cpp
     # nodes/geometry/copy_to_points.cpp
 
-    # nodes/utility/null.cpp
+    nodes/utility/null.cpp
 )
 
 target_include_directories(core

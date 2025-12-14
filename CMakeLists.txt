@@ -11,7 +11,7 @@ add_subdirectory(third_party/imgui)
 add_subdirectory(third_party/glm)
 
 add_subdirectory(src/core)
-# add_subdirectory(src/app)
+add_subdirectory(src/app)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 

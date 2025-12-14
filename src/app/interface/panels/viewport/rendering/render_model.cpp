@@ -78,17 +78,29 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     const auto normals = pointsAttribs.find("N");
     const auto colors = pointsAttribs.find("Cd");
 
-    const float* points_posX = positions->component<float>(0);
-    const float* points_posY = positions->component<float>(1);
-    const float* points_posZ = positions->component<float>(2);
+    std::vector<float> fallbackPosX(m_numOfPoints, 0.0f);
+    std::vector<float> fallbackPosY(m_numOfPoints, 0.0f);
+    std::vector<float> fallbackPosZ(m_numOfPoints, 0.0f);
 
-    const float* points_normalX = normals->component<float>(0);
-    const float* points_normalY = normals->component<float>(1);
-    const float* points_normalZ = normals->component<float>(2);
+    std::vector<float> fallbackNormalX(m_numOfPoints, 0.0f);
+    std::vector<float> fallbackNormalY(m_numOfPoints, 0.0f);
+    std::vector<float> fallbackNormalZ(m_numOfPoints, 0.0f);
 
-    const float* points_colorR = colors->component<float>(0);
-    const float* points_colorG = colors->component<float>(1);
-    const float* points_colorB = colors->component<float>(2);
+    std::vector<float> fallbackColorR(m_numOfPoints, 1.0f);
+    std::vector<float> fallbackColorG(m_numOfPoints, 1.0f);
+    std::vector<float> fallbackColorB(m_numOfPoints, 1.0f);
+
+    const float* points_posX = positions ? positions->component<float>(0) : fallbackPosX.data();
+    const float* points_posY = positions ? positions->component<float>(1) : fallbackPosY.data();
+    const float* points_posZ = positions ? positions->component<float>(2) : fallbackPosZ.data();
+
+    const float* points_normalX = normals ? normals->component<float>(0) : fallbackNormalX.data();
+    const float* points_normalY = normals ? normals->component<float>(1) : fallbackNormalY.data();
+    const float* points_normalZ = normals ? normals->component<float>(2) : fallbackNormalZ.data();
+
+    const float* points_colorR = colors ? colors->component<float>(0) : fallbackColorR.data();
+    const float* points_colorG = colors ? colors->component<float>(1) : fallbackColorG.data();
+    const float* points_colorB = colors ? colors->component<float>(2) : fallbackColorB.data();
 
     {
         Timer timer{"Points"}; // 11.76 ms 1000x1000 grid -> 11ms with omp
