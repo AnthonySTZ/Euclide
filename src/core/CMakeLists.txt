@@ -26,6 +26,8 @@ add_library(core STATIC
     nodes/geometry/smooth_normals.cpp
     nodes/geometry/copy_to_points.cpp
 
+    nodes/attributes/attribute_create.cpp
+
     nodes/utility/null.cpp
 )
 

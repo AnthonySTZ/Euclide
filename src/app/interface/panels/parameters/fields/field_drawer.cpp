@@ -110,4 +110,16 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3>& 
     }
 }
 
+void FieldDrawer::drawStringField(const std::string& t_name, NodeField<std::string>& t_field) {
+    std::string value = t_field.getValue();
+    const NodeFieldMetadata& meta = t_field.metadata();
+
+    const std::string sliderId = getFieldIdFromName(t_name);
+    if (ImGui::InputText(sliderId.c_str(), (char*)value.c_str(), value.capacity() + 1,
+                         ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_EnterReturnsTrue, StringImGuiCallBack,
+                         (void*)&value)) {
+        t_field.setValue(value);
+    }
+}
+
 } // namespace euclide

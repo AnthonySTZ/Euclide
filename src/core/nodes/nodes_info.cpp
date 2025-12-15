@@ -11,6 +11,8 @@
 #include "geometry/smooth_normals.h"
 #include "geometry/copy_to_points.h"
 
+#include "attributes/attribute_create.h"
+
 #include "utility/null.h"
 
 namespace euclide {
@@ -31,6 +33,10 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Subdivide", []() { return std::make_shared<Subdivide>(); }},
          {"CopyToPoints", []() { return std::make_shared<CopyToPoints>(); }},
          {"SmoothNormals", []() { return std::make_shared<SmoothNormals>(); }},
+     }},
+    {"Attribute",
+     {
+         {"Attribute Create", []() { return std::make_shared<AttributeCreate>(); }},
      }},
     {"Utility",
      {

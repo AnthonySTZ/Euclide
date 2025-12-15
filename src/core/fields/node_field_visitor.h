@@ -5,7 +5,8 @@
 
 namespace euclide {
 
-template <typename T> class NodeField;
+template <typename T>
+class NodeField;
 
 /// @brief Visitor interface for node fields, following the Visitor design pattern.
 ///        Allows operations on different types of NodeField without modifying the NodeField classes.
@@ -29,6 +30,9 @@ struct NodeFieldVisitor {
 
     /// @brief Visit a 3-component float vector field.
     virtual void visit(const std::string&, NodeField<float3>&) = 0;
+
+    /// @brief Visit a string field.
+    virtual void visit(const std::string&, NodeField<std::string>&) = 0;
 
     /// @brief Virtual destructor.
     virtual ~NodeFieldVisitor() = default;

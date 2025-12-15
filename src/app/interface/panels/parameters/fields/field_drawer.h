@@ -42,6 +42,11 @@ class FieldDrawer : public NodeFieldVisitor {
     /// @brief Draws a 3-component float field.
     void visit(const std::string& t_name, NodeField<float3>& t_field) override { drawFloat3Field(t_name, t_field); }
 
+    /// @brief Draws a string field.
+    void visit(const std::string& t_name, NodeField<std::string>& t_field) override {
+        drawStringField(t_name, t_field);
+    }
+
   private:
     /// @brief Generates a unique ImGui ID for a field from its name.
     ///
@@ -150,6 +155,8 @@ class FieldDrawer : public NodeFieldVisitor {
     /// @param t_name  UI name used to build a unique ImGui ID.
     /// @param t_field Field storing the editable float3 value.
     void drawFloat3Field(const std::string& t_name, NodeField<float3>& t_field);
+
+    void drawStringField(const std::string& t_name, NodeField<std::string>& t_field);
 
   private:
     static constexpr float MAX_FLOAT = 3'999'999'999.9f; ///< Max float supported by slider
