@@ -84,3 +84,17 @@ static bool ccw(ImVec2 A, ImVec2 B, ImVec2 C) {
 static bool lineIntersect(ImVec2 A, ImVec2 B, ImVec2 C, ImVec2 D) {
     return ccw(A, C, D) != ccw(B, C, D) && ccw(A, B, C) != ccw(A, B, D);
 }
+
+static bool IsWindowHoveredWithPadding(const ImVec2 padding, ImGuiHoveredFlags flags = ImGuiHoveredFlags_None) {
+    const ImVec2 windowPos = ImGui::GetWindowPos();
+    const ImVec2 windowSize = ImGui::GetWindowSize() - padding * 0.5;
+
+    const ImVec2 mouse = ImGui::GetIO().MousePos;
+
+    if (mouse.x >= windowPos.x + padding.x &&
+        mouse.x <= windowPos.x + windowSize.x & mouse.y >= windowPos.y + padding.y &&
+        mouse.y <= windowPos.y + windowSize.y)
+        return ImGui::IsWindowHovered(flags);
+
+    return false;
+}

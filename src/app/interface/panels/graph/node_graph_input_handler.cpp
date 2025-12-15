@@ -2,11 +2,12 @@
 
 #include "node_graph_menu.h"
 #include "node_graph_interaction.h"
+#include "interface/utils/imgui_utils.h"
 
 namespace euclide {
 
 void NodeGraphInputHandler::pollEvents() {
-    m_isWindowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    m_isWindowHovered = IsWindowHoveredWithPadding(ImVec2(5.0, 5.0), ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     handleContextMenu();
     handleMouseInputs();
