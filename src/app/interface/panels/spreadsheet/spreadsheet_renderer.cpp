@@ -32,7 +32,7 @@ void SpreadsheetRenderer::renderTable() {
 }
 
 void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
-    size_t columns = 0;
+    size_t columns = 1; // init to 1 to add "id" column
     const size_t numAttributes = t_attributes.count();
     for (size_t attrIdx = 0; attrIdx < numAttributes; ++attrIdx) {
         columns += t_attributes.get(attrIdx)->attrSize();
@@ -40,6 +40,7 @@ void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
 
     if (ImGui::BeginTable("SpreadsheetTable", columns, TABLE_FLAGS)) {
         // ----- HEADERS ----- //
+        ImGui::TableSetupColumn("id");
         for (size_t attrIdx = 0; attrIdx < numAttributes; ++attrIdx) {
             const Attribute* attribute = t_attributes.get(attrIdx);
             const size_t attrSize = attribute->attrSize();
@@ -55,6 +56,25 @@ void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
         }
         ImGui::TableHeadersRow();
 
+        const size_t numElements = t_attributes.size();
+        for (size_t i = 0; i < numElements; ++i) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text(std::to_string(i).c_str());
+            for (size_t attrIdx = 0; attrIdx < numAttributes; ++attrIdx) {
+                const Attribute* attribute = t_attributes.get(attrIdx);
+                const size_t attrSize = attribute->attrSize();
+
+                switch (attribute->type()) {
+                case AttributeType::ATTR_TYPE_FLOAT: {
+                    for (size_t c = 0; c < attrSize; ++c) {
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::to_string(attribute->component<float>(c)[i]).c_str());
+                    }
+                } break;
+                }
+            }
+        }
         ImGui::EndTable();
     }
 }
