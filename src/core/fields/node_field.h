@@ -47,15 +47,16 @@ class NodeFieldBase {
 };
 
 /// @brief Template class representing a typed node field.
-template <typename T> class NodeField : public NodeFieldBase {
+template <typename T>
+class NodeField : public NodeFieldBase {
   public:
     /// @brief Constructs a NodeField with a default value.
     /// @param t_defaultValue Initial value for the field.
     NodeField(const T& t_defaultValue) : m_value(t_defaultValue) {}
 
     /// @brief Returns the current value of the field.
-    /// @return Const reference to the value.
-    const T& getValue() const noexcept { return m_value; }
+    /// @return
+    T getValue() const noexcept { return m_value; }
 
     /// @brief Sets the value of the field.
     /// @param t_value New value to set.

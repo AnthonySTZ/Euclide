@@ -14,6 +14,15 @@ AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
     auto attributeField = std::make_shared<NodeField<std::string>>("");
     attributeField->setMetadata(NodeFieldMetadata{displayName : "Attribute Name"});
     addField("attributeName", attributeField);
+
+    auto sizeField = std::make_shared<NodeField<int>>(1);
+    sizeField->setMetadata(NodeFieldMetadata{
+        displayName : "Attribute Size",
+        min : 1,
+        max : 4,
+        step : 1,
+    });
+    addField("size", sizeField);
 }
 
 std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
@@ -23,7 +32,21 @@ std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
 
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
+    const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
+    const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
+    const int attrSize = getField<NodeField<int>>("size")->getValue();
+
+    if (kind == Kind::POINTS) {
+        createAttribute(output->pointAttribs, attrName, attrSize);
+    } else if (kind == Kind::PRIMITIVES) {
+        createAttribute(output->primAttribs, attrName, attrSize);
+    }
+
     return output;
+}
+
+void AttributeCreate::createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize) {
+    t_attribs.findOrCreate<float>(t_name, t_attrSize);
 }
 
 } // namespace euclide
