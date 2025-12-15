@@ -27,7 +27,7 @@ AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
     addField("size", sizeField);
 
     auto valueField = std::make_shared<Float4Field>(0.0f, 0.0f, 0.0f, 0.0f);
-    valueField->setMetadata(NodeFieldMetadata{displayName : "Attribute Value", step : 0.05f});
+    valueField->setMetadata(NodeFieldMetadata{displayName : "Attribute Value", step : 0.01f});
     addField("value", valueField);
 }
 
