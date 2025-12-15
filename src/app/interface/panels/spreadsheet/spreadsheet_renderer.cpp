@@ -32,11 +32,26 @@ void SpreadsheetRenderer::renderTable() {
 }
 
 void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
+    // ----- COMPUTE NUMBER OF COLUMNS ----- //
     size_t columns = 1; // init to 1 to add "id" column
     const size_t numAttributes = t_attributes.count();
     for (size_t attrIdx = 0; attrIdx < numAttributes; ++attrIdx) {
         columns += t_attributes.get(attrIdx)->attrSize();
     }
+
+    // ----- COMPUTE NUMBER OF ROWS ----- //
+    const size_t numElements = t_attributes.size();
+    const size_t maxHeight = ImGui::GetContentRegionAvail().y;
+    const size_t textHeight = ImGui::GetTextLineHeightWithSpacing();
+    const size_t maxRows = (maxHeight / textHeight);
+
+    if (ImGui::IsWindowHovered()) {
+        const float scrollDelta = ImGui::GetIO().MouseWheel;
+        m_tableScroll = std::clamp(m_tableScroll - scrollDelta, 0.0f, std::max(0.0f, (float)numElements - maxRows + 1));
+    }
+
+    int firstIndex = (int)m_tableScroll;
+    int maxIndex = std::min(std::min(maxRows, numElements) + firstIndex, numElements);
 
     if (ImGui::BeginTable("SpreadsheetTable", columns, TABLE_FLAGS)) {
         // ----- HEADERS ----- //
@@ -56,8 +71,7 @@ void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
         }
         ImGui::TableHeadersRow();
 
-        const size_t numElements = t_attributes.size();
-        for (size_t i = 0; i < numElements; ++i) {
+        for (size_t i = firstIndex; i < maxIndex; ++i) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text(std::to_string(i).c_str());

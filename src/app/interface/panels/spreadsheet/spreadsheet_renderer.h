@@ -19,6 +19,8 @@ class SpreadsheetRenderer {
   private:
     std::weak_ptr<Spreadsheet> m_spreadsheet;
 
+    float m_tableScroll = 0.0f;
+
     static constexpr ImGuiWindowFlags CHILD_FLAGS = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
     static constexpr ImGuiWindowFlags TABLE_FLAGS = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
 };
