@@ -2,7 +2,7 @@
 
 namespace euclide {
 
-AttributeCreate::AttributeCreate() : Node(1, 1, "Attribute Create") {
+AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
