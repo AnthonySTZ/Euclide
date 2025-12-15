@@ -13,6 +13,8 @@ class SpreadsheetPanel : public Panel {
     void draw() override;
 
   private:
+    ImVec2 m_padding{0, 0};
+
     std::shared_ptr<Spreadsheet> m_spreadsheet;
     SpreadsheetRenderer m_spreadsheetRenderer;
 };
