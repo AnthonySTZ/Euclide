@@ -36,6 +36,9 @@ std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
     const int attrSize = getField<NodeField<int>>("size")->getValue();
 
+    if (attrName.empty())
+        return output;
+
     if (kind == Kind::POINTS) {
         createAttribute(output->pointAttribs, attrName, attrSize);
     } else if (kind == Kind::PRIMITIVES) {
