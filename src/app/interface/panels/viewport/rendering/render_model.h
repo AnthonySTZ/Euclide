@@ -76,6 +76,10 @@ class RenderModel {
     /// @param edges Indices of vertices forming edges.
     void bindEBOEdges(const std::vector<uint32_t>& edges);
 
+    inline bool isFloat3(const Attribute* t_attr) {
+        return t_attr && t_attr->type() == AttributeType::ATTR_TYPE_FLOAT && t_attr->attrSize() == 3;
+    }
+
   private:
     uint32_t m_vao = 0;       ///< Vertex Array Object ID.
     uint32_t m_vbo = 0;       ///< Vertex Buffer Object ID.
