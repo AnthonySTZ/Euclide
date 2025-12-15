@@ -42,6 +42,9 @@ class FieldDrawer : public NodeFieldVisitor {
     /// @brief Draws a 3-component float field.
     void visit(const std::string& t_name, NodeField<float3>& t_field) override { drawFloat3Field(t_name, t_field); }
 
+    /// @brief Draws a 4-component float field.
+    void visit(const std::string& t_name, NodeField<float4>& t_field) override { drawFloat4Field(t_name, t_field); }
+
     /// @brief Draws a string field.
     void visit(const std::string& t_name, NodeField<std::string>& t_field) override {
         drawStringField(t_name, t_field);

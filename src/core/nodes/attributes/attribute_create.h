@@ -10,7 +10,8 @@ class AttributeCreate : public Node {
 
     AttributeCreate();
 
-    static void createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize);
+    static void createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
+                                const float4 t_defaultValue = {0.0, 0.0, 0.0, 0.0});
 
   private:
     std::shared_ptr<Mesh> compute(const size_t t_index,

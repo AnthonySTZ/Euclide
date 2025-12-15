@@ -1,5 +1,7 @@
 #include "attribute_create.h"
 
+#include "fields/float4field.h"
+
 namespace euclide {
 
 AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
@@ -23,6 +25,10 @@ AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
         step : 1,
     });
     addField("size", sizeField);
+
+    auto valueField = std::make_shared<Float4Field>(0.0f, 0.0f, 0.0f, 0.0f);
+    valueField->setMetadata(NodeFieldMetadata{displayName : "Attribute Value", step : 0.05f});
+    addField("value", valueField);
 }
 
 std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
@@ -35,21 +41,33 @@ std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
     const int attrSize = getField<NodeField<int>>("size")->getValue();
+    const float4 attrValue = getField<Float4Field>("value")->getValue();
 
     if (attrName.empty())
         return output;
 
     if (kind == Kind::POINTS) {
-        createAttribute(output->pointAttribs, attrName, attrSize);
+        createAttribute(output->pointAttribs, attrName, attrSize, attrValue);
     } else if (kind == Kind::PRIMITIVES) {
-        createAttribute(output->primAttribs, attrName, attrSize);
+        createAttribute(output->primAttribs, attrName, attrSize, attrValue);
     }
 
     return output;
 }
 
-void AttributeCreate::createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize) {
-    t_attribs.findOrCreate<float>(t_name, t_attrSize);
+void AttributeCreate::createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
+                                      const float4 t_defaultValue) {
+    auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
+    const size_t attrSize =
+        std::min(std::min(attr->attrSize(), t_attrSize), 4); // check if already exists with a smaller size
+    const size_t numElements = attr->size();
+    for (size_t c = 0; c < attrSize; ++c) {
+        float* ptr = attr->component<float>(c);
+        float value = t_defaultValue[c];
+        for (size_t i = 0; i < numElements; ++i) {
+            ptr[i] = value;
+        }
+    }
 }
 
 } // namespace euclide
