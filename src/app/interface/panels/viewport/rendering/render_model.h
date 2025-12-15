@@ -80,6 +80,10 @@ class RenderModel {
         return t_attr && t_attr->type() == AttributeType::ATTR_TYPE_FLOAT && t_attr->attrSize() == 3;
     }
 
+    void computePoints(const AttributeSet& t_pointAttribs);
+
+    void computeEdgesAndPrims(const Mesh& t_mesh);
+
   private:
     uint32_t m_vao = 0;       ///< Vertex Array Object ID.
     uint32_t m_vbo = 0;       ///< Vertex Buffer Object ID.

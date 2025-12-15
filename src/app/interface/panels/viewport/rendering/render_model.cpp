@@ -72,11 +72,20 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 
     m_numOfPrims = t_mesh.primitives.size();
     glBindVertexArray(m_vao);
-    const auto& pointsAttribs = t_mesh.pointAttribs;
-    m_numOfPoints = pointsAttribs.size();
-    const auto positions = pointsAttribs.find("P");
-    const auto normals = pointsAttribs.find("N");
-    const auto colors = pointsAttribs.find("Cd");
+
+    computePoints(t_mesh.pointAttribs);
+    computeEdgesAndPrims(t_mesh);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+} // namespace euclide
+
+void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
+    m_numOfPoints = t_pointAttribs.size();
+    const auto positions = t_pointAttribs.find("P");
+    const auto normals = t_pointAttribs.find("N");
+    const auto colors = t_pointAttribs.find("Cd");
 
     std::vector<float> fallbackPosX(m_numOfPoints, 0.0f);
     std::vector<float> fallbackPosY(m_numOfPoints, 0.0f);
@@ -128,7 +137,9 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 
         bindVBO(vertices);
     }
+}
 
+void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
     size_t totalTriangles = 0;
     size_t totalEdges = 0;
     for (const auto& prim : t_mesh.primitives) {
@@ -179,11 +190,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 
     m_numOfEdgesIndices = edges.size();
     bindEBOEdges(edges);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
-} // namespace euclide
+}
 
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
