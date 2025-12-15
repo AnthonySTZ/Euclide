@@ -7,7 +7,7 @@
 namespace euclide {
 
 void NodeGraphInputHandler::pollEvents() {
-    m_isWindowHovered = IsWindowHoveredWithPadding(ImVec2(5.0, 5.0), ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    m_isWindowHovered = IsWindowHoveredWithPadding(ImVec2(10.0, 10.0), ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     handleContextMenu();
     handleMouseInputs();

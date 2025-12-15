@@ -3,7 +3,7 @@
 namespace euclide {
 
 void ViewportInputHandler::pollEvents() {
-    m_isWindowHovered = IsWindowHoveredWithPadding(ImVec2(5.0, 5.0), ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    m_isWindowHovered = IsWindowHoveredWithPadding(ImVec2(10.0, 10.0), ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
     handleMouseInputs();
     handleKeyInputs();
