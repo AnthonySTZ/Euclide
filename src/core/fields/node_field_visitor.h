@@ -31,6 +31,9 @@ struct NodeFieldVisitor {
     /// @brief Visit a 3-component float vector field.
     virtual void visit(const std::string&, NodeField<float3>&) = 0;
 
+    /// @brief Visit a 4-component float vector field.
+    virtual void visit(const std::string&, NodeField<float4>&) = 0;
+
     /// @brief Visit a string field.
     virtual void visit(const std::string&, NodeField<std::string>&) = 0;
 

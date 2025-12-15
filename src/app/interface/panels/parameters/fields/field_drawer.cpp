@@ -110,6 +110,20 @@ void FieldDrawer::drawFloat3Field(const std::string& t_name, NodeField<float3>& 
     }
 }
 
+void FieldDrawer::drawFloat4Field(const std::string& t_name, NodeField<float4>& t_field) {
+    float4 values = t_field.getValue();
+    const NodeFieldMetadata& meta = t_field.metadata();
+
+    float min = meta.min.value_or(-MAX_FLOAT);
+    float max = meta.max.value_or(MAX_FLOAT);
+    float step = meta.step.value_or(0.05);
+
+    const std::string sliderId = getFieldIdFromName(t_name);
+    if (ImGui::DragFloat4(sliderId.c_str(), values.data(), step, min, max)) {
+        t_field.setValue(values);
+    }
+}
+
 void FieldDrawer::drawStringField(const std::string& t_name, NodeField<std::string>& t_field) {
     std::string value = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();

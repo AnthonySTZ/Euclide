@@ -87,6 +87,7 @@ class TypedAttribute : public Attribute {
     inline void* componentRaw(const size_t t_index) override { return m_data[t_index]; }
     inline const void* componentRaw(const size_t t_index) const override { return m_data[t_index]; }
 
+    // TODO: add a capacity and increase more that it needed like vectors for more efficiency
     void resize(const size_t t_newSize) override;
 
     void copyAt(const Attribute& t_other, const size_t t_index, const size_t t_numElements) override;

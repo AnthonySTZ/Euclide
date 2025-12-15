@@ -156,6 +156,22 @@ class FieldDrawer : public NodeFieldVisitor {
     /// @param t_field Field storing the editable float3 value.
     void drawFloat3Field(const std::string& t_name, NodeField<float3>& t_field);
 
+    /// @brief Draws a 4-component float field using an ImGui DragFloat4 control.
+    ///
+    /// Displays and allows editing of a `float4` value stored in the given field.
+    /// Range limits and drag sensitivity are read from metadata:
+    ///
+    ///   - min / max define the allowed value range (if provided)
+    ///
+    ///   - step controls how fast the value changes when dragged (default = 0.05)
+    ///
+    /// When the user modifies either component, the updated vector is written
+    /// back into the NodeField.
+    ///
+    /// @param t_name  UI name used to build a unique ImGui ID.
+    /// @param t_field Field storing the editable float4 value.
+    void drawFloat4Field(const std::string& t_name, NodeField<float4>& t_field);
+
     void drawStringField(const std::string& t_name, NodeField<std::string>& t_field);
 
   private:
