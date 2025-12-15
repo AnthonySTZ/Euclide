@@ -21,8 +21,41 @@ inline TypedAttribute<T, COMPONENTS>& TypedAttribute<T, COMPONENTS>::operator=(c
     if (this == &t_other)
         return *this;
 
+    m_name = t_other.m_name;
     copyFrom(t_other);
     return *this;
+}
+
+template <typename T, size_t COMPONENTS>
+inline TypedAttribute<T, COMPONENTS>::TypedAttribute(TypedAttribute&& t_other) noexcept
+    : Attribute(std::move(t_other)) {
+    free();
+
+    for (size_t c = 0; c < COMPONENTS; ++c)
+        if (t_other.m_data[c]) {
+            m_data[c] = t_other.m_data[c];
+            t_other.m_data[c] = nullptr;
+        }
+
+    t_other.m_size = 0;
+}
+
+template <typename T, size_t COMPONENTS>
+inline TypedAttribute<T, COMPONENTS>& TypedAttribute<T, COMPONENTS>::operator=(TypedAttribute&& t_other) noexcept {
+    if (this == &t_other)
+        return *this;
+
+    free();
+
+    Attribute::operator=(std::move(t_other));
+    for (size_t c = 0; c < COMPONENTS; ++c)
+        if (t_other.m_data[c]) {
+            m_data[c] = t_other.m_data[c];
+            t_other.m_data[c] = nullptr;
+        }
+
+    m_name = t_other.m_name;
+    t_other.m_size = 0;
 }
 
 template <typename T, size_t COMPONENTS>
@@ -38,6 +71,7 @@ inline void TypedAttribute<T, COMPONENTS>::free() {
 
 template <typename T, size_t COMPONENTS>
 inline void TypedAttribute<T, COMPONENTS>::copyFrom(const TypedAttribute<T, COMPONENTS>& t_other) {
+    m_name = t_other.m_name;
     resize(t_other.m_size);
 
     if constexpr (std::is_same_v<T, float>) {

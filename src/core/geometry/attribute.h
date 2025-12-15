@@ -18,6 +18,9 @@ class Attribute {
     Attribute(const Attribute&) = default;
     Attribute& operator=(const Attribute&) = default;
 
+    Attribute(Attribute&&) noexcept = default;
+    Attribute& operator=(Attribute&&) noexcept = default;
+
     virtual ~Attribute() = default;
     virtual void free() = 0;
     virtual std::unique_ptr<Attribute> clone() = 0;
@@ -64,8 +67,13 @@ class TypedAttribute : public Attribute {
     TypedAttribute(const std::string& t_name) : Attribute(t_name) {}
     ~TypedAttribute();
 
+    // copy
     TypedAttribute(const TypedAttribute& t_other);
     TypedAttribute<T, COMPONENTS>& operator=(const TypedAttribute& t_other);
+
+    // move
+    TypedAttribute(TypedAttribute&& t_other) noexcept;
+    TypedAttribute<T, COMPONENTS>& operator=(TypedAttribute&& t_other) noexcept;
 
     void free() override;
     inline std::unique_ptr<Attribute> clone() override {

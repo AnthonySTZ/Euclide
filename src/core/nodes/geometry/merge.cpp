@@ -32,7 +32,6 @@ void Merge::merge(Mesh& t_mesh, const Mesh& t_mesh_2) {
 
     pointAttribs.resize(oldSize + numPointsToMerge);
     t_mesh.primAttribs.resize(oldSize + numPointsToMerge);
-    t_mesh.vertexAttribs.resize(oldSize + numPointsToMerge);
 
 #pragma omp parallel for
     for (size_t attrIdx = 0; attrIdx < pointAttribs.count(); ++attrIdx) {
