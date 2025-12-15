@@ -69,6 +69,11 @@ void Interface::addParameters() {
     m_panels.push_back(m_parameters);
 }
 
+void Interface::addSpreadsheet() {
+    m_spreadsheet = std::make_shared<SpreadsheetPanel>(scene());
+    m_panels.push_back(m_spreadsheet);
+}
+
 void Interface::draw() const {
     beginFrame();
     createDockSpace();

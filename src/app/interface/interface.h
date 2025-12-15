@@ -6,6 +6,7 @@
 #include "panels/viewport_panel.h"
 #include "panels/node_graph_panel.h"
 #include "panels/parameters_panel.h"
+#include "panels/spreadsheet_panel.h"
 
 #include <vector>
 #include <memory>
@@ -42,6 +43,9 @@ class Interface {
     /// @brief Adds a Parameters panel connected to the NodeGraph.
     void addParameters();
 
+    /// @brief Adds a Spreadsheet panel connected to the scene.
+    void addSpreadsheet();
+
     /// @brief Draws all panels and renders the GUI.
     void draw() const;
 
@@ -67,9 +71,10 @@ class Interface {
     std::weak_ptr<Scene> m_scene;                 ///< Weak reference to the Scene
     std::vector<std::shared_ptr<Panel>> m_panels; ///< Container of all GUI panels
 
-    std::shared_ptr<ViewportPanel> m_viewport;     ///< Viewport panel
-    std::shared_ptr<NodeGraphPanel> m_nodeGraph;   ///< NodeGraph panel
-    std::shared_ptr<ParametersPanel> m_parameters; ///< Parameters panel
+    std::shared_ptr<ViewportPanel> m_viewport;       ///< Viewport panel
+    std::shared_ptr<NodeGraphPanel> m_nodeGraph;     ///< NodeGraph panel
+    std::shared_ptr<ParametersPanel> m_parameters;   ///< Parameters panel
+    std::shared_ptr<SpreadsheetPanel> m_spreadsheet; ///< Spreadsheet panel
 
     static constexpr struct { float r, g, b, a; } BG_COLOR = {0.3f, 0.3f, 0.3f, 1.0f}; ///< Background color
 };

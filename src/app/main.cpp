@@ -6,6 +6,7 @@ int main() {
     engine.interface().addNodeGraph();
     engine.interface().addViewport();
     engine.interface().addParameters();
+    engine.interface().addSpreadsheet();
 
     engine.mainLoop();
     return 0;

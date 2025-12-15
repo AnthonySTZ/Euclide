@@ -35,8 +35,10 @@ add_library(app_lib STATIC
     interface/panels/parameters/parameters.cpp
     interface/panels/parameters/parameters_renderer.cpp
     interface/panels/parameters/fields/field_drawer.cpp
-
-
+    
+    interface/panels/spreadsheet_panel.cpp
+    interface/panels/spreadsheet/spreadsheet.cpp
+    interface/panels/spreadsheet/spreadsheet_renderer.cpp
     )
 
 target_include_directories(app_lib
