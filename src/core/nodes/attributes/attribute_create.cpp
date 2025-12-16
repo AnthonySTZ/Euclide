@@ -13,14 +13,14 @@ AttributeCreate::AttributeCreate() : Node(1, 1, "AttrCreate") {
     });
     addField("kind", kindField);
 
-    auto attributeField = std::make_shared<NodeField<std::string>>("");
+    auto attributeField = std::make_shared<NodeField<std::string>>("Cd");
     attributeField->setMetadata(NodeFieldMetadata{displayName : "Attribute Name"});
     addField("attributeName", attributeField);
 
-    auto sizeField = std::make_shared<NodeField<int>>(1);
+    auto sizeField = std::make_shared<NodeField<int>>(0);
     sizeField->setMetadata(NodeFieldMetadata{
         displayName : "Attribute Size",
-        min : 1,
+        min : 0,
         max : 4,
         step : 1,
     });
@@ -38,9 +38,12 @@ std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
 
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
+    const int attrSize = getField<NodeField<int>>("size")->getValue();
+    if (attrSize <= 1)
+        return output;
+
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
-    const int attrSize = getField<NodeField<int>>("size")->getValue();
     const float4 attrValue = getField<Float4Field>("value")->getValue();
 
     if (attrName.empty())
