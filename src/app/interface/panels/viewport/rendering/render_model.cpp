@@ -82,7 +82,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
-    Timer timer{"Points"}; // 15ms with omp
+    Timer timer{"Points"}; // 8.4ms with omp
 
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
@@ -93,29 +93,35 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
     const bool hasNormals = isFloat3(normals);
     const bool hasCol = isFloat3(colors);
 
-    std::vector<float> fallbackPosX(hasPos ? 0 : m_numOfPoints, 0.0f);
-    std::vector<float> fallbackPosY(hasPos ? 0 : m_numOfPoints, 0.0f);
-    std::vector<float> fallbackPosZ(hasPos ? 0 : m_numOfPoints, 0.0f);
+    const float* __restrict points_posX = nullptr;
+    const float* __restrict points_posY = nullptr;
+    const float* __restrict points_posZ = nullptr;
 
-    std::vector<float> fallbackNormalX(hasNormals ? 0 : m_numOfPoints, 0.0f);
-    std::vector<float> fallbackNormalY(hasNormals ? 0 : m_numOfPoints, 0.0f);
-    std::vector<float> fallbackNormalZ(hasNormals ? 0 : m_numOfPoints, 0.0f);
+    const float* __restrict points_normalX = nullptr;
+    const float* __restrict points_normalY = nullptr;
+    const float* __restrict points_normalZ = nullptr;
 
-    std::vector<float> fallbackColorR(hasCol ? 0 : m_numOfPoints, 1.0f);
-    std::vector<float> fallbackColorG(hasCol ? 0 : m_numOfPoints, 1.0f);
-    std::vector<float> fallbackColorB(hasCol ? 0 : m_numOfPoints, 1.0f);
+    const float* __restrict points_colorR = nullptr;
+    const float* __restrict points_colorG = nullptr;
+    const float* __restrict points_colorB = nullptr;
 
-    const float* __restrict points_posX = hasPos ? positions->component<float>(0) : fallbackPosX.data();
-    const float* __restrict points_posY = hasPos ? positions->component<float>(1) : fallbackPosY.data();
-    const float* __restrict points_posZ = hasPos ? positions->component<float>(2) : fallbackPosZ.data();
+    if (hasPos) {
+        points_posX = positions->component<float>(0);
+        points_posY = positions->component<float>(1);
+        points_posZ = positions->component<float>(2);
+    }
 
-    const float* __restrict points_normalX = hasNormals ? normals->component<float>(0) : fallbackNormalX.data();
-    const float* __restrict points_normalY = hasNormals ? normals->component<float>(1) : fallbackNormalY.data();
-    const float* __restrict points_normalZ = hasNormals ? normals->component<float>(2) : fallbackNormalZ.data();
+    if (hasNormals) {
+        points_normalX = normals->component<float>(0);
+        points_normalY = normals->component<float>(1);
+        points_normalZ = normals->component<float>(2);
+    }
 
-    const float* __restrict points_colorR = hasCol ? colors->component<float>(0) : fallbackColorR.data();
-    const float* __restrict points_colorG = hasCol ? colors->component<float>(1) : fallbackColorG.data();
-    const float* __restrict points_colorB = hasCol ? colors->component<float>(2) : fallbackColorB.data();
+    if (hasCol) {
+        points_colorR = colors->component<float>(0);
+        points_colorG = colors->component<float>(1);
+        points_colorB = colors->component<float>(2);
+    }
 
     {
         std::vector<RenderVertex> vertices;
@@ -125,17 +131,17 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
 #pragma omp parallel for
         for (size_t i = 0; i < m_numOfPoints; ++i) {
             RenderVertex& vertex = verticesPtr[i];
-            vertex.position[0] = points_posX[i];
-            vertex.position[1] = points_posY[i];
-            vertex.position[2] = points_posZ[i];
+            vertex.position[0] = points_posX ? points_posX[i] : 0.0f;
+            vertex.position[1] = points_posY ? points_posY[i] : 0.0f;
+            vertex.position[2] = points_posZ ? points_posZ[i] : 0.0f;
 
-            vertex.color[0] = points_colorR[i];
-            vertex.color[1] = points_colorG[i];
-            vertex.color[2] = points_colorB[i];
+            vertex.color[0] = points_colorR ? points_colorR[i] : 1.0f;
+            vertex.color[1] = points_colorG ? points_colorG[i] : 1.0f;
+            vertex.color[2] = points_colorB ? points_colorB[i] : 1.0f;
 
-            vertex.normal[0] = points_normalX[i];
-            vertex.normal[1] = points_normalY[i];
-            vertex.normal[2] = points_normalZ[i];
+            vertex.normal[0] = points_normalX ? points_normalX[i] : 0.0f;
+            vertex.normal[1] = points_normalY ? points_normalY[i] : 0.0f;
+            vertex.normal[2] = points_normalZ ? points_normalZ[i] : 0.0f;
         }
 
         bindVBO(vertices);
