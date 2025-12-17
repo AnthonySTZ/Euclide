@@ -96,7 +96,7 @@ class Camera {
 
     float m_distanceToTarget = 10.f;  ///< Distance from camera to target point
     float m_fov = glm::radians(50.f); ///< Field of view (radians)
-    float m_near = 0.1f;              ///< Near clipping plane distance
+    float m_near = 0.01f;             ///< Near clipping plane distance
     float m_far = 1000.f;             ///< Far clipping plane distance
     float m_aspect = 1.77f;           ///< Aspect ratio (width / height)
 
