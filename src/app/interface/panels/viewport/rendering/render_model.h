@@ -51,7 +51,7 @@ class RenderModel {
     bool showPrimitives = true; ///< Whether triangles should be drawn.
     bool showWireframe = true;  ///< Whether edges should be drawn.
     bool showPoints = false;    ///< Whether points should be drawn.
-    float edgesLineWidth = 1.0f;
+    float edgesLineWidth = .6f;
 
     [[nodiscard]] inline int numOfPoints() const noexcept { return m_numOfPoints; }
     [[nodiscard]] inline int numOfPrims() const noexcept { return m_numOfPrims; }
@@ -98,7 +98,7 @@ class RenderModel {
 
     size_t m_numOfPrims = 0;
 
-    glm::vec3 m_edgeColor{0.0, 0.0, 0.0};
+    glm::vec3 m_edgeColor{0.25, 0.25, 0.25};
 };
 
 } // namespace euclide
