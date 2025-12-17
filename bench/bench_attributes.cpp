@@ -4,7 +4,7 @@
 #include "nodes/attributes/attribute_create.h"
 #include "nodes/attributes/attribute_randomize.h"
 
-static void BM_CopyAttribute(benchmark::State& state) {
+static void BM_CopyAttribute(benchmark::State& state) { // 11.1ms
     euclide::TypedAttribute<float, 3> P("P");
     P.resize(9'999'999);
 
@@ -14,7 +14,7 @@ static void BM_CopyAttribute(benchmark::State& state) {
     }
 }
 
-static void BM_CreateAttribute(benchmark::State& state) {
+static void BM_CreateAttribute(benchmark::State& state) { // 24.7ms
     euclide::Mesh mesh;
     euclide::QuadSphereSettings settings{.divisions = 10};
     euclide::QuadSphere::createQuadSphere(mesh, settings);
@@ -26,7 +26,7 @@ static void BM_CreateAttribute(benchmark::State& state) {
     }
 }
 
-static void BM_RandomizeAttribute(benchmark::State& state) { // 163ms
+static void BM_RandomizeAttribute(benchmark::State& state) { // 37ms
     euclide::Mesh mesh;
     euclide::QuadSphereSettings settings{.divisions = 10};
     euclide::QuadSphere::createQuadSphere(mesh, settings);
@@ -39,6 +39,6 @@ static void BM_RandomizeAttribute(benchmark::State& state) { // 163ms
     }
 }
 
-BENCHMARK(BM_CopyAttribute)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_CreateAttribute)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_CopyAttribute)->Iterations(10)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_CreateAttribute)->Iterations(10)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_RandomizeAttribute)->Iterations(10)->Unit(benchmark::kMillisecond);
