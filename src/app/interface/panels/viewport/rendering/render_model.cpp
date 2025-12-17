@@ -105,17 +105,17 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
     std::vector<float> fallbackColorG(hasCol ? 0 : m_numOfPoints, 1.0f);
     std::vector<float> fallbackColorB(hasCol ? 0 : m_numOfPoints, 1.0f);
 
-    const float* points_posX = hasPos ? positions->component<float>(0) : fallbackPosX.data();
-    const float* points_posY = hasPos ? positions->component<float>(1) : fallbackPosY.data();
-    const float* points_posZ = hasPos ? positions->component<float>(2) : fallbackPosZ.data();
+    const float* __restrict points_posX = hasPos ? positions->component<float>(0) : fallbackPosX.data();
+    const float* __restrict points_posY = hasPos ? positions->component<float>(1) : fallbackPosY.data();
+    const float* __restrict points_posZ = hasPos ? positions->component<float>(2) : fallbackPosZ.data();
 
-    const float* points_normalX = hasNormals ? normals->component<float>(0) : fallbackNormalX.data();
-    const float* points_normalY = hasNormals ? normals->component<float>(1) : fallbackNormalY.data();
-    const float* points_normalZ = hasNormals ? normals->component<float>(2) : fallbackNormalZ.data();
+    const float* __restrict points_normalX = hasNormals ? normals->component<float>(0) : fallbackNormalX.data();
+    const float* __restrict points_normalY = hasNormals ? normals->component<float>(1) : fallbackNormalY.data();
+    const float* __restrict points_normalZ = hasNormals ? normals->component<float>(2) : fallbackNormalZ.data();
 
-    const float* points_colorR = hasCol ? colors->component<float>(0) : fallbackColorR.data();
-    const float* points_colorG = hasCol ? colors->component<float>(1) : fallbackColorG.data();
-    const float* points_colorB = hasCol ? colors->component<float>(2) : fallbackColorB.data();
+    const float* __restrict points_colorR = hasCol ? colors->component<float>(0) : fallbackColorR.data();
+    const float* __restrict points_colorG = hasCol ? colors->component<float>(1) : fallbackColorG.data();
+    const float* __restrict points_colorB = hasCol ? colors->component<float>(2) : fallbackColorB.data();
 
     {
         std::vector<RenderVertex> vertices;
@@ -160,9 +160,7 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
     uint32_t* __restrict edgesPtr = edges.data();
 
     {
-        Timer timer{"Prim"}; // 8.5ms for 1000x1000 grid
-        size_t primOffset = 0;
-        size_t edgeOffset = 0;
+        Timer timer{"Prim"}; // 8ms for 1000x1000 grid
         const Vertex* __restrict vertices = t_mesh.vertices.data();
         for (const auto& prim : t_mesh.primitives) {
             // Edges
@@ -172,8 +170,8 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 
             const uint32_t vertexIndex = prim.verticesIndex;
             for (size_t i = 0; i < numVertices; ++i) {
-                edgesPtr[edgeOffset++] = vertices[vertexIndex + i].refPoint;
-                edgesPtr[edgeOffset++] = vertices[(i + 1) == numVertices ? vertexIndex : vertexIndex + i + 1].refPoint;
+                *edgesPtr++ = vertices[vertexIndex + i].refPoint;
+                *edgesPtr++ = vertices[(i + 1) == numVertices ? vertexIndex : vertexIndex + i + 1].refPoint;
             }
 
             // Vertices
@@ -181,9 +179,9 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
                 continue;
             const uint32_t v0 = vertices[vertexIndex].refPoint;
             for (size_t i = 1; i + 1 < numVertices; ++i) {
-                vertexIndicesPtr[primOffset++] = v0;
-                vertexIndicesPtr[primOffset++] = vertices[vertexIndex + i].refPoint;
-                vertexIndicesPtr[primOffset++] = vertices[vertexIndex + i + 1].refPoint;
+                *vertexIndicesPtr++ = v0;
+                *vertexIndicesPtr++ = vertices[vertexIndex + i].refPoint;
+                *vertexIndicesPtr++ = vertices[vertexIndex + i + 1].refPoint;
             }
         }
     }
