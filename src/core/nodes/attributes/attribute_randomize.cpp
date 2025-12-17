@@ -36,8 +36,8 @@ AttributeRandomize::AttributeRandomize() : Node(1, 1, "AttrRandomize") {
     maxValueField->setMetadata(NodeFieldMetadata{displayName : "Max Value", step : 0.01f});
     addField("maxValue", maxValueField);
 
-    auto seedField = std::make_shared<NodeField<float>>(0.0f);
-    seedField->setMetadata(NodeFieldMetadata{displayName : "Seed", min : 0.0f, step : 0.001f});
+    auto seedField = std::make_shared<NodeField<int>>(0.0f);
+    seedField->setMetadata(NodeFieldMetadata{displayName : "Seed", min : 0.0f, step : 1.0f});
     addField("seed", seedField);
 }
 
@@ -56,7 +56,7 @@ std::shared_ptr<Mesh> AttributeRandomize::compute(const size_t t_index,
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
     const float4 minValue = getField<Float4Field>("minValue")->getValue();
     const float4 maxValue = getField<Float4Field>("maxValue")->getValue();
-    const float seed = getField<NodeField<float>>("seed")->getValue();
+    const int seed = getField<NodeField<int>>("seed")->getValue();
 
     if (attrName.empty())
         return output;
@@ -71,19 +71,18 @@ std::shared_ptr<Mesh> AttributeRandomize::compute(const size_t t_index,
 }
 
 void AttributeRandomize::randomizeAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                                            const float4 t_minValues, const float4 t_maxValues, const float t_seed) {
+                                            const float4 t_minValues, const float4 t_maxValues, const int t_seed) {
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = std::min(std::min(attr->attrSize(), t_attrSize), 4);
     const size_t numElements = attr->size();
 
-    float seedOffset = 0.0f;
+    auto randomGen = RandomGenerator(t_seed);
     for (size_t c = 0; c < attrSize; ++c) {
         const float min = t_minValues[c];
         const float max = t_maxValues[c];
-        float* ptr = attr->component<float>(c);
+        float* __restrict ptr = attr->component<float>(c);
         for (size_t i = 0; i < numElements; ++i) {
-            ptr[i] = random(min, max, t_seed + seedOffset);
-            seedOffset += 0.01f;
+            ptr[i] = randomGen.random(min, max);
         }
     }
 }

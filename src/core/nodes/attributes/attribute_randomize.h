@@ -11,7 +11,7 @@ class AttributeRandomize : public Node {
     AttributeRandomize();
 
     static void randomizeAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                                   const float4 t_minValues, const float4 t_maxValues, const float t_seed);
+                                   const float4 t_minValues, const float4 t_maxValues, const int t_seed);
 
   private:
     std::shared_ptr<Mesh> compute(const size_t t_index,

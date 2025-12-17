@@ -2,6 +2,7 @@
 
 #include "nodes/primitive/quad_sphere.h"
 #include "nodes/attributes/attribute_create.h"
+#include "nodes/attributes/attribute_randomize.h"
 
 static void BM_CopyAttribute(benchmark::State& state) {
     euclide::TypedAttribute<float, 3> P("P");
@@ -25,5 +26,19 @@ static void BM_CreateAttribute(benchmark::State& state) {
     }
 }
 
+static void BM_RandomizeAttribute(benchmark::State& state) { // 163ms
+    euclide::Mesh mesh;
+    euclide::QuadSphereSettings settings{.divisions = 10};
+    euclide::QuadSphere::createQuadSphere(mesh, settings);
+
+    for (auto _ : state) {
+        euclide::AttributeSet attrbs = mesh.pointAttribs;
+        euclide::AttributeRandomize::randomizeAttribute(attrbs, "Cd", 3, {0.0, 0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0},
+                                                        0.0f);
+        benchmark::DoNotOptimize(attrbs);
+    }
+}
+
 BENCHMARK(BM_CopyAttribute)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_CreateAttribute)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_RandomizeAttribute)->Iterations(10)->Unit(benchmark::kMillisecond);

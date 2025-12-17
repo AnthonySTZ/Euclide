@@ -1,22 +1,20 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <random>
 
 namespace euclide {
 
-float random() {
-    return (float)(std::rand()) / (float)(RAND_MAX);
-}
+class RandomGenerator {
+  public:
+    explicit RandomGenerator(uint32_t seed) : engine(seed) {}
 
-float random(float t_min, float t_max, float t_seed) {
-    if (t_min > t_max)
-        return random(t_max, t_min, t_seed);
-    if (t_min == t_max)
-        return t_min;
+    float random(float min, float max) {
+        std::uniform_real_distribution<float> dist(min, max);
+        return dist(engine);
+    }
 
-    float rd = (float)std::rand();
-    rd = rd >= (t_max - t_min) ? 0 : rd;
-    return t_min + rd + random();
-}
+  private:
+    std::mt19937 engine;
+};
 
 } // namespace euclide
