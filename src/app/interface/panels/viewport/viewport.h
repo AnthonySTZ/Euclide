@@ -26,11 +26,14 @@ class Viewport {
 
     /// @brief Returns the render model responsible for drawing the grid overlay.
     /// @return Reference to the grid model.
-    [[nodiscard]] RenderModel& gridModel() noexcept { return m_gridModel; }
+    [[nodiscard]] std::vector<RenderModel>& viewportModels() noexcept { return m_viewportModels; }
 
     /// @brief Moves camera focus to the current render node center.
     ///        Called when geometry changes or user requests "frame all".
     void retargetCamera();
+
+  private:
+    void setViewportModels();
 
   private:
     /// Weak link to the scene used for mesh updates.
@@ -39,8 +42,8 @@ class Viewport {
     /// Render model responsible for visualizing scene geometry.
     RenderModel m_renderModel;
 
-    /// Render model for grid display.
-    RenderModel m_gridModel;
+    /// Render model for viewport display.
+    std::vector<RenderModel> m_viewportModels;
 
     /// Camera used to view the viewport.
     std::shared_ptr<Camera> m_camera;

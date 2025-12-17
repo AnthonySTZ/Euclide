@@ -56,7 +56,8 @@ void ViewportInputHandler::handleKeyInputs() {
     if (ImGui::IsKeyPressed(ImGuiKey_V))
         viewport->renderModel().tooglePoints();
     if (ImGui::IsKeyPressed(ImGuiKey_G))
-        viewport->gridModel().toogleWireframe();
+        for (auto& model : viewport->viewportModels())
+            model.toogleWireframe();
     if (ImGui::IsKeyPressed(ImGuiKey_F))
         viewport->retargetCamera();
 }

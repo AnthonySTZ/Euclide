@@ -51,6 +51,7 @@ class RenderModel {
     bool showPrimitives = true; ///< Whether triangles should be drawn.
     bool showWireframe = true;  ///< Whether edges should be drawn.
     bool showPoints = false;    ///< Whether points should be drawn.
+    float edgesLineWidth = 1.0f;
 
     [[nodiscard]] inline int numOfPoints() const noexcept { return m_numOfPoints; }
     [[nodiscard]] inline int numOfPrims() const noexcept { return m_numOfPrims; }

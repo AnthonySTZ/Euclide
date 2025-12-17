@@ -7,7 +7,6 @@ Renderer::Renderer()
       m_pointShaderProgram(ShaderProgram("shaders/pointStandard.vert", "shaders/pointStandard.frag")),
       m_edgeShaderProgram(ShaderProgram("shaders/edgeStandard.vert", "shaders/edgeStandard.frag")) {
     glEnable(GL_PROGRAM_POINT_SIZE);
-    glLineWidth(m_edgesLineWidth);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 }

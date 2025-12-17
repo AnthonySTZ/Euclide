@@ -5,17 +5,32 @@
 namespace euclide {
 
 Viewport::Viewport(const std::weak_ptr<Scene> t_scene) : m_scene(t_scene), m_camera(std::make_shared<Camera>()) {
-    Mesh grid{};
-    Grid::createGrid(grid, GridSettings{.position = {0.0, 0.0, 0.0}, .size = {500.0, 500.0}, .divisions = {500, 500}});
-    m_gridModel.updateWithMesh(grid);
-    m_gridModel.showPrimitives = false;
-    m_gridModel.showPoints = false;
-    m_gridModel.showWireframe = true;
-    m_gridModel.setEdgeColor(glm::vec3{0.38, 0.38, 0.38});
-
+    setViewportModels();
     if (auto scene = m_scene.lock()) {
         scene->onMeshUpdate.subscribe([this](std::shared_ptr<Mesh> t_mesh) { m_renderModel.updateWithMesh(*t_mesh); });
     }
+}
+
+void Viewport::setViewportModels() {
+    m_viewportModels.resize(2);
+
+    Mesh grid{};
+    Grid::createGrid(grid, GridSettings{.position = {0.0, 0.0, 0.0}, .size = {500.0, 500.0}, .divisions = {500, 500}});
+    m_viewportModels[0].updateWithMesh(grid);
+    m_viewportModels[0].showPrimitives = false;
+    m_viewportModels[0].showPoints = false;
+    m_viewportModels[0].showWireframe = true;
+    m_viewportModels[0].edgesLineWidth = 0.5f;
+    m_viewportModels[0].setEdgeColor(glm::vec3{0.38, 0.38, 0.38});
+
+    Mesh grid_2{};
+    Grid::createGrid(grid_2, GridSettings{.position = {0.0, 0.0, 0.0}, .size = {500.0, 500.0}, .divisions = {2, 2}});
+    m_viewportModels[1].updateWithMesh(grid_2);
+    m_viewportModels[1].showPrimitives = false;
+    m_viewportModels[1].showPoints = false;
+    m_viewportModels[1].showWireframe = true;
+    m_viewportModels[1].edgesLineWidth = 1.3f;
+    m_viewportModels[1].setEdgeColor(glm::vec3{0.45, 0.45, 0.45});
 }
 
 void Viewport::retargetCamera() {

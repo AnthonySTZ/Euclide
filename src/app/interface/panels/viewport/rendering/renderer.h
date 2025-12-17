@@ -72,8 +72,6 @@ class Renderer {
     [[nodiscard]] float getAspectRatio(const uint32_t t_screenWidth, const uint32_t t_screenHeight) const;
 
   private:
-    const float m_edgesLineWidth = 1.0f; ///< Line width for edge rendering.
-
     ShaderProgram m_faceShaderProgram;  ///< Shader for rendering filled triangles.
     ShaderProgram m_pointShaderProgram; ///< Shader for rendering points.
     ShaderProgram m_edgeShaderProgram;  ///< Shader for rendering edges (wireframe).

@@ -34,7 +34,9 @@ void ViewportRenderer::draw() {
     m_renderer->clearFrame();
 
     if (auto viewport = m_viewport.lock()) {
-        m_renderer->draw(viewport->gridModel());
+        for (const auto& model : viewport->viewportModels()) {
+            m_renderer->draw(model);
+        }
         m_renderer->draw(viewport->renderModel());
     }
 

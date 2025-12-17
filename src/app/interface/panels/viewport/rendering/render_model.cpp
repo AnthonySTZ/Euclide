@@ -243,6 +243,7 @@ void RenderModel::drawPoints() const {
 }
 
 void RenderModel::drawEdges() const {
+    glLineWidth(edgesLineWidth);
     glBindVertexArray(m_vao);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
