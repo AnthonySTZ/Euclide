@@ -197,7 +197,15 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 
     {
         std::vector<uint32_t> pointIndices(m_numOfPoints);
-        std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
+        if (m_numOfPoints < 1'000'000) {
+            std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
+        } else {
+            uint32_t* pointIndicesPtr = pointIndices.data();
+#pragma omp parallel for
+            for (size_t i = 0; i < m_numOfPoints; ++i) {
+                pointIndicesPtr[i] = i;
+            }
+        }
         bindEBOPoints(pointIndices);
     }
 
@@ -206,22 +214,26 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 }
 
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
+    Timer timer{"bindvbo"};
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
+    Timer timer{"bindeboV"};
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(),
                  GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices) {
+    Timer timer{"bindeboP"};
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
+    Timer timer{"bindeboE"};
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
 }
