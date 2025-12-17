@@ -146,6 +146,20 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
 
         bindVBO(vertices);
     }
+
+    {
+        std::vector<uint32_t> pointIndices(m_numOfPoints);
+        if (m_numOfPoints < 1'000'000) {
+            std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
+        } else {
+            uint32_t* pointIndicesPtr = pointIndices.data();
+#pragma omp parallel for
+            for (size_t i = 0; i < m_numOfPoints; ++i) {
+                pointIndicesPtr[i] = i;
+            }
+        }
+        bindEBOPoints(pointIndices);
+    }
 }
 
 void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
@@ -194,20 +208,6 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 
     m_numOfVertexIndices = vertexIndices.size();
     bindEBOVertex(vertexIndices);
-
-    {
-        std::vector<uint32_t> pointIndices(m_numOfPoints);
-        if (m_numOfPoints < 1'000'000) {
-            std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
-        } else {
-            uint32_t* pointIndicesPtr = pointIndices.data();
-#pragma omp parallel for
-            for (size_t i = 0; i < m_numOfPoints; ++i) {
-                pointIndicesPtr[i] = i;
-            }
-        }
-        bindEBOPoints(pointIndices);
-    }
 
     m_numOfEdgesIndices = edges.size();
     bindEBOEdges(edges);
