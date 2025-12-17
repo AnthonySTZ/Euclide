@@ -146,18 +146,21 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
     size_t totalTriangles = 0;
     size_t totalEdges = 0;
     for (const auto& prim : t_mesh.primitives) {
-        if (prim.numVertices <= 1)
+        const uint32_t numVertices = prim.numVertices;
+        if (numVertices <= 1)
             continue;
-        totalEdges += prim.numVertices == 2 ? 1 : prim.numVertices;
-        if (prim.numVertices <= 2)
+        totalEdges += numVertices == 2 ? 1 : numVertices;
+        if (numVertices <= 2)
             continue;
-        totalTriangles += prim.numVertices - 2;
+        totalTriangles += numVertices - 2;
     }
     std::vector<uint32_t> vertexIndices(totalTriangles * 3);
     std::vector<uint32_t> edges(totalEdges * 2);
+    uint32_t* __restrict vertexIndicesPtr = vertexIndices.data();
+    uint32_t* __restrict edgesPtr = edges.data();
 
     {
-        Timer timer{"Prim"}; // 25ms for 1000x1000 grid
+        Timer timer{"Prim"}; // 8.5ms for 1000x1000 grid
         size_t primOffset = 0;
         size_t edgeOffset = 0;
         const Vertex* __restrict vertices = t_mesh.vertices.data();
@@ -169,8 +172,8 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 
             const uint32_t vertexIndex = prim.verticesIndex;
             for (size_t i = 0; i < numVertices; ++i) {
-                edges[edgeOffset++] = vertices[vertexIndex + i].refPoint;
-                edges[edgeOffset++] = vertices[(i + 1) == numVertices ? vertexIndex : vertexIndex + i + 1].refPoint;
+                edgesPtr[edgeOffset++] = vertices[vertexIndex + i].refPoint;
+                edgesPtr[edgeOffset++] = vertices[(i + 1) == numVertices ? vertexIndex : vertexIndex + i + 1].refPoint;
             }
 
             // Vertices
@@ -178,9 +181,9 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
                 continue;
             const uint32_t v0 = vertices[vertexIndex].refPoint;
             for (size_t i = 1; i + 1 < numVertices; ++i) {
-                vertexIndices[primOffset++] = v0;
-                vertexIndices[primOffset++] = vertices[vertexIndex + i].refPoint;
-                vertexIndices[primOffset++] = vertices[vertexIndex + i + 1].refPoint;
+                vertexIndicesPtr[primOffset++] = v0;
+                vertexIndicesPtr[primOffset++] = vertices[vertexIndex + i].refPoint;
+                vertexIndicesPtr[primOffset++] = vertices[vertexIndex + i + 1].refPoint;
             }
         }
     }
