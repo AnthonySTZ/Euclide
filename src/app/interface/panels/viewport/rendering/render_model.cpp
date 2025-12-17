@@ -68,7 +68,7 @@ void RenderModel::initBuffers() {
 }
 
 void RenderModel::updateWithMesh(const Mesh& t_mesh) {
-    Timer timer{"Build Render Model"}; // 100ms for 1000x1000 grid
+    Timer timer{"Build Render Model"}; // 35ms for 1000x1000 grid
 
     m_numOfPrims = t_mesh.primitives.size();
     glBindVertexArray(m_vao);
