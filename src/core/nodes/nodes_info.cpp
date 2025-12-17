@@ -12,6 +12,7 @@
 #include "geometry/copy_to_points.h"
 
 #include "attributes/attribute_create.h"
+#include "attributes/attribute_randomize.cpp"
 
 #include "utility/null.h"
 
@@ -37,6 +38,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
     {"Attribute",
      {
          {"Attribute Create", []() { return std::make_shared<AttributeCreate>(); }},
+         {"Attribute Randomize", []() { return std::make_shared<AttributeRandomize>(); }},
      }},
     {"Utility",
      {

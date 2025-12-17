@@ -27,6 +27,7 @@ add_library(core STATIC
     nodes/geometry/copy_to_points.cpp
 
     nodes/attributes/attribute_create.cpp
+    nodes/attributes/attribute_randomize.cpp
 
     nodes/utility/null.cpp
 )
