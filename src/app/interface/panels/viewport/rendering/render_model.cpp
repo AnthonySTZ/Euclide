@@ -82,26 +82,28 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
+    Timer timer{"Points"}; // 18.6ms with omp
+
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
     const auto normals = t_pointAttribs.find("N");
     const auto colors = t_pointAttribs.find("Cd");
 
-    std::vector<float> fallbackPosX(m_numOfPoints, 0.0f);
-    std::vector<float> fallbackPosY(m_numOfPoints, 0.0f);
-    std::vector<float> fallbackPosZ(m_numOfPoints, 0.0f);
-
-    std::vector<float> fallbackNormalX(m_numOfPoints, 0.0f);
-    std::vector<float> fallbackNormalY(m_numOfPoints, 0.0f);
-    std::vector<float> fallbackNormalZ(m_numOfPoints, 0.0f);
-
-    std::vector<float> fallbackColorR(m_numOfPoints, 1.0f);
-    std::vector<float> fallbackColorG(m_numOfPoints, 1.0f);
-    std::vector<float> fallbackColorB(m_numOfPoints, 1.0f);
-
     const bool hasPos = isFloat3(positions);
     const bool hasNormals = isFloat3(normals);
     const bool hasCol = isFloat3(colors);
+
+    std::vector<float> fallbackPosX(hasPos ? 0 : m_numOfPoints, 0.0f);
+    std::vector<float> fallbackPosY(hasPos ? 0 : m_numOfPoints, 0.0f);
+    std::vector<float> fallbackPosZ(hasPos ? 0 : m_numOfPoints, 0.0f);
+
+    std::vector<float> fallbackNormalX(hasNormals ? 0 : m_numOfPoints, 0.0f);
+    std::vector<float> fallbackNormalY(hasNormals ? 0 : m_numOfPoints, 0.0f);
+    std::vector<float> fallbackNormalZ(hasNormals ? 0 : m_numOfPoints, 0.0f);
+
+    std::vector<float> fallbackColorR(hasCol ? 0 : m_numOfPoints, 1.0f);
+    std::vector<float> fallbackColorG(hasCol ? 0 : m_numOfPoints, 1.0f);
+    std::vector<float> fallbackColorB(hasCol ? 0 : m_numOfPoints, 1.0f);
 
     const float* points_posX = hasPos ? positions->component<float>(0) : fallbackPosX.data();
     const float* points_posY = hasPos ? positions->component<float>(1) : fallbackPosY.data();
@@ -116,8 +118,6 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
     const float* points_colorB = hasCol ? colors->component<float>(2) : fallbackColorB.data();
 
     {
-        Timer timer{"Points"}; // 10ms with omp
-
         std::vector<RenderVertex> vertices;
         vertices.resize(m_numOfPoints);
 #pragma omp parallel for
