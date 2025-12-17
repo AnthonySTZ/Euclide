@@ -82,7 +82,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
-    Timer timer{"Points"}; // 18.6ms with omp
+    Timer timer{"Points"}; // 15ms with omp
 
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
@@ -120,19 +120,22 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
     {
         std::vector<RenderVertex> vertices;
         vertices.resize(m_numOfPoints);
+        RenderVertex* __restrict verticesPtr = vertices.data();
+
 #pragma omp parallel for
         for (size_t i = 0; i < m_numOfPoints; ++i) {
-            vertices[i].position[0] = points_posX[i];
-            vertices[i].position[1] = points_posY[i];
-            vertices[i].position[2] = points_posZ[i];
+            RenderVertex& vertex = verticesPtr[i];
+            vertex.position[0] = points_posX[i];
+            vertex.position[1] = points_posY[i];
+            vertex.position[2] = points_posZ[i];
 
-            vertices[i].color[0] = points_colorR[i];
-            vertices[i].color[1] = points_colorG[i];
-            vertices[i].color[2] = points_colorB[i];
+            vertex.color[0] = points_colorR[i];
+            vertex.color[1] = points_colorG[i];
+            vertex.color[2] = points_colorB[i];
 
-            vertices[i].normal[0] = points_normalX[i];
-            vertices[i].normal[1] = points_normalY[i];
-            vertices[i].normal[2] = points_normalZ[i];
+            vertex.normal[0] = points_normalX[i];
+            vertex.normal[1] = points_normalY[i];
+            vertex.normal[2] = points_normalZ[i];
         }
 
         bindVBO(vertices);
