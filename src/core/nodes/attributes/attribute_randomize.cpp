@@ -49,7 +49,7 @@ std::shared_ptr<Mesh> AttributeRandomize::compute(const size_t t_index,
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
     const int attrSize = getField<NodeField<int>>("size")->getValue();
-    if (attrSize <= 1)
+    if (attrSize < 1)
         return output;
 
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
