@@ -82,7 +82,9 @@ class RenderModel {
     void computeEdgesAndPrims(const Mesh& t_mesh);
 
   private:
-    uint32_t m_vao = 0;       ///< Vertex Array Object ID.
+    uint32_t m_vaoTriangles = 0; ///< Vertex Array Object ID.
+    uint32_t m_vaoEdges = 0;     ///< Edges Array Object ID.
+
     uint32_t m_vbo = 0;       ///< Vertex Buffer Object ID.
     uint32_t m_eboVertex = 0; ///< Element Buffer Object for triangle indices.
     uint32_t m_eboEdges = 0;  ///< Element Buffer Object for edge indices.

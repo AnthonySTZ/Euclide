@@ -23,19 +23,25 @@ RenderModel::~RenderModel() {
         glDeleteBuffers(1, &m_eboEdges);
         m_eboEdges = 0;
     }
-    if (m_vao != 0) {
-        glDeleteVertexArrays(1, &m_vao);
-        m_vao = 0;
+    if (m_vaoTriangles != 0) {
+        glDeleteVertexArrays(1, &m_vaoTriangles);
+        m_vaoTriangles = 0;
+    }
+    if (m_vaoEdges != 0) {
+        glDeleteVertexArrays(1, &m_vaoEdges);
+        m_vaoEdges = 0;
     }
 }
 
 void RenderModel::initBuffers() {
-    glGenVertexArrays(1, &m_vao);
+    glGenVertexArrays(1, &m_vaoTriangles);
+    glGenVertexArrays(1, &m_vaoEdges);
+
     glGenBuffers(1, &m_vbo);
     glGenBuffers(1, &m_eboVertex);
     glGenBuffers(1, &m_eboEdges);
 
-    glBindVertexArray(m_vao);
+    glBindVertexArray(m_vaoTriangles);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
@@ -50,31 +56,31 @@ void RenderModel::initBuffers() {
                           (void*)offsetof(RenderVertex, normal)); // Normal
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+    glBindVertexArray(0);
+
+    glBindVertexArray(m_vaoEdges);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex),
+                          (void*)offsetof(RenderVertex, position)); // Position
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void RenderModel::updateWithMesh(const Mesh& t_mesh) {
     Timer timer{"Build Render Model"}; // 855.484ms for QuadSphere 11
 
     m_numOfPrims = t_mesh.primitives.size();
-    glBindVertexArray(m_vao);
 
     computePoints(t_mesh.pointAttribs);
     computeEdgesAndPrims(t_mesh);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
-    Timer timer{"Points"}; // 240 ms with omp for QuadSphere 11
+    Timer timer{"Points"}; // 206 ms with omp for QuadSphere 11
 
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
@@ -123,17 +129,17 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
 #pragma omp parallel for
         for (size_t i = 0; i < m_numOfPoints; ++i) {
             RenderVertex& vertex = verticesPtr[i];
-            vertex.position[0] = points_posX ? points_posX[i] : 0.0f;
-            vertex.position[1] = points_posY ? points_posY[i] : 0.0f;
-            vertex.position[2] = points_posZ ? points_posZ[i] : 0.0f;
+            vertex.position[0] = hasPos ? points_posX[i] : 0.0f;
+            vertex.position[1] = hasPos ? points_posY[i] : 0.0f;
+            vertex.position[2] = hasPos ? points_posZ[i] : 0.0f;
 
-            vertex.color[0] = points_colorR ? points_colorR[i] : 1.0f;
-            vertex.color[1] = points_colorG ? points_colorG[i] : 1.0f;
-            vertex.color[2] = points_colorB ? points_colorB[i] : 1.0f;
+            vertex.color[0] = hasCol ? points_colorR[i] : 1.0f;
+            vertex.color[1] = hasCol ? points_colorG[i] : 1.0f;
+            vertex.color[2] = hasCol ? points_colorB[i] : 1.0f;
 
-            vertex.normal[0] = points_normalX ? points_normalX[i] : 0.0f;
-            vertex.normal[1] = points_normalY ? points_normalY[i] : 0.0f;
-            vertex.normal[2] = points_normalZ ? points_normalZ[i] : 0.0f;
+            vertex.normal[0] = hasNormals ? points_normalX[i] : 0.0f;
+            vertex.normal[1] = hasNormals ? points_normalY[i] : 0.0f;
+            vertex.normal[2] = hasNormals ? points_normalZ[i] : 0.0f;
         }
 
         bindVBO(vertices);
@@ -192,7 +198,6 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 }
 
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
-    Timer timer{"bindvbo"}; // 83.5 ms for QuadSphere 11
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     size_t newSize = vertices.size() * sizeof(RenderVertex);
     glBufferData(GL_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
@@ -200,7 +205,6 @@ void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
-    Timer timer{"bindeboV"}; // 48 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     size_t newSize = vertexIndices.size() * sizeof(uint32_t);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
@@ -208,7 +212,6 @@ void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
-    Timer timer{"bindeboE"}; // 64 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     size_t newSize = m_numOfEdgesIndices * sizeof(uint32_t);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
@@ -216,28 +219,19 @@ void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
 }
 
 void RenderModel::draw() const {
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
+    glBindVertexArray(m_vaoTriangles);
     glDrawElements(GL_TRIANGLES, m_numOfVertexIndices, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
 }
 
 void RenderModel::drawPoints() const {
-    glBindVertexArray(m_vao);
-
+    glBindVertexArray(m_vaoTriangles);
     glDrawArrays(GL_POINTS, 0, m_numOfPoints);
-
-    glBindVertexArray(0);
 }
 
 void RenderModel::drawEdges() const {
     glLineWidth(edgesLineWidth);
-    glBindVertexArray(m_vao);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
+    glBindVertexArray(m_vaoEdges);
     glDrawElements(GL_LINES, m_numOfEdgesIndices, GL_UNSIGNED_INT, 0);
-
-    glBindVertexArray(0);
 }
 
 } // namespace euclide
