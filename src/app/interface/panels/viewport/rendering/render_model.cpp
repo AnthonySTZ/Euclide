@@ -82,7 +82,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
-    Timer timer{"Points"}; // 8.4ms with omp
+    Timer timer{"Points"}; // 283.267 ms with omp for QuadSphere 11
 
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
@@ -180,7 +180,7 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
     uint32_t* __restrict edgesPtr = edges.data();
 
     {
-        Timer timer{"Prim"}; // 8ms for 1000x1000 grid
+        Timer timer{"Prim"}; // 200ms for QuadSphere 11
         const Vertex* __restrict vertices = t_mesh.vertices.data();
         for (const auto& prim : t_mesh.primitives) {
             // Edges
@@ -214,26 +214,26 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 }
 
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
-    Timer timer{"bindvbo"};
+    Timer timer{"bindvbo"}; // 83.5 ms for QuadSphere 11
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
-    Timer timer{"bindeboV"};
+    Timer timer{"bindeboV"}; // 48 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(),
                  GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices) {
-    Timer timer{"bindeboP"};
+    Timer timer{"bindeboP"}; // 9 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
-    Timer timer{"bindeboE"};
+    Timer timer{"bindeboE"}; // 64 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
 }
