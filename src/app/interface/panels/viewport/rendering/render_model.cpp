@@ -216,26 +216,33 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
     Timer timer{"bindvbo"}; // 83.5 ms for QuadSphere 11
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(RenderVertex), vertices.data(), GL_DYNAMIC_DRAW);
+    size_t newSize = vertices.size() * sizeof(RenderVertex);
+    glBufferData(GL_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices.data());
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
     Timer timer{"bindeboV"}; // 48 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(uint32_t), vertexIndices.data(),
-                 GL_DYNAMIC_DRAW);
+    size_t newSize = vertexIndices.size() * sizeof(uint32_t);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, vertexIndices.data());
 }
 
 void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices) {
     Timer timer{"bindeboP"}; // 9 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointIndices.size() * sizeof(uint32_t), pointIndices.data(), GL_DYNAMIC_DRAW);
+    size_t newSize = pointIndices.size() * sizeof(uint32_t);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, pointIndices.data());
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
     Timer timer{"bindeboE"}; // 64 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numOfEdgesIndices * sizeof(uint32_t), edges.data(), GL_DYNAMIC_DRAW);
+    size_t newSize = m_numOfEdgesIndices * sizeof(uint32_t);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, edges.data());
 }
 
 void RenderModel::draw() const {
