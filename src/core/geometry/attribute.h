@@ -26,6 +26,7 @@ class Attribute {
     virtual std::unique_ptr<Attribute> clone() = 0;
 
     [[nodiscard]] inline std::string name() const noexcept { return m_name; }
+    inline void setName(const std::string& t_newName) noexcept { m_name = t_newName; }
     [[nodiscard]] inline size_t size() const noexcept { return m_size; }
 
     [[nodiscard]] virtual AttributeType type() const noexcept = 0;
