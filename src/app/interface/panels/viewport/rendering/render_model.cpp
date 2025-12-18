@@ -19,10 +19,6 @@ RenderModel::~RenderModel() {
         glDeleteBuffers(1, &m_eboVertex);
         m_eboVertex = 0;
     }
-    if (m_eboPoints != 0) {
-        glDeleteBuffers(1, &m_eboPoints);
-        m_eboPoints = 0;
-    }
     if (m_eboEdges != 0) {
         glDeleteBuffers(1, &m_eboEdges);
         m_eboEdges = 0;
@@ -37,7 +33,6 @@ void RenderModel::initBuffers() {
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_vbo);
     glGenBuffers(1, &m_eboVertex);
-    glGenBuffers(1, &m_eboPoints);
     glGenBuffers(1, &m_eboEdges);
 
     glBindVertexArray(m_vao);
@@ -57,9 +52,6 @@ void RenderModel::initBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
@@ -68,7 +60,7 @@ void RenderModel::initBuffers() {
 }
 
 void RenderModel::updateWithMesh(const Mesh& t_mesh) {
-    Timer timer{"Build Render Model"}; // 35ms for 1000x1000 grid
+    Timer timer{"Build Render Model"}; // 855.484ms for QuadSphere 11
 
     m_numOfPrims = t_mesh.primitives.size();
     glBindVertexArray(m_vao);
@@ -82,7 +74,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 } // namespace euclide
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
-    Timer timer{"Points"}; // 283.267 ms with omp for QuadSphere 11
+    Timer timer{"Points"}; // 240 ms with omp for QuadSphere 11
 
     m_numOfPoints = t_pointAttribs.size();
     const auto positions = t_pointAttribs.find("P");
@@ -145,20 +137,6 @@ void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
         }
 
         bindVBO(vertices);
-    }
-
-    {
-        std::vector<uint32_t> pointIndices(m_numOfPoints);
-        if (m_numOfPoints < 1'000'000) {
-            std::iota(pointIndices.begin(), pointIndices.end(), 0); // 0, 1, ..., m_numOfPoints-1
-        } else {
-            uint32_t* pointIndicesPtr = pointIndices.data();
-#pragma omp parallel for
-            for (size_t i = 0; i < m_numOfPoints; ++i) {
-                pointIndicesPtr[i] = i;
-            }
-        }
-        bindEBOPoints(pointIndices);
     }
 }
 
@@ -229,14 +207,6 @@ void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, vertexIndices.data());
 }
 
-void RenderModel::bindEBOPoints(const std::vector<uint32_t>& pointIndices) {
-    Timer timer{"bindeboP"}; // 9 ms for QuadSphere 11
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
-    size_t newSize = pointIndices.size() * sizeof(uint32_t);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, pointIndices.data());
-}
-
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
     Timer timer{"bindeboE"}; // 64 ms for QuadSphere 11
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
@@ -255,8 +225,7 @@ void RenderModel::draw() const {
 void RenderModel::drawPoints() const {
     glBindVertexArray(m_vao);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboPoints);
-    glDrawElements(GL_POINTS, m_numOfPoints, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_POINTS, 0, m_numOfPoints);
 
     glBindVertexArray(0);
 }

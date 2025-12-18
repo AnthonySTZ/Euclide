@@ -69,10 +69,6 @@ class RenderModel {
     /// @param vertexIndices Indices of vertices forming triangles.
     void bindEBOVertex(const std::vector<uint32_t>& vertexIndices);
 
-    /// @brief Upload point indices to the element buffer.
-    /// @param pointIndices Indices of vertices forming points.
-    void bindEBOPoints(const std::vector<uint32_t>& pointIndices);
-
     /// @brief Upload edge indices to the element buffer.
     /// @param edges Indices of vertices forming edges.
     void bindEBOEdges(const std::vector<uint32_t>& edges);
@@ -89,7 +85,6 @@ class RenderModel {
     uint32_t m_vao = 0;       ///< Vertex Array Object ID.
     uint32_t m_vbo = 0;       ///< Vertex Buffer Object ID.
     uint32_t m_eboVertex = 0; ///< Element Buffer Object for triangle indices.
-    uint32_t m_eboPoints = 0; ///< Element Buffer Object for point indices.
     uint32_t m_eboEdges = 0;  ///< Element Buffer Object for edge indices.
 
     size_t m_numOfPoints = 0;        ///< Total number of points.
