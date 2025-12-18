@@ -73,7 +73,7 @@ std::shared_ptr<Mesh> AttributeRandomize::compute(const size_t t_index,
 void AttributeRandomize::randomizeAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
                                             const float4 t_minValues, const float4 t_maxValues, const int t_seed) {
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
-    const size_t attrSize = std::min(std::min(attr->attrSize(), t_attrSize), 4);
+    const size_t attrSize = std::min(attr->attrSize(), t_attrSize);
     const size_t numElements = attr->size();
 
     auto randomGen = RandomGenerator(t_seed);
