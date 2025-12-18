@@ -208,7 +208,7 @@ void Subdivide::smoothVertexPoints(const std::vector<HalfEdge>& t_halfedges_d, A
         const HalfEdge& hd = t_halfedges_d[h];
         const uint32_t origin = hd.origin;
 
-        if (onBorder[h]) {
+        if (onBorder[h]) { // TODO: add checkbox for this
             pointsD1PosX[origin] = pointsDPosX[origin];
             pointsD1PosY[origin] = pointsDPosY[origin];
             pointsD1PosZ[origin] = pointsDPosZ[origin];
