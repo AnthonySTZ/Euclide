@@ -205,8 +205,8 @@ void Cylinder::createCylinder(Mesh& t_mesh, const CylinderSettings& t_settings) 
         vertices.reserve(totalVertices);
         vertices.resize(totalVertices);
 
-        for (uint32_t i = 0; i < t_settings.divisions; i++) {
-            vertices[vertIdx++] = Vertex{i};
+        for (uint32_t i = 1; i <= t_settings.divisions; i++) {
+            vertices[vertIdx++] = Vertex{t_settings.divisions - i};
         }
         for (uint32_t i = t_settings.divisions; i < t_settings.divisions * 2; i++) {
             vertices[vertIdx++] = Vertex{i};
