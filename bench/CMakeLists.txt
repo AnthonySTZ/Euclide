@@ -6,6 +6,7 @@ add_executable(EuclideBench
                 bench_grid.cpp
                 bench_cylinder.cpp
 
+                bench_transform.cpp
                 bench_subdivide.cpp
                 bench_merge.cpp
                 bench_copy_to_points.cpp
