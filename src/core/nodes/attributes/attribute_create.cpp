@@ -61,7 +61,7 @@ std::shared_ptr<Mesh> AttributeCreate::compute(const size_t t_index,
 void AttributeCreate::createAttribute(AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
                                       const float4 t_defaultValue) {
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
-    const size_t attrSize = std::min(attr->attrSize(), t_attrSize); // check if already exists with a smaller size
+    const size_t attrSize = attr->attrSize(); // check if already exists
     const size_t numElements = attr->size();
     for (size_t c = 0; c < attrSize; ++c) {
         float* ptr = attr->component<float>(c);

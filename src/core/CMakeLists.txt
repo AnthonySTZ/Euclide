@@ -44,7 +44,7 @@ target_link_libraries(core PUBLIC Vulkan::Vulkan)
 
 # ------------- COMPILE HLSL SHADERS ------------- #
 set(SHADERS
-    # subdivide...
+    perlin
 )
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/gpu/shaders")
 foreach(SHADER ${SHADERS})
