@@ -4,11 +4,15 @@
 
 [[vk::binding(3, 0)]] RWStructuredBuffer<float> OutBuffer;
 
-cbuffer PermutationBuffer : register(b4)
+[[vk::binding(4, 0)]] cbuffer PermutationBuffer
+{
+    int numPoints;
+};
+
+[[vk::binding(5, 0)]] cbuffer PermutationBuffer
 {
     int p[512];
 };
-
 
 float fade(float t) {
     return t * t * t * (t * (t * 6 - 15) + 10);
@@ -74,6 +78,8 @@ float perlin(float x, float y, float z) {
 [numthreads(256, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
+    if (DTid.x >= numPoints) return;
+
     float x = InBufferX[DTid.x];
     float y = InBufferY[DTid.x];
     float z = InBufferZ[DTid.x];

@@ -96,7 +96,7 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
 
 void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
                                  const int t_octaves, const float persistence) {
-    const size_t numPoints = t_attribs.size();
+    const int numPoints = t_attribs.size();
 
     auto positions = t_mesh.pointAttribs.find("P");
     const float* posX = positions->component<float>(0);
@@ -113,6 +113,8 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
 
     GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 
+    GPUBuffer inBufNumPoints = GPUBuffer::create<int>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    inBufNumPoints.write(&numPoints);
     GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
     inBufPermutations.write(perlinPermutations.data());
 
@@ -122,6 +124,7 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
                                    .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                   .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .build();
 
     GPUPipeline pipeline{device, "gpu/shaders/perlin.spv", *descriptorsetLayout};
@@ -132,9 +135,11 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
                             &inBufPosY,
                             &inBufPosZ,
                             &outBuffer,
+                            &inBufNumPoints,
                             &inBufPermutations,
                         }};
-    task.run(numPoints / 256);
+    size_t groupCount = (numPoints + 255) / 256;
+    task.run(groupCount);
 
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = attr->attrSize();
