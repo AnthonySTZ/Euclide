@@ -29,7 +29,7 @@ void GPUBuffer::unmap() {
     }
 }
 
-void GPUBuffer::writeToBuffer(void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
+void GPUBuffer::writeToBuffer(const void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
     assert(m_mapped && "Cannot copy to unmapped buffer");
 
     if (t_size == VK_WHOLE_SIZE) {
@@ -41,7 +41,7 @@ void GPUBuffer::writeToBuffer(void* t_data, VkDeviceSize t_size, VkDeviceSize t_
     }
 }
 
-void GPUBuffer::write(void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
+void GPUBuffer::write(const void* t_data, VkDeviceSize t_size, VkDeviceSize t_offset) {
     map(t_size, t_offset);
     writeToBuffer(t_data);
     unmap();

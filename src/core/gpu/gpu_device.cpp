@@ -156,6 +156,8 @@ void GPUDevice::endSingleTimeCommands(VkCommandBuffer t_commandBuffer) const {
         throw std::runtime_error("failed to record command buffer!");
     }
 
+    vkResetFences(m_device, 1, &m_fence);
+
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;

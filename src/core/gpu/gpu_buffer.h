@@ -34,9 +34,9 @@ class GPUBuffer {
     /// @param size (Optional) Size of the data to copy. Pass VK_WHOLE_SIZE to flush the complete buffer
     /// range.
     /// @param offset (Optional) Byte offset from beginning of mapped region
-    void writeToBuffer(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
+    void writeToBuffer(const void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
 
-    void write(void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
+    void write(const void* t_data, VkDeviceSize t_size = VK_WHOLE_SIZE, VkDeviceSize t_offset = 0);
 
     [[nodiscard]] VkDescriptorBufferInfo descriptorInfo(VkDeviceSize t_size = VK_WHOLE_SIZE,
                                                         VkDeviceSize t_offset = 0) const;
