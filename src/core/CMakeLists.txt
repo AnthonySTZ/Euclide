@@ -41,7 +41,7 @@ target_include_directories(core
 find_package(Vulkan REQUIRED)
 target_link_libraries(core PUBLIC Vulkan::Vulkan)
 
-# ------------- COMPILE HSLS SHADERS ------------- #
+# ------------- COMPILE HLSL SHADERS ------------- #
 set(SHADERS
     # subdivide...
 )
