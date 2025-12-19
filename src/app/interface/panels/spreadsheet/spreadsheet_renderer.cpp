@@ -8,8 +8,8 @@ SpreadsheetRenderer::SpreadsheetRenderer(const std::weak_ptr<Spreadsheet> t_spre
 void SpreadsheetRenderer::render() {
     if (ImGui::BeginChild("TableChild", ImVec2(0, 0), true, CHILD_FLAGS)) {
         renderTable();
-        ImGui::EndChild();
     }
+    ImGui::EndChild();
 }
 
 void SpreadsheetRenderer::renderTable() {
@@ -89,8 +89,8 @@ void SpreadsheetRenderer::drawTable(const AttributeSet& t_attributes) {
                 }
             }
         }
-        ImGui::EndTable();
     }
+    ImGui::EndTable();
 }
 
 } // namespace euclide
