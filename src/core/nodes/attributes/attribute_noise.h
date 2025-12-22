@@ -11,6 +11,11 @@
 namespace euclide {
 
 class AttributeNoise : public Node {
+    struct NumPointsParams {
+        int numPoints = 0;
+        int a, b, c; // padding
+    };
+
   public:
     enum Kind { POINTS = 0, PRIMITIVES = 1 };
 

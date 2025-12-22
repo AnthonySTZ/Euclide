@@ -97,6 +97,7 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
 void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
                                  const int t_octaves, const float persistence) {
     const int numPoints = t_attribs.size();
+    const NumPointsParams numPointsParams{numPoints};
 
     auto positions = t_mesh.pointAttribs.find("P");
     const float* posX = positions->component<float>(0);
@@ -110,20 +111,20 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
     inBufPosY.write(posY);
     GPUBuffer inBufPosZ = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     inBufPosZ.write(posZ);
+    GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    inBufPermutations.write(perlinPermutations.data());
+
+    GPUBuffer inBufNumPoints = GPUBuffer::create<NumPointsParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    inBufNumPoints.write(&numPointsParams);
 
     GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-
-    GPUBuffer inBufNumPoints = GPUBuffer::create<int>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    inBufNumPoints.write(&numPoints);
-    GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    inBufPermutations.write(perlinPermutations.data());
 
     auto descriptorsetLayout = GPUDescriptorSetLayout::Builder(device)
                                    .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                   .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                    .build();
 
@@ -135,8 +136,8 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
                             &inBufPosY,
                             &inBufPosZ,
                             &outBuffer,
-                            &inBufNumPoints,
                             &inBufPermutations,
+                            &inBufNumPoints,
                         }};
     size_t groupCount = (numPoints + 255) / 256;
     task.run(groupCount);

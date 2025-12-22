@@ -4,14 +4,12 @@
 
 [[vk::binding(3, 0)]] RWStructuredBuffer<float> OutBuffer;
 
-[[vk::binding(4, 0)]] cbuffer NumPointsBuffer
+[[vk::binding(4, 0)]] RWStructuredBuffer<int> p;
+
+[[vk::binding(5, 0)]] cbuffer NumPointsBuffer
 {
     int numPoints;
-};
-
-[[vk::binding(5, 0)]] cbuffer PermutationBuffer
-{
-    int p[512];
+    int pad[3]; // 16 bytes total
 };
 
 float fade(float t) {
