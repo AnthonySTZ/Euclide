@@ -43,7 +43,7 @@ void RenderModel::initBuffers() {
 
     glBindVertexArray(m_vaoTriangles);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex),
@@ -60,7 +60,7 @@ void RenderModel::initBuffers() {
 
     glBindVertexArray(m_vaoEdges);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex),
@@ -77,7 +77,7 @@ void RenderModel::updateWithMesh(const Mesh& t_mesh) {
 
     computePoints(t_mesh.pointAttribs);
     computeEdgesAndPrims(t_mesh);
-} // namespace euclide
+}
 
 void RenderModel::computePoints(const AttributeSet& t_pointAttribs) {
     Timer timer{"Points"}; // 206 ms with omp for QuadSphere 11
@@ -160,12 +160,12 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
     }
     std::vector<uint32_t> vertexIndices(totalTriangles * 3);
     std::vector<uint32_t> edges(totalEdges * 2);
-    uint32_t* __restrict vertexIndicesPtr = vertexIndices.data();
-    uint32_t* __restrict edgesPtr = edges.data();
+    uint32_t* vertexIndicesPtr = vertexIndices.data();
+    uint32_t* edgesPtr = edges.data();
 
     {
         Timer timer{"Prim"}; // 200ms for QuadSphere 11
-        const Vertex* __restrict vertices = t_mesh.vertices.data();
+        const Vertex* vertices = t_mesh.vertices.data();
         for (const auto& prim : t_mesh.primitives) {
             // Edges
             const uint32_t numVertices = prim.numVertices;
@@ -200,21 +200,21 @@ void RenderModel::computeEdgesAndPrims(const Mesh& t_mesh) {
 void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     size_t newSize = vertices.size() * sizeof(RenderVertex);
-    glBufferData(GL_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, newSize, nullptr, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, newSize, vertices.data());
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
     size_t newSize = vertexIndices.size() * sizeof(uint32_t);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, vertexIndices.data());
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
     size_t newSize = m_numOfEdgesIndices * sizeof(uint32_t);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, edges.data());
 }
 

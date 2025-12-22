@@ -92,7 +92,6 @@ class RenderModel {
     size_t m_numOfPoints = 0;        ///< Total number of points.
     size_t m_numOfVertexIndices = 0; ///< Total number of triangle indices.
     size_t m_numOfEdgesIndices = 0;  ///< Total number of edge indices.
-
     size_t m_numOfPrims = 0;
 
     glm::vec3 m_edgeColor{0.25, 0.25, 0.25};
