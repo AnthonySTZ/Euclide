@@ -11,9 +11,15 @@
 namespace euclide {
 
 class AttributeNoise : public Node {
-    struct NumPointsParams {
-        int numPoints = 0;
-        int a, b, c; // padding
+    struct PerlinParams {
+        int numPoints;
+        int octaves;
+        float frequency;
+    };
+
+    struct PerlinNoiseSettings {
+        int octaves;
+        float frequency;
     };
 
   public:
@@ -22,7 +28,7 @@ class AttributeNoise : public Node {
     AttributeNoise();
 
     static void perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                            const int t_octaves, const float persistence);
+                            const PerlinNoiseSettings& t_settings);
 
   private:
     std::shared_ptr<Mesh> compute(const size_t t_index,

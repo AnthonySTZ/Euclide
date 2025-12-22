@@ -6,10 +6,11 @@
 
 [[vk::binding(4, 0)]] RWStructuredBuffer<int> p;
 
-[[vk::binding(5, 0)]] cbuffer NumPointsBuffer
+[[vk::binding(5, 0)]] cbuffer ParamsBuffer
 {
     int numPoints;
-    int pad[3]; // 16 bytes total
+    int octaves;
+    float frequency;
 };
 
 float fade(float t) {
@@ -83,18 +84,17 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float z = InBufferZ[DTid.x];
 
     float total = 0;
+    float acc_frequency = frequency;
+    float acc_amplitude = 1;
     float persistence = 1;
-    int octaves = 1; 
-    float frequency = 1;
-    float amplitude = 1;
     float maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
-    for(int i=0;i<octaves;i++) {
-        total += perlin(x * frequency, y * frequency, z * frequency) * amplitude;
+    for(int i = 0; i < octaves; i++) {
+        total += perlin(x * acc_frequency, y * acc_frequency, z * acc_frequency) * acc_amplitude;
         
-        maxValue += amplitude;
+        maxValue += acc_amplitude;
         
-        amplitude *= persistence;
-        frequency *= 2;
+        acc_amplitude *= persistence;
+        acc_frequency *= 2;
     }
     
     OutBuffer[DTid.x] = total/maxValue;

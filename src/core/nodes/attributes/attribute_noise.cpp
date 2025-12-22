@@ -64,7 +64,15 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
         step : 1,
     });
     addField("octaves", octavesField);
-    // TODO: add frequency float3 and persistence
+
+    auto frequencyField = std::make_shared<NodeField<float>>(1.0f);
+    frequencyField->setMetadata(NodeFieldMetadata{
+        displayName : "Frequency",
+        min : 0,
+        step : 0.01,
+    });
+    addField("frequency", frequencyField);
+    // TODO: add frequency float3
 }
 
 std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
@@ -81,23 +89,24 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
     const int octaves = getField<NodeField<int>>("octaves")->getValue();
+    const float frequency = getField<NodeField<float>>("frequency")->getValue();
 
     if (attrName.empty())
         return output;
 
     if (kind == Kind::POINTS) {
-        perlinNoise(*output, output->pointAttribs, attrName, attrSize, octaves, 1);
+        perlinNoise(*output, output->pointAttribs, attrName, attrSize, PerlinNoiseSettings{octaves, frequency});
     } else if (kind == Kind::PRIMITIVES) {
-        perlinNoise(*output, output->primAttribs, attrName, attrSize, octaves, 1);
+        perlinNoise(*output, output->primAttribs, attrName, attrSize, PerlinNoiseSettings{octaves, frequency});
     }
 
     return output;
 }
 
 void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                                 const int t_octaves, const float persistence) {
+                                 const PerlinNoiseSettings& t_settings) {
     const int numPoints = t_attribs.size();
-    const NumPointsParams numPointsParams{numPoints};
+    const PerlinParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
 
     auto positions = t_mesh.pointAttribs.find("P");
     const float* posX = positions->component<float>(0);
@@ -114,8 +123,8 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
     GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     inBufPermutations.write(perlinPermutations.data());
 
-    GPUBuffer inBufNumPoints = GPUBuffer::create<NumPointsParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    inBufNumPoints.write(&numPointsParams);
+    GPUBuffer inBufParams = GPUBuffer::create<PerlinParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    inBufParams.write(&perlinParams);
 
     GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 
@@ -137,7 +146,7 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
                             &inBufPosZ,
                             &outBuffer,
                             &inBufPermutations,
-                            &inBufNumPoints,
+                            &inBufParams,
                         }};
     size_t groupCount = (numPoints + 255) / 256;
     task.run(groupCount);
