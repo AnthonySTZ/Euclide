@@ -29,7 +29,7 @@ add_library(core STATIC
     nodes/attributes/attribute_create.cpp
     nodes/attributes/attribute_randomize.cpp
     nodes/attributes/attribute_rename.cpp
-    # nodes/attributes/attribute_noise.cpp
+    nodes/attributes/attribute_noise.cpp
 
     nodes/utility/null.cpp
 )

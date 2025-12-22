@@ -4,7 +4,7 @@
 
 [[vk::binding(3, 0)]] RWStructuredBuffer<float> OutBuffer;
 
-[[vk::binding(4, 0)]] cbuffer PermutationBuffer
+[[vk::binding(4, 0)]] cbuffer NumPointsBuffer
 {
     int numPoints;
 };
