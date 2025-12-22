@@ -205,17 +205,23 @@ void RenderModel::bindVBO(const std::vector<RenderVertex>& vertices) {
 }
 
 void RenderModel::bindEBOVertex(const std::vector<uint32_t>& vertexIndices) {
+    glBindVertexArray(m_vaoTriangles);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboVertex);
+
     size_t newSize = vertexIndices.size() * sizeof(uint32_t);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, vertexIndices.data());
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, vertexIndices.data(), GL_DYNAMIC_DRAW);
+
+    glBindVertexArray(0);
 }
 
 void RenderModel::bindEBOEdges(const std::vector<uint32_t>& edges) {
+    glBindVertexArray(m_vaoEdges);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboEdges);
-    size_t newSize = m_numOfEdgesIndices * sizeof(uint32_t);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, nullptr, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, newSize, edges.data());
+
+    size_t newSize = edges.size() * sizeof(uint32_t);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, edges.data(), GL_DYNAMIC_DRAW);
+
+    glBindVertexArray(0);
 }
 
 void RenderModel::draw() const {
