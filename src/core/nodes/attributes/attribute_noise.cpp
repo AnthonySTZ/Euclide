@@ -2,7 +2,7 @@
 
 namespace euclide {
 
-const std::array<int, 512> AttributeNoise::perlinPermutations = {
+const std::array<int, 512> PerlinNoise::perlinPermutations = {
     151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,   225, 140, 36,  103, 30,  69,  142, 8,
     99,  37,  240, 21,  10,  23,  190, 6,   148, 247, 120, 234, 75,  0,   26,  197, 62,  94,  252, 219, 203, 117, 35,
     11,  32,  57,  177, 33,  88,  237, 149, 56,  87,  174, 20,  125, 136, 171, 168, 68,  175, 74,  165, 71,  134, 139,
@@ -95,18 +95,20 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
         return output;
 
     if (kind == Kind::POINTS) {
-        perlinNoise(*output, output->pointAttribs, attrName, attrSize, PerlinNoiseSettings{octaves, frequency});
+        PerlinNoise::applyToMesh(*output, output->pointAttribs, attrName, attrSize,
+                                 PerlinNoise::PerlinSettings{octaves, frequency});
     } else if (kind == Kind::PRIMITIVES) {
-        perlinNoise(*output, output->primAttribs, attrName, attrSize, PerlinNoiseSettings{octaves, frequency});
+        PerlinNoise::applyToMesh(*output, output->primAttribs, attrName, attrSize,
+                                 PerlinNoise::PerlinSettings{octaves, frequency});
     }
 
     return output;
 }
 
-void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                                 const PerlinNoiseSettings& t_settings) {
+void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
+                              const PerlinNoise::PerlinSettings& t_settings) {
     const int numPoints = t_attribs.size();
-    const PerlinParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
+    const PerlinNoise::BufferParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
 
     auto positions = t_mesh.pointAttribs.find("P");
     const float* posX = positions->component<float>(0);
@@ -123,7 +125,7 @@ void AttributeNoise::perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const st
     GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     inBufPermutations.write(perlinPermutations.data());
 
-    GPUBuffer inBufParams = GPUBuffer::create<PerlinParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    GPUBuffer inBufParams = GPUBuffer::create<PerlinNoise::BufferParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
     inBufParams.write(&perlinParams);
 
     GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);

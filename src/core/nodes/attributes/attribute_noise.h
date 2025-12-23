@@ -27,14 +27,27 @@ class AttributeNoise : public Node {
 
     AttributeNoise();
 
-    static void perlinNoise(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                            const PerlinNoiseSettings& t_settings);
-
   private:
     std::shared_ptr<Mesh> compute(const size_t t_index,
                                   const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
 
   public:
+};
+
+class PerlinNoise {
+  public:
+    struct BufferParams {
+        int numPoints;
+        int octaves;
+        float frequency;
+    };
+    struct PerlinSettings {
+        int octaves;
+        float frequency;
+    };
+    static void applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
+                            const PerlinSettings& t_settings);
+
     static const std::array<int, 512> perlinPermutations;
 };
 
