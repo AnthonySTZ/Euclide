@@ -64,15 +64,15 @@ void GPUBuffer::read(void* t_data) {
 }
 
 void GPUBuffer::ensureSize(const VkDeviceSize t_instanceCount) {
-    VkDeviceSize bufferSize = m_instanceSize * t_instanceCount;
-    if (m_bufferSize >= bufferSize)
+    VkDeviceSize oldSize = m_bufferSize;
+    m_bufferSize = m_alignmentSize * t_instanceCount;
+    if (oldSize >= m_bufferSize)
         return;
 
     unmap();
     vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
     vkFreeMemory(m_device.device(), m_memory, nullptr);
 
-    m_bufferSize = m_alignmentSize * t_instanceCount;
     m_device.createBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 }
 
