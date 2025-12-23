@@ -3,7 +3,7 @@
 #include "nodes/primitive/grid.h"
 #include "nodes/attributes/attribute_noise.h"
 
-static void BM_PerlinNoise(benchmark::State& state) { // 77.9ms
+static void BM_PerlinNoise(benchmark::State& state) { // 27.6ms
     euclide::Mesh mesh;
     euclide::Grid::createGrid(mesh, euclide::GridSettings{.divisions = {1000, 1000}});
 
