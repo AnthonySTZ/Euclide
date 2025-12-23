@@ -5,6 +5,8 @@
 
 static void BM_PerlinNoise(benchmark::State& state) { // 27.6ms - laptop
     euclide::Mesh mesh;
+    euclide::GPUManager& manager = euclide::GPUManager::getInstance();
+
     euclide::Grid::createGrid(mesh, euclide::GridSettings{.divisions = {1000, 1000}});
 
     euclide::PerlinNoise::PerlinSettings settings{.octaves = 6, .frequency = 1.0};
@@ -15,4 +17,4 @@ static void BM_PerlinNoise(benchmark::State& state) { // 27.6ms - laptop
     }
 }
 
-BENCHMARK(BM_PerlinNoise)->Iterations(10)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_PerlinNoise)->Iterations(1)->Unit(benchmark::kMillisecond);

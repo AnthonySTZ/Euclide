@@ -59,6 +59,10 @@ void GPUBuffer::free() {
         vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
     if (m_memory)
         vkFreeMemory(m_device.device(), m_memory, nullptr);
+
+    m_buffer = VK_NULL_HANDLE;
+    m_memory = VK_NULL_HANDLE;
+    m_mapped = nullptr;
 }
 
 VkResult GPUBuffer::map(VkDeviceSize size, VkDeviceSize offset) {

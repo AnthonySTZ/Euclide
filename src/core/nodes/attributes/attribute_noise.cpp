@@ -150,20 +150,22 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
 
     m_outBuf.ensureSize(numPoints);
 
-    {
-        GPUComputeTask task{m_device,
-                            m_pipeline,
-                            {
-                                &m_inBufPosX,
-                                &m_inBufPosY,
-                                &m_inBufPosZ,
-                                &m_outBuf,
-                                &m_inBufPermutations,
-                                &m_inBufParams,
-                            }};
-        size_t groupCount = (numPoints + 255) / 256;
-        task.run(groupCount);
-    }
+    GPUComputeTask task{
+        m_device,
+        m_pipeline,
+        {
+            &m_inBufPosX,
+            &m_inBufPosY,
+            &m_inBufPosZ,
+            &m_outBuf,
+            &m_inBufPermutations,
+            &m_inBufParams,
+        },
+        STORAGE_BUFFER_COUNT,
+        UNIFORM_BUFFER_COUNT,
+    };
+    size_t groupCount = (numPoints + 255) / 256;
+    task.run(groupCount);
 
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = attr->attrSize();

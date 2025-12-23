@@ -44,6 +44,9 @@ class PerlinNoise {
     GPUBuffer m_inBufPermutations;
     GPUBuffer m_inBufParams;
     GPUBuffer m_outBuf;
+
+    static constexpr int STORAGE_BUFFER_COUNT = 5;
+    static constexpr int UNIFORM_BUFFER_COUNT = 1;
 };
 
 class AttributeNoise : public Node {
