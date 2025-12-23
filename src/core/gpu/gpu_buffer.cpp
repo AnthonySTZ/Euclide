@@ -14,9 +14,51 @@ GPUBuffer::GPUBuffer(GPUDevice& t_device, const VkDeviceSize t_instanceSize, con
 }
 
 GPUBuffer::~GPUBuffer() {
+    free();
+}
+
+GPUBuffer::GPUBuffer(GPUDevice& t_device) : m_device(t_device) {
+}
+
+GPUBuffer::GPUBuffer(GPUBuffer&& t_other)
+    : m_device(t_other.m_device), m_buffer(t_other.m_buffer), m_memory(t_other.m_memory), m_mapped(t_other.m_mapped),
+      m_bufferSize(t_other.m_bufferSize), m_alignmentSize(t_other.m_alignmentSize),
+      m_instanceSize(t_other.m_instanceSize), m_usageFlags(t_other.m_usageFlags),
+      m_memoryPropertyFlags(t_other.m_memoryPropertyFlags) {
+    t_other.m_buffer = VK_NULL_HANDLE;
+    t_other.m_memory = VK_NULL_HANDLE;
+    t_other.m_mapped = nullptr;
+    t_other.m_bufferSize = 0;
+    t_other.m_alignmentSize = 0;
+}
+
+GPUBuffer& GPUBuffer::operator=(GPUBuffer&& t_other) {
+    free();
+    m_device = t_other.m_device;
+    m_buffer = t_other.m_buffer;
+    m_memory = t_other.m_memory;
+    m_mapped = t_other.m_mapped;
+    m_bufferSize = t_other.m_bufferSize;
+    m_alignmentSize = t_other.m_alignmentSize;
+    m_instanceSize = t_other.m_instanceSize;
+    m_usageFlags = t_other.m_usageFlags;
+    m_memoryPropertyFlags = t_other.m_memoryPropertyFlags;
+
+    t_other.m_buffer = VK_NULL_HANDLE;
+    t_other.m_memory = VK_NULL_HANDLE;
+    t_other.m_mapped = nullptr;
+    t_other.m_bufferSize = 0;
+    t_other.m_alignmentSize = 0;
+
+    return *this;
+}
+
+void GPUBuffer::free() {
     unmap();
-    vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
-    vkFreeMemory(m_device.device(), m_memory, nullptr);
+    if (m_buffer)
+        vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
+    if (m_memory)
+        vkFreeMemory(m_device.device(), m_memory, nullptr);
 }
 
 VkResult GPUBuffer::map(VkDeviceSize size, VkDeviceSize offset) {
@@ -69,9 +111,7 @@ void GPUBuffer::ensureSize(const VkDeviceSize t_instanceCount) {
     if (oldSize >= m_bufferSize)
         return;
 
-    unmap();
-    vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
-    vkFreeMemory(m_device.device(), m_memory, nullptr);
+    free();
 
     m_device.createBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 }

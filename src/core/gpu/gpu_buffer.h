@@ -11,6 +11,16 @@ class GPUBuffer {
               const VkDeviceSize t_minOffsetAlignment = 1);
     ~GPUBuffer();
 
+    GPUBuffer(GPUDevice& t_device);
+
+    GPUBuffer(const GPUBuffer&) = delete;            ///< Delete copy constructor
+    GPUBuffer& operator=(const GPUBuffer&) = delete; ///< Delete copy assignment
+
+    GPUBuffer(GPUBuffer&& t_other);            ///< Move constructor
+    GPUBuffer& operator=(GPUBuffer&& t_other); ///< Move assignment
+
+    void free();
+
     template <typename T>
     [[nodiscard]] inline static GPUBuffer create(GPUDevice& t_device, const uint32_t t_instanceCount,
                                                  const VkBufferUsageFlags t_usageFlags,
@@ -67,11 +77,11 @@ class GPUBuffer {
     VkDeviceMemory m_memory = VK_NULL_HANDLE;
     void* m_mapped = nullptr;
 
-    VkDeviceSize m_bufferSize;
-    VkDeviceSize m_alignmentSize;
-    VkDeviceSize m_instanceSize;
-    VkBufferUsageFlags m_usageFlags;
-    VkMemoryPropertyFlags m_memoryPropertyFlags;
+    VkDeviceSize m_bufferSize = 0;
+    VkDeviceSize m_alignmentSize = 0;
+    VkDeviceSize m_instanceSize = 0;
+    VkBufferUsageFlags m_usageFlags = 0;
+    VkMemoryPropertyFlags m_memoryPropertyFlags = 0;
 };
 
 } // namespace euclide
