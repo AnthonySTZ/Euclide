@@ -12,14 +12,16 @@ namespace euclide {
 
 class PerlinNoise {
   public:
-    struct BufferParams {
-        int numPoints;
-        int octaves;
-        float frequency;
+    struct alignas(16) BufferParams {
+        float3 frequency; // 12 bytes
+        float pad_;       // 4 bytes to offset to 16
+        int octaves;      // 4 bytes 24
+        int numPoints;    // 4 bytes 20
+        // -> 32 bytes because of alignas 16 which will add an offset
     };
     struct PerlinSettings {
         int octaves;
-        float frequency;
+        float3 frequency;
     };
 
   public:

@@ -8,9 +8,10 @@
 
 [[vk::binding(5, 0)]] cbuffer ParamsBuffer
 {
-    int numPoints;
+    float3 frequency;
+    float pad_;
     int octaves;
-    float frequency;
+    int numPoints;
 };
 
 float fade(float t) {
@@ -84,12 +85,12 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float z = InBufferZ[DTid.x];
 
     float total = 0;
-    float acc_frequency = frequency;
+    float3 acc_frequency = frequency;
     float acc_amplitude = 1;
     float persistence = 1;
     float maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
     for(int i = 0; i < octaves; i++) {
-        total += perlin(x * acc_frequency, y * acc_frequency, z * acc_frequency) * acc_amplitude;
+        total += perlin(x * acc_frequency.x, y * acc_frequency.y, z * acc_frequency.z) * acc_amplitude;
         
         maxValue += acc_amplitude;
         

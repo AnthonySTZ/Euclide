@@ -1,5 +1,7 @@
 #include "attribute_noise.h"
 
+#include "fields/float3field.h"
+
 namespace euclide {
 
 const std::array<int, 512> PerlinNoise::perlinPermutations = {
@@ -65,7 +67,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
     });
     addField("octaves", octavesField);
 
-    auto frequencyField = std::make_shared<NodeField<float>>(1.0f);
+    auto frequencyField = std::make_shared<Float3Field>(1.0f, 1.0f, 1.0f);
     frequencyField->setMetadata(NodeFieldMetadata{
         displayName : "Frequency",
         min : 0,
@@ -89,7 +91,7 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
     const std::string attrName = getField<NodeField<std::string>>("attributeName")->getValue();
     const int octaves = getField<NodeField<int>>("octaves")->getValue();
-    const float frequency = getField<NodeField<float>>("frequency")->getValue();
+    const float3 frequency = getField<Float3Field>("frequency")->getValue();
 
     if (attrName.empty())
         return output;
@@ -128,7 +130,7 @@ PerlinNoise::PerlinNoise()
 void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
                               const PerlinNoise::PerlinSettings& t_settings) {
     const int numPoints = t_attribs.size();
-    const PerlinNoise::BufferParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
+    const PerlinNoise::BufferParams perlinParams{t_settings.frequency, 0, t_settings.octaves, numPoints};
 
     auto positions = t_mesh.pointAttribs.find("P");
     const float* posX = positions->component<float>(0);
