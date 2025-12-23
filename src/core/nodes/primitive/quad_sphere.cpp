@@ -32,8 +32,7 @@ QuadSphere::QuadSphere() : Node(0, 1, "QuadSphere") {
     addField("divisions", divisionsField);
 }
 
-std::shared_ptr<Mesh> QuadSphere::compute(const size_t t_index,
-                                          const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
+std::shared_ptr<Mesh> QuadSphere::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
     auto output = std::make_shared<Mesh>();
 
     const float3 position = getField<Float3Field>("position")->getValue();

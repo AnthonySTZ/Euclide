@@ -10,8 +10,7 @@ class CreatePointNode : public Node {
     CreatePointNode() : Node(0, 1, "Point") { addField("posX", std::make_shared<NodeField<float>>(5.0)); };
 
   private:
-    std::shared_ptr<Mesh> compute(const size_t t_index,
-                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override {
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
         auto output = std::make_shared<Mesh>();
         output->addPoint(1.0, 2.0, 3.0); // predictable creation
         return output;
@@ -20,11 +19,10 @@ class CreatePointNode : public Node {
 
 class TestNode : public Node {
   public:
-    TestNode() : Node(1, 2, "Test"){};
+    TestNode() : Node(1, 2, "Test") {};
 
   private:
-    std::shared_ptr<Mesh> compute(const size_t t_index,
-                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override {
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override {
         if (t_inputs[0] == nullptr)
             return nullptr;
         auto output = std::make_shared<Mesh>(*t_inputs[0]);

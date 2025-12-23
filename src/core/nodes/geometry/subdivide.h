@@ -26,8 +26,7 @@ class Subdivide : public Node {
     /// @param t_index Output index (only one output in this node).
     /// @param t_inputs Vector of input meshes.
     /// @return Shared pointer to the subdivided output mesh.
-    std::shared_ptr<Mesh> compute(const size_t t_index,
-                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override;
 
     /// @brief Compute Halfedge refinement for the next division
     /// @param t_halfedges_d1 Next division halfedge vector

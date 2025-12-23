@@ -5,10 +5,12 @@ namespace euclide {
 GPUBuffer::GPUBuffer(GPUDevice& t_device, const VkDeviceSize t_instanceSize, const uint32_t t_instanceCount,
                      const VkBufferUsageFlags t_usageFlags, const VkMemoryPropertyFlags t_memoryPropertyFlags,
                      const VkDeviceSize t_minOffsetAlignment)
-    : m_device{t_device}, m_instanceSize{t_instanceSize} {
+    : m_device(t_device), m_instanceSize(t_instanceSize), m_usageFlags(t_usageFlags),
+      m_memoryPropertyFlags(t_memoryPropertyFlags) {
     m_alignmentSize = getAlignment(t_instanceSize, t_minOffsetAlignment);
     m_bufferSize = m_alignmentSize * t_instanceCount;
-    m_device.createBuffer(m_bufferSize, t_usageFlags, t_memoryPropertyFlags, m_buffer, m_memory);
+
+    m_device.createBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 }
 
 GPUBuffer::~GPUBuffer() {
@@ -59,6 +61,19 @@ void GPUBuffer::read(void* t_data) {
     map();
     memcpy(t_data, m_mapped, m_bufferSize);
     unmap();
+}
+
+void GPUBuffer::ensureSize(const VkDeviceSize t_instanceCount) {
+    VkDeviceSize bufferSize = m_instanceSize * t_instanceCount;
+    if (m_bufferSize >= bufferSize)
+        return;
+
+    unmap();
+    vkDestroyBuffer(m_device.device(), m_buffer, nullptr);
+    vkFreeMemory(m_device.device(), m_memory, nullptr);
+
+    m_bufferSize = m_alignmentSize * t_instanceCount;
+    m_device.createBuffer(m_bufferSize, m_usageFlags, m_memoryPropertyFlags, m_buffer, m_memory);
 }
 
 VkDeviceSize GPUBuffer::getAlignment(VkDeviceSize t_instanceSize, VkDeviceSize t_minOffsetAlignment) {

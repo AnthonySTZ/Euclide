@@ -12,7 +12,7 @@ Cube::Cube() : Node(0, 1, "Cube") {
     addField("size", sizeField);
 }
 
-std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
+std::shared_ptr<Mesh> Cube::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
     auto output = std::make_shared<Mesh>();
 
     float3 position = getField<Float3Field>("position")->getValue();

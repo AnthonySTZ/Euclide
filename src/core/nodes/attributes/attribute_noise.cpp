@@ -76,7 +76,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
 }
 
 std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
-                                              const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
+                                              const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
     if (t_inputs[0] == nullptr)
         return std::make_shared<Mesh>();
 
@@ -115,11 +115,18 @@ PerlinNoise::PerlinNoise()
                                 .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                 .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
                                 .build()),
-      m_pipeline(GPUPipeline{m_device, "gpu/shaders/perlin.spv", *m_descriptorSetLayout}) {
+      m_pipeline(GPUPipeline{m_device, "gpu/shaders/perlin.spv", *m_descriptorSetLayout}),
+      m_inBufPosX(GPUBuffer::create<float>(m_device, 1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)),
+      m_inBufPosY(GPUBuffer::create<float>(m_device, 1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)),
+      m_inBufPosZ(GPUBuffer::create<float>(m_device, 1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)),
+      m_inBufPermutations(GPUBuffer::create<int>(m_device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)),
+      m_inBufParams(GPUBuffer::create<PerlinNoise::BufferParams>(m_device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)),
+      m_outBuf(GPUBuffer::create<float>(m_device, 1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)) {
+    m_inBufPermutations.write(perlinPermutations.data());
 }
 
 void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                              const PerlinNoise::PerlinSettings& t_settings) const {
+                              const PerlinNoise::PerlinSettings& t_settings) {
     const int numPoints = t_attribs.size();
     const PerlinNoise::BufferParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
 
@@ -128,31 +135,29 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
     const float* posY = positions->component<float>(1);
     const float* posZ = positions->component<float>(2);
 
-    GPUBuffer inBufPosX = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosX.write(posX);
-    GPUBuffer inBufPosY = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosY.write(posY);
-    GPUBuffer inBufPosZ = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosZ.write(posZ);
-    GPUBuffer inBufPermutations = GPUBuffer::create<int>(m_device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPermutations.write(perlinPermutations.data());
+    m_inBufPosX.ensureSize(numPoints);
+    m_inBufPosX.write(posX);
 
-    GPUBuffer inBufParams =
-        GPUBuffer::create<PerlinNoise::BufferParams>(m_device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    inBufParams.write(&perlinParams);
+    m_inBufPosY.ensureSize(numPoints);
+    m_inBufPosY.write(posY);
 
-    GPUBuffer outBuffer = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    m_inBufPosZ.ensureSize(numPoints);
+    m_inBufPosZ.write(posZ);
+
+    m_inBufParams.write(&perlinParams);
+
+    m_outBuf.ensureSize(numPoints);
 
     {
         GPUComputeTask task{m_device,
                             m_pipeline,
                             {
-                                &inBufPosX,
-                                &inBufPosY,
-                                &inBufPosZ,
-                                &outBuffer,
-                                &inBufPermutations,
-                                &inBufParams,
+                                &m_inBufPosX,
+                                &m_inBufPosY,
+                                &m_inBufPosZ,
+                                &m_outBuf,
+                                &m_inBufPermutations,
+                                &m_inBufParams,
                             }};
         size_t groupCount = (numPoints + 255) / 256;
         task.run(groupCount);
@@ -161,7 +166,7 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = attr->attrSize();
     float* dataPtr = attr->component<float>(0);
-    outBuffer.read(dataPtr);
+    m_outBuf.read(dataPtr);
 
     float dataSize = attr->size() * sizeof(float);
     for (size_t c = 1; c < attrSize; ++c) {

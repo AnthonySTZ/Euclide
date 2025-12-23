@@ -26,7 +26,7 @@ class PerlinNoise {
     PerlinNoise();
 
     void applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                     const PerlinSettings& t_settings) const;
+                     const PerlinSettings& t_settings);
 
     static const std::array<int, 512> perlinPermutations;
 
@@ -34,6 +34,14 @@ class PerlinNoise {
     GPUDevice& m_device;
     std::unique_ptr<GPUDescriptorSetLayout> m_descriptorSetLayout;
     GPUPipeline m_pipeline;
+
+    GPUBuffer m_inBufPosX;
+    GPUBuffer m_inBufPosY;
+    GPUBuffer m_inBufPosZ;
+
+    GPUBuffer m_inBufPermutations;
+    GPUBuffer m_inBufParams;
+    GPUBuffer m_outBuf;
 };
 
 class AttributeNoise : public Node {
@@ -54,8 +62,7 @@ class AttributeNoise : public Node {
     AttributeNoise();
 
   private:
-    std::shared_ptr<Mesh> compute(const size_t t_index,
-                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override;
 
     PerlinNoise m_perlinNoise{};
 };

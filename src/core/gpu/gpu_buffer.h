@@ -51,6 +51,8 @@ class GPUBuffer {
 
     void read(void* t_data);
 
+    void ensureSize(const VkDeviceSize t_instanceCount);
+
   private:
     /// @brief Returns the minimum instance size required to be compatible with devices minOffsetAlignment
     /// @param instanceSize The size of an instance
@@ -68,6 +70,8 @@ class GPUBuffer {
     VkDeviceSize m_bufferSize;
     VkDeviceSize m_alignmentSize;
     VkDeviceSize m_instanceSize;
+    VkBufferUsageFlags m_usageFlags;
+    VkMemoryPropertyFlags m_memoryPropertyFlags;
 };
 
 } // namespace euclide

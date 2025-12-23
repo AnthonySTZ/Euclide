@@ -17,8 +17,7 @@ Subdivide::Subdivide() : Node(1, 1, "Subdivide") {
     addField("divisions", divisionsField);
 }
 
-std::shared_ptr<Mesh> Subdivide::compute(const size_t t_index,
-                                         const std::vector<std::shared_ptr<Mesh>>& t_inputs) const {
+std::shared_ptr<Mesh> Subdivide::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
     if (t_inputs[0] == nullptr)
         return std::make_shared<Mesh>();
 

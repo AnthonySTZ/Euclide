@@ -126,8 +126,7 @@ class Node : public std::enable_shared_from_this<Node> {
 
   private:
     /// @brief Computes the output mesh given input meshes. Must be overridden in derived nodes.
-    virtual std::shared_ptr<Mesh> compute(const size_t t_index,
-                                          const std::vector<std::shared_ptr<Mesh>>& t_inputs) const = 0;
+    virtual std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) = 0;
 
     std::string m_name = "Node";
 

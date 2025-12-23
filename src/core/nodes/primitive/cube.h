@@ -30,8 +30,7 @@ class Cube : public Node {
     /// @param t_index Output index (only one output in this node).
     /// @param t_inputs Input meshes (not used for Cube node).
     /// @return Shared pointer to the generated cube mesh.
-    std::shared_ptr<Mesh> compute(const size_t t_index,
-                                  const std::vector<std::shared_ptr<Mesh>>& t_inputs) const override;
+    std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override;
 };
 
 } // namespace euclide
