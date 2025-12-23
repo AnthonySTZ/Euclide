@@ -13,7 +13,7 @@ class GPUPipeline {
     [[nodiscard]] VkPipelineLayout layout() const noexcept { return m_pipelineLayout; }
 
     void bind(VkCommandBuffer t_commandBuffer) const;
-    GPUDescriptorSetLayout& descriptorSetLayout() noexcept { return m_descriptorSetLayout; };
+    GPUDescriptorSetLayout& descriptorSetLayout() const noexcept { return m_descriptorSetLayout; };
 
   private:
     void createShaderModule(const std::string& t_shaderFile, VkShaderModule* t_shaderModule);

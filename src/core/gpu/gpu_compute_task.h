@@ -7,13 +7,13 @@
 namespace euclide {
 class GPUComputeTask {
   public:
-    GPUComputeTask(GPUDevice& t_device, GPUPipeline& t_pipeline, const std::vector<GPUBuffer*>& t_buffersPtr);
+    GPUComputeTask(GPUDevice& t_device, const GPUPipeline& t_pipeline, const std::vector<GPUBuffer*>& t_buffersPtr);
 
     void run(const uint32_t t_x, const uint32_t t_y = 1, const uint32_t t_z = 1);
 
   private:
     GPUDevice& m_device;
-    GPUPipeline& m_pipeline;
+    const GPUPipeline& m_pipeline;
     std::unique_ptr<GPUDescriptorPool> m_descriptorPool;
     VkDescriptorSet m_descriptorSet{};
 };

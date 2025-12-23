@@ -2,7 +2,7 @@
 
 namespace euclide {
 
-GPUComputeTask::GPUComputeTask(GPUDevice& t_device, GPUPipeline& t_pipeline,
+GPUComputeTask::GPUComputeTask(GPUDevice& t_device, const GPUPipeline& t_pipeline,
                                const std::vector<GPUBuffer*>& t_buffersPtr)
     : m_device(t_device), m_pipeline(t_pipeline) {
     m_descriptorPool = GPUDescriptorPool::Builder(t_device)

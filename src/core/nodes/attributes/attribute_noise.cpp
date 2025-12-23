@@ -95,18 +95,31 @@ std::shared_ptr<Mesh> AttributeNoise::compute(const size_t t_index,
         return output;
 
     if (kind == Kind::POINTS) {
-        PerlinNoise::applyToMesh(*output, output->pointAttribs, attrName, attrSize,
-                                 PerlinNoise::PerlinSettings{octaves, frequency});
+        m_perlinNoise.applyToMesh(*output, output->pointAttribs, attrName, attrSize,
+                                  PerlinNoise::PerlinSettings{octaves, frequency});
     } else if (kind == Kind::PRIMITIVES) {
-        PerlinNoise::applyToMesh(*output, output->primAttribs, attrName, attrSize,
-                                 PerlinNoise::PerlinSettings{octaves, frequency});
+        m_perlinNoise.applyToMesh(*output, output->primAttribs, attrName, attrSize,
+                                  PerlinNoise::PerlinSettings{octaves, frequency});
     }
 
     return output;
 }
 
+PerlinNoise::PerlinNoise()
+    : m_device(GPUManager::getInstance().getDevice()),
+      m_descriptorSetLayout(GPUDescriptorSetLayout::Builder(m_device)
+                                .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                .build()),
+      m_pipeline(GPUPipeline{m_device, "gpu/shaders/perlin.spv", *m_descriptorSetLayout}) {
+}
+
 void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::string& t_name, const int t_attrSize,
-                              const PerlinNoise::PerlinSettings& t_settings) {
+                              const PerlinNoise::PerlinSettings& t_settings) const {
     const int numPoints = t_attribs.size();
     const PerlinNoise::BufferParams perlinParams{numPoints, t_settings.octaves, t_settings.frequency};
 
@@ -115,34 +128,24 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
     const float* posY = positions->component<float>(1);
     const float* posZ = positions->component<float>(2);
 
-    GPUDevice& device = GPUManager::getInstance().getDevice();
-    GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    GPUBuffer inBufPosX = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    inBufPosX.write(posX);
+    GPUBuffer inBufPosY = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    inBufPosY.write(posY);
+    GPUBuffer inBufPosZ = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    inBufPosZ.write(posZ);
+    GPUBuffer inBufPermutations = GPUBuffer::create<int>(m_device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    inBufPermutations.write(perlinPermutations.data());
+
+    GPUBuffer inBufParams =
+        GPUBuffer::create<PerlinNoise::BufferParams>(m_device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    inBufParams.write(&perlinParams);
+
+    GPUBuffer outBuffer = GPUBuffer::create<float>(m_device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+
     {
-        GPUBuffer inBufPosX = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        inBufPosX.write(posX);
-        GPUBuffer inBufPosY = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        inBufPosY.write(posY);
-        GPUBuffer inBufPosZ = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        inBufPosZ.write(posZ);
-        GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        inBufPermutations.write(perlinPermutations.data());
-
-        GPUBuffer inBufParams =
-            GPUBuffer::create<PerlinNoise::BufferParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-        inBufParams.write(&perlinParams);
-
-        auto descriptorsetLayout = GPUDescriptorSetLayout::Builder(device)
-                                       .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                       .build();
-
-        GPUPipeline pipeline{device, "gpu/shaders/perlin.spv", *descriptorsetLayout};
-        GPUComputeTask task{device,
-                            pipeline,
+        GPUComputeTask task{m_device,
+                            m_pipeline,
                             {
                                 &inBufPosX,
                                 &inBufPosY,
@@ -157,8 +160,12 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
 
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = attr->attrSize();
-    for (size_t c = 0; c < attrSize; ++c) {
-        outBuffer.read(attr->component<float>(c));
+    float* dataPtr = attr->component<float>(0);
+    outBuffer.read(dataPtr);
+
+    float dataSize = attr->size() * sizeof(float);
+    for (size_t c = 1; c < attrSize; ++c) {
+        memcpy(attr->component<float>(c), dataPtr, dataSize);
     }
 }
 
