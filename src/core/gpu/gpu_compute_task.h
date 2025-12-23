@@ -8,7 +8,7 @@ namespace euclide {
 class GPUComputeTask {
   public:
     GPUComputeTask(GPUDevice& t_device, const GPUPipeline& t_pipeline, const std::vector<GPUBuffer*>& t_buffersPtr,
-                   const int t_storageBufferCount, const int t_uniformBufferCount);
+                   const uint32_t t_storageBufferCount, const uint32_t t_uniformBufferCount);
 
     void run(const uint32_t t_x, const uint32_t t_y = 1, const uint32_t t_z = 1);
 

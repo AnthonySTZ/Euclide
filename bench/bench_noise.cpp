@@ -17,4 +17,4 @@ static void BM_PerlinNoise(benchmark::State& state) { // 27.6ms - laptop
     }
 }
 
-BENCHMARK(BM_PerlinNoise)->Iterations(1)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_PerlinNoise)->Iterations(10)->Unit(benchmark::kMillisecond);

@@ -11,7 +11,7 @@ class GPUDescriptorSetLayout {
   public:
     class Builder {
       public:
-        Builder(GPUDevice& t_device) : m_device(t_device){};
+        Builder(GPUDevice& t_device) : m_device(t_device) {};
 
         [[nodiscard]] Builder& addBinding(uint32_t t_binding, VkDescriptorType t_descriptorType,
                                           VkShaderStageFlags t_stageFlags, uint32_t t_count = 1);
@@ -79,8 +79,12 @@ class GPUDescriptorPool {
 
 class GPUDescriptorWriter {
   public:
-    GPUDescriptorWriter(GPUDescriptorSetLayout& t_descriptorSetLayout, GPUDescriptorPool& t_descriptorPool)
-        : m_setLayout(t_descriptorSetLayout), m_pool(t_descriptorPool) {}
+    GPUDescriptorWriter(GPUDescriptorSetLayout& t_descriptorSetLayout, GPUDescriptorPool& t_descriptorPool,
+                        const uint32_t t_bufferCount)
+        : m_setLayout(t_descriptorSetLayout), m_pool(t_descriptorPool) {
+        m_bufferInfos.reserve(t_bufferCount);
+        m_writeDescriptorSets.reserve(t_bufferCount);
+    }
 
     GPUDescriptorWriter& writeBuffer(uint32_t t_binding, VkDescriptorBufferInfo t_bufferInfo);
 

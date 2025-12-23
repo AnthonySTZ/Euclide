@@ -3,8 +3,8 @@
 namespace euclide {
 
 GPUComputeTask::GPUComputeTask(GPUDevice& t_device, const GPUPipeline& t_pipeline,
-                               const std::vector<GPUBuffer*>& t_buffersPtr, const int t_storageBufferCount,
-                               const int t_uniformBufferCount)
+                               const std::vector<GPUBuffer*>& t_buffersPtr, const uint32_t t_storageBufferCount,
+                               const uint32_t t_uniformBufferCount)
     : m_device(t_device), m_pipeline(t_pipeline) {
     m_descriptorPool = GPUDescriptorPool::Builder(t_device)
                            .addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, t_storageBufferCount)
@@ -13,7 +13,8 @@ GPUComputeTask::GPUComputeTask(GPUDevice& t_device, const GPUPipeline& t_pipelin
                            .setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
                            .build();
 
-    GPUDescriptorWriter writer{m_pipeline.descriptorSetLayout(), *m_descriptorPool};
+    GPUDescriptorWriter writer{m_pipeline.descriptorSetLayout(), *m_descriptorPool,
+                               t_storageBufferCount + t_uniformBufferCount};
     for (size_t binding = 0; binding < t_buffersPtr.size(); ++binding) {
         writer.writeBuffer(binding, t_buffersPtr[binding]->descriptorInfo());
     }
