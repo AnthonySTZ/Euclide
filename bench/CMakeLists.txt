@@ -12,6 +12,7 @@ add_executable(EuclideBench
                 bench_copy_to_points.cpp
 
                 bench_attributes.cpp
+                bench_noise.cpp
                 )
 
 target_link_libraries(EuclideBench PRIVATE core benchmark::benchmark)

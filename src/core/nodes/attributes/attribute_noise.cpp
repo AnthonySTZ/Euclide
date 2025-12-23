@@ -116,42 +116,44 @@ void PerlinNoise::applyToMesh(Mesh& t_mesh, AttributeSet& t_attribs, const std::
     const float* posZ = positions->component<float>(2);
 
     GPUDevice& device = GPUManager::getInstance().getDevice();
-    GPUBuffer inBufPosX = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosX.write(posX);
-    GPUBuffer inBufPosY = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosY.write(posY);
-    GPUBuffer inBufPosZ = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPosZ.write(posZ);
-    GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    inBufPermutations.write(perlinPermutations.data());
-
-    GPUBuffer inBufParams = GPUBuffer::create<PerlinNoise::BufferParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    inBufParams.write(&perlinParams);
-
     GPUBuffer outBuffer = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    {
+        GPUBuffer inBufPosX = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        inBufPosX.write(posX);
+        GPUBuffer inBufPosY = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        inBufPosY.write(posY);
+        GPUBuffer inBufPosZ = GPUBuffer::create<float>(device, numPoints, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        inBufPosZ.write(posZ);
+        GPUBuffer inBufPermutations = GPUBuffer::create<int>(device, 512, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        inBufPermutations.write(perlinPermutations.data());
 
-    auto descriptorsetLayout = GPUDescriptorSetLayout::Builder(device)
-                                   .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
-                                   .build();
+        GPUBuffer inBufParams =
+            GPUBuffer::create<PerlinNoise::BufferParams>(device, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+        inBufParams.write(&perlinParams);
 
-    GPUPipeline pipeline{device, "gpu/shaders/perlin.spv", *descriptorsetLayout};
-    GPUComputeTask task{device,
-                        pipeline,
-                        {
-                            &inBufPosX,
-                            &inBufPosY,
-                            &inBufPosZ,
-                            &outBuffer,
-                            &inBufPermutations,
-                            &inBufParams,
-                        }};
-    size_t groupCount = (numPoints + 255) / 256;
-    task.run(groupCount);
+        auto descriptorsetLayout = GPUDescriptorSetLayout::Builder(device)
+                                       .addBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .addBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT, 1)
+                                       .build();
+
+        GPUPipeline pipeline{device, "gpu/shaders/perlin.spv", *descriptorsetLayout};
+        GPUComputeTask task{device,
+                            pipeline,
+                            {
+                                &inBufPosX,
+                                &inBufPosY,
+                                &inBufPosZ,
+                                &outBuffer,
+                                &inBufPermutations,
+                                &inBufParams,
+                            }};
+        size_t groupCount = (numPoints + 255) / 256;
+        task.run(groupCount);
+    }
 
     auto attr = t_attribs.findOrCreate<float>(t_name, t_attrSize);
     const size_t attrSize = attr->attrSize();
