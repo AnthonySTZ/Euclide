@@ -31,7 +31,7 @@ void ParametersRenderer::drawParameters() {
 
         for (const auto& [name, field] : node->fields()) {
             const NodeFieldMetadata& meta = field->metadata();
-            if (meta.hidden) {
+            if (meta.shouldBeHidden()) {
                 continue;
             }
             std::string displayName = meta.displayName.value_or(name);

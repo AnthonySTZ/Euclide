@@ -55,7 +55,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
     noiseField->setMetadata(NodeFieldMetadata{
         displayName : "Noise",
         is_combo : true,
-        choices : std::move(std::vector<std::string>{"Perlin"})
+        choices : std::move(std::vector<std::string>{"Perlin", "Simplex"})
     });
     addField("noise", noiseField);
 
@@ -64,6 +64,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
         displayName : "Octaves",
         min : 1,
         step : 1,
+        shouldBeHidden : [noiseField]() { return noiseField->getValue() != 0; },
     });
     addField("octaves", octavesField);
 

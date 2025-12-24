@@ -16,9 +16,10 @@ struct NodeFieldMetadata {
     std::optional<float> max;               ///< Optional maximum value.
     std::optional<float> step = 1.0f;       ///< Optional step for numeric fields.
 
-    bool hidden = false;                             ///< Whether this field should be hidden in UI.
     bool is_combo = false;                           ///< Whether this field is a combo box.
     std::optional<std::vector<std::string>> choices; ///< Optional choices for combo fields.
+
+    std::function<bool()> shouldBeHidden = []() { return false; };
 };
 
 /// @brief Base class for a node field.
