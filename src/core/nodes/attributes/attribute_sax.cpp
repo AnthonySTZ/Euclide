@@ -1,0 +1,51 @@
+#include "attribute_sax.h"
+
+#include "fields/float4field.h"
+
+namespace euclide {
+
+AttributeSAX::AttributeSAX() : Node(1, 1, "AttrCreate") {
+    auto kindField = std::make_shared<NodeField<int>>(0);
+    kindField->setMetadata(NodeFieldMetadata{
+        displayName : "Kind",
+        is_combo : true,
+        choices : std::move(std::vector<std::string>{"points", "primitives"})
+    });
+    addField("kind", kindField);
+
+    auto scriptField = std::make_shared<NodeField<std::string>>("");
+    scriptField->setMetadata(NodeFieldMetadata{
+        displayName : "SAX Script",
+    });
+    addField("script", scriptField);
+}
+
+std::shared_ptr<Mesh> AttributeSAX::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
+    if (t_inputs[0] == nullptr)
+        return std::make_shared<Mesh>();
+
+    auto output = std::make_shared<Mesh>(*t_inputs[0]);
+
+    const int attrSize = getField<NodeField<int>>("size")->getValue();
+    if (attrSize < 1)
+        return output;
+
+    const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
+    const std::string script = getField<NodeField<std::string>>("script")->getValue();
+
+    if (script.empty())
+        return output;
+
+    if (kind == Kind::POINTS) {
+        computeSAX(output->pointAttribs, script);
+    } else if (kind == Kind::PRIMITIVES) {
+        computeSAX(output->primAttribs, script);
+    }
+
+    return output;
+}
+
+void AttributeSAX::computeSAX(AttributeSet& t_attribs, const std::string& t_script) {
+}
+
+} // namespace euclide
