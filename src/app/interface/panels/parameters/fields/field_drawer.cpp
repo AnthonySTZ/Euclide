@@ -129,10 +129,17 @@ void FieldDrawer::drawStringField(const std::string& t_name, NodeField<std::stri
     const NodeFieldMetadata& meta = t_field.metadata();
 
     const std::string sliderId = getFieldIdFromName(t_name);
-    if (ImGui::InputText(sliderId.c_str(), (char*)value.c_str(), value.capacity() + 1,
-                         ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_EnterReturnsTrue, StringImGuiCallBack,
-                         (void*)&value)) {
-        t_field.setValue(value);
+    if (meta.isMultiline) {
+        if (ImGui::InputTextMultiline(sliderId.c_str(), (char*)value.c_str(), value.capacity() + 1, ImVec2(0, 0),
+                                      ImGuiInputTextFlags_CallbackResize, StringImGuiCallBack, (void*)&value)) {
+            t_field.setValue(value);
+        }
+    } else {
+        if (ImGui::InputText(sliderId.c_str(), (char*)value.c_str(), value.capacity() + 1,
+                             ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_EnterReturnsTrue,
+                             StringImGuiCallBack, (void*)&value)) {
+            t_field.setValue(value);
+        }
     }
 }
 

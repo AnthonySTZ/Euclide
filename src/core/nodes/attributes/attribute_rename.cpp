@@ -6,7 +6,7 @@ AttributeRename::AttributeRename() : Node(1, 1, "AttrRename") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"points", "primitives"})
     });
     addField("kind", kindField);

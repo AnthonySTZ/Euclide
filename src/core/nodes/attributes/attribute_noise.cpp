@@ -33,7 +33,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"points", "primitives"})
     });
     addField("kind", kindField);
@@ -54,7 +54,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
     auto noiseField = std::make_shared<NodeField<int>>(0);
     noiseField->setMetadata(NodeFieldMetadata{
         displayName : "Noise",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"Perlin"})
     });
     addField("noise", noiseField);

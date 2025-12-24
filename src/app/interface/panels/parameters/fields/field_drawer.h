@@ -20,10 +20,10 @@ class FieldDrawer : public NodeFieldVisitor {
     /// @brief Draws a boolean field using a checkbox.
     void visit(const std::string& t_name, NodeField<bool>& t_field) override { drawBoolField(t_name, t_field); }
 
-    /// @brief Draws an int field or combo box depending on `metadata.is_combo`.
+    /// @brief Draws an int field or combo box depending on `metadata.isCombo`.
     void visit(const std::string& t_name, NodeField<int>& t_field) override {
         const auto& meta = t_field.metadata();
-        if (meta.is_combo) {
+        if (meta.isCombo) {
             drawComboField(t_name, t_field);
         } else {
             drawIntField(t_name, t_field);

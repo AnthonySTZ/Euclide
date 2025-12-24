@@ -26,7 +26,7 @@ Grid::Grid() : Node(0, 1, "Grid") {
     auto orientationField = std::make_shared<NodeField<int>>(0);
     orientationField->setMetadata(NodeFieldMetadata{
         displayName : "Orientation",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"ZX Plane", "XY Plane", "YZ Plane"})
     });
     addField("orientation", orientationField);

@@ -10,7 +10,7 @@ AttributeMath::AttributeMath() : Node(1, 1, "AttrMath") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"points", "primitives"})
     });
     addField("kind", kindField);
@@ -24,7 +24,7 @@ AttributeMath::AttributeMath() : Node(1, 1, "AttrMath") {
     auto operationField = std::make_shared<NodeField<int>>(0);
     operationField->setMetadata(NodeFieldMetadata{
         displayName : "Operation",
-        is_combo : true,
+        isCombo : true,
         choices : std::move(std::vector<std::string>{"Add", "Subtract", "Multiply", "Divide"})
     });
     addField("operation", operationField);
