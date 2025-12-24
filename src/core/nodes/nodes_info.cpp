@@ -15,6 +15,7 @@
 #include "attributes/attribute_randomize.cpp"
 #include "attributes/attribute_rename.cpp"
 #include "attributes/attribute_noise.cpp"
+#include "attributes/attribute_math.cpp"
 
 #include "utility/null.h"
 
@@ -43,6 +44,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Attribute Randomize", []() { return std::make_shared<AttributeRandomize>(); }},
          {"Attribute Rename", []() { return std::make_shared<AttributeRename>(); }},
          {"Attribute Noise", []() { return std::make_shared<AttributeNoise>(); }},
+         {"Attribute Math", []() { return std::make_shared<AttributeMath>(); }},
      }},
     {"Utility",
      {
