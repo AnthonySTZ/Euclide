@@ -2,6 +2,8 @@
 
 #include "fields/float4field.h"
 
+#include <limits>
+
 namespace euclide {
 
 AttributeMath::AttributeMath() : Node(1, 1, "AttrMath") {
@@ -46,66 +48,119 @@ std::shared_ptr<Mesh> AttributeMath::compute(const size_t t_index, const std::ve
 
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
-    const std::string attrA = getField<NodeField<std::string>>("attrA")->getValue();
-    const std::string attrB = getField<NodeField<std::string>>("attrB")->getValue();
+    const std::string attrAName = getField<NodeField<std::string>>("attrA")->getValue();
+    const std::string attrBName = getField<NodeField<std::string>>("attrB")->getValue();
     const std::string outputAttr = getField<NodeField<std::string>>("output")->getValue();
 
-    addAttributes(output->pointAttribs, attrA, attrB, outputAttr);
+    const Operator operation = static_cast<Operator>(getField<NodeField<int>>("operation")->getValue());
 
-    return output;
-}
-
-void AttributeMath::addAttributes(AttributeSet& t_attribs, const std::string& t_firstAttrib,
-                                  const std::string& t_secondAttrib, const std::string& t_resultAttrib) {
-    auto attrAInfos = getAttrInfoByName(t_firstAttrib);
-    auto attrBInfos = getAttrInfoByName(t_secondAttrib);
-    auto outputInfos = getAttrInfoByName(t_resultAttrib);
+    auto attrAInfos = getAttrInfoByName(attrAName);
+    auto attrBInfos = getAttrInfoByName(attrBName);
+    auto outputInfos = getAttrInfoByName(outputAttr);
 
     if (!attrAInfos.has_value() || !attrBInfos.has_value() || !outputInfos.has_value())
-        return;
+        return output;
 
     auto attrAInfosValue = attrAInfos.value();
     auto attrBInfosValue = attrBInfos.value();
     auto attrOutInfosValue = outputInfos.value();
     bool isSingleComponent = attrAInfosValue.singleComponent;
     if (isSingleComponent != attrBInfosValue.singleComponent || isSingleComponent != attrOutInfosValue.singleComponent)
-        return;
+        return output;
 
-    auto attrA = t_attribs.find(attrAInfosValue.name);
-    auto attrB = t_attribs.find(attrBInfosValue.name);
+    auto attrA = output->pointAttribs.find(attrAInfosValue.name);
+    auto attrB = output->pointAttribs.find(attrBInfosValue.name);
     if (!attrA || !attrB)
-        return;
+        return output;
 
     if (isSingleComponent) {
         if (attrA->attrSize() <= attrAInfosValue.component || attrB->attrSize() <= attrBInfosValue.component)
-            return;
+            return output;
     }
 
-    auto attrOut = t_attribs.findOrCreate<float>(attrOutInfosValue.name, attrA->attrSize());
+    auto attrOut = output->pointAttribs.findOrCreate<float>(attrOutInfosValue.name, attrA->attrSize());
     if (isSingleComponent && attrOut->attrSize() <= attrOutInfosValue.component)
-        return;
+        return output;
 
     if (!isSingleComponent) {
         if (attrA->attrSize() != attrB->attrSize() || attrB->attrSize() != attrOut->attrSize())
-            return;
+            return output;
     }
 
     if (isSingleComponent) {
         auto attrAPtr = attrA->component<float>(attrAInfosValue.component);
         auto attrBPtr = attrB->component<float>(attrBInfosValue.component);
         auto attrOutPtr = attrOut->component<float>(attrOutInfosValue.component);
-        for (size_t i = 0; i < t_attribs.size(); ++i) {
-            attrOutPtr[i] = attrAPtr[i] + attrBPtr[i];
+        switch (operation) {
+        case Operator::Addition:
+            addAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Subtraction:
+            subtractAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Multiplication:
+            multiplyAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Division:
+            divideAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
         }
-    } else {
-        for (size_t c = 0; c < attrA->attrSize(); ++c) {
-            auto attrAPtr = attrA->component<float>(c);
-            auto attrBPtr = attrB->component<float>(c);
-            auto attrOutPtr = attrOut->component<float>(c);
-            for (size_t i = 0; i < t_attribs.size(); ++i) {
-                attrOutPtr[i] = attrAPtr[i] + attrBPtr[i];
-            }
+
+        return output;
+    }
+
+    for (size_t c = 0; c < attrA->attrSize(); ++c) {
+        auto attrAPtr = attrA->component<float>(c);
+        auto attrBPtr = attrB->component<float>(c);
+        auto attrOutPtr = attrOut->component<float>(c);
+        switch (operation) {
+        case Operator::Addition:
+            addAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Subtraction:
+            subtractAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Multiplication:
+            multiplyAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
+        case Operator::Division:
+            divideAttributes(attrAPtr, attrBPtr, attrOutPtr, output->pointAttribs.size());
+            break;
         }
+    }
+
+    return output;
+}
+
+void AttributeMath::addAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                                  const size_t t_count) {
+    for (size_t i = 0; i < t_count; ++i) {
+        t_attrOutPtr[i] = t_attrAPtr[i] + t_attrBPtr[i];
+    }
+}
+
+void AttributeMath::subtractAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                                       const size_t t_count) {
+    for (size_t i = 0; i < t_count; ++i) {
+        t_attrOutPtr[i] = t_attrAPtr[i] - t_attrBPtr[i];
+    }
+}
+
+void AttributeMath::multiplyAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                                       const size_t t_count) {
+    for (size_t i = 0; i < t_count; ++i) {
+        t_attrOutPtr[i] = t_attrAPtr[i] * t_attrBPtr[i];
+    }
+}
+
+void AttributeMath::divideAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                                     const size_t t_count) {
+    for (size_t i = 0; i < t_count; ++i) {
+        if (t_attrBPtr[i] == 0) {
+            t_attrOutPtr[i] =
+                t_attrOutPtr[i] > 0 ? std::numeric_limits<float>::infinity() : -std::numeric_limits<float>::infinity();
+        }
+        t_attrOutPtr[i] = t_attrAPtr[i] / t_attrBPtr[i];
     }
 }
 

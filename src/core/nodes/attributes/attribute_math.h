@@ -8,6 +8,13 @@ namespace euclide {
 class AttributeMath : public Node {
   public:
     enum Kind { POINTS = 0, PRIMITIVES = 1 };
+    enum Operator {
+        Addition = 0,
+        Subtraction = 1,
+        Multiplication = 2,
+        Division = 3,
+    };
+
     struct AttributeInfo {
         std::string name = "";
         bool singleComponent = false;
@@ -16,8 +23,16 @@ class AttributeMath : public Node {
 
     AttributeMath();
 
-    static void addAttributes(AttributeSet& t_attribs, const std::string& t_firstAttrib,
-                              const std::string& t_secondAttrib, const std::string& t_resultAttrib);
+    static void addAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                              const size_t t_count);
+
+    void subtractAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                            const size_t t_count);
+
+    void multiplyAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr,
+                            const size_t t_count);
+
+    void divideAttributes(const float* t_attrAPtr, const float* t_attrBPtr, float* t_attrOutPtr, const size_t t_count);
 
   private:
     std::shared_ptr<Mesh> compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) override;
