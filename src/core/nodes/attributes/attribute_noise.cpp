@@ -55,7 +55,7 @@ AttributeNoise::AttributeNoise() : Node(1, 1, "AttrNoise") {
     noiseField->setMetadata(NodeFieldMetadata{
         displayName : "Noise",
         is_combo : true,
-        choices : std::move(std::vector<std::string>{"Perlin", "Simplex"})
+        choices : std::move(std::vector<std::string>{"Perlin"})
     });
     addField("noise", noiseField);
 
