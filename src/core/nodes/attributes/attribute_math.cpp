@@ -19,12 +19,6 @@ AttributeMath::AttributeMath() : Node(1, 1, "AttrMath") {
     });
     addField("attrA", firstAttribField);
 
-    auto secondAttribField = std::make_shared<NodeField<std::string>>("");
-    secondAttribField->setMetadata(NodeFieldMetadata{
-        .displayName = "Attribute B",
-    });
-    addField("attrB", secondAttribField);
-
     auto operationField = std::make_shared<NodeField<int>>(0);
     operationField->setMetadata(NodeFieldMetadata{
         displayName : "Operation",
@@ -32,6 +26,12 @@ AttributeMath::AttributeMath() : Node(1, 1, "AttrMath") {
         choices : std::move(std::vector<std::string>{"Add", "Subtract", "Multiply", "Divide"})
     });
     addField("operation", operationField);
+
+    auto secondAttribField = std::make_shared<NodeField<std::string>>("");
+    secondAttribField->setMetadata(NodeFieldMetadata{
+        .displayName = "Attribute B",
+    });
+    addField("attrB", secondAttribField);
 
     auto outputAttribField = std::make_shared<NodeField<std::string>>("");
     outputAttribField->setMetadata(NodeFieldMetadata{
