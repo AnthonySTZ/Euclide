@@ -66,9 +66,9 @@ void AttributeMath::addAttributes(AttributeSet& t_attribs, const std::string& t_
 
     auto attrAInfosValue = attrAInfos.value();
     auto attrBInfosValue = attrBInfos.value();
-    auto outputInfosValue = outputInfos.value();
+    auto attrOutInfosValue = outputInfos.value();
     bool isSingleComponent = attrAInfosValue.singleComponent;
-    if (isSingleComponent != attrBInfosValue.singleComponent || isSingleComponent != outputInfosValue.singleComponent)
+    if (isSingleComponent != attrBInfosValue.singleComponent || isSingleComponent != attrOutInfosValue.singleComponent)
         return;
 
     auto attrA = t_attribs.find(attrAInfosValue.name);
@@ -81,13 +81,31 @@ void AttributeMath::addAttributes(AttributeSet& t_attribs, const std::string& t_
             return;
     }
 
-    auto attrOut = t_attribs.findOrCreate<float>(outputInfosValue.name, attrA->attrSize());
-    if (isSingleComponent && attrOut->attrSize() <= outputInfosValue.component)
+    auto attrOut = t_attribs.findOrCreate<float>(attrOutInfosValue.name, attrA->attrSize());
+    if (isSingleComponent && attrOut->attrSize() <= attrOutInfosValue.component)
         return;
 
     if (!isSingleComponent) {
         if (attrA->attrSize() != attrB->attrSize() || attrB->attrSize() != attrOut->attrSize())
             return;
+    }
+
+    if (isSingleComponent) {
+        auto attrAPtr = attrA->component<float>(attrAInfosValue.component);
+        auto attrBPtr = attrB->component<float>(attrBInfosValue.component);
+        auto attrOutPtr = attrOut->component<float>(attrOutInfosValue.component);
+        for (size_t i = 0; i < t_attribs.size(); ++i) {
+            attrOutPtr[i] = attrAPtr[i] + attrBPtr[i];
+        }
+    } else {
+        for (size_t c = 0; c < attrA->attrSize(); ++c) {
+            auto attrAPtr = attrA->component<float>(c);
+            auto attrBPtr = attrB->component<float>(c);
+            auto attrOutPtr = attrOut->component<float>(c);
+            for (size_t i = 0; i < t_attribs.size(); ++i) {
+                attrOutPtr[i] = attrAPtr[i] + attrBPtr[i];
+            }
+        }
     }
 }
 
@@ -102,6 +120,7 @@ std::optional<AttributeMath::AttributeInfo> AttributeMath::getAttrInfoByName(con
         if (t_name[i] == '.') {
             if (i != nameLength - 2)
                 return std::nullopt;
+
             const char component = t_name[i + 1];
             if (component == 'x')
                 infos.component = 0;
@@ -114,7 +133,7 @@ std::optional<AttributeMath::AttributeInfo> AttributeMath::getAttrInfoByName(con
             else
                 return std::nullopt;
 
-            infos.name = t_name.substr(0, i - 1);
+            infos.name = t_name.substr(0, i);
             infos.singleComponent = true;
             return infos;
         }
