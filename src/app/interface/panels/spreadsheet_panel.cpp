@@ -7,7 +7,7 @@ SpreadsheetPanel::SpreadsheetPanel(std::weak_ptr<Scene> t_scene)
 }
 
 void SpreadsheetPanel::draw() {
-    beginTab("Spreasheet", m_padding);
+    beginTab("Spreadsheet", m_padding);
 
     m_spreadsheetRenderer.render();
 
