@@ -86,6 +86,19 @@ TEST(AXIAParser, TestBasicTerm) {
     // clang-format on
 }
 
+TEST(AXIAParser, TestBasicTermWithIdentifier) {
+    Parser parser{};
+    const std::string script = "2 * myvar";
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::MultOp, 
+        [](const AST& left) { expectNumericLiteral(left, 2); },
+        [](const AST& right) { expectIdentifier(right, "myvar"); });
+    // clang-format on
+}
+
 TEST(AXIAParser, MultipleBasicTerms) {
     Parser parser{};
     const std::string script = "2 * 3 / 1";
