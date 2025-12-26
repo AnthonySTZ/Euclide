@@ -6,7 +6,7 @@
 
 namespace euclide {
 
-enum LiteralType { NumericLiteral, StringLiteral };
+enum LiteralType { NumericLiteral, StringLiteral, UndefinedLiteral };
 
 struct Literal {
     LiteralType type;
@@ -50,6 +50,9 @@ class Parser {
         default:
             break;
         }
+
+        std::runtime_error("Unexpected Literal: " + m_nextToken.value + " !");
+        return {LiteralType::UndefinedLiteral, ""};
     }
 
     inline Token consume(const TokenType t_tokenType) {
