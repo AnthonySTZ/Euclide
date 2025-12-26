@@ -18,7 +18,7 @@ class Parser {
         m_tokenizer.initialize(t_text);
         m_nextToken = m_tokenizer.getNextToken();
 
-        return expression();
+        return assignement();
     };
 
   private:
@@ -63,7 +63,7 @@ class Parser {
     }
 
     inline AST expression() {
-        AST node = term(); // 2 + 3 * 5
+        AST node = term();
 
         if (m_nextToken.type != TokenType::BinaryOp)
             return node;
@@ -75,6 +75,19 @@ class Parser {
         }
 
         return node;
+    }
+
+    inline AST assignement() {
+        AST node = expression();
+
+        if (m_nextToken.type != TokenType::Assignement)
+            return node;
+
+        if (node->type != NodeType::Identifier)
+            throw std::runtime_error("Unexpected expression instead of Identifier before assignement!");
+
+        consume(TokenType::Assignement);
+        return std::make_unique<Assignement>(std::move(node), expression());
     }
 
     inline Token consume(const TokenType t_tokenType) {

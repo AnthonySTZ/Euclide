@@ -4,7 +4,7 @@
 
 namespace euclide {
 
-enum class TokenType { Number, String, Identifier, BinaryOp, Undefined };
+enum class TokenType { Number, String, Identifier, BinaryOp, Assignement, Undefined };
 
 struct Token {
     TokenType type = TokenType::Undefined;
@@ -31,6 +31,12 @@ class Tokenizer {
         if (isWhitespace(m_text[m_cursor])) {
             m_cursor++;
             return getNextToken();
+        }
+
+        // Assignement
+        if (m_text[m_cursor] == '=') {
+            m_cursor++;
+            return {TokenType::Assignement, ""};
         }
 
         // Identifier

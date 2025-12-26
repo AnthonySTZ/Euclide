@@ -33,6 +33,14 @@ void expectBinaryOp(const AST& node, NodeType opType, const std::function<void(c
     rightCheck(binOp->right);
 }
 
+void expectAssignement(const AST& node, const std::function<void(const AST&)>& identifierCheck,
+                       const std::function<void(const AST&)>& valueCheck) {
+    ASSERT_EQ(node->type, NodeType::Assignement);
+    const auto* assignedNode = dynamic_cast<const Assignement*>(node.get());
+    identifierCheck(assignedNode->identifier);
+    valueCheck(assignedNode->value);
+}
+
 TEST(AXIAParser, TestNumericLiteral) {
     Parser parser{};
     const std::string script = "42";
@@ -193,6 +201,22 @@ TEST(AXIAParser, ExpressionsWithTermsMultFirst) {
                                     [](const AST& r){ expectNumericLiteral(r, 3);} 
         ); },
         [](const AST& right) { expectNumericLiteral(right, 5); });
+    // clang-format on
+}
+
+TEST(AXIAParser, TestBasicAssignement) {
+    Parser parser{};
+    const std::string script = "var = 2";
+
+    //      =
+    //  var    2
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectAssignement(
+        parsedTree, 
+        [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+        [](const AST& value) { expectNumericLiteral(value, 2); });
     // clang-format on
 }
 
