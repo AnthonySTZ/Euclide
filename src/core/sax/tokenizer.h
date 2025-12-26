@@ -27,6 +27,12 @@ class Tokenizer {
                 "",
             };
 
+        // Skip Whitespaces
+        if (isWhitespace(m_text[m_cursor])) {
+            m_cursor++;
+            return getNextToken();
+        }
+
         // Numbers
         if (isNum(m_text[m_cursor])) {
             const size_t start = m_cursor;
@@ -36,7 +42,7 @@ class Tokenizer {
             }
             return {
                 TokenType::Number,
-                m_text.substr(start, m_cursor),
+                m_text.substr(start, m_cursor - start),
             };
         }
 
@@ -49,7 +55,7 @@ class Tokenizer {
             }
             return {
                 TokenType::String,
-                m_text.substr(start + 1, m_cursor - 1),
+                m_text.substr(start + 1, m_cursor - start - 1),
             };
         }
 
@@ -62,6 +68,9 @@ class Tokenizer {
   private:
     inline bool hasMoreTokens() const noexcept { return m_cursor < m_text.length(); }
     inline bool isNum(const char t_letter) const noexcept { return t_letter >= '0' && t_letter <= '9'; }
+    inline bool isWhitespace(const char t_letter) const noexcept {
+        return t_letter == ' ' || t_letter == '\n' || t_letter == '\t';
+    }
 
   private:
     std::string m_text{};
