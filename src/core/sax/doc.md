@@ -10,9 +10,13 @@ all basis operators will be available such as: +, -, *, /
 Abstract Syntax tree
 ------------------------------------------------------------------------------------
 
+Program is a list of AST statement.
+
+statement
+    -> assignment ';'
+
 assignment
-    -> identifier '=' assignment
-    | logical
+    -> identifier '=' logical
 
 logical
     -> comparison ( ( '&&' | '||' ) comparison )*
