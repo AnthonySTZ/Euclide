@@ -37,11 +37,15 @@ class Parser {
 
     inline Literal literal() {
         switch (m_nextToken.type) {
-        case TokenType::Number:
-            return Literal{LiteralType::NumericLiteral, m_nextToken.value};
+        case TokenType::Number: {
+            const Token token = consume(TokenType::Number);
+            return Literal{LiteralType::NumericLiteral, token.value};
+        }
 
-        case TokenType::String:
-            return Literal{LiteralType::StringLiteral, m_nextToken.value};
+        case TokenType::String: {
+            const Token token = consume(TokenType::String);
+            return Literal{LiteralType::StringLiteral, token.value};
+        }
 
         default:
             break;
