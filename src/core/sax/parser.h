@@ -1,21 +1,30 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 #include "tokenizer.h"
 
 namespace euclide {
 
-enum LiteralType { NumericLiteral, StringLiteral, UndefinedLiteral };
+enum class NodeType { NumericLiteral, StringLiteral, BinaryOp, UndefinedNode };
 
-struct Literal {
-    LiteralType type;
-    std::string value;
+struct ASTNode {
+    NodeType type = NodeType::UndefinedNode;
+    explicit ASTNode(const NodeType t_type) : type(t_type) {}
+    virtual ~ASTNode() = default;
 };
 
-/// @brief Abstract Syntax Tree defining a Program
-struct AST {
-    Literal body;
+using AST = std::unique_ptr<ASTNode>;
+
+struct StringLiteral : ASTNode {
+    std::string value;
+    StringLiteral(const std::string t_string) : ASTNode(NodeType::StringLiteral), value(std::move(t_string)) {}
+};
+
+struct NumericLiteral : ASTNode {
+    double value;
+    NumericLiteral(const double t_value) : ASTNode(NodeType::NumericLiteral), value(t_value) {}
 };
 
 class Parser {
@@ -33,18 +42,18 @@ class Parser {
     };
 
   private:
-    inline AST program() { return AST{literal()}; }
+    inline AST program() { return factor(); }
 
-    inline Literal literal() {
+    inline AST factor() {
         switch (m_nextToken.type) {
         case TokenType::Number: {
             const Token token = consume(TokenType::Number);
-            return Literal{LiteralType::NumericLiteral, token.value};
+            return std::make_unique<NumericLiteral>(std::stod(token.value));
         }
 
         case TokenType::String: {
             const Token token = consume(TokenType::String);
-            return Literal{LiteralType::StringLiteral, token.value};
+            return std::make_unique<StringLiteral>(token.value);
         }
 
         default:
@@ -52,7 +61,7 @@ class Parser {
         }
 
         std::runtime_error("Unexpected Literal: " + m_nextToken.value + " !");
-        return {LiteralType::UndefinedLiteral, ""};
+        return AST{};
     }
 
     inline Token consume(const TokenType t_tokenType) {

@@ -8,8 +8,8 @@ TEST(SAXParser, TestNumericLiteral) {
     const std::string script = "42";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree.body.type, LiteralType::NumericLiteral);
-    EXPECT_EQ(parsedTree.body.value, "42");
+    EXPECT_EQ(parsedTree->type, NodeType::NumericLiteral);
+    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(parsedTree.get())->value, 42);
 }
 
 TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
@@ -17,8 +17,8 @@ TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
     const std::string script = "    42     ";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree.body.type, LiteralType::NumericLiteral);
-    EXPECT_EQ(parsedTree.body.value, "42");
+    EXPECT_EQ(parsedTree->type, NodeType::NumericLiteral);
+    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(parsedTree.get())->value, 42);
 }
 
 TEST(SAXParser, TestStringLiteral) {
@@ -26,8 +26,8 @@ TEST(SAXParser, TestStringLiteral) {
     const std::string script = "\"Test\"";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree.body.type, LiteralType::StringLiteral);
-    EXPECT_EQ(parsedTree.body.value, "Test");
+    EXPECT_EQ(parsedTree->type, NodeType::StringLiteral);
+    EXPECT_EQ(dynamic_cast<const StringLiteral*>(parsedTree.get())->value, "Test");
 }
 
 TEST(SAXParser, TestStringLiteralWithWhitespaces) {
@@ -35,8 +35,8 @@ TEST(SAXParser, TestStringLiteralWithWhitespaces) {
     const std::string script = "   \"   Test\"   ";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree.body.type, LiteralType::StringLiteral);
-    EXPECT_EQ(parsedTree.body.value, "   Test");
+    EXPECT_EQ(parsedTree->type, NodeType::StringLiteral);
+    EXPECT_EQ(dynamic_cast<const StringLiteral*>(parsedTree.get())->value, "   Test");
 }
 
 } // namespace euclide

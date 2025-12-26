@@ -4,7 +4,7 @@
 
 namespace euclide {
 
-enum TokenType { Number, String, Undefined };
+enum class TokenType { Number, String, Undefined };
 
 struct Token {
     TokenType type = TokenType::Undefined;
@@ -34,10 +34,10 @@ class Tokenizer {
         }
 
         // Numbers
-        if (isNum(m_text[m_cursor])) {
+        if (isdigit(m_text[m_cursor])) {
             const size_t start = m_cursor;
             m_cursor++;
-            while (isNum(m_text[m_cursor]) && hasMoreTokens()) {
+            while (isdigit(m_text[m_cursor]) && hasMoreTokens()) {
                 m_cursor++;
             }
             return {
@@ -67,7 +67,6 @@ class Tokenizer {
 
   private:
     inline bool hasMoreTokens() const noexcept { return m_cursor < m_text.length(); }
-    inline bool isNum(const char t_letter) const noexcept { return t_letter >= '0' && t_letter <= '9'; }
     inline bool isWhitespace(const char t_letter) const noexcept {
         return t_letter == ' ' || t_letter == '\n' || t_letter == '\t';
     }
