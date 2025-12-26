@@ -18,12 +18,10 @@ class Parser {
         m_tokenizer.initialize(t_text);
         m_nextToken = m_tokenizer.getNextToken();
 
-        return program();
+        return expression();
     };
 
   private:
-    inline AST program() { return factor(); }
-
     inline AST factor() {
         switch (m_nextToken.type) {
         case TokenType::Number: {
@@ -43,6 +41,8 @@ class Parser {
         std::runtime_error("Unexpected Literal: " + m_nextToken.value + " !");
         return AST{};
     }
+
+    inline AST expression() { return factor(); }
 
     inline Token consume(const TokenType t_tokenType) {
         const Token token = m_nextToken;
