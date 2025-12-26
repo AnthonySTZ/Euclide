@@ -3,13 +3,35 @@
 
 namespace euclide {
 
+void expectNumericLiteral(const AST& node, double expected) {
+    ASSERT_EQ(node->type, NodeType::NumericLiteral);
+    const auto* lit = dynamic_cast<const NumericLiteral*>(node.get());
+    ASSERT_NE(lit, nullptr);
+    EXPECT_EQ(lit->value, expected);
+}
+
+void expectStringLiteral(const AST& node, const std::string& expected) {
+    ASSERT_EQ(node->type, NodeType::StringLiteral);
+    const auto* lit = dynamic_cast<const StringLiteral*>(node.get());
+    ASSERT_NE(lit, nullptr);
+    EXPECT_EQ(lit->value, expected);
+}
+
+void expectBinaryOp(const AST& node, NodeType opType, const std::function<void(const AST&)>& leftCheck,
+                    const std::function<void(const AST&)>& rightCheck) {
+    ASSERT_EQ(node->type, opType);
+    const auto* binOp = dynamic_cast<const BinaryOp*>(node.get());
+    ASSERT_NE(binOp, nullptr);
+    leftCheck(binOp->left);
+    rightCheck(binOp->right);
+}
+
 TEST(SAXParser, TestNumericLiteral) {
     Parser parser{};
     const std::string script = "42";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(parsedTree.get())->value, 42);
+    expectNumericLiteral(parsedTree, 42);
 }
 
 TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
@@ -17,8 +39,7 @@ TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
     const std::string script = "    42     ";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(parsedTree.get())->value, 42);
+    expectNumericLiteral(parsedTree, 42);
 }
 
 TEST(SAXParser, TestStringLiteral) {
@@ -26,8 +47,7 @@ TEST(SAXParser, TestStringLiteral) {
     const std::string script = "\"Test\"";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::StringLiteral);
-    EXPECT_EQ(dynamic_cast<const StringLiteral*>(parsedTree.get())->value, "Test");
+    expectStringLiteral(parsedTree, "Test");
 }
 
 TEST(SAXParser, TestStringLiteralWithWhitespaces) {
@@ -35,8 +55,7 @@ TEST(SAXParser, TestStringLiteralWithWhitespaces) {
     const std::string script = "   \"   Test\"   ";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::StringLiteral);
-    EXPECT_EQ(dynamic_cast<const StringLiteral*>(parsedTree.get())->value, "   Test");
+    expectStringLiteral(parsedTree, "   Test");
 }
 
 TEST(SAXParser, TestBasicExpression) {
@@ -44,13 +63,12 @@ TEST(SAXParser, TestBasicExpression) {
     const std::string script = "2 + 3";
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::AddOp);
-
-    const BinaryOp* op = dynamic_cast<const BinaryOp*>(parsedTree.get());
-    EXPECT_EQ(op->left->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(op->left.get())->value, 2);
-    EXPECT_EQ(op->right->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(op->right.get())->value, 3);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::AddOp, 
+        [](const AST& left) { expectNumericLiteral(left, 2); },
+        [](const AST& right) { expectNumericLiteral(right, 3); });
+    // clang-format on
 }
 
 TEST(SAXParser, MultipleBasicExpressions) {
@@ -62,18 +80,16 @@ TEST(SAXParser, MultipleBasicExpressions) {
     // 2   3
 
     const AST parsedTree = parser.parse(script);
-    EXPECT_EQ(parsedTree->type, NodeType::SubOp);
-
-    const BinaryOp* op = dynamic_cast<const BinaryOp*>(parsedTree.get());
-    EXPECT_EQ(op->left->type, NodeType::AddOp);
-    const BinaryOp* addOp = dynamic_cast<const BinaryOp*>(op->left.get());
-    EXPECT_EQ(addOp->left->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(addOp->left.get())->value, 2);
-    EXPECT_EQ(addOp->right->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(addOp->right.get())->value, 3);
-
-    EXPECT_EQ(op->right->type, NodeType::NumericLiteral);
-    EXPECT_EQ(dynamic_cast<const NumericLiteral*>(op->right.get())->value, 1);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::SubOp, 
+        [](const AST& left) { expectBinaryOp(
+                                    left, NodeType::AddOp,
+                                    [](const AST& l){ expectNumericLiteral(l, 2); },
+                                    [](const AST& r){ expectNumericLiteral(r, 3);} 
+        ); },
+        [](const AST& right) { expectNumericLiteral(right, 1); });
+    // clang-format on
 }
 
 } // namespace euclide
