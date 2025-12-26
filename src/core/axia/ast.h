@@ -5,7 +5,7 @@
 
 namespace euclide {
 
-enum class NodeType { NumericLiteral, StringLiteral, MultOp, DivOp, AddOp, SubOp, UndefinedNode };
+enum class NodeType { NumericLiteral, StringLiteral, Identifier, MultOp, DivOp, AddOp, SubOp, UndefinedNode };
 
 struct ASTNode {
     NodeType type = NodeType::UndefinedNode;
@@ -23,6 +23,11 @@ struct StringLiteral : ASTNode {
 struct NumericLiteral : ASTNode {
     double value;
     NumericLiteral(const double t_value) : ASTNode(NodeType::NumericLiteral), value(t_value) {}
+};
+
+struct Identifier : ASTNode {
+    std::string name;
+    Identifier(const std::string t_name) : ASTNode(NodeType::Identifier), name(std::move(t_name)) {}
 };
 
 struct BinaryOp : ASTNode {

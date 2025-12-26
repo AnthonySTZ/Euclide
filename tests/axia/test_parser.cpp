@@ -17,6 +17,13 @@ void expectStringLiteral(const AST& node, const std::string& expected) {
     EXPECT_EQ(lit->value, expected);
 }
 
+void expectIdentifier(const AST& node, const std::string& expected) {
+    ASSERT_EQ(node->type, NodeType::Identifier);
+    const auto* lit = dynamic_cast<const Identifier*>(node.get());
+    ASSERT_NE(lit, nullptr);
+    EXPECT_EQ(lit->name, expected);
+}
+
 void expectBinaryOp(const AST& node, NodeType opType, const std::function<void(const AST&)>& leftCheck,
                     const std::function<void(const AST&)>& rightCheck) {
     ASSERT_EQ(node->type, opType);
@@ -56,6 +63,14 @@ TEST(AXIAParser, TestStringLiteralWithWhitespaces) {
 
     const AST parsedTree = parser.parse(script);
     expectStringLiteral(parsedTree, "   Test");
+}
+
+TEST(AXIAParser, TestIdentifier) {
+    Parser parser{};
+    const std::string script = "myvar";
+
+    const AST parsedTree = parser.parse(script);
+    expectIdentifier(parsedTree, "myvar");
 }
 
 TEST(AXIAParser, TestBasicTerm) {

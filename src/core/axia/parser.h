@@ -34,6 +34,11 @@ class Parser {
             return std::make_unique<StringLiteral>(token.value);
         }
 
+        case TokenType::Identifier: {
+            const Token token = consume(TokenType::Identifier);
+            return std::make_unique<Identifier>(token.value);
+        }
+
         default:
             break;
         }
