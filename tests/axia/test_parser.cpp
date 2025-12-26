@@ -220,4 +220,28 @@ TEST(AXIAParser, TestBasicAssignement) {
     // clang-format on
 }
 
+TEST(AXIAParser, TestComplexAssignement) {
+    Parser parser{};
+    const std::string script = "var = 2 + 3 * 5";
+
+    //      =
+    //  var    +
+    //      2     *
+    //          3   5
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectAssignement(
+        parsedTree, 
+        [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+        [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
+            [](const AST& left){ expectNumericLiteral(left, 2); },
+            [](const AST& right){ expectBinaryOp(right, NodeType::MultOp, 
+                [](const AST& nestedL){ expectNumericLiteral(nestedL, 3); },
+                [](const AST& nestedR){ expectNumericLiteral(nestedR, 5); } );
+            } );
+        });
+    // clang-format on
+}
+
 } // namespace euclide
