@@ -92,4 +92,80 @@ TEST(SAXParser, MultipleBasicTerms) {
     // clang-format on
 }
 
+TEST(SAXParser, TestBasicExpression) {
+    Parser parser{};
+    const std::string script = "2 + 3";
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::AddOp, 
+        [](const AST& left) { expectNumericLiteral(left, 2); },
+        [](const AST& right) { expectNumericLiteral(right, 3); });
+    // clang-format on
+}
+
+TEST(SAXParser, MultipleBasicExpressions) {
+    Parser parser{};
+    const std::string script = "2 + 3 - 1";
+
+    //      /
+    //   *     1
+    // 2   3
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::SubOp, 
+        [](const AST& left) { expectBinaryOp(
+                                    left, NodeType::AddOp,
+                                    [](const AST& l){ expectNumericLiteral(l, 2); },
+                                    [](const AST& r){ expectNumericLiteral(r, 3);} 
+        ); },
+        [](const AST& right) { expectNumericLiteral(right, 1); });
+    // clang-format on
+}
+
+TEST(SAXParser, ExpressionsWithTerms) {
+    Parser parser{};
+    const std::string script = "2 + 3 * 5";
+
+    //      +
+    //   2     *
+    //       3   5
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::AddOp, 
+        [](const AST& left) { expectNumericLiteral(left, 2); },
+        [](const AST& right) {  expectBinaryOp(
+                                    right, NodeType::MultOp,
+                                    [](const AST& l){ expectNumericLiteral(l, 3); },
+                                    [](const AST& r){ expectNumericLiteral(r, 5);} 
+        ); });
+    // clang-format on
+}
+
+TEST(SAXParser, ExpressionsWithTermsMultFirst) {
+    Parser parser{};
+    const std::string script = "2 / 3 - 5";
+
+    //      -
+    //   /     5
+    // 2   3
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectBinaryOp(
+        parsedTree, NodeType::SubOp, 
+        [](const AST& left) { expectBinaryOp(
+                                    left, NodeType::DivOp,
+                                    [](const AST& l){ expectNumericLiteral(l, 2); },
+                                    [](const AST& r){ expectNumericLiteral(r, 3);} 
+        ); },
+        [](const AST& right) { expectNumericLiteral(right, 5); });
+    // clang-format on
+}
+
 } // namespace euclide

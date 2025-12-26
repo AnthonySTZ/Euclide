@@ -18,7 +18,7 @@ class Parser {
         m_tokenizer.initialize(t_text);
         m_nextToken = m_tokenizer.getNextToken();
 
-        return term();
+        return expression();
     };
 
   private:
@@ -52,6 +52,21 @@ class Parser {
             NodeType opType = m_nextToken.value == "*" ? NodeType::MultOp : NodeType::DivOp;
             consume(TokenType::BinaryOp);
             node = std::make_unique<BinaryOp>(opType, std::move(node), primary());
+        }
+
+        return node;
+    }
+
+    inline AST expression() {
+        AST node = term(); // 2 + 3 * 5
+
+        if (m_nextToken.type != TokenType::BinaryOp)
+            return node;
+
+        while (m_nextToken.value == "+" || m_nextToken.value == "-") {
+            NodeType opType = m_nextToken.value == "+" ? NodeType::AddOp : NodeType::SubOp;
+            consume(TokenType::BinaryOp);
+            node = std::make_unique<BinaryOp>(opType, std::move(node), term());
         }
 
         return node;
