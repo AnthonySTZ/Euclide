@@ -4,7 +4,7 @@
 
 namespace euclide {
 
-enum class TokenType { Number, String, Undefined };
+enum class TokenType { Number, String, BinaryOp, Undefined };
 
 struct Token {
     TokenType type = TokenType::Undefined;
@@ -31,6 +31,16 @@ class Tokenizer {
         if (isWhitespace(m_text[m_cursor])) {
             m_cursor++;
             return getNextToken();
+        }
+
+        // Binary Op
+        if (isBinaryOp(m_text[m_cursor])) {
+            char op = m_text[m_cursor];
+            m_cursor++;
+            return {
+                TokenType::BinaryOp,
+                std::string(1, op),
+            };
         }
 
         // Numbers
@@ -69,6 +79,9 @@ class Tokenizer {
     inline bool hasMoreTokens() const noexcept { return m_cursor < m_text.length(); }
     inline bool isWhitespace(const char t_letter) const noexcept {
         return t_letter == ' ' || t_letter == '\n' || t_letter == '\t';
+    }
+    inline bool isBinaryOp(const char t_letter) const noexcept {
+        return t_letter == '+' || t_letter == '-' || t_letter == '*' || t_letter == '/';
     }
 
   private:

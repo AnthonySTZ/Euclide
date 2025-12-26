@@ -22,7 +22,7 @@ class Parser {
     };
 
   private:
-    inline AST factor() {
+    inline AST primary() {
         switch (m_nextToken.type) {
         case TokenType::Number: {
             const Token token = consume(TokenType::Number);
@@ -42,7 +42,20 @@ class Parser {
         return AST{};
     }
 
-    inline AST expression() { return factor(); }
+    inline AST expression() {
+        AST node = primary();
+
+        if (m_nextToken.type != TokenType::BinaryOp)
+            return node;
+
+        while (m_nextToken.value == "+" || m_nextToken.value == "-") {
+            NodeType opType = m_nextToken.value == "+" ? NodeType::AddOp : NodeType::SubOp;
+            consume(TokenType::BinaryOp);
+            node = std::make_unique<BinaryOp>(opType, std::move(node), primary());
+        }
+
+        return node;
+    }
 
     inline Token consume(const TokenType t_tokenType) {
         const Token token = m_nextToken;
