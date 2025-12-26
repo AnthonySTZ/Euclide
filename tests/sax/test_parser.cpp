@@ -58,33 +58,33 @@ TEST(SAXParser, TestStringLiteralWithWhitespaces) {
     expectStringLiteral(parsedTree, "   Test");
 }
 
-TEST(SAXParser, TestBasicExpression) {
+TEST(SAXParser, TestBasicTerm) {
     Parser parser{};
-    const std::string script = "2 + 3";
+    const std::string script = "2 * 3";
 
     const AST parsedTree = parser.parse(script);
     // clang-format off
     expectBinaryOp(
-        parsedTree, NodeType::AddOp, 
+        parsedTree, NodeType::MultOp, 
         [](const AST& left) { expectNumericLiteral(left, 2); },
         [](const AST& right) { expectNumericLiteral(right, 3); });
     // clang-format on
 }
 
-TEST(SAXParser, MultipleBasicExpressions) {
+TEST(SAXParser, MultipleBasicTerms) {
     Parser parser{};
-    const std::string script = "2 + 3 - 1";
+    const std::string script = "2 * 3 / 1";
 
-    //      -
-    //   +     1
+    //      /
+    //   *     1
     // 2   3
 
     const AST parsedTree = parser.parse(script);
     // clang-format off
     expectBinaryOp(
-        parsedTree, NodeType::SubOp, 
+        parsedTree, NodeType::DivOp, 
         [](const AST& left) { expectBinaryOp(
-                                    left, NodeType::AddOp,
+                                    left, NodeType::MultOp,
                                     [](const AST& l){ expectNumericLiteral(l, 2); },
                                     [](const AST& r){ expectNumericLiteral(r, 3);} 
         ); },

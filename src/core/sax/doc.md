@@ -18,12 +18,12 @@ logical
     -> comparison ( ( '&&' | '||' ) comparison )*
 
 comparison
-    -> term ( ( '<' | '>' | '==' | '!=' ) term )*
-
-term
-    -> expression ( ( '+' | '-' ) expression )*
+    -> expression ( ( '<' | '>' | '==' | '!=' ) expression )*
 
 expression
+    -> term ( ( '+' | '-' ) term )*
+
+term
     -> unary ( ( '*' | '/' ) unary )*
 
 unary
