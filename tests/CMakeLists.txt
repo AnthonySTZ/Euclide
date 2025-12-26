@@ -16,7 +16,7 @@ add_executable(EuclideTests
                 # fields/test_field.cpp
                 # fields/test_float3.cpp
 
-                sax/test_parser.cpp
+                axia/test_parser.cpp
                 )
 
 target_link_libraries(EuclideTests PRIVATE core gtest)

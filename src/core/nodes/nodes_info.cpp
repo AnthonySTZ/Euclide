@@ -16,7 +16,7 @@
 #include "attributes/attribute_rename.cpp"
 #include "attributes/attribute_noise.cpp"
 #include "attributes/attribute_math.cpp"
-#include "attributes/attribute_sax.cpp"
+#include "attributes/attribute_axia.cpp"
 
 #include "utility/null.h"
 
@@ -46,7 +46,7 @@ static const std::vector<std::pair<std::string, std::vector<NodeMenuItem>>> node
          {"Attribute Rename", []() { return std::make_shared<AttributeRename>(); }},
          {"Attribute Noise", []() { return std::make_shared<AttributeNoise>(); }},
          {"Attribute Math", []() { return std::make_shared<AttributeMath>(); }},
-         {"Attribute SAX", []() { return std::make_shared<AttributeSAX>(); }},
+         {"Attribute AXIA", []() { return std::make_shared<AttributeAXIA>(); }},
      }},
     {"Utility",
      {

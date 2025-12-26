@@ -1,10 +1,10 @@
-#include "attribute_sax.h"
+#include "attribute_axia.h"
 
 #include "fields/float4field.h"
 
 namespace euclide {
 
-AttributeSAX::AttributeSAX() : Node(1, 1, "AttrCreate") {
+AttributeAXIA::AttributeAXIA() : Node(1, 1, "AttrCreate") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
@@ -15,13 +15,13 @@ AttributeSAX::AttributeSAX() : Node(1, 1, "AttrCreate") {
 
     auto scriptField = std::make_shared<NodeField<std::string>>("");
     scriptField->setMetadata(NodeFieldMetadata{
-        .displayName = "SAX Script",
+        .displayName = "AXIA Script",
         .isMultiline = true,
     });
     addField("script", scriptField);
 }
 
-std::shared_ptr<Mesh> AttributeSAX::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
+std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
     if (t_inputs[0] == nullptr)
         return std::make_shared<Mesh>();
 
@@ -38,15 +38,15 @@ std::shared_ptr<Mesh> AttributeSAX::compute(const size_t t_index, const std::vec
         return output;
 
     if (kind == Kind::POINTS) {
-        computeSAX(output->pointAttribs, script);
+        computeAXIA(output->pointAttribs, script);
     } else if (kind == Kind::PRIMITIVES) {
-        computeSAX(output->primAttribs, script);
+        computeAXIA(output->primAttribs, script);
     }
 
     return output;
 }
 
-void AttributeSAX::computeSAX(AttributeSet& t_attribs, const std::string& t_script) {
+void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_script) {
 }
 
 } // namespace euclide

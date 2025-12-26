@@ -1,4 +1,4 @@
-SAX is language similar to VEX in Houdini, it'll be used to edit mesh attributes.
+AXIA (from axioms) is language similar to VEX in Houdini, it'll be used to edit mesh attributes.
 
 Variables
 ------------------------------------------------------------------------------------

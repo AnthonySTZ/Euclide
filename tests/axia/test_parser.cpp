@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "sax/parser.h"
+#include "axia/parser.h"
 
 namespace euclide {
 
@@ -26,7 +26,7 @@ void expectBinaryOp(const AST& node, NodeType opType, const std::function<void(c
     rightCheck(binOp->right);
 }
 
-TEST(SAXParser, TestNumericLiteral) {
+TEST(AXIAParser, TestNumericLiteral) {
     Parser parser{};
     const std::string script = "42";
 
@@ -34,7 +34,7 @@ TEST(SAXParser, TestNumericLiteral) {
     expectNumericLiteral(parsedTree, 42);
 }
 
-TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
+TEST(AXIAParser, TestNumericLiteralWithWhiteSpaces) {
     Parser parser{};
     const std::string script = "    42     ";
 
@@ -42,7 +42,7 @@ TEST(SAXParser, TestNumericLiteralWithWhiteSpaces) {
     expectNumericLiteral(parsedTree, 42);
 }
 
-TEST(SAXParser, TestStringLiteral) {
+TEST(AXIAParser, TestStringLiteral) {
     Parser parser{};
     const std::string script = "\"Test\"";
 
@@ -50,7 +50,7 @@ TEST(SAXParser, TestStringLiteral) {
     expectStringLiteral(parsedTree, "Test");
 }
 
-TEST(SAXParser, TestStringLiteralWithWhitespaces) {
+TEST(AXIAParser, TestStringLiteralWithWhitespaces) {
     Parser parser{};
     const std::string script = "   \"   Test\"   ";
 
@@ -58,7 +58,7 @@ TEST(SAXParser, TestStringLiteralWithWhitespaces) {
     expectStringLiteral(parsedTree, "   Test");
 }
 
-TEST(SAXParser, TestBasicTerm) {
+TEST(AXIAParser, TestBasicTerm) {
     Parser parser{};
     const std::string script = "2 * 3";
 
@@ -71,7 +71,7 @@ TEST(SAXParser, TestBasicTerm) {
     // clang-format on
 }
 
-TEST(SAXParser, MultipleBasicTerms) {
+TEST(AXIAParser, MultipleBasicTerms) {
     Parser parser{};
     const std::string script = "2 * 3 / 1";
 
@@ -92,7 +92,7 @@ TEST(SAXParser, MultipleBasicTerms) {
     // clang-format on
 }
 
-TEST(SAXParser, TestBasicExpression) {
+TEST(AXIAParser, TestBasicExpression) {
     Parser parser{};
     const std::string script = "2 + 3";
 
@@ -105,7 +105,7 @@ TEST(SAXParser, TestBasicExpression) {
     // clang-format on
 }
 
-TEST(SAXParser, MultipleBasicExpressions) {
+TEST(AXIAParser, MultipleBasicExpressions) {
     Parser parser{};
     const std::string script = "2 + 3 - 1";
 
@@ -126,7 +126,7 @@ TEST(SAXParser, MultipleBasicExpressions) {
     // clang-format on
 }
 
-TEST(SAXParser, ExpressionsWithTerms) {
+TEST(AXIAParser, ExpressionsWithTerms) {
     Parser parser{};
     const std::string script = "2 + 3 * 5";
 
@@ -147,7 +147,7 @@ TEST(SAXParser, ExpressionsWithTerms) {
     // clang-format on
 }
 
-TEST(SAXParser, ExpressionsWithTermsMultFirst) {
+TEST(AXIAParser, ExpressionsWithTermsMultFirst) {
     Parser parser{};
     const std::string script = "2 / 3 - 5";
 
