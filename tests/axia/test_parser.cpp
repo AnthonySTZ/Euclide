@@ -41,6 +41,12 @@ void expectAssignement(const AST& node, const std::function<void(const AST&)>& i
     valueCheck(assignedNode->value);
 }
 
+void expectStatement(const AST& node, const std::function<void(const AST&)>& statementCheck) {
+    ASSERT_EQ(node->type, NodeType::Statement);
+    const auto* assignedNode = dynamic_cast<const Statement*>(node.get());
+    statementCheck(assignedNode->left);
+}
+
 TEST(AXIAParser, TestNumericLiteral) {
     Parser parser{};
     const std::string script = "42";
@@ -241,6 +247,33 @@ TEST(AXIAParser, TestComplexAssignement) {
                 [](const AST& nestedR){ expectNumericLiteral(nestedR, 5); } );
             } );
         });
+    // clang-format on
+}
+
+TEST(AXIAParser, TestComplexStatement) {
+    Parser parser{};
+    const std::string script = "var = 2 + 3 * 5;";
+
+    //      ;
+    //      =
+    //  var    +
+    //      2     *
+    //          3   5
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectStatement( parsedTree, 
+        [](const AST& node) { expectAssignement( node, 
+            [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+            [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
+                [](const AST& left){ expectNumericLiteral(left, 2); },
+                [](const AST& right){ expectBinaryOp(right, NodeType::MultOp, 
+                    [](const AST& nestedL){ expectNumericLiteral(nestedL, 3); },
+                    [](const AST& nestedR){ expectNumericLiteral(nestedR, 5); } );
+                } );
+            } 
+        );} 
+    );
     // clang-format on
 }
 

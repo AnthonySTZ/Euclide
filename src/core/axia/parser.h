@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "tokenizer.h"
 #include "ast.h"
@@ -18,7 +19,7 @@ class Parser {
         m_tokenizer.initialize(t_text);
         m_nextToken = m_tokenizer.getNextToken();
 
-        return assignement();
+        return statement();
     };
 
   private:
@@ -88,6 +89,17 @@ class Parser {
 
         consume(TokenType::Assignement);
         return std::make_unique<Assignement>(std::move(node), expression());
+    }
+
+    inline AST statement() {
+        AST node = assignement();
+
+        if (m_nextToken.type != TokenType::Statement) {
+            return node; // Maybe return nullptr if not statement because each "lines" should be a statement.
+        }
+
+        consume(TokenType::Statement);
+        return std::make_unique<Statement>(std::move(node));
     }
 
     inline Token consume(const TokenType t_tokenType) {
