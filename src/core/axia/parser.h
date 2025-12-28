@@ -94,12 +94,16 @@ class Parser {
     inline AST statement() {
         AST node = assignement();
 
-        if (m_nextToken.type != TokenType::Statement) {
-            return node; // Maybe return nullptr if not statement because each "lines" should be a statement.
+        while (m_nextToken.type == TokenType::Statement) {
+            Token token = consume(TokenType::Statement);
+            if (token.value == ";") {
+                node = std::make_unique<Statement>(NodeType::SemiColonStatement, std::move(node));
+            } else {
+                throw std::runtime_error("Statement not supported yet!");
+            }
         }
 
-        consume(TokenType::Statement);
-        return std::make_unique<Statement>(std::move(node));
+        return node; // Maybe return nullptr if not statement because each "lines" should be a statement.
     }
 
     inline Token consume(const TokenType t_tokenType) {

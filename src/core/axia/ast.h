@@ -14,7 +14,7 @@ enum class NodeType {
     AddOp,
     SubOp,
     Assignement,
-    Statement,
+    SemiColonStatement,
     UndefinedNode
 };
 
@@ -59,7 +59,7 @@ struct Assignement : ASTNode {
 struct Statement : ASTNode {
     AST left;
 
-    Statement(AST&& t_l) : ASTNode(NodeType::Statement), left(std::move(t_l)) {}
+    Statement(const NodeType t_type, AST&& t_l) : ASTNode(t_type), left(std::move(t_l)) {}
 };
 
 } // namespace euclide

@@ -36,7 +36,7 @@ class Tokenizer {
         // ; statement
         if (m_text[m_cursor] == ';') {
             m_cursor++;
-            return {TokenType::Statement, ""};
+            return {TokenType::Statement, ";"};
         }
 
         // Assignement

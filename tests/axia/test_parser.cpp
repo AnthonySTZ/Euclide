@@ -41,8 +41,8 @@ void expectAssignement(const AST& node, const std::function<void(const AST&)>& i
     valueCheck(assignedNode->value);
 }
 
-void expectStatement(const AST& node, const std::function<void(const AST&)>& statementCheck) {
-    ASSERT_EQ(node->type, NodeType::Statement);
+void expectStatement(const AST& node, NodeType stateType, const std::function<void(const AST&)>& statementCheck) {
+    ASSERT_EQ(node->type, stateType);
     const auto* assignedNode = dynamic_cast<const Statement*>(node.get());
     statementCheck(assignedNode->left);
 }
@@ -262,7 +262,7 @@ TEST(AXIAParser, TestComplexStatement) {
 
     const AST parsedTree = parser.parse(script);
     // clang-format off
-    expectStatement( parsedTree, 
+    expectStatement( parsedTree, NodeType::SemiColonStatement,
         [](const AST& node) { expectAssignement( node, 
             [](const AST& identifier) { expectIdentifier(identifier, "var"); },
             [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
@@ -273,6 +273,26 @@ TEST(AXIAParser, TestComplexStatement) {
                 } );
             } 
         );} 
+    );
+    // clang-format on
+}
+
+TEST(AXIAParser, TestMultipleSemicolon) {
+    Parser parser{};
+    const std::string script = "2;;";
+
+    //      ;
+    //      ;
+    //      2
+
+    const AST parsedTree = parser.parse(script);
+    // clang-format off
+    expectStatement( parsedTree, NodeType::SemiColonStatement,
+        [](const AST& node) { 
+                expectStatement( node, NodeType::SemiColonStatement, 
+                    [](const AST& nested) { expectNumericLiteral(nested, 2); 
+            }); 
+        } 
     );
     // clang-format on
 }
