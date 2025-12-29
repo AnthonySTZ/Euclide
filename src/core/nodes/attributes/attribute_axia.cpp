@@ -1,10 +1,11 @@
 #include "attribute_axia.h"
 
 #include "fields/float4field.h"
+#include "axia/parser.h"
 
 namespace euclide {
 
-AttributeAXIA::AttributeAXIA() : Node(1, 1, "AttrCreate") {
+AttributeAXIA::AttributeAXIA() : Node(1, 1, "Axia") {
     auto kindField = std::make_shared<NodeField<int>>(0);
     kindField->setMetadata(NodeFieldMetadata{
         displayName : "Kind",
@@ -27,10 +28,6 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
 
     auto output = std::make_shared<Mesh>(*t_inputs[0]);
 
-    const int attrSize = getField<NodeField<int>>("size")->getValue();
-    if (attrSize < 1)
-        return output;
-
     const Kind kind = static_cast<Kind>(getField<NodeField<int>>("kind")->getValue());
     const std::string script = getField<NodeField<std::string>>("script")->getValue();
 
@@ -47,6 +44,8 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
 }
 
 void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_script) {
+    Parser parser{};
+    const std::vector<AST> parsed = parser.parse(t_script);
 }
 
 } // namespace euclide
