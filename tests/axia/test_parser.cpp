@@ -357,4 +357,39 @@ TEST(AXIAParser, TestMultipleSemicolon) {
     // clang-format on
 }
 
+TEST(AXIAParser, TestMultipleStatements) {
+    Parser parser{};
+    const std::string script = "var = 2 + 3 * 5; test = 5;";
+
+    //      ;
+    //      =
+    //  var    +
+    //      2     *
+    //          3   5
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 2);
+    // clang-format off
+    expectStatement( parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node) { expectAssignement( node, 
+            [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+            [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
+                [](const AST& left){ expectNumericLiteral(left, 2); },
+                [](const AST& right){ expectBinaryOp(right, NodeType::MultOp, 
+                    [](const AST& nestedL){ expectNumericLiteral(nestedL, 3); },
+                    [](const AST& nestedR){ expectNumericLiteral(nestedR, 5); } );
+                } );
+            } 
+        );} 
+    );
+    expectStatement( parsedTree[1], NodeType::SemiColonStatement,
+        [](const AST& node) { expectAssignement( node, 
+            [](const AST& identifier) { expectIdentifier(identifier, "test"); },
+            [](const AST& value) { expectNumericLiteral(value, 5); } 
+        ); } 
+    );
+
+    // clang-format on
+}
+
 } // namespace euclide
