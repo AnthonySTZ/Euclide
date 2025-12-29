@@ -4,7 +4,7 @@
 
 namespace euclide {
 
-enum class TokenType { Number, String, Identifier, BinaryOp, Assignement, Statement, Undefined };
+enum class TokenType { Number, String, Identifier, BinaryOp, Assignment, Statement, LParen, RParen, Undefined };
 
 struct Token {
     TokenType type = TokenType::Undefined;
@@ -39,10 +39,10 @@ class Tokenizer {
             return {TokenType::Statement, ";"};
         }
 
-        // Assignement
+        // Assignment
         if (m_text[m_cursor] == '=') {
             m_cursor++;
-            return {TokenType::Assignement, ""};
+            return {TokenType::Assignment, ""};
         }
 
         // Identifier
@@ -56,6 +56,16 @@ class Tokenizer {
                 TokenType::Identifier,
                 m_text.substr(start, m_cursor - start),
             };
+        }
+
+        // Parenthesis
+        if (m_text[m_cursor] == '(') {
+            m_cursor++;
+            return {TokenType::LParen, ""};
+        }
+        if (m_text[m_cursor] == ')') {
+            m_cursor++;
+            return {TokenType::RParen, ""};
         }
 
         // Binary Op

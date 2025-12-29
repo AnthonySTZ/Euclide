@@ -33,10 +33,10 @@ void expectBinaryOp(const AST& node, NodeType opType, const std::function<void(c
     rightCheck(binOp->right);
 }
 
-void expectAssignement(const AST& node, const std::function<void(const AST&)>& identifierCheck,
-                       const std::function<void(const AST&)>& valueCheck) {
-    ASSERT_EQ(node->type, NodeType::Assignement);
-    const auto* assignedNode = dynamic_cast<const Assignement*>(node.get());
+void expectAssignment(const AST& node, const std::function<void(const AST&)>& identifierCheck,
+                      const std::function<void(const AST&)>& valueCheck) {
+    ASSERT_EQ(node->type, NodeType::Assignment);
+    const auto* assignedNode = dynamic_cast<const Assignment*>(node.get());
     identifierCheck(assignedNode->identifier);
     valueCheck(assignedNode->value);
 }
@@ -259,7 +259,7 @@ TEST(AXIAParser, ExpressionsWithTermsMultFirst) {
     // clang-format on
 }
 
-TEST(AXIAParser, TestBasicAssignement) {
+TEST(AXIAParser, TestBasicAssignment) {
     Parser parser{};
     const std::string script = "var = 2;";
 
@@ -270,7 +270,7 @@ TEST(AXIAParser, TestBasicAssignement) {
     EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
     expectStatement(parsedTree[0], NodeType::SemiColonStatement,
-        [](const AST& node){ expectAssignement(
+        [](const AST& node){ expectAssignment(
             node, 
             [](const AST& identifier) { expectIdentifier(identifier, "var"); },
             [](const AST& value) { expectNumericLiteral(value, 2); }); }
@@ -278,7 +278,7 @@ TEST(AXIAParser, TestBasicAssignement) {
     // clang-format on
 }
 
-TEST(AXIAParser, TestComplexAssignement) {
+TEST(AXIAParser, TestComplexAssignment) {
     Parser parser{};
     const std::string script = "var = 2 + 3 * 5;";
 
@@ -291,7 +291,7 @@ TEST(AXIAParser, TestComplexAssignement) {
     EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
     expectStatement(parsedTree[0], NodeType::SemiColonStatement,
-        [](const AST& node){ expectAssignement(
+        [](const AST& node){ expectAssignment(
         node, 
         [](const AST& identifier) { expectIdentifier(identifier, "var"); },
         [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
@@ -319,7 +319,7 @@ TEST(AXIAParser, TestComplexStatement) {
     EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
     expectStatement( parsedTree[0], NodeType::SemiColonStatement,
-        [](const AST& node) { expectAssignement( node, 
+        [](const AST& node) { expectAssignment( node, 
             [](const AST& identifier) { expectIdentifier(identifier, "var"); },
             [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
                 [](const AST& left){ expectNumericLiteral(left, 2); },
@@ -371,7 +371,7 @@ TEST(AXIAParser, TestMultipleStatements) {
     EXPECT_EQ(parsedTree.size(), 2);
     // clang-format off
     expectStatement( parsedTree[0], NodeType::SemiColonStatement,
-        [](const AST& node) { expectAssignement( node, 
+        [](const AST& node) { expectAssignment( node, 
             [](const AST& identifier) { expectIdentifier(identifier, "var"); },
             [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
                 [](const AST& left){ expectNumericLiteral(left, 2); },
@@ -383,12 +383,40 @@ TEST(AXIAParser, TestMultipleStatements) {
         );} 
     );
     expectStatement( parsedTree[1], NodeType::SemiColonStatement,
-        [](const AST& node) { expectAssignement( node, 
+        [](const AST& node) { expectAssignment( node, 
             [](const AST& identifier) { expectIdentifier(identifier, "test"); },
             [](const AST& value) { expectNumericLiteral(value, 5); } 
         ); } 
     );
 
+    // clang-format on
+}
+
+TEST(AXIAParser, TestParenthesis) {
+    Parser parser{};
+    const std::string script = "var = (2 + 3) * 5;";
+
+    //      ;
+    //      =
+    //  var    *
+    //      +     5
+    //    2   3
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    // clang-format off
+    expectStatement( parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node) { expectAssignment( node, 
+            [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+            [](const AST& value) { expectBinaryOp(value, NodeType::MultOp, 
+                [](const AST& left){ expectBinaryOp(left, NodeType::AddOp, 
+                    [](const AST& addLeft){ expectNumericLiteral(addLeft, 2); },
+                    [](const AST& addRight){ expectNumericLiteral(addRight, 3); }
+                ); },
+                [](const AST& right){ expectNumericLiteral(right, 5); } 
+            ); } 
+        );} 
+    );
     // clang-format on
 }
 

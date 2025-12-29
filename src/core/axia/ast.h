@@ -13,7 +13,7 @@ enum class NodeType {
     DivOp,
     AddOp,
     SubOp,
-    Assignement,
+    Assignment,
     SemiColonStatement,
     UndefinedNode
 };
@@ -48,12 +48,12 @@ struct BinaryOp : ASTNode {
     BinaryOp(const NodeType t_op, AST&& t_l, AST&& t_r) : ASTNode(t_op), left(std::move(t_l)), right(std::move(t_r)) {}
 };
 
-struct Assignement : ASTNode {
+struct Assignment : ASTNode {
     AST identifier;
     AST value;
 
-    Assignement(AST&& t_l, AST&& t_r)
-        : ASTNode(NodeType::Assignement), identifier(std::move(t_l)), value(std::move(t_r)) {}
+    Assignment(AST&& t_l, AST&& t_r)
+        : ASTNode(NodeType::Assignment), identifier(std::move(t_l)), value(std::move(t_r)) {}
 };
 
 struct Statement : ASTNode {

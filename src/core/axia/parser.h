@@ -43,6 +43,12 @@ class Parser {
             const Token token = consume(TokenType::Identifier);
             return std::make_unique<Identifier>(token.value);
         }
+        case TokenType::LParen: {
+            consume(TokenType::LParen);
+            AST expr = expression();
+            consume(TokenType::RParen);
+            return expr;
+        }
 
         default:
             break;
@@ -82,21 +88,21 @@ class Parser {
         return node;
     }
 
-    inline AST assignement() {
+    inline AST assignment() {
         AST node = expression();
 
-        if (m_nextToken.type != TokenType::Assignement)
+        if (m_nextToken.type != TokenType::Assignment)
             return node;
 
         if (node->type != NodeType::Identifier)
-            throw std::runtime_error("Unexpected expression instead of Identifier before assignement!");
+            throw std::runtime_error("Unexpected expression instead of Identifier before assignment!");
 
-        consume(TokenType::Assignement);
-        return std::make_unique<Assignement>(std::move(node), expression());
+        consume(TokenType::Assignment);
+        return std::make_unique<Assignment>(std::move(node), expression());
     }
 
     inline AST statement() {
-        AST node = assignement();
+        AST node = assignment();
 
         if (m_nextToken.type == TokenType::Statement) {
             Token token = consume(TokenType::Statement);
