@@ -38,4 +38,4 @@ primary
     -> literal
     | identifier
     | function_call
-    | '(' assignment ')'
+    | '(' logical ')'
