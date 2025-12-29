@@ -65,6 +65,16 @@ TEST(AXIAParser, TestNumericLiteral) {
                     [](const AST& node) { expectNumericLiteral(node, 42); });
 }
 
+TEST(AXIAParser, TestNumericLiteralWithDecimal) {
+    Parser parser{};
+    const std::string script = "42.5;";
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectNumericLiteral(node, 42.5); });
+}
+
 TEST(AXIAParser, TestNumericLiteralWithWhiteSpaces) {
     Parser parser{};
     const std::string script = "    42     ;";

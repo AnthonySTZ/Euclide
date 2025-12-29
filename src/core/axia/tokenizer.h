@@ -80,9 +80,15 @@ class Tokenizer {
 
         // Numbers
         if (isdigit(m_text[m_cursor])) {
+            bool isDecimal = false;
             const size_t start = m_cursor;
             m_cursor++;
-            while (isdigit(m_text[m_cursor]) && hasMoreTokens()) {
+            while ((isdigit(m_text[m_cursor]) || m_text[m_cursor] == '.') && hasMoreTokens()) {
+                if (m_text[m_cursor] == '.') {
+                    if (isDecimal)
+                        break;
+                    isDecimal = true;
+                }
                 m_cursor++;
             }
             return {

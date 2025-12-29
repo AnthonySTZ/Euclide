@@ -31,7 +31,7 @@ class Parser {
         switch (m_nextToken.type) {
         case TokenType::Number: {
             const Token token = consume(TokenType::Number);
-            return std::make_unique<NumericLiteral>(std::stod(token.value));
+            return std::make_unique<NumericLiteral>(std::stof(token.value));
         }
 
         case TokenType::String: {
