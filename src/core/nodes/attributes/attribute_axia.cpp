@@ -1,7 +1,7 @@
 #include "attribute_axia.h"
 
 #include "fields/float4field.h"
-#include "axia/parser.h"
+#include "axia/evaluator.h"
 
 namespace euclide {
 
@@ -46,6 +46,13 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
 void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_script) {
     Parser parser{};
     const std::vector<AST> parsed = parser.parse(t_script);
+    for (uint32_t i = 0; i < t_attribs.size(); ++i) {
+        EvalContext context{t_attribs, i};
+        AxiaEvaluator eval{context};
+        for (auto& statement : parsed) {
+            statement->accept(eval);
+        }
+    }
 }
 
 } // namespace euclide

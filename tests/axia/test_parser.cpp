@@ -44,7 +44,7 @@ void expectAssignment(const AST& node, const std::function<void(const AST&)>& id
 void expectStatement(const AST& node, NodeType stateType, const std::function<void(const AST&)>& statementCheck) {
     ASSERT_EQ(node->type, stateType);
     const auto* assignedNode = dynamic_cast<const Statement*>(node.get());
-    statementCheck(assignedNode->left);
+    statementCheck(assignedNode->right);
 }
 
 TEST(AXIAParser, TestNoStatement) {
