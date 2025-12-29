@@ -47,198 +47,252 @@ void expectStatement(const AST& node, NodeType stateType, const std::function<vo
     statementCheck(assignedNode->left);
 }
 
-TEST(AXIAParser, TestNumericLiteral) {
+TEST(AXIAParser, TestNoStatement) {
     Parser parser{};
     const std::string script = "42";
 
-    const AST parsedTree = parser.parse(script);
-    expectNumericLiteral(parsedTree, 42);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 0);
+}
+
+TEST(AXIAParser, TestNumericLiteral) {
+    Parser parser{};
+    const std::string script = "42;";
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectNumericLiteral(node, 42); });
 }
 
 TEST(AXIAParser, TestNumericLiteralWithWhiteSpaces) {
     Parser parser{};
-    const std::string script = "    42     ";
+    const std::string script = "    42     ;";
 
-    const AST parsedTree = parser.parse(script);
-    expectNumericLiteral(parsedTree, 42);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectNumericLiteral(node, 42); });
 }
 
 TEST(AXIAParser, TestStringLiteral) {
     Parser parser{};
-    const std::string script = "\"Test\"";
+    const std::string script = "\"Test\";";
 
-    const AST parsedTree = parser.parse(script);
-    expectStringLiteral(parsedTree, "Test");
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectStringLiteral(node, "Test"); });
+}
+
+TEST(AXIAParser, TestEmptyStringLiteral) {
+    Parser parser{};
+    const std::string script = "\"\";";
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectStringLiteral(node, ""); });
 }
 
 TEST(AXIAParser, TestStringLiteralWithWhitespaces) {
     Parser parser{};
-    const std::string script = "   \"   Test\"   ";
+    const std::string script = "   \"   Test\"   ;";
 
-    const AST parsedTree = parser.parse(script);
-    expectStringLiteral(parsedTree, "   Test");
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectStringLiteral(node, "   Test"); });
 }
 
 TEST(AXIAParser, TestIdentifier) {
     Parser parser{};
-    const std::string script = "myvar";
+    const std::string script = "myvar;";
 
-    const AST parsedTree = parser.parse(script);
-    expectIdentifier(parsedTree, "myvar");
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+                    [](const AST& node) { expectIdentifier(node, "myvar"); });
 }
 
 TEST(AXIAParser, TestBasicTerm) {
     Parser parser{};
-    const std::string script = "2 * 3";
+    const std::string script = "2 * 3;";
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::MultOp, 
-        [](const AST& left) { expectNumericLiteral(left, 2); },
-        [](const AST& right) { expectNumericLiteral(right, 3); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node) {expectBinaryOp(
+            node, NodeType::MultOp, 
+            [](const AST& left) { expectNumericLiteral(left, 2); },
+            [](const AST& right) { expectNumericLiteral(right, 3); });}
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, TestBasicTermWithIdentifier) {
     Parser parser{};
-    const std::string script = "2 * myvar";
+    const std::string script = "2 * myvar;";
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::MultOp, 
-        [](const AST& left) { expectNumericLiteral(left, 2); },
-        [](const AST& right) { expectIdentifier(right, "myvar"); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectBinaryOp(
+            node, NodeType::MultOp, 
+            [](const AST& left) { expectNumericLiteral(left, 2); },
+            [](const AST& right) { expectIdentifier(right, "myvar"); }); } 
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, MultipleBasicTerms) {
     Parser parser{};
-    const std::string script = "2 * 3 / 1";
+    const std::string script = "2 * 3 / 1;";
 
     //      /
     //   *     1
     // 2   3
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::DivOp, 
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node) { expectBinaryOp(
+        node, NodeType::DivOp, 
         [](const AST& left) { expectBinaryOp(
                                     left, NodeType::MultOp,
                                     [](const AST& l){ expectNumericLiteral(l, 2); },
                                     [](const AST& r){ expectNumericLiteral(r, 3);} 
         ); },
-        [](const AST& right) { expectNumericLiteral(right, 1); });
+        [](const AST& right) { expectNumericLiteral(right, 1); }); } 
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, TestBasicExpression) {
     Parser parser{};
-    const std::string script = "2 + 3";
+    const std::string script = "2 + 3;";
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::AddOp, 
-        [](const AST& left) { expectNumericLiteral(left, 2); },
-        [](const AST& right) { expectNumericLiteral(right, 3); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectBinaryOp(
+            node, NodeType::AddOp, 
+            [](const AST& left) { expectNumericLiteral(left, 2); },
+            [](const AST& right) { expectNumericLiteral(right, 3); }); } 
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, MultipleBasicExpressions) {
     Parser parser{};
-    const std::string script = "2 + 3 - 1";
+    const std::string script = "2 + 3 - 1;";
 
     //      /
     //   *     1
     // 2   3
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::SubOp, 
-        [](const AST& left) { expectBinaryOp(
-                                    left, NodeType::AddOp,
-                                    [](const AST& l){ expectNumericLiteral(l, 2); },
-                                    [](const AST& r){ expectNumericLiteral(r, 3);} 
-        ); },
-        [](const AST& right) { expectNumericLiteral(right, 1); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectBinaryOp(
+            node, NodeType::SubOp, 
+            [](const AST& left) { expectBinaryOp(
+                                        left, NodeType::AddOp,
+                                        [](const AST& l){ expectNumericLiteral(l, 2); },
+                                        [](const AST& r){ expectNumericLiteral(r, 3);} 
+            ); },
+            [](const AST& right) { expectNumericLiteral(right, 1); }); }
+        );
     // clang-format on
 }
 
 TEST(AXIAParser, ExpressionsWithTerms) {
     Parser parser{};
-    const std::string script = "2 + 3 * 5";
+    const std::string script = "2 + 3 * 5;";
 
     //      +
     //   2     *
     //       3   5
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::AddOp, 
-        [](const AST& left) { expectNumericLiteral(left, 2); },
-        [](const AST& right) {  expectBinaryOp(
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectBinaryOp(
+            node, NodeType::AddOp, 
+            [](const AST& left) { expectNumericLiteral(left, 2); },
+            [](const AST& right) {  expectBinaryOp(
                                     right, NodeType::MultOp,
                                     [](const AST& l){ expectNumericLiteral(l, 3); },
-                                    [](const AST& r){ expectNumericLiteral(r, 5);} 
-        ); });
+                                    [](const AST& r){ expectNumericLiteral(r, 5);}
+        ); }); }
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, ExpressionsWithTermsMultFirst) {
     Parser parser{};
-    const std::string script = "2 / 3 - 5";
+    const std::string script = "2 / 3 - 5;";
 
     //      -
     //   /     5
     // 2   3
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectBinaryOp(
-        parsedTree, NodeType::SubOp, 
-        [](const AST& left) { expectBinaryOp(
-                                    left, NodeType::DivOp,
-                                    [](const AST& l){ expectNumericLiteral(l, 2); },
-                                    [](const AST& r){ expectNumericLiteral(r, 3);} 
-        ); },
-        [](const AST& right) { expectNumericLiteral(right, 5); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectBinaryOp(
+            node, NodeType::SubOp, 
+            [](const AST& left) { expectBinaryOp(
+                                        left, NodeType::DivOp,
+                                        [](const AST& l){ expectNumericLiteral(l, 2); },
+                                        [](const AST& r){ expectNumericLiteral(r, 3);} 
+            ); },
+            [](const AST& right) { expectNumericLiteral(right, 5); }); }
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, TestBasicAssignement) {
     Parser parser{};
-    const std::string script = "var = 2";
+    const std::string script = "var = 2;";
 
     //      =
     //  var    2
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectAssignement(
-        parsedTree, 
-        [](const AST& identifier) { expectIdentifier(identifier, "var"); },
-        [](const AST& value) { expectNumericLiteral(value, 2); });
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectAssignement(
+            node, 
+            [](const AST& identifier) { expectIdentifier(identifier, "var"); },
+            [](const AST& value) { expectNumericLiteral(value, 2); }); }
+    );
     // clang-format on
 }
 
 TEST(AXIAParser, TestComplexAssignement) {
     Parser parser{};
-    const std::string script = "var = 2 + 3 * 5";
+    const std::string script = "var = 2 + 3 * 5;";
 
     //      =
     //  var    +
     //      2     *
     //          3   5
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectAssignement(
-        parsedTree, 
+    expectStatement(parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node){ expectAssignement(
+        node, 
         [](const AST& identifier) { expectIdentifier(identifier, "var"); },
         [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
             [](const AST& left){ expectNumericLiteral(left, 2); },
@@ -246,7 +300,8 @@ TEST(AXIAParser, TestComplexAssignement) {
                 [](const AST& nestedL){ expectNumericLiteral(nestedL, 3); },
                 [](const AST& nestedR){ expectNumericLiteral(nestedR, 5); } );
             } );
-        });
+        }); }
+    );
     // clang-format on
 }
 
@@ -260,9 +315,10 @@ TEST(AXIAParser, TestComplexStatement) {
     //      2     *
     //          3   5
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
     // clang-format off
-    expectStatement( parsedTree, NodeType::SemiColonStatement,
+    expectStatement( parsedTree[0], NodeType::SemiColonStatement,
         [](const AST& node) { expectAssignement( node, 
             [](const AST& identifier) { expectIdentifier(identifier, "var"); },
             [](const AST& value) { expectBinaryOp(value, NodeType::AddOp, 
@@ -285,13 +341,17 @@ TEST(AXIAParser, TestMultipleSemicolon) {
     //      ;
     //      2
 
-    const AST parsedTree = parser.parse(script);
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 2);
     // clang-format off
-    expectStatement( parsedTree, NodeType::SemiColonStatement,
+    expectStatement( parsedTree[0], NodeType::SemiColonStatement,
         [](const AST& node) { 
-                expectStatement( node, NodeType::SemiColonStatement, 
-                    [](const AST& nested) { expectNumericLiteral(nested, 2); 
-            }); 
+            expectNumericLiteral(node, 2);
+        } 
+    );
+    expectStatement( parsedTree[1], NodeType::SemiColonStatement,
+        [](const AST& node) { 
+            EXPECT_EQ(node, nullptr);
         } 
     );
     // clang-format on

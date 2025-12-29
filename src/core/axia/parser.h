@@ -15,11 +15,15 @@ class Parser {
     /// @brief Parse a given text to an Abstract Syntax Tree
     /// @param t_text The script text to parse
     /// @return The AST constructed from the given text
-    inline AST parse(const std::string& t_text) {
+    inline std::vector<AST> parse(const std::string& t_text) {
         m_tokenizer.initialize(t_text);
         m_nextToken = m_tokenizer.getNextToken();
 
-        return statement();
+        std::vector<AST> statements;
+        while (AST nextStatement = statement()) { // Check if next statement is not a nullptr
+            statements.push_back(std::move(nextStatement));
+        }
+        return statements;
     };
 
   private:
@@ -94,16 +98,16 @@ class Parser {
     inline AST statement() {
         AST node = assignement();
 
-        while (m_nextToken.type == TokenType::Statement) {
+        if (m_nextToken.type == TokenType::Statement) {
             Token token = consume(TokenType::Statement);
             if (token.value == ";") {
-                node = std::make_unique<Statement>(NodeType::SemiColonStatement, std::move(node));
+                return std::make_unique<Statement>(NodeType::SemiColonStatement, std::move(node));
             } else {
                 throw std::runtime_error("Statement not supported yet!");
             }
         }
 
-        return node; // Maybe return nullptr if not statement because each "lines" should be a statement.
+        return nullptr; // Maybe return nullptr if not statement because each "lines" should be a statement.
     }
 
     inline Token consume(const TokenType t_tokenType) {
