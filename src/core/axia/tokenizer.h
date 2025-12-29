@@ -85,12 +85,11 @@ class Tokenizer {
         if (m_text[m_cursor] == '"') {
             const size_t start = m_cursor;
             m_cursor++;
-            while (m_text[m_cursor] != '"' && hasMoreTokens()) {
-                m_cursor++;
+            while (m_text[m_cursor++] != '"' && hasMoreTokens()) {
             }
             return {
                 TokenType::String,
-                m_text.substr(start + 1, m_cursor - start - 1),
+                m_text.substr(start + 1, m_cursor - start - 2),
             };
         }
 
