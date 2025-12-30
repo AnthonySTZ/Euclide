@@ -59,9 +59,6 @@ class Tokenizer {
     inline bool isWhitespace(const char t_letter) const noexcept {
         return t_letter == ' ' || t_letter == '\n' || t_letter == '\t';
     }
-    inline bool isBinaryOp(const char t_letter) const noexcept {
-        return t_letter == '+' || t_letter == '-' || t_letter == '*' || t_letter == '/';
-    }
 
   private:
     std::string m_text{};

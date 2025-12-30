@@ -36,7 +36,7 @@ class Parser {
 
         case TokenType::String: {
             const Token token = consume(TokenType::String);
-            return std::make_unique<StringLiteral>(token.value);
+            return std::make_unique<StringLiteral>(token.value.substr(1, token.value.length() - 2)); // Remove quotes
         }
 
         case TokenType::Identifier: {
