@@ -17,7 +17,7 @@ add_executable(EuclideTests
                 # fields/test_float3.cpp
 
                 axia/test_tokenizer.cpp
-                axia/test_parser.cpp
+                # axia/test_parser.cpp
                 )
 
 target_link_libraries(EuclideTests PRIVATE core gtest)

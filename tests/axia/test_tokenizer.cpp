@@ -48,6 +48,14 @@ TEST(AxiaTokenizer, TestIdentifier) {
     expectToken(tokenizer.getNextToken(), TokenType::Identifier, "myvar");
 }
 
+TEST(AxiaTokenizer, TestAttributeIdentifier) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("f@myvar v@test @P");
+    expectToken(tokenizer.getNextToken(), TokenType::AttributeIdentifier, "f@myvar");
+    expectToken(tokenizer.getNextToken(), TokenType::AttributeIdentifier, "v@test");
+    expectToken(tokenizer.getNextToken(), TokenType::AttributeIdentifier, "@P");
+}
+
 TEST(AxiaTokenizer, TestAssignment) {
     Tokenizer tokenizer;
     tokenizer.initialize("=");
