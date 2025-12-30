@@ -53,6 +53,9 @@ void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_sc
     for (auto& statement : parsed) {
         statement->accept(semantics);
     }
+
+    // TODO: JIT compile the AXIA script
+
 #pragma omp parallel for
     for (uint32_t i = 0; i < t_attribs.size(); ++i) {
         EvalContext context{t_attribs, i};
