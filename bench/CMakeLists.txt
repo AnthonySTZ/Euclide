@@ -15,6 +15,7 @@ add_executable(EuclideBench
                 bench_noise.cpp
 
                 bench_parser.cpp
+                bench_axia.cpp
                 )
 
 target_link_libraries(EuclideBench PRIVATE core benchmark::benchmark)
