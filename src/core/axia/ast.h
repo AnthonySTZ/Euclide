@@ -8,7 +8,7 @@ namespace euclide {
 
 using Value = std::variant<float, std::string>;
 
-struct Symbol;
+struct LocalVar;
 
 struct StringLiteral;
 struct NumericLiteral;
@@ -67,7 +67,7 @@ struct NumericLiteral : ASTNode {
 
 struct Identifier : ASTNode {
     std::string name;
-    Symbol* symbol = nullptr;
+    LocalVar* localvar = nullptr;
 
     Identifier(const std::string t_name) : ASTNode(NodeType::Identifier), name(std::move(t_name)) {}
 
@@ -77,7 +77,7 @@ struct Identifier : ASTNode {
 struct VarDecl : ASTNode {
     std::string type;
     std::string name;
-    Symbol* symbol = nullptr;
+    LocalVar* localvar = nullptr;
 
     VarDecl(const std::string t_type, const std::string t_name)
         : ASTNode(NodeType::VarDecl), type(std::move(t_type)), name(t_name) {}
@@ -97,7 +97,7 @@ struct Assignment : ASTNode {
     AST identifier; // Can be either an Identifier or a VarDecl
     AST value;
 
-    Symbol* symbol = nullptr;
+    LocalVar* localvar = nullptr;
 
     Assignment(AST&& t_l, AST&& t_r)
         : ASTNode(NodeType::Assignment), identifier(std::move(t_l)), value(std::move(t_r)) {}
