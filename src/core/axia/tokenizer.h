@@ -23,6 +23,8 @@ class Tokenizer {
     /// @param t_text
     void initialize(const std::string& t_text);
 
+    /// @brief Get the next available token based on regex pattern set in PATTERNS
+    /// @return The next `Token` containing its type and value
     Token getNextToken();
 
   private:
