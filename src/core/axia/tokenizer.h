@@ -5,7 +5,7 @@
 
 namespace euclide {
 
-enum class TokenType { Number, String, Identifier, BinaryOp, Assignment, Statement, LParen, RParen, Undefined };
+enum class TokenType { Number, String, Identifier, Type, BinaryOp, Assignment, Statement, LParen, RParen, Undefined };
 
 struct Token {
     TokenType type = TokenType::Undefined;

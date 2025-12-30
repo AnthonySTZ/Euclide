@@ -36,7 +36,12 @@ AST Parser::primary() {
         const Token token = consume(TokenType::String);
         return std::make_unique<StringLiteral>(token.value.substr(1, token.value.length() - 2)); // Remove quotes
     }
-
+    case TokenType::Type: {
+        const Token typeToken = consume(TokenType::Type);
+        const Token identifierToken =
+            consume(TokenType::Identifier); // Type should be before an identifier i.e float myvar
+        return std::make_unique<VarDecl>(typeToken.value, identifierToken.value);
+    }
     case TokenType::Identifier: {
         const Token token = consume(TokenType::Identifier);
         return std::make_unique<Identifier>(token.value);
@@ -94,7 +99,7 @@ AST Parser::assignment() {
     if (m_nextToken.type != TokenType::Assignment)
         return node;
 
-    if (node->type != NodeType::Identifier)
+    if ((node->type != NodeType::Identifier) && (node->type != NodeType::VarDecl))
         throw std::runtime_error("Unexpected expression instead of Identifier before assignment!");
 
     consume(TokenType::Assignment);

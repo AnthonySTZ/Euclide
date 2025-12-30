@@ -5,6 +5,7 @@ namespace euclide {
 const std::vector<TokenPattern> Tokenizer::PATTERNS = {
     {TokenType::Statement, std::regex("^;")},
     {TokenType::Assignment, std::regex("^=")},
+    {TokenType::Type, std::regex("(^float)")},
     {TokenType::Identifier, std::regex("^[[:alpha:]]+")},
     {TokenType::LParen, std::regex("^\\(")},
     {TokenType::RParen, std::regex("^\\)")},

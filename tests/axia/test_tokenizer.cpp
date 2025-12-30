@@ -60,6 +60,13 @@ TEST(AxiaTokenizer, TestStatement) {
     expectToken(tokenizer.getNextToken(), TokenType::Statement, ";");
 }
 
+TEST(AxiaTokenizer, TestType) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("float myvar");
+    expectToken(tokenizer.getNextToken(), TokenType::Type, "float");
+    expectToken(tokenizer.getNextToken(), TokenType::Identifier, "myvar");
+}
+
 TEST(AxiaTokenizer, TestComplex) {
     Tokenizer tokenizer;
     tokenizer.initialize("myvar = 2 + 5 * ( 3 + 2);");
