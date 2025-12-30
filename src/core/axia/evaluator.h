@@ -42,8 +42,9 @@ struct AxiaEvaluator : ASTVisitor {
     }
     Value visit(AttributeIdentifier& t_node) override {
         // check t_node.type
-        if (t_node.component >= 0) {
-            float* ptr = context.attribs.findOrCreate(t_node.name, t_node.type)->component<float>(t_node.component);
+        int component = t_node.type == "f" || t_node.type == "float" ? 0 : t_node.component;
+        if (component >= 0) {
+            float* ptr = context.attribs.findOrCreate(t_node.name, t_node.type)->component<float>(component);
             return ptr[context.index];
         }
         return {};
@@ -64,10 +65,10 @@ struct AxiaEvaluator : ASTVisitor {
     Value visit(Assignment& t_node) override {
         Value value = t_node.value->accept(*this);
         if (const AttributeIdentifier* attr = dynamic_cast<const AttributeIdentifier*>(t_node.identifier.get())) {
-            std::cout << attr->name << ' ' << attr->component << '\n';
             // TODO:check type
-            if (attr->component >= 0) {
-                float* ptr = context.attribs.findOrCreate(attr->name, attr->type)->component<float>(attr->component);
+            int component = attr->type == "f" || attr->type == "float" ? 0 : attr->component;
+            if (component >= 0) {
+                float* ptr = context.attribs.findOrCreate(attr->name, attr->type)->component<float>(component);
                 ptr[context.index] = std::get<float>(value);
             }
         } else if (const VarDecl* attr = dynamic_cast<const VarDecl*>(t_node.identifier.get())) {
