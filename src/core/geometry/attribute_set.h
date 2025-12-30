@@ -46,6 +46,16 @@ class AttributeSet {
         }
     }
 
+    inline Attribute* findOrCreate(const std::string& t_name, const std::string& t_type) {
+        if (t_type == "f" || t_type == "float")
+            return findOrCreate<float, 1>(t_name);
+        if (t_type == "v" || t_type == "vector")
+            return findOrCreate<float, 3>(t_name);
+
+        throw std::runtime_error("Attribute type not supported!");
+        return nullptr;
+    }
+
     inline Attribute* rename(const std::string& t_name, const std::string& t_newName) {
         auto attr = find(t_name);
         if (!attr)

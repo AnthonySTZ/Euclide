@@ -4,7 +4,7 @@
 
 #include "parser.h"
 #include "geometry/attribute_set.h"
-// #include "semantic.h"
+#include "semantic.h"
 
 namespace euclide {
 
@@ -15,6 +15,8 @@ struct EvalContext {
 
 struct AxiaEvaluator : ASTVisitor {
     EvalContext& context;
+
+    std::unordered_map<Symbol*, Value> locals;
 
     explicit AxiaEvaluator(EvalContext& t_c) : context(t_c) {}
 
@@ -40,21 +42,55 @@ struct AxiaEvaluator : ASTVisitor {
     }
     Value visit(AttributeIdentifier& t_node) override {
         // check t_node.type
-        const float* ptr = context.attribs.find(t_node.name)->component<float>(0);
-        return ptr[context.index];
+        if (t_node.component > 0) {
+            float* ptr = context.attribs.findOrCreate(t_node.name, t_node.type)->component<float>(t_node.component);
+            return ptr[context.index];
+        }
+        return {};
     }
     Value visit(Identifier& t_node) override {
         if (t_node.symbol == nullptr)
             return {};
-        // return t_node.symbol->value;
-        return {};
+
+        auto it = locals.find(t_node.symbol);
+        if (it == locals.end()) {
+            throw std::runtime_error("Locals must be defined before assigned new value !");
+            return {};
+        }
+
+        return locals[t_node.symbol];
     }
 
     Value visit(Assignment& t_node) override {
-        const Identifier* ident = dynamic_cast<const Identifier*>(t_node.identifier.get());
-        float* ptr = context.attribs.findOrCreate<float, 1>(ident->name)->component<float>(0);
         Value value = t_node.value->accept(*this);
-        ptr[context.index] = std::get<float>(value);
+        if (const AttributeIdentifier* attr = dynamic_cast<const AttributeIdentifier*>(t_node.identifier.get())) {
+            // TODO:check type
+            if (attr->component > 0) {
+                float* ptr = context.attribs.findOrCreate(attr->name, attr->type)->component<float>(attr->component);
+                ptr[context.index] = std::get<float>(value);
+            }
+        } else if (const VarDecl* attr = dynamic_cast<const VarDecl*>(t_node.identifier.get())) {
+            // Local var declaration
+            const VarDecl* localAttr = dynamic_cast<const VarDecl*>(t_node.identifier.get());
+            // TODO: check type
+            if (locals.count(localAttr->symbol) > 0) {
+                throw std::runtime_error("Redefinition of variable forbidden !");
+                return {};
+            }
+            locals.emplace(localAttr->symbol, std::get<float>(value));
+
+        } else if (const Identifier* attr = dynamic_cast<const Identifier*>(t_node.identifier.get())) {
+            // Local var
+            const Identifier* localAttr = dynamic_cast<const Identifier*>(t_node.identifier.get());
+            // TODO: check type
+            auto it = locals.find(t_node.symbol);
+            if (it == locals.end()) {
+                throw std::runtime_error("Locals must be defined before assigned new value !");
+                return {};
+            }
+            locals.emplace(localAttr->symbol, std::get<float>(value));
+        }
+
         return value;
     }
     Value visit(Statement& t_node) override { return t_node.right->accept(*this); }

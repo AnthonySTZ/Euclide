@@ -80,9 +80,11 @@ struct Identifier : ASTNode {
 struct AttributeIdentifier : ASTNode {
     std::string type;
     std::string name;
+    int component; // -1 for all components, i.e for vector + vector
 
-    AttributeIdentifier(const std::string t_type, const std::string t_name)
-        : ASTNode(NodeType::AttributeIdentifier), type(std::move(t_type)), name(std::move(t_name)) {}
+    AttributeIdentifier(const std::string t_type, const std::string t_name, const int t_component)
+        : ASTNode(NodeType::AttributeIdentifier), type(std::move(t_type)), name(std::move(t_name)),
+          component(t_component) {}
 
     Value accept(ASTVisitor& t_visitor) override { return t_visitor.visit(*this); }
 };

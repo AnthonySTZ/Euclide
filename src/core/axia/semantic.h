@@ -10,7 +10,6 @@ namespace euclide {
 struct Symbol {
     std::string name;
     AttributeType type;
-    Value value;
 };
 
 struct Scope {
@@ -24,7 +23,7 @@ struct Scope {
     }
 };
 
-struct SemanticVisitor : ASTVisitor {
+struct AxiaSemantic : ASTVisitor {
     Scope* current;
 
     inline void enterScope() { current = new Scope{current}; }
@@ -33,8 +32,14 @@ struct SemanticVisitor : ASTVisitor {
         if (current->symbols.count(t_name))
             throw std::runtime_error("Redeclaration of " + t_name);
 
-        return &current->symbols.emplace(t_name, Symbol{t_name, AttributeTypeFromString(t_type), {}}).first->second;
+        return &current->symbols.emplace(t_name, Symbol{t_name, AttributeTypeFromString(t_type)}).first->second;
     }
+
+    virtual Value visit(StringLiteral&) override { return {}; }
+    virtual Value visit(NumericLiteral&) override { return {}; }
+    virtual Value visit(BinaryOp&) override { return {}; }
+    virtual Value visit(AttributeIdentifier&) override { return {}; }
+    virtual Value visit(Statement&) override { return {}; }
 
     Value visit(Identifier& t_node) override {
         Symbol* symbol = current->lookup(t_node.name);

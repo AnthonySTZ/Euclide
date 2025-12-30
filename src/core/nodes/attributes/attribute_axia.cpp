@@ -46,6 +46,13 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
 void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_script) {
     Parser parser{};
     const std::vector<AST> parsed = parser.parse(t_script);
+    if (parsed.size() == 0)
+        return;
+
+    AxiaSemantic semantics;
+    for (auto& statement : parsed) {
+        statement->accept(semantics);
+    }
     for (uint32_t i = 0; i < t_attribs.size(); ++i) {
         EvalContext context{t_attribs, i};
         AxiaEvaluator eval{context};

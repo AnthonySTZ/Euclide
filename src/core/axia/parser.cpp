@@ -48,12 +48,32 @@ AST Parser::primary() {
     }
     case TokenType::AttributeIdentifier: {
         const Token token = consume(TokenType::AttributeIdentifier);
+        const size_t length = token.value.length();
         size_t typeCursor = 0;
-        while (typeCursor < token.value.size() && token.value[typeCursor] != '@') {
+        while (typeCursor < length && token.value[typeCursor] != '@') {
             typeCursor++;
         }
+        size_t dotCursor = typeCursor;
+        while (dotCursor < length && token.value[dotCursor] != '.') {
+            dotCursor++;
+        }
+        int component = 0;
+        if (dotCursor != length - 2) {
+            component = -1;
+        } else {
+            char c = token.value[dotCursor + 1];
+            if (c == 'x')
+                component = 0;
+            else if (c == 'y')
+                component = 1;
+            else if (c == 'z')
+                component = 2;
+            else if (c == 'w')
+                component = 3;
+        }
+
         return std::make_unique<AttributeIdentifier>(token.value.substr(0, typeCursor),
-                                                     token.value.substr(typeCursor + 1));
+                                                     token.value.substr(typeCursor + 1), component);
     }
     case TokenType::LParen: {
         consume(TokenType::LParen);
