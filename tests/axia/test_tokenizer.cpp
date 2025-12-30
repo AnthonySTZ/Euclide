@@ -35,4 +35,46 @@ TEST(AxiaTokenizer, TestOp) {
     expectToken(tokenizer.getNextToken(), TokenType::BinaryOp, "/");
 }
 
+TEST(AxiaTokenizer, TestParenthesis) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("()");
+    expectToken(tokenizer.getNextToken(), TokenType::LParen, "(");
+    expectToken(tokenizer.getNextToken(), TokenType::RParen, ")");
+}
+
+TEST(AxiaTokenizer, TestIdentifier) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("myvar");
+    expectToken(tokenizer.getNextToken(), TokenType::Identifier, "myvar");
+}
+
+TEST(AxiaTokenizer, TestAssignment) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("=");
+    expectToken(tokenizer.getNextToken(), TokenType::Assignment, "=");
+}
+
+TEST(AxiaTokenizer, TestStatement) {
+    Tokenizer tokenizer;
+    tokenizer.initialize(";");
+    expectToken(tokenizer.getNextToken(), TokenType::Statement, ";");
+}
+
+TEST(AxiaTokenizer, TestComplex) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("myvar = 2 + 5 * ( 3 + 2);");
+    expectToken(tokenizer.getNextToken(), TokenType::Identifier, "myvar");
+    expectToken(tokenizer.getNextToken(), TokenType::Assignment, "=");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "2");
+    expectToken(tokenizer.getNextToken(), TokenType::BinaryOp, "+");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "5");
+    expectToken(tokenizer.getNextToken(), TokenType::BinaryOp, "*");
+    expectToken(tokenizer.getNextToken(), TokenType::LParen, "(");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "3");
+    expectToken(tokenizer.getNextToken(), TokenType::BinaryOp, "+");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "2");
+    expectToken(tokenizer.getNextToken(), TokenType::RParen, ")");
+    expectToken(tokenizer.getNextToken(), TokenType::Statement, ";");
+}
+
 } // namespace euclide

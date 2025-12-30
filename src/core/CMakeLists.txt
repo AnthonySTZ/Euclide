@@ -8,6 +8,8 @@ add_library(core STATIC
 
     utils/timer.cpp
 
+    axia/tokenizer.cpp
+
     geometry/attribute_set.cpp
     geometry/mesh.cpp
 

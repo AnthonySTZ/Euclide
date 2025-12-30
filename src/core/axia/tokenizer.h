@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <regex>
 
 namespace euclide {
 
@@ -9,6 +10,11 @@ enum class TokenType { Number, String, Identifier, BinaryOp, Assignment, Stateme
 struct Token {
     TokenType type = TokenType::Undefined;
     std::string value{};
+};
+
+struct TokenPattern {
+    TokenType type;
+    std::regex pattern;
 };
 
 class Tokenizer {
@@ -33,80 +39,13 @@ class Tokenizer {
             return getNextToken();
         }
 
-        // ; statement
-        if (m_text[m_cursor] == ';') {
-            m_cursor++;
-            return {TokenType::Statement, ";"};
-        }
-
-        // Assignment
-        if (m_text[m_cursor] == '=') {
-            m_cursor++;
-            return {TokenType::Assignment, ""};
-        }
-
-        // Identifier
-        if (isalpha(m_text[m_cursor])) {
-            const size_t start = m_cursor;
-            m_cursor++;
-            while (isalpha(m_text[m_cursor]) && hasMoreTokens()) {
-                m_cursor++;
-            }
-            return {
-                TokenType::Identifier,
-                m_text.substr(start, m_cursor - start),
-            };
-        }
-
-        // Parenthesis
-        if (m_text[m_cursor] == '(') {
-            m_cursor++;
-            return {TokenType::LParen, ""};
-        }
-        if (m_text[m_cursor] == ')') {
-            m_cursor++;
-            return {TokenType::RParen, ""};
-        }
-
-        // Binary Op
-        if (isBinaryOp(m_text[m_cursor])) {
-            char op = m_text[m_cursor];
-            m_cursor++;
-            return {
-                TokenType::BinaryOp,
-                std::string(1, op),
-            };
-        }
-
-        // Numbers
-        if (isdigit(m_text[m_cursor])) {
-            bool isDecimal = false;
-            const size_t start = m_cursor;
-            m_cursor++;
-            while ((isdigit(m_text[m_cursor]) || m_text[m_cursor] == '.') && hasMoreTokens()) {
-                if (m_text[m_cursor] == '.') {
-                    if (isDecimal)
-                        break;
-                    isDecimal = true;
-                }
-                m_cursor++;
-            }
-            return {
-                TokenType::Number,
-                m_text.substr(start, m_cursor - start),
-            };
-        }
-
-        // String
-        if (m_text[m_cursor] == '"') {
-            const size_t start = m_cursor;
-            m_cursor++;
-            while (m_text[m_cursor++] != '"' && hasMoreTokens()) {
-            }
-            return {
-                TokenType::String,
-                m_text.substr(start + 1, m_cursor - start - 2),
-            };
+        std::string subtext = m_text.substr(m_cursor);
+        for (const auto& [type, pattern] : PATTERNS) {
+            std::regex_search(subtext, m_match, pattern);
+            if (m_match.empty())
+                continue;
+            m_cursor += m_match[0].length();
+            return {type, m_match[0].str()};
         }
 
         return {
@@ -127,6 +66,9 @@ class Tokenizer {
   private:
     std::string m_text{};
     size_t m_cursor = 0;
+    std::smatch m_match;
+
+    static const std::vector<TokenPattern> PATTERNS;
 };
 
 } // namespace euclide
