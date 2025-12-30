@@ -48,6 +48,13 @@ void expectVarDecl(const AST& node, const std::string t_type, const std::string 
     EXPECT_EQ(declNode->name, t_name);
 }
 
+void expectAttributeIdentifier(const AST& node, const std::string t_type, const std::string t_name) {
+    ASSERT_EQ(node->type, NodeType::AttributeIdentifier);
+    const auto* declNode = dynamic_cast<const AttributeIdentifier*>(node.get());
+    EXPECT_EQ(declNode->type, t_type);
+    EXPECT_EQ(declNode->name, t_name);
+}
+
 void expectStatement(const AST& node, NodeType stateType, const std::function<void(const AST&)>& statementCheck) {
     ASSERT_EQ(node->type, stateType);
     const auto* assignedNode = dynamic_cast<const Statement*>(node.get());
@@ -452,6 +459,29 @@ TEST(AXIAParser, TestVarDecl) {
         [](const AST& node) { 
             expectAssignment(node, 
                 [](const AST& varDecl) { expectVarDecl(varDecl, "float", "var"); },
+                [](const AST& right) { expectNumericLiteral(right, 2); }
+            );
+        } 
+    );
+    // clang-format on
+}
+
+TEST(AXIAParser, TestAssignementWithAttribute) {
+    Parser parser{};
+    const std::string script = "float@var = 2;";
+
+    //              ;
+    //              =
+    //      attr       2
+    //   float var
+
+    const std::vector<AST> parsedTree = parser.parse(script);
+    EXPECT_EQ(parsedTree.size(), 1);
+    // clang-format off
+    expectStatement( parsedTree[0], NodeType::SemiColonStatement,
+        [](const AST& node) { 
+            expectAssignment(node, 
+                [](const AST& identifier) { expectAttributeIdentifier(identifier, "float", "var"); },
                 [](const AST& right) { expectNumericLiteral(right, 2); }
             );
         } 

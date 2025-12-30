@@ -4,6 +4,7 @@
 
 #include "parser.h"
 #include "geometry/attribute_set.h"
+// #include "semantic.h"
 
 namespace euclide {
 
@@ -37,10 +38,18 @@ struct AxiaEvaluator : ASTVisitor {
         }
         return 0.0f;
     }
-    Value visit(Identifier& t_node) override {
+    Value visit(AttributeIdentifier& t_node) override {
+        // check t_node.type
         const float* ptr = context.attribs.find(t_node.name)->component<float>(0);
         return ptr[context.index];
     }
+    Value visit(Identifier& t_node) override {
+        if (t_node.symbol == nullptr)
+            return {};
+        // return t_node.symbol->value;
+        return {};
+    }
+
     Value visit(Assignment& t_node) override {
         const Identifier* ident = dynamic_cast<const Identifier*>(t_node.identifier.get());
         float* ptr = context.attribs.findOrCreate<float, 1>(ident->name)->component<float>(0);

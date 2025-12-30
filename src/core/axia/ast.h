@@ -8,12 +8,13 @@ namespace euclide {
 
 using Value = std::variant<float, std::string>;
 
-struct LocalVar;
+struct Symbol;
 
 struct StringLiteral;
 struct NumericLiteral;
 struct VarDecl;
 struct BinaryOp;
+struct AttributeIdentifier;
 struct Identifier;
 struct Assignment;
 struct Statement;
@@ -25,6 +26,7 @@ struct ASTVisitor {
     virtual Value visit(VarDecl&) = 0;
     virtual Value visit(BinaryOp&) = 0;
     virtual Value visit(Identifier&) = 0;
+    virtual Value visit(AttributeIdentifier&) = 0;
     virtual Value visit(Assignment&) = 0;
     virtual Value visit(Statement&) = 0;
 };
@@ -32,6 +34,7 @@ struct ASTVisitor {
 enum class NodeType {
     NumericLiteral,
     StringLiteral,
+    AttributeIdentifier,
     Identifier,
     MultOp,
     DivOp,
@@ -67,9 +70,19 @@ struct NumericLiteral : ASTNode {
 
 struct Identifier : ASTNode {
     std::string name;
-    LocalVar* localvar = nullptr;
+    Symbol* symbol = nullptr;
 
     Identifier(const std::string t_name) : ASTNode(NodeType::Identifier), name(std::move(t_name)) {}
+
+    Value accept(ASTVisitor& t_visitor) override { return t_visitor.visit(*this); }
+};
+
+struct AttributeIdentifier : ASTNode {
+    std::string type;
+    std::string name;
+
+    AttributeIdentifier(const std::string t_type, const std::string t_name)
+        : ASTNode(NodeType::AttributeIdentifier), type(std::move(t_type)), name(std::move(t_name)) {}
 
     Value accept(ASTVisitor& t_visitor) override { return t_visitor.visit(*this); }
 };
@@ -77,7 +90,7 @@ struct Identifier : ASTNode {
 struct VarDecl : ASTNode {
     std::string type;
     std::string name;
-    LocalVar* localvar = nullptr;
+    Symbol* symbol = nullptr;
 
     VarDecl(const std::string t_type, const std::string t_name)
         : ASTNode(NodeType::VarDecl), type(std::move(t_type)), name(t_name) {}
@@ -97,7 +110,7 @@ struct Assignment : ASTNode {
     AST identifier; // Can be either an Identifier or a VarDecl
     AST value;
 
-    LocalVar* localvar = nullptr;
+    Symbol* symbol = nullptr;
 
     Assignment(AST&& t_l, AST&& t_r)
         : ASTNode(NodeType::Assignment), identifier(std::move(t_l)), value(std::move(t_r)) {}

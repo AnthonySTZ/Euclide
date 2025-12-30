@@ -46,6 +46,15 @@ AST Parser::primary() {
         const Token token = consume(TokenType::Identifier);
         return std::make_unique<Identifier>(token.value);
     }
+    case TokenType::AttributeIdentifier: {
+        const Token token = consume(TokenType::AttributeIdentifier);
+        size_t typeCursor = 0;
+        while (typeCursor < token.value.size() && token.value[typeCursor] != '@') {
+            typeCursor++;
+        }
+        return std::make_unique<AttributeIdentifier>(token.value.substr(0, typeCursor),
+                                                     token.value.substr(typeCursor + 1));
+    }
     case TokenType::LParen: {
         consume(TokenType::LParen);
         AST expr = expression();
@@ -99,7 +108,8 @@ AST Parser::assignment() {
     if (m_nextToken.type != TokenType::Assignment)
         return node;
 
-    if ((node->type != NodeType::Identifier) && (node->type != NodeType::VarDecl))
+    if ((node->type != NodeType::Identifier) && (node->type != NodeType::VarDecl) &&
+        (node->type != NodeType::AttributeIdentifier))
         throw std::runtime_error("Unexpected expression instead of Identifier before assignment!");
 
     consume(TokenType::Assignment);
