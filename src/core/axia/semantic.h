@@ -7,19 +7,19 @@
 
 namespace euclide {
 
-struct LocalVar {
+struct Symbol {
     std::string name;
     AttributeType type;
-    Value type;
+    Value value;
 };
 
 struct Scope {
     Scope* parent;
-    std::unordered_map<std::string, LocalVar> localvars;
+    std::unordered_map<std::string, Symbol> symbols;
 
-    LocalVar* lookup(const std::string& name) {
-        if (localvars.count(name))
-            return &localvars[name];
+    Symbol* lookup(const std::string& name) {
+        if (symbols.count(name))
+            return &symbols[name];
         return parent ? parent->lookup(name) : nullptr;
     }
 };
@@ -29,19 +29,19 @@ struct SemanticVisitor : ASTVisitor {
 
     inline void enterScope() { current = new Scope{current}; }
     inline void exitScope() { current = current->parent; }
-    inline LocalVar* defineLocalVar(const std::string& t_type, const std::string& t_name) {
-        if (current->localvars.count(t_name))
+    inline Symbol* defineSymbol(const std::string& t_type, const std::string& t_name) {
+        if (current->symbols.count(t_name))
             throw std::runtime_error("Redeclaration of " + t_name);
 
-        return &current->localvars.emplace(t_name, LocalVar{t_name, AttributeTypeFromString(t_type), {}}).first->second;
+        return &current->symbols.emplace(t_name, Symbol{t_name, AttributeTypeFromString(t_type), {}}).first->second;
     }
 
     Value visit(Identifier& t_node) override {
-        LocalVar* localVar = current->lookup(t_node.name);
-        if (!localVar)
+        Symbol* symbol = current->lookup(t_node.name);
+        if (!symbol)
             throw std::runtime_error("Undefined identifier: " + t_node.name);
 
-        t_node.localvar = localVar;
+        t_node.symbol = symbol;
         return {};
     }
 
@@ -52,8 +52,8 @@ struct SemanticVisitor : ASTVisitor {
     };
 
     Value visit(VarDecl& t_node) override {
-        LocalVar* localVar = defineLocalVar(t_node.type, t_node.name);
-        t_node.localvar = localVar;
+        Symbol* symbol = defineSymbol(t_node.type, t_node.name);
+        t_node.symbol = symbol;
 
         return {};
     };
