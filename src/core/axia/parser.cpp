@@ -73,7 +73,8 @@ AST Parser::primary() {
         }
 
         return std::make_unique<AttributeIdentifier>(token.value.substr(0, typeCursor),
-                                                     token.value.substr(typeCursor + 1), component);
+                                                     token.value.substr(typeCursor + 1, dotCursor - typeCursor - 1),
+                                                     component);
     }
     case TokenType::LParen: {
         consume(TokenType::LParen);
