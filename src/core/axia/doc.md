@@ -7,6 +7,8 @@ float var = 5.0; -> local variable named var with value 5.0.
 
 all basis operators will be available such as: +, -, *, /
 
+#TODO: Should be compiled (JIT)
+
 Abstract Syntax tree
 ------------------------------------------------------------------------------------
 
@@ -18,10 +20,10 @@ statement
 assignment
     -> identifier '=' logical
 
-logical
+logical #TODO
     -> comparison ( ( '&&' | '||' ) comparison )*
 
-comparison
+comparison #TODO
     -> expression ( ( '<' | '>' | '==' | '!=' ) expression )*
 
 expression
@@ -30,7 +32,7 @@ expression
 term
     -> unary ( ( '*' | '/' ) unary )*
 
-unary
+unary #TODO
     -> ( '-' | '!' ) unary
     | primary
 
