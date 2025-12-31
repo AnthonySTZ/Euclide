@@ -64,14 +64,17 @@ struct AxiaEvaluator : ASTVisitor {
 
     Value visit(Assignment& t_node) override {
         Value value = t_node.value->accept(*this);
-        if (const AttributeIdentifier* attr = dynamic_cast<const AttributeIdentifier*>(t_node.identifier.get())) {
-            // TODO:check type
+        switch (t_node.type) {
+        case NodeType::AttributeIdentifier: {
+            const AttributeIdentifier* attr = dynamic_cast<const AttributeIdentifier*>(t_node.identifier.get());
             int component = attr->type == "f" || attr->type == "float" ? 0 : attr->component;
             if (component >= 0) {
                 float* ptr = context.attribs.findOrCreate(attr->name, attr->type)->component<float>(component);
                 ptr[context.index] = std::get<float>(value);
             }
-        } else if (const VarDecl* attr = dynamic_cast<const VarDecl*>(t_node.identifier.get())) {
+        } break;
+
+        case NodeType::VarDecl: {
             // Local var declaration
             const VarDecl* localAttr = dynamic_cast<const VarDecl*>(t_node.identifier.get());
             // TODO: check type
@@ -80,8 +83,9 @@ struct AxiaEvaluator : ASTVisitor {
                 return {};
             }
             locals.emplace(localAttr->symbol, std::get<float>(value));
+        } break;
 
-        } else if (const Identifier* attr = dynamic_cast<const Identifier*>(t_node.identifier.get())) {
+        case NodeType::Identifier: {
             // Local var
             const Identifier* localAttr = dynamic_cast<const Identifier*>(t_node.identifier.get());
             // TODO: check type
@@ -91,6 +95,10 @@ struct AxiaEvaluator : ASTVisitor {
                 return {};
             }
             locals.emplace(localAttr->symbol, std::get<float>(value));
+        } break;
+
+        default:
+            throw std::runtime_error("Unexpected assignment !");
         }
 
         return value;
