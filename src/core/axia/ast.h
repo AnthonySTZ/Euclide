@@ -112,8 +112,6 @@ struct Assignment : ASTNode {
     AST identifier; // Can be either an Identifier or a VarDecl
     AST value;
 
-    Symbol* symbol = nullptr;
-
     Assignment(AST&& t_l, AST&& t_r)
         : ASTNode(NodeType::Assignment), identifier(std::move(t_l)), value(std::move(t_r)) {}
 

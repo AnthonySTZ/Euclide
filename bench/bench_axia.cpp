@@ -4,7 +4,7 @@
 #include "nodes/attributes/attribute_noise.h"
 #include "nodes/attributes/attribute_axia.h"
 
-static void BM_AXIAGrid1000x1000(benchmark::State& state) { // 5.43 ms - laptop
+static void BM_AXIAGrid1000x1000(benchmark::State& state) { // 5.9 ms - laptop
     euclide::GridSettings gridSettings{.divisions = {1000, 1000}};
     euclide::Mesh mesh;
     euclide::Grid::createGrid(mesh, gridSettings);
