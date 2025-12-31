@@ -76,8 +76,8 @@ Value AxiaEvaluator::visit(Assignment& t_node) {
         if (!localAttr)
             throw std::runtime_error("Invalid identifier node");
         // TODO: check type
-        if (locals.count(localAttr->symbol) > 0) {
-            throw std::runtime_error("Redefinition of variable forbidden !");
+        if (locals.count(localAttr->symbol)) {
+            throw std::runtime_error("Redefinition of variable " + localAttr->name + " forbidden !");
         }
         locals.emplace(localAttr->symbol, std::get<float>(value));
     } break;

@@ -24,7 +24,7 @@ struct Scope {
 };
 
 struct AxiaSemantic : ASTVisitor {
-    Scope* current;
+    Scope* current = new Scope{};
 
     inline void enterScope() { current = new Scope{current}; }
     inline void exitScope() { current = current->parent; }
@@ -37,9 +37,13 @@ struct AxiaSemantic : ASTVisitor {
 
     virtual Value visit(StringLiteral&) override { return {}; }
     virtual Value visit(NumericLiteral&) override { return {}; }
-    virtual Value visit(BinaryOp&) override { return {}; }
+    virtual Value visit(BinaryOp& t_node) override {
+        t_node.left->accept(*this);
+        t_node.right->accept(*this);
+        return {};
+    }
     virtual Value visit(AttributeIdentifier&) override { return {}; }
-    virtual Value visit(Statement&) override { return {}; }
+    virtual Value visit(Statement& t_node) override { return t_node.right->accept(*this); }
 
     Value visit(Identifier& t_node) override {
         Symbol* symbol = current->lookup(t_node.name);
@@ -57,7 +61,9 @@ struct AxiaSemantic : ASTVisitor {
     };
 
     Value visit(VarDecl& t_node) override {
+        std::cout << "defining " << t_node.name;
         Symbol* symbol = defineSymbol(t_node.type, t_node.name);
+        std::cout << ' ' << symbol << '\n';
         t_node.symbol = symbol;
 
         return {};

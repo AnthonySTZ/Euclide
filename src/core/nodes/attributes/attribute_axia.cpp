@@ -47,6 +47,7 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
         } else if (kind == Kind::PRIMITIVES) {
             computeAXIA(output->primAttribs, script);
         }
+        getField<NodeField<std::string>>("error")->setValue("");
     } catch (const std::runtime_error& ex) {
         getField<NodeField<std::string>>("error")->setValue(ex.what());
     }
