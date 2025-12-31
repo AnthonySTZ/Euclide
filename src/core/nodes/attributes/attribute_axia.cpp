@@ -67,7 +67,8 @@ void AttributeAXIA::computeAXIA(AttributeSet& t_attribs, const std::string& t_sc
 
     // TODO: JIT compile the AXIA script
 
-#pragma omp parallel for
+    // #pragma omp parallel for // --- DISABLED IT FOR NOW TO PREVENT RACE CONDITIONS
+    // Maybe create all attribs that are needed before evaluating the ast ?
     for (uint32_t i = 0; i < t_attribs.size(); ++i) {
         EvalContext context{t_attribs, i};
         AxiaEvaluator eval{context};
