@@ -20,6 +20,13 @@ AttributeAXIA::AttributeAXIA() : Node(1, 1, "Axia") {
         .isMultiline = true,
     });
     addField("script", scriptField);
+
+    auto errorField = std::make_shared<NodeField<std::string>>("");
+    errorField->setMetadata(NodeFieldMetadata{
+        .displayName = "",
+        .isReadOnly = true,
+    });
+    addField("error", errorField);
 }
 
 std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::vector<std::shared_ptr<Mesh>>& t_inputs) {
@@ -34,10 +41,14 @@ std::shared_ptr<Mesh> AttributeAXIA::compute(const size_t t_index, const std::ve
     if (script.empty())
         return output;
 
-    if (kind == Kind::POINTS) {
-        computeAXIA(output->pointAttribs, script);
-    } else if (kind == Kind::PRIMITIVES) {
-        computeAXIA(output->primAttribs, script);
+    try {
+        if (kind == Kind::POINTS) {
+            computeAXIA(output->pointAttribs, script);
+        } else if (kind == Kind::PRIMITIVES) {
+            computeAXIA(output->primAttribs, script);
+        }
+    } catch (const std::runtime_error& ex) {
+        getField<NodeField<std::string>>("error")->setValue(ex.what());
     }
 
     return output;

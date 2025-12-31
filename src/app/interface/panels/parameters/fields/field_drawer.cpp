@@ -127,6 +127,10 @@ void FieldDrawer::drawFloat4Field(const std::string& t_name, NodeField<float4>& 
 void FieldDrawer::drawStringField(const std::string& t_name, NodeField<std::string>& t_field) {
     std::string value = t_field.getValue();
     const NodeFieldMetadata& meta = t_field.metadata();
+    if (meta.isReadOnly) {
+        ImGui::Text(value.c_str());
+        return;
+    }
 
     const std::string sliderId = getFieldIdFromName(t_name);
     if (meta.isMultiline) {

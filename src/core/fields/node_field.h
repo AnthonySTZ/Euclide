@@ -18,6 +18,7 @@ struct NodeFieldMetadata {
 
     bool isMultiline = false;
     bool isCombo = false;                            ///< Whether this field is a combo box.
+    bool isReadOnly = false;                         ///< Whether this field is a combo box.
     std::optional<std::vector<std::string>> choices; ///< Optional choices for combo fields.
 
     std::function<bool()> shouldBeHidden = []() { return false; };
