@@ -13,7 +13,7 @@ struct Symbol {
 };
 
 struct Scope {
-    Scope* parent;
+    std::shared_ptr<Scope> parent;
     std::unordered_map<std::string, Symbol> symbols;
 
     Symbol* lookup(const std::string& name) {
@@ -24,9 +24,9 @@ struct Scope {
 };
 
 struct AxiaSemantic : ASTVisitor {
-    Scope* current = new Scope{};
+    std::shared_ptr<Scope> current = std::make_shared<Scope>();
 
-    inline void enterScope() { current = new Scope{current}; }
+    inline void enterScope() { current = std::make_shared<Scope>(Scope{current}); }
     inline void exitScope() { current = current->parent; }
     inline Symbol* defineSymbol(const std::string& t_type, const std::string& t_name) {
         if (current->symbols.count(t_name))
