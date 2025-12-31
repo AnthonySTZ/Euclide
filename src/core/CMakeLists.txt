@@ -10,6 +10,7 @@ add_library(core STATIC
 
     axia/tokenizer.cpp
     axia/parser.cpp
+    axia/semantic.cpp
     axia/evaluator.cpp
 
     geometry/attribute_set.cpp
