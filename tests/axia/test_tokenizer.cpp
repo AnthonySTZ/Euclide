@@ -42,6 +42,17 @@ TEST(AxiaTokenizer, TestParenthesis) {
     expectToken(tokenizer.getNextToken(), TokenType::RParen, ")");
 }
 
+TEST(AxiaTokenizer, TestParenthesisWithValues) {
+    Tokenizer tokenizer;
+    tokenizer.initialize("(3 + 5);");
+    expectToken(tokenizer.getNextToken(), TokenType::LParen, "(");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "3");
+    expectToken(tokenizer.getNextToken(), TokenType::BinaryOp, "+");
+    expectToken(tokenizer.getNextToken(), TokenType::Number, "5");
+    expectToken(tokenizer.getNextToken(), TokenType::RParen, ")");
+    expectToken(tokenizer.getNextToken(), TokenType::Statement, ";");
+}
+
 TEST(AxiaTokenizer, TestIdentifier) {
     Tokenizer tokenizer;
     tokenizer.initialize("myvar");
