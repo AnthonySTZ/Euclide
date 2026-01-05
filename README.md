@@ -48,3 +48,4 @@ This project should currently be considered experimental.
 - Improve graph scheduling and execution strategies
 - Extend geometry and attribute types
 - Improve documentation and examples
+- Add a Python API to interract with scene and nodes
