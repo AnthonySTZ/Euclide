@@ -1,10 +1,14 @@
 #include "engine.h"
 
+#include "gpu/gpu_manager.h"
+
 namespace euclide {
 
 Engine::Engine(const uint32_t t_width, const uint32_t t_height, const char* t_windowName)
     : m_scene(std::make_shared<euclide::Scene>()), m_window(t_width, t_height, t_windowName),
       m_interface(m_window.getWindow(), m_scene) {
+    GPUManager::getInstance(); // Init Vulkan
+
     // Set GLFW user pointer to allow static callback access to this instance
     glfwSetWindowUserPointer(m_window.getWindow(), this);
 
