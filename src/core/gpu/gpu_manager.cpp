@@ -35,7 +35,9 @@ void GPUManager::initVulkan() {
     createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
 
-    vkCreateInstance(&createInfo, nullptr, &m_vkInstance);
+    if (vkCreateInstance(&createInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
+        throw std::runtime_error("vkCreateInstance Failed !");
+    }
 }
 
 } // namespace euclide
