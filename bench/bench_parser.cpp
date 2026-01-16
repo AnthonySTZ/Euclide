@@ -2,7 +2,7 @@
 
 #include "axia/parser.h"
 
-static void BM_Parser(benchmark::State& state) { // 0.084 ms - laptop
+static void BM_Parser(benchmark::State& state) { // 0.052 ms
     const std::string script = "myvar = 5 + 3 + ( 5 * 8 * position); test = a / 8 + ( 5 * 8 - 3 + 2);";
 
     euclide::Parser parser{};

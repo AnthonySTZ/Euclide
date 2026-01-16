@@ -3,7 +3,7 @@
 #include "nodes/primitive/grid.h"
 #include "nodes/attributes/attribute_noise.h"
 
-static void BM_PerlinNoise(benchmark::State& state) { // 27.6ms - laptop
+static void BM_PerlinNoise(benchmark::State& state) { // 14.9 ms
     euclide::Mesh mesh;
     euclide::GPUManager& manager = euclide::GPUManager::getInstance();
 
